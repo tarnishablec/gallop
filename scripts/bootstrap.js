@@ -14,7 +14,12 @@ files.forEach(shortName => {
 
   if (args.init) {
     fse.remove(`${packgeDir}/lib`).then(() => {
-      fse.ensureFileSync(`${packgeDir}/src/index.ts`)
+      fse.ensureFile(`${packgeDir}/src/index.ts`).then(() => {
+        fse.writeFileSync(
+          `${packgeDir}/src/index.ts`,
+          `export const hello = 'world'`
+        )
+      })
     })
     fse.remove(`${packgeDir}/__tests__`).then(() => {
       fse.ensureFile(`${packgeDir}/__tests__/${shortName}.test.ts`).then(() => {
@@ -46,8 +51,7 @@ function initNodeIndex(path, name, args) {
   if (args.force || !indexExists) {
     fse.writeFileSync(
       path,
-      `
-'use strict'
+      `'use strict'
 
 module.exports = require('./dist/${name}.cjs.js')
       `.trim() + '\n'
