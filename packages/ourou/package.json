@@ -2,24 +2,30 @@
   "name": "@ourou/ourou",
   "version": "0.0.1-alpha.0",
   "description": "ourou",
+  "main": "src/index.ts",
+  "module": "dist/ourou.esm.js",
+  "files": [
+    "index.js",
+    "dist",
+    "src"
+  ],
+  "types": "dist/ourou.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarnishablec/ourou.git"
+  },
   "keywords": [
     "ourou"
   ],
-  "author": "tarnishablec <tarnishablec@outlook.com>",
-  "homepage": "",
-  "license": "ISC",
-  "main": "lib/ourou.js",
   "directories": {
-    "lib": "lib",
+    "src": "src",
     "test": "__tests__"
   },
-  "files": [
-    "lib"
-  ],
+  "sideEffects": false,
+  "author": "tarnishablec <tarnishablec@outlook.com>",
+  "license": "MIT",
+  "homepage": "",
   "publishConfig": {
-    "registry": "https://registry.npm.taobao.org/"
-  },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "access": "public"
   }
 }
