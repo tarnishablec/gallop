@@ -39,7 +39,7 @@ const formats = {
 const aliasOptions = { resolve: ['.ts'], entries: {} }
 fs.readdirSync(packagesDir).forEach(dir => {
   if (fs.statSync(path.resolve(packagesDir, dir)).isDirectory()) {
-    aliasOptions.entries[`@ourou/${dir}`] = path.resolve(
+    aliasOptions.entries[`@oruo/${dir}`] = path.resolve(
       packagesDir,
       `${dir}/src`
     )

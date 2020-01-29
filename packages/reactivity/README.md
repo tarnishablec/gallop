@@ -1,11 +1,11 @@
-# `@ourou/reactivity`
+# `@oruo/reactivity`
 
 > TODO: description
 
 ## Usage
 
 ```
-const reactivity = require('@ourou/reactivity');
+const reactivity = require('@oruo/reactivity');
 
 // TODO: DEMONSTRATE API
 ```

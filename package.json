@@ -1,6 +1,6 @@
 {
-  "name": "ourou",
-  "private": false,
+  "name": "oruo",
+  "private": true,
   "workspaces": [
     "packages/*"
   ],

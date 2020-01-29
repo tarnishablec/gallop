@@ -1,20 +1,20 @@
 {
-  "name": "@ourou/ourou",
+  "name": "@oruo/oruo",
   "version": "0.0.4-alpha.1",
-  "description": "ourou",
+  "description": "oruo",
   "main": "index.js",
-  "module": "dist/ourou.esm.js",
+  "module": "dist/oruo.esm.js",
   "files": [
     "index.js",
     "dist"
   ],
-  "types": "dist/ourou.d.ts",
+  "types": "dist/oruo.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tarnishablec/ourou.git"
+    "url": "https://github.com/tarnishablec/oruo.git"
   },
   "keywords": [
-    "ourou"
+    "oruo"
   ],
   "directories": {
     "src": "src",

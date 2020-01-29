@@ -43,7 +43,7 @@ test('adds 1 + 2 to equal 3', () => {
       })
     }
 
-    const longName = `@ourou/${shortName}`
+    const longName = `@oruo/${shortName}`
     const pkgPath = path.join(packgeDir, 'package.json')
     const nodeIndexPath = path.join(packgeDir, 'index.js')
 
@@ -116,9 +116,9 @@ function initPkg(path, longName, shortName, args) {
       types: `dist/${shortName}.d.ts`,
       repository: {
         type: 'git',
-        url: 'https://github.com/tarnishablec/ourou.git'
+        url: 'https://github.com/tarnishablec/oruo.git'
       },
-      keywords: ['ourou'],
+      keywords: ['oruo'],
       directories: {
         src: 'src',
         test: '__tests__'

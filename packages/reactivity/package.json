@@ -1,5 +1,5 @@
 {
-  "name": "@ourou/reactivity",
+  "name": "@oruo/reactivity",
   "version": "0.0.4-alpha.1",
   "description": "reactivity",
   "main": "index.js",
@@ -11,10 +11,10 @@
   "types": "dist/reactivity.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tarnishablec/ourou.git"
+    "url": "https://github.com/tarnishablec/oruo.git"
   },
   "keywords": [
-    "ourou"
+    "oruo"
   ],
   "directories": {
     "src": "src",
