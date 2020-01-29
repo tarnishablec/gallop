@@ -11,48 +11,45 @@ main()
 
 function main() {
   targets.forEach(shortName => {
-    const packgeDir = path.join(packagesDir, shortName)
-    if (!fse.statSync(packgeDir).isDirectory()) {
+    const packageDir = path.join(packagesDir, shortName)
+    if (!fse.statSync(packageDir).isDirectory()) {
       return
     }
 
     if (args.init) {
-      fse.remove(`${packgeDir}/lib`).then(() => {
-        fse.ensureFile(`${packgeDir}/src/index.ts`).then(() => {
-          fse.writeFileSync(
-            `${packgeDir}/src/index.ts`,
+      fse.access(`${packageDir}/src/index.ts`).catch(() => {
+        fse.ensureFile(`${packageDir}/src/index.ts`).then(() => {
+          fse.writeFile(
+            `${packageDir}/src/index.ts`,
             `export const hello = 'world'`
           )
+          fse.remove(`${packageDir}/lib`)
         })
       })
-      fse.remove(`${packgeDir}/__tests__`).then(() => {
-        fse
-          .ensureFile(`${packgeDir}/__tests__/${shortName}.test.ts`)
-          .then(() => {
-            fse.writeFileSync(
-              `${packgeDir}/__tests__/${shortName}.test.ts`,
-              `'use strict'
+      fse.access(`${packageDir}/__tests__/${shortName}.test.ts`).catch(() => {
+        fse.remove(`${packageDir}/__tests__/${shortName}.test.js`)
+        fse.writeFile(
+          `${packageDir}/__tests__/${shortName}.test.ts`,
+          `'use strict'
 
 import {} from '../src'
 
 test('adds 1 + 2 to equal 3', () => {
 //   expect(func()).toBe(res)
 })`
-            )
-          })
+        )
       })
     }
 
     const longName = `@oruo/${shortName}`
-    const pkgPath = path.join(packgeDir, 'package.json')
-    const nodeIndexPath = path.join(packgeDir, 'index.js')
+    const pkgPath = path.join(packageDir, 'package.json')
+    const nodeIndexPath = path.join(packageDir, 'index.js')
 
     initPkg(pkgPath, longName, shortName, args)
     initNodeIndex(nodeIndexPath, shortName, args)
-
-    execa.commandSync('lerna bootstrap', {
-      stdio: 'inherit'
-    })
+  })
+  execa.commandSync('lerna bootstrap', {
+    stdio: 'inherit'
   })
 }
 

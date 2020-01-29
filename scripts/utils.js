@@ -17,5 +17,5 @@ exports.targets = fs.readdirSync('packages').filter(f => {
   return true
 })
 
-exports.run = (bin, args, opts = {}) =>
-  execa(bin, args, { stdio: 'inherit', ...opts })
+exports.run = (command, ...opts) =>
+  execa.command(command, Object.assign({ stdio: 'inherit' }, ...opts))

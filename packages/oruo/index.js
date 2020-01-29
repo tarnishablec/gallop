@@ -1,3 +1,3 @@
 'use strict'
 
-module.exports = require('./dist/oruo.cjs.js.js')
+module.exports = require('./dist/oruo.cjs.js')
