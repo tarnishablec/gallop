@@ -1,6 +1,6 @@
 {
   "name": "ourou",
-  "private": false,
+  "private": true,
   "workspaces": [
     "packages/*"
   ],
@@ -30,12 +30,14 @@
     "packages/*/dist/*"
   ],
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.7.8",
     "@rollup/plugin-alias": "^3.0.0",
     "@rollup/plugin-json": "^4.0.1",
-    "@rollup/plugin-typescript": "^3.0.0",
     "@types/jest": "^25.1.0",
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.18.0",
+    "@wessberg/rollup-plugin-ts": "^1.2.15",
+    "chalk": "^3.0.0",
     "eslint": "^6.8.0",
     "execa": "^4.0.0",
     "fs-extra": "^8.1.0",

@@ -4,46 +4,57 @@ const path = require('path')
 
 const baseVersion = require('../lerna.json').version
 const packagesDir = path.resolve(__dirname, '../packages')
-const files = require('./utils').targets
+const targets = require('./utils').targets
+const execa = require('execa')
 
-files.forEach(shortName => {
-  const packgeDir = path.join(packagesDir, shortName)
-  if (!fse.statSync(packgeDir).isDirectory()) {
-    return
-  }
+main()
 
-  if (args.init) {
-    fse.remove(`${packgeDir}/lib`).then(() => {
-      fse.ensureFile(`${packgeDir}/src/index.ts`).then(() => {
-        fse.writeFileSync(
-          `${packgeDir}/src/index.ts`,
-          `export const hello = 'world'`
-        )
+function main() {
+  targets.forEach(shortName => {
+    const packgeDir = path.join(packagesDir, shortName)
+    if (!fse.statSync(packgeDir).isDirectory()) {
+      return
+    }
+
+    if (args.init) {
+      fse.remove(`${packgeDir}/lib`).then(() => {
+        fse.ensureFile(`${packgeDir}/src/index.ts`).then(() => {
+          fse.writeFileSync(
+            `${packgeDir}/src/index.ts`,
+            `export const hello = 'world'`
+          )
+        })
       })
-    })
-    fse.remove(`${packgeDir}/__tests__`).then(() => {
-      fse.ensureFile(`${packgeDir}/__tests__/${shortName}.test.ts`).then(() => {
-        fse.writeFileSync(
-          `${packgeDir}/__tests__/${shortName}.test.ts`,
-          `'use strict'
+      fse.remove(`${packgeDir}/__tests__`).then(() => {
+        fse
+          .ensureFile(`${packgeDir}/__tests__/${shortName}.test.ts`)
+          .then(() => {
+            fse.writeFileSync(
+              `${packgeDir}/__tests__/${shortName}.test.ts`,
+              `'use strict'
 
 import {} from '../src'
 
 test('adds 1 + 2 to equal 3', () => {
 //   expect(func()).toBe(res)
 })`
-        )
+            )
+          })
       })
+    }
+
+    const longName = `@ourou/${shortName}`
+    const pkgPath = path.join(packgeDir, 'package.json')
+    const nodeIndexPath = path.join(packgeDir, 'index.js')
+
+    initPkg(pkgPath, longName, shortName, args)
+    initNodeIndex(nodeIndexPath, shortName, args)
+
+    execa.commandSync('lerna bootstrap', {
+      stdio: 'inherit'
     })
-  }
-
-  const longName = `@ourou/${shortName}`
-  const pkgPath = path.join(packgeDir, 'package.json')
-  const nodeIndexPath = path.join(packgeDir, 'index.js')
-
-  initPkg(pkgPath, longName, shortName, args)
-  initNodeIndex(nodeIndexPath, shortName, args)
-})
+  })
+}
 
 function initNodeIndex(path, name, args) {
   const indexExists = fse.existsSync(path)
@@ -99,9 +110,9 @@ function initPkg(path, longName, shortName, args) {
       name: longName,
       version: baseVersion,
       description: shortName,
-      main: 'src/index.ts',
+      main: 'index.js',
       module: `dist/${shortName}.esm.js`,
-      files: [`index.js`, 'dist', 'src'],
+      files: [`index.js`, 'dist'],
       types: `dist/${shortName}.d.ts`,
       repository: {
         type: 'git',

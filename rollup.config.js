@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import typescript from '@rollup/plugin-typescript'
+import typescript from '@wessberg/rollup-plugin-ts'
 import json from '@rollup/plugin-json'
 import alias from '@rollup/plugin-alias'
 
@@ -39,7 +39,7 @@ const formats = {
 const aliasOptions = { resolve: ['.ts'], entries: {} }
 fs.readdirSync(packagesDir).forEach(dir => {
   if (fs.statSync(path.resolve(packagesDir, dir)).isDirectory()) {
-    aliasOptions.entries[`@touro/${dir}`] = path.resolve(
+    aliasOptions.entries[`@ourou/${dir}`] = path.resolve(
       packagesDir,
       `${dir}/src`
     )

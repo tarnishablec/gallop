@@ -2,12 +2,11 @@
   "name": "@ourou/reactivity",
   "version": "0.0.1-alpha.1",
   "description": "reactivity",
-  "main": "src/index.ts",
+  "main": "index.js",
   "module": "dist/reactivity.esm.js",
   "files": [
     "index.js",
-    "dist",
-    "src"
+    "dist"
   ],
   "types": "dist/reactivity.d.ts",
   "repository": {
