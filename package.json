@@ -8,6 +8,7 @@
     "boot": "node ./scripts/bootstrap.js",
     "build": "node ./scripts/build.js",
     "upgrade": "node ./scripts/upgrade.js",
+    "publish": "node ./scripts/publish.js",
     "test": "jest"
   },
   "license": "MIT",
