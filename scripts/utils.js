@@ -1,4 +1,5 @@
 const fs = require('fs')
+const execa = require('execa')
 
 exports.excludes = ['test-example']
 
@@ -15,3 +16,6 @@ exports.targets = fs.readdirSync('packages').filter(f => {
   }
   return true
 })
+
+exports.run = (bin, args, opts = {}) =>
+  execa(bin, args, { stdio: 'inherit', ...opts })
