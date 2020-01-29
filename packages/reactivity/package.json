@@ -1,6 +1,6 @@
 {
   "name": "@ourou/reactivity",
-  "version": "0.0.4-alpha.0",
+  "version": "0.0.4-alpha.1",
   "description": "reactivity",
   "main": "index.js",
   "module": "dist/reactivity.esm.js",
