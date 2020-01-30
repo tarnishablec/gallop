@@ -1,6 +1,6 @@
 {
   "name": "@oruo/oruo",
-  "version": "0.0.4-alpha.4",
+  "version": "0.0.1-alpha.0",
   "description": "oruo",
   "main": "index.js",
   "module": "dist/oruo.esm.js",
