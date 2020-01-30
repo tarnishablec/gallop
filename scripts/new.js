@@ -1,4 +1,5 @@
 const { run, targets } = require('./utils')
+const { scope } = require('./setting')
 const args = require('minimist')(process.argv.slice(2))
 
 main()
@@ -13,7 +14,7 @@ async function createPackages(names) {
   if (names.length === 0) {
     return
   } else {
-    await run(`lerna create @oruo/${names.shift()} --yes`)
+    await run(`lerna create @${scope}/${names.shift()} --yes`)
     await createPackages(names)
   }
 }

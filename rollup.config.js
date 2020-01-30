@@ -3,6 +3,7 @@ import path from 'path'
 import typescript from '@wessberg/rollup-plugin-ts'
 import json from '@rollup/plugin-json'
 import alias from '@rollup/plugin-alias'
+import { scope } from './scripts/setting'
 
 if (!process.env.TARGET) {
   throw new Error('TARGET package must be specified via --environment flag.')
@@ -39,7 +40,7 @@ const formats = {
 const aliasOptions = { resolve: ['.ts'], entries: {} }
 fs.readdirSync(packagesDir).forEach(dir => {
   if (fs.statSync(path.resolve(packagesDir, dir)).isDirectory()) {
-    aliasOptions.entries[`@oruo/${dir}`] = path.resolve(
+    aliasOptions.entries[`@${scope}/${dir}`] = path.resolve(
       packagesDir,
       `${dir}/src`
     )

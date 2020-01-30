@@ -1,6 +1,7 @@
 const args = require('minimist')(process.argv.slice(2))
 const fse = require('fs-extra')
 const path = require('path')
+const { scope, projectName, auther, gitUrl } = require('./setting')
 
 const baseVersion = require('../lerna.json').version
 const packagesDir = path.resolve(__dirname, '../packages')
@@ -24,7 +25,7 @@ function main() {
       initTest(testPath, shortName)
     }
 
-    const longName = `@oruo/${shortName}`
+    const longName = `@${scope}/${shortName}`
     const pkgPath = path.join(packageDir, 'package.json')
     const nodeIndexPath = path.join(packageDir, 'index.js')
 
@@ -125,15 +126,15 @@ function initPkg(filePath, longName, shortName, args) {
       types: `dist/${shortName}.d.ts`,
       repository: {
         type: 'git',
-        url: 'https://github.com/tarnishablec/oruo.git'
+        url: gitUrl
       },
-      keywords: ['oruo'],
+      keywords: [`${projectName}`],
       directories: {
         src: 'src',
         test: '__tests__'
       },
       sideEffects: false,
-      author: 'tarnishablec <tarnishablec@outlook.com>',
+      author: auther,
       license: 'MIT',
       homepage: '',
       publishConfig: {
