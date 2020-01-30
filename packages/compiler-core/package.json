@@ -1,14 +1,14 @@
 {
-  "name": "@oruo/reactivity",
+  "name": "@oruo/compiler-core",
   "version": "0.0.4-alpha.3",
-  "description": "reactivity",
+  "description": "compiler-core",
   "main": "index.js",
-  "module": "dist/reactivity.esm.js",
+  "module": "dist/compiler-core.esm.js",
   "files": [
     "index.js",
     "dist"
   ],
-  "types": "dist/reactivity.d.ts",
+  "types": "dist/compiler-core.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/tarnishablec/oruo.git"

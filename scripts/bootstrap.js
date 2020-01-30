@@ -4,7 +4,7 @@ const path = require('path')
 
 const baseVersion = require('../lerna.json').version
 const packagesDir = path.resolve(__dirname, '../packages')
-const targets = require('./utils').targets
+const targets = require('./utils').targets(args._)
 const execa = require('execa')
 
 main()
@@ -17,28 +17,11 @@ function main() {
     }
 
     if (args.init) {
-      fse.access(`${packageDir}/src/index.ts`).catch(() => {
-        fse.ensureFile(`${packageDir}/src/index.ts`).then(() => {
-          fse.writeFile(
-            `${packageDir}/src/index.ts`,
-            `export const hello = 'world'`
-          )
-          fse.remove(`${packageDir}/lib`)
-        })
-      })
-      fse.access(`${packageDir}/__tests__/${shortName}.test.ts`).catch(() => {
-        fse.remove(`${packageDir}/__tests__/${shortName}.test.js`)
-        fse.writeFile(
-          `${packageDir}/__tests__/${shortName}.test.ts`,
-          `'use strict'
+      const indexTsPath = `${packageDir}/src/index.ts`
+      const testPath = `${packageDir}/__tests__/${shortName}.test.ts`
 
-import {} from '../src'
-
-test('adds 1 + 2 to equal 3', () => {
-//   expect(func()).toBe(res)
-})`
-        )
-      })
+      initIndexTs(indexTsPath)
+      initTest(testPath, shortName)
     }
 
     const longName = `@oruo/${shortName}`
@@ -46,19 +29,48 @@ test('adds 1 + 2 to equal 3', () => {
     const nodeIndexPath = path.join(packageDir, 'index.js')
 
     initPkg(pkgPath, longName, shortName, args)
-    initNodeIndex(nodeIndexPath, shortName, args)
+    initIndexJs(nodeIndexPath, shortName, args)
   })
   execa.commandSync('lerna bootstrap', {
     stdio: 'inherit'
   })
 }
 
-function initNodeIndex(path, name, args) {
-  const indexExists = fse.existsSync(path)
+function initIndexTs(filePath) {
+  const exists = fse.existsSync(filePath)
+
+  if (!exists) {
+    fse.ensureFileSync(filePath)
+    fse.writeFileSync(filePath, `export const hello = 'world'`)
+    fse.removeSync(path.resolve(filePath, `../../lib`))
+  }
+}
+
+function initTest(filePath, name) {
+  const exists = fse.existsSync(filePath)
+
+  if (!exists) {
+    fse.ensureFileSync(filePath)
+    fse.writeFileSync(
+      filePath,
+      `'use strict'
+
+import {} from '../src'
+
+test('adds 1 + 2 to equal 3', () => {
+//   expect(func()).toBe(res)
+})`
+    )
+    fse.removeSync(path.resolve(filePath, `../${name}.test.js`))
+  }
+}
+
+function initIndexJs(filePath, name, args) {
+  const indexExists = fse.existsSync(filePath)
 
   if (args.force || !indexExists) {
     fse.writeFileSync(
-      path,
+      filePath,
       `'use strict'
 
 module.exports = require('./dist/${name}.cjs.js')
@@ -76,8 +88,8 @@ module.exports = require('./dist/${name}.cjs.js')
   }
 }
 
-function initPkg(path, longName, shortName, args) {
-  const pkgExists = fse.existsSync(path)
+function initPkg(filePath, longName, shortName, args) {
+  const pkgExists = fse.existsSync(filePath)
 
   let oldPkg = {}
 
@@ -91,7 +103,7 @@ function initPkg(path, longName, shortName, args) {
   let pkgCache = {}
 
   if (pkgExists) {
-    oldPkg = require(path)
+    oldPkg = require(filePath)
 
     if (oldPkg.private) {
       return
@@ -130,7 +142,7 @@ function initPkg(path, longName, shortName, args) {
     }
 
     fse.writeFileSync(
-      path,
+      filePath,
       JSON.stringify(Object.assign(pkgJson, pkgCache), null, 2)
     )
   }
