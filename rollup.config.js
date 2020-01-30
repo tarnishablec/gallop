@@ -3,7 +3,7 @@ import path from 'path'
 import typescript from '@wessberg/rollup-plugin-ts'
 import json from '@rollup/plugin-json'
 import alias from '@rollup/plugin-alias'
-import { scope } from './scripts/setting'
+const { scope } = require('./scripts/setting')
 
 if (!process.env.TARGET) {
   throw new Error('TARGET package must be specified via --environment flag.')

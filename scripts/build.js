@@ -1,12 +1,13 @@
 const path = require('path')
 const fse = require('fs-extra')
-const { targets } = require('./utils')
 const execa = require('execa')
 const chalk = require('chalk')
 
 const args = require('minimist')(process.argv.slice(2))
 const formats = args.formats || args.f
 const devOnly = args.devOnly || args.d
+
+const targets = require('./utils').targets(args._)
 
 buildAll(targets)
 
