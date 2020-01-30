@@ -1,6 +1,6 @@
 {
   "name": "@oruo/compiler-core",
-  "version": "0.0.4-alpha.3",
+  "version": "0.0.4-alpha.4",
   "description": "compiler-core",
   "main": "index.js",
   "module": "dist/compiler-core.esm.js",
