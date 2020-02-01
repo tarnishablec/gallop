@@ -58,8 +58,10 @@ function initTest(filePath, name) {
 
 import {} from '../src'
 
-test('adds 1 + 2 to equal 3', () => {
-//   expect(func()).toBe(res)
+describe('test', () => {
+  test('adds 1 + 2 to equal 3', () => {
+    //   expect(func()).toBe(res)
+  })
 })`
     )
     fse.removeSync(path.resolve(filePath, `../${name}.test.js`))
