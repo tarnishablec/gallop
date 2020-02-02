@@ -12,7 +12,11 @@ const filesNeedReplace = [
 main()
 
 async function main() {
-  await run(`git reset --hard`)
+  await run(
+    `git remote add template https://github.com/tarnishablec/typescript-monorepo-template.git`
+  )
+  await run(`git fetch template`)
+  await run(`git merge template/master --allow-unrelated-histories`)
 
   filesNeedReplace.forEach(f => {
     let filePath = path.resolve(__dirname, '..', f)
