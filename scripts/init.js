@@ -12,7 +12,7 @@ const filesNeedReplace = [
 main()
 
 async function main() {
-  await run(`git reset hard`)
+  await run(`git reset --hard`)
 
   filesNeedReplace.forEach(f => {
     let filePath = path.resolve(__dirname, '..', f)
