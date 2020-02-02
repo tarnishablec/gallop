@@ -1,5 +1,5 @@
 {
-  "name": "~oruo~",
+  "name": "jumoku",
   "private": true,
   "workspaces": [
     "packages/*"

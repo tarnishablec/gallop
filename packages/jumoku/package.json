@@ -1,20 +1,20 @@
 {
-  "name": "@oruo/oruo",
+  "name": "@jumoku/jumoku",
   "version": "0.0.0",
-  "description": "oruo",
+  "description": "jumoku",
   "main": "index.js",
-  "module": "dist/oruo.esm.js",
+  "module": "dist/jumoku.esm.js",
   "files": [
     "index.js",
     "dist"
   ],
-  "types": "dist/oruo.d.ts",
+  "types": "dist/jumoku.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tarnishablec/oruo.git"
+    "url": "https://github.com/tarnishablec/jumoku.git"
   },
   "keywords": [
-    "oruo"
+    "jumoku"
   ],
   "directories": {
     "src": "src",
