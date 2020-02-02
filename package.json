@@ -1,0 +1,57 @@
+{
+  "name": "~oruo~",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "init": "node ./scripts/init.js",
+    "boot": "node ./scripts/bootstrap.js",
+    "new": "node ./scripts/new.js",
+    "build": "node ./scripts/build.js",
+    "upgrade": "node ./scripts/upgrade.js",
+    "publish": "node ./scripts/publish.js",
+    "test": "jest"
+  },
+  "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.ts?(x)": [
+      "prettier --parser=typescript --write",
+      "git add"
+    ]
+  },
+  "eslintIgnore": [
+    "packages/*/dist/*"
+  ],
+  "devDependencies": {
+    "@microsoft/api-extractor": "^7.7.8",
+    "@rollup/plugin-alias": "^3.0.0",
+    "@rollup/plugin-json": "^4.0.1",
+    "@types/jest": "^25.1.1",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "@wessberg/rollup-plugin-ts": "^1.2.15",
+    "chalk": "^3.0.0",
+    "eslint": "^6.8.0",
+    "execa": "^4.0.0",
+    "fs-extra": "^8.1.0",
+    "husky": "^4.2.1",
+    "jest": "^25.1.0",
+    "lerna": "^3.20.2",
+    "lint-staged": "^10.0.6",
+    "minimist": "^1.2.0",
+    "prettier": "^1.19.1",
+    "rollup": "^1.30.1",
+    "ts-jest": "^25.1.0",
+    "typescript": "^3.7.5"
+  }
+}
