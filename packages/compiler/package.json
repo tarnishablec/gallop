@@ -6,7 +6,8 @@
   "module": "dist/compiler.esm.js",
   "files": [
     "index.js",
-    "dist"
+    "dist",
+    "src"
   ],
   "types": "dist/compiler.d.ts",
   "repository": {

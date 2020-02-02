@@ -20,6 +20,7 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "no-unused-vars": "warn",
-    "no-empty": "off"
+    "no-empty": "off",
+    "no-debugger": "off"
   }
 }

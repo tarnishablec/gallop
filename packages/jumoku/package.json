@@ -6,7 +6,8 @@
   "module": "dist/jumoku.esm.js",
   "files": [
     "index.js",
-    "dist"
+    "dist",
+    "src"
   ],
   "types": "dist/jumoku.d.ts",
   "repository": {
