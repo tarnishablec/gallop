@@ -21,4 +21,8 @@ async function main() {
       .replace(/~oruo~/g, args.name)
     fse.writeFileSync(filePath, res)
   })
+
+  fse.removeSync(path.resolve(__dirname, '../packages/oruo'))
+  const name = require('../package.json').name
+  await run(`yarn run new --name ${name}`)
 }
