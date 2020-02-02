@@ -16,7 +16,9 @@ async function main() {
 
   filesNeedReplace.forEach(f => {
     let filePath = path.resolve(__dirname, '..', f)
-    const res = fse.readFileSync(filePath, 'utf-8').replace(`~oruo~`, args.name)
+    const res = fse
+      .readFileSync(filePath, 'utf-8')
+      .replace(/~oruo~/g, args.name)
     fse.writeFileSync(filePath, res)
   })
 }
