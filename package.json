@@ -1,15 +1,16 @@
 {
-  "name": "oruo",
+  "name": "~oruo~",
   "private": true,
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
+    "init": "node ./scripts/init.js",
     "boot": "node ./scripts/bootstrap.js",
+    "new": "node ./scripts/new.js",
     "build": "node ./scripts/build.js",
     "upgrade": "node ./scripts/upgrade.js",
     "publish": "node ./scripts/publish.js",
-    "new": "node ./scripts/new.js",
     "test": "jest"
   },
   "license": "MIT",
