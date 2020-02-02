@@ -1,0 +1,30 @@
+{
+  "name": "@jumoku/compiler",
+  "version": "0.0.0",
+  "description": "compiler",
+  "main": "index.js",
+  "module": "dist/compiler.esm.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "types": "dist/compiler.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarnishablec/jumoku.git"
+  },
+  "keywords": [
+    "jumoku"
+  ],
+  "directories": {
+    "src": "src",
+    "test": "__tests__"
+  },
+  "sideEffects": false,
+  "author": "tarnishablec <tarnishablec@outlook.com>",
+  "license": "MIT",
+  "homepage": "",
+  "publishConfig": {
+    "access": "public"
+  }
+}
