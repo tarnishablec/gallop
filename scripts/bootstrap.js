@@ -122,7 +122,7 @@ function initPkg(filePath, longName, shortName, args) {
       name: longName,
       version: baseVersion,
       description: shortName,
-      main: 'index.js',
+      main: 'src/index.ts',
       module: `dist/${shortName}.esm.js`,
       files: [`index.js`, 'dist'],
       types: `dist/${shortName}.d.ts`,

@@ -2,7 +2,7 @@
   "name": "@jumoku/jumoku",
   "version": "0.0.0",
   "description": "jumoku",
-  "main": "index.js",
+  "main": "src/index.ts",
   "module": "dist/jumoku.esm.js",
   "files": [
     "index.js",
