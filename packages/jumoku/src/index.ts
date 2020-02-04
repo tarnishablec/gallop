@@ -1,1 +1,1 @@
-export const hello = 'world'
+export { html } from './parse'

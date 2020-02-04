@@ -1,15 +1,15 @@
 {
-  "name": "@jumoku/compiler",
+  "name": "@jumoku/reactivity",
   "version": "0.0.0",
-  "description": "compiler",
+  "description": "reactivity",
   "main": "src/index.ts",
-  "module": "dist/compiler.esm.js",
+  "module": "dist/reactivity.esm.js",
   "files": [
     "index.js",
     "dist",
     "src"
   ],
-  "types": "dist/compiler.d.ts",
+  "types": "dist/reactivity.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/tarnishablec/jumoku.git"
@@ -27,5 +27,8 @@
   "homepage": "",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "rxjs": "^6.5.4"
   }
 }
