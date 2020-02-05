@@ -3,27 +3,45 @@ import { html } from '@jumoku/jumoku'
 const age = 30
 const person = {
   age,
-  height: '30cm',
   children: ['allen', 'bob', 'cyla']
 }
 const logg = () => console.log('hello template')
 
-const template = html`
-  <div age="${age}" sex="${{ male: true }}" @click="${logg}">
-    <span>a test template ${person} </span>
+const props = {
+  age,
+  person,
+  logg
+}
+
+type Props = {
+  age: number
+  person: {
+    age: number
+    children: any[]
+  }
+  logg: Function
+}
+
+const component = ({ age, person, logg }: Props) => html`
+  <div age="${age}" @click="${logg}">
+    <span>a test template ${person}</span>
+    <slot></slot>
     <pre>
 $$    $$            $$  $$          
-$$ |  $$ |          $$ |$$ |          
-$$ |  $$ | $$$$$$   $$ |$$ | $$$$$$   
-$$$$$$$$ |$$  __$$  $$ |$$ |$$  __$$  
-$$  __$$ |$$$$$$$$ |$$ |$$ |$$ /  $$ 
-$$ |  $$ |$$   ____|$$ |$$ |$$ |  $$ 
-$$ |  $$ | $$$$$$$  $$ |$$ | $$$$$$ 
-    </pre
+$$    $$            $$  $$            
+$$    $$   $$$$$$   $$  $$   $$$$$$   
+$$$$$$$$  $$    $$  $$  $$  $$    $$  
+$$    $$  $$$$$$$$  $$  $$  $$    $$ 
+$$    $$  $$        $$  $$  $$    $$ 
+$$    $$   $$$$$$$  $$  $$   $$$$$$</pre
     >
     ${person.children.map(
       c => html`
-        <div>${c}</div>
+        <div>
+          ${html`
+            <div>${c}</div>
+          `}
+        </div>
       `
     )}
     ${person.children.map(
@@ -34,6 +52,4 @@ $$ |  $$ | $$$$$$$  $$ |$$ | $$$$$$
     <div>ooooooooooooooooooo</div>
   </div>
 `
-
-debugger
-document.querySelector('#app')?.appendChild(template.cloneNode(true))
+document.querySelector('#app')?.appendChild(component({ ...props }).fragment)
