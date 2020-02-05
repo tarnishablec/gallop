@@ -5,12 +5,12 @@ import {
   isFragmentClipOrArray
 } from './is'
 
-type FragFlagMap = Map<number, FragmentClip | FragmentClip[]>
+type ClipFlagMap = Map<number, FragmentClip | FragmentClip[]>
 type FuncFlagMap = Map<number, Function>
 type NormalFlagMap = Map<number, any>
 
 type FlagMaps = {
-  fragFlagMap: FragFlagMap
+  clipFlagMap: ClipFlagMap
   funcFlagMap: FuncFlagMap
   normalFlagMap: NormalFlagMap
 }
@@ -23,7 +23,7 @@ export function html(
 ): FragmentClip {
   // console.log(vals)
   const flagMaps: FlagMaps = {
-    fragFlagMap: new Map(),
+    clipFlagMap: new Map(),
     funcFlagMap: new Map(),
     normalFlagMap: new Map()
   }
@@ -34,8 +34,8 @@ export function html(
   let fragment = document.createRange().createContextualFragment(raw)
   drawFlags(fragment, flagMaps)
   fragment.normalize()
-  console.log(flagMaps)
-  return { fragment, ...flagMaps }
+  console.log({ fragment, ...flagMaps })
+  return { fragment: cleanNode(fragment), ...flagMaps }
 }
 
 function placeFlag(val: unknown, index: number, flagMaps: FlagMaps): string {
@@ -43,7 +43,7 @@ function placeFlag(val: unknown, index: number, flagMaps: FlagMaps): string {
     return ''
   }
   if (isFragmentClipOrArray(val)) {
-    flagMaps.fragFlagMap.set(index, val)
+    flagMaps.clipFlagMap.set(index, val)
     return `<span id="doc-flag-${index}"></span>`
   }
   if (isFunction(val)) {
@@ -56,7 +56,7 @@ function placeFlag(val: unknown, index: number, flagMaps: FlagMaps): string {
 }
 
 function drawFlags(fragment: DocumentFragment, flagMaps: FlagMaps) {
-  flagMaps.fragFlagMap.forEach((val, key) => {
+  flagMaps.clipFlagMap.forEach((val, key) => {
     const flag = fragment.querySelector(`span#doc-flag-${key}`)!
     if (isFragmentClip(val)) {
       flag.parentNode?.replaceChild(val.fragment, flag)
@@ -69,15 +69,15 @@ function drawFlags(fragment: DocumentFragment, flagMaps: FlagMaps) {
   })
 }
 
-// function cleanNode<T extends Node>(node: T): T {
-//   let res = node.cloneNode() as T
+function cleanNode<T extends Node>(node: T): T {
+  let res = node.cloneNode() as T
 
-//   node.childNodes.forEach(c => {
-//     if (c.nodeType !== Node.TEXT_NODE) {
-//       res.appendChild(cleanNode(c))
-//     } else if (!(c as Text).wholeText.match(/^\s*$/)) {
-//       res.appendChild(new Text((c as Text).wholeText.trim()))
-//     }
-//   })
-//   return res
-// }
+  node.childNodes.forEach(c => {
+    if (c.nodeType !== Node.TEXT_NODE) {
+      res.appendChild(cleanNode(c))
+    } else if (!(c as Text).wholeText.match(/^\s*$/)) {
+      res.appendChild(new Text((c as Text).wholeText.trim()))
+    }
+  })
+  return res
+}

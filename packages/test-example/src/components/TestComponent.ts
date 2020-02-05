@@ -11,7 +11,14 @@ type Props = {
 export const TestComponent = ({ person, logg }: Props) => html`
   <div age="${person.age}" @click="${logg}">
     <span>a test template ${person}</span>
-    <slot></slot>
+    <slot name="qwe">
+      <p>this is default</p>
+    </slot>
+    <div>
+      <slot name="asd">
+        <p>this is default</p>
+      </slot>
+    </div>
     <pre>
 $$    $$            $$  $$          
 $$    $$            $$  $$            

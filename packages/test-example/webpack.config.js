@@ -107,7 +107,6 @@ module.exports = {
     }),
     new DefinePlugin({
       'process.env': {
-        NODE_ENV: '"production"',
         BASE_URL: '""'
       }
     }),
