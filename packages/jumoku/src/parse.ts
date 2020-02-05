@@ -1,20 +1,31 @@
-import { isFragmentClip, isFragmentClipArray, isFunction } from './is'
+import {
+  isFragmentClip,
+  isFragmentClipArray,
+  isFunction,
+  isFragmentClipOrArray
+} from './is'
 
 type FragFlagMap = Map<number, FragmentClip | FragmentClip[]>
 type FuncFlagMap = Map<number, Function>
+type NormalFlagMap = Map<number, any>
 
 type FlagMaps = {
   fragFlagMap: FragFlagMap
   funcFlagMap: FuncFlagMap
+  normalFlagMap: NormalFlagMap
 }
 
 export type FragmentClip = { fragment: DocumentFragment } & FlagMaps
 
-export function html(strs: TemplateStringsArray, ...vals: any[]): FragmentClip {
-  console.log(vals)
+export function html(
+  strs: TemplateStringsArray,
+  ...vals: unknown[]
+): FragmentClip {
+  // console.log(vals)
   const flagMaps: FlagMaps = {
     fragFlagMap: new Map(),
-    funcFlagMap: new Map()
+    funcFlagMap: new Map(),
+    normalFlagMap: new Map()
   }
   const raw = strs.reduce((acc, cur, index) => {
     return `${acc}${cur}${placeFlag(vals[index], index, flagMaps)}`
@@ -23,22 +34,25 @@ export function html(strs: TemplateStringsArray, ...vals: any[]): FragmentClip {
   let fragment = document.createRange().createContextualFragment(raw)
   drawFlags(fragment, flagMaps)
   fragment.normalize()
+  console.log(flagMaps)
   return { fragment, ...flagMaps }
 }
 
-function placeFlag(val: any, index: number, flagMaps: FlagMaps): string {
+function placeFlag(val: unknown, index: number, flagMaps: FlagMaps): string {
   if (!val) {
     return ''
   }
-  if (isFragmentClip(val) || isFragmentClipArray(val)) {
+  if (isFragmentClipOrArray(val)) {
     flagMaps.fragFlagMap.set(index, val)
     return `<span id="doc-flag-${index}"></span>`
   }
   if (isFunction(val)) {
     flagMaps.funcFlagMap.set(index, val)
     return val.name
+  } else {
+    flagMaps.normalFlagMap.set(index, val)
+    return val as any
   }
-  return val
 }
 
 function drawFlags(fragment: DocumentFragment, flagMaps: FlagMaps) {
