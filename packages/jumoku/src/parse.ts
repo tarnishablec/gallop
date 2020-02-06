@@ -1,4 +1,5 @@
 import {
+  isText,
   isFragmentClip,
   isFragmentClipArray,
   isFunction,
@@ -38,7 +39,7 @@ export function html(
   return { fragment: cleanNode(fragment), ...flagMaps }
 }
 
-function placeFlag(val: unknown, index: number, flagMaps: FlagMaps): string {
+function placeFlag(val: unknown, index: number, flagMaps: FlagMaps) {
   if (!val) {
     return ''
   }
@@ -48,7 +49,8 @@ function placeFlag(val: unknown, index: number, flagMaps: FlagMaps): string {
   }
   if (isFunction(val)) {
     flagMaps.funcFlagMap.set(index, val)
-    return val.name
+    console.log(val.toString())
+    return val
   } else {
     flagMaps.normalFlagMap.set(index, val)
     return val as any
@@ -73,10 +75,10 @@ function cleanNode<T extends Node>(node: T): T {
   let res = node.cloneNode() as T
 
   node.childNodes.forEach(c => {
-    if (c.nodeType !== Node.TEXT_NODE) {
+    if (!isText(c)) {
       res.appendChild(cleanNode(c))
-    } else if (!(c as Text).wholeText.match(/^\s*$/)) {
-      res.appendChild(new Text((c as Text).wholeText.trim()))
+    } else if (!/^\s*$/.test(c.wholeText)) {
+      res.appendChild(new Text(c.wholeText.trim()))
     }
   })
   return res

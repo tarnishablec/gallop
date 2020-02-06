@@ -1,20 +1,26 @@
 import { FragmentClip } from './parse'
 
-function isDocumentFragment(target: unknown): target is DocumentFragment {
+export function isText(target: unknown): target is Text {
+  return target instanceof Text
+}
+
+export function isDocumentFragment(
+  target: unknown
+): target is DocumentFragment {
   return target instanceof DocumentFragment
 }
 
-function isFunction(target: unknown): target is Function {
+export function isFunction(target: unknown): target is Function {
   return target instanceof Function
 }
 
-function isFragmentClip(target: any): target is FragmentClip {
-  return isDocumentFragment(target.fragment)
+export function isFragmentClip(target: unknown): target is FragmentClip {
+  return isDocumentFragment((target as any).fragment)
 }
 
-function isArrayOf<T>(
-  targets: any,
-  isT: (target: any) => target is T
+export function isArrayOf<T>(
+  targets: unknown,
+  isT: (target: unknown) => target is T
 ): targets is T[] {
   if (Array.isArray(targets)) {
     targets.forEach(t => {
@@ -27,22 +33,17 @@ function isArrayOf<T>(
   return false
 }
 
-const isDocumentFragmentArray = (targets: unknown) =>
+export const isDocumentFragmentArray = (targets: unknown) =>
   isArrayOf<DocumentFragment>(targets, isDocumentFragment)
-const isFragmentClipArray = (targets: unknown) =>
+export const isFragmentClipArray = (targets: unknown) =>
   isArrayOf<FragmentClip>(targets, isFragmentClip)
 
-function isFragmentClipOrArray(
+export function isFragmentClipOrArray(
   target: unknown
 ): target is FragmentClip | FragmentClip[] {
   return isFragmentClip(target) || isFragmentClipArray(target)
 }
 
-export {
-  isDocumentFragment,
-  isFunction,
-  isFragmentClip,
-  isDocumentFragmentArray,
-  isFragmentClipArray,
-  isFragmentClipOrArray
+export function isObject(target: unknown): target is object {
+  return target instanceof Object
 }

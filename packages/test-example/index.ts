@@ -1,5 +1,5 @@
 import { TestComponent } from './src/components/TestComponent'
-import { html } from '@jumoku/jumoku'
+import { html, Render, createContext } from '@jumoku/jumoku'
 
 const props = {
   person: {
@@ -9,16 +9,20 @@ const props = {
   logg: () => alert('hello template')
 }
 
+let p = createContext(props)
+
+console.log(p)
+
+setInterval(() => {
+  p.person.age = p.person.age + 1
+}, 1000)
+
 const temp = html`
   <div>
     haaaaaaaaaaaaa
-    <button @click="${() => alert(1)}">+1</button>
-    ${TestComponent({ ...props })}
+    <button onclick="${() => alert(1)}">+1</button>
+    ${TestComponent({ ...props, color: 'blue' })}
   </div>
-`
-
-const aaa = (a: number) => html`
-  <span>jjjjj${a}jjjjj</span>
 `
 
 class TestShadow extends HTMLElement {
@@ -32,10 +36,6 @@ class TestShadow extends HTMLElement {
 
 customElements.define('test-shadow', TestShadow)
 
-document.querySelector('#app')?.appendChild(
-  html`
-    <test-shadow>
-      ${aaa(1)}
-    </test-shadow>
-  `.fragment
-)
+Render(html`
+  <test-shadow> </test-shadow>
+`)
