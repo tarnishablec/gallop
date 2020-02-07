@@ -3,19 +3,22 @@ import { isObject } from './is'
 
 export type Context = object
 
-export function createProxy<T extends object>(raw: T): T {
+const createProxy = <T extends object>(raw: T, sideEffect: Function): T => {
   return new Proxy(raw, {
     set: (target, prop, val, reciver) => {
-      console.log('!!!!state changed!!!!')
+      sideEffect()
       return Reflect.set(target, prop, val, reciver)
     },
     get: (target, prop, reciver) => {
       const res = Reflect.get(target, prop, reciver)
-      return isObject(res) ? createProxy(res) : res
+      return isObject(res) ? createProxy(res, sideEffect) : res
     }
   })
 }
 
-function updateComponent(component: Component) {}
+export const createContext = <T extends object>(state: T) =>
+  createProxy(state, updateComponent)
 
-export const createContext = createProxy
+function updateComponent(component: Component) {
+  console.log('!!!!state changed!!!!')
+}

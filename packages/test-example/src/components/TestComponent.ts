@@ -15,35 +15,20 @@ export const TestComponent: Component = ({ person, logg, color }: Prop) => html`
     <slot :style="color: ${color}">
       <p>this is default</p>
     </slot>
-    <div>
-      <slot name="asd">
-        <p>this is not default</p>
-      </slot>
-    </div>
-    <pre>
-$$    $$            $$  $$          
-$$    $$            $$  $$            
-$$    $$   $$$$$$   $$  $$   $$$$$$   
-$$$$$$$$  $$    $$  $$  $$  $$    $$  
-$$    $$  $$$$$$$$  $$  $$  $$    $$ 
-$$    $$  $$        $$  $$  $$    $$ 
-$$    $$   $$$$$$$  $$  $$   $$$$$$</pre
-    >
-    ${person.children.map(
-      c => html`
-        <div>
-          1
-          ${html`
-            <div>${c}</div>
-          `}
-        </div>
-      `
-    )}
     ${person.children.map(
       c => html`
         <div>${c}</div>
       `
     )}
-    <div>ooooooooooooooooooo</div>
+    ${person.children.map(
+      () => html`
+        <div>static</div>
+      `
+    )}
+    ${TestTwo(2)}
   </div>
+`
+
+const TestTwo = (a: number) => html`
+  <div>${a}</div>
 `

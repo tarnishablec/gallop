@@ -1,4 +1,4 @@
-import { FragmentClip } from './parse'
+import { FragmentClip, FlagMaps } from './parse'
 import { Context } from './context'
 
 export type Component = (
@@ -6,6 +6,19 @@ export type Component = (
   options?: Options,
   context?: Context
 ) => FragmentClip
+
+export type ComponentRenderer = (
+  clip: FragmentClip,
+  flagMaps: FlagMaps
+) => FragmentClip
+
+// export const componentRenderer: ComponentRenderer = (
+//   clip,
+//   flagMaps
+// ): FragmentClip => {
+
+//   return
+// }
 
 type Options = {
   slot?: string

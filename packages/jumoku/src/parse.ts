@@ -1,6 +1,7 @@
 import {
   isText,
   isFragmentClip,
+  isStaticClip,
   isFragmentClipArray,
   isFunction,
   isFragmentClipOrArray
@@ -10,13 +11,17 @@ type ClipFlagMap = Map<number, FragmentClip | FragmentClip[]>
 type FuncFlagMap = Map<number, Function>
 type NormalFlagMap = Map<number, any>
 
-type FlagMaps = {
+export type FlagMaps = {
   clipFlagMap: ClipFlagMap
   funcFlagMap: FuncFlagMap
   normalFlagMap: NormalFlagMap
 }
 
-export type FragmentClip = { fragment: DocumentFragment } & FlagMaps
+export type FragmentClip = {
+  fragment: DocumentFragment
+  _isClip: boolean
+  _isStatic: boolean
+} & FlagMaps
 
 export function html(
   strs: TemplateStringsArray,
@@ -35,8 +40,15 @@ export function html(
   let fragment = document.createRange().createContextualFragment(raw)
   drawFlags(fragment, flagMaps)
   fragment.normalize()
-  console.log({ fragment, ...flagMaps })
-  return { fragment: cleanNode(fragment), ...flagMaps }
+  let _isStatic = !vals
+  const res = {
+    fragment: cleanNode(fragment).cloneNode(true) as DocumentFragment,
+    _isClip: true,
+    _isStatic,
+    ...flagMaps
+  }
+  console.log(res)
+  return res
 }
 
 function placeFlag(val: unknown, index: number, flagMaps: FlagMaps) {
@@ -49,7 +61,7 @@ function placeFlag(val: unknown, index: number, flagMaps: FlagMaps) {
   }
   if (isFunction(val)) {
     flagMaps.funcFlagMap.set(index, val)
-    console.log(val.toString())
+    // console.log(val.toString())
     return val
   } else {
     flagMaps.normalFlagMap.set(index, val)

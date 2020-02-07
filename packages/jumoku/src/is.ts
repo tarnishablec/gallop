@@ -15,7 +15,11 @@ export function isFunction(target: unknown): target is Function {
 }
 
 export function isFragmentClip(target: unknown): target is FragmentClip {
-  return isDocumentFragment((target as any).fragment)
+  return (target as any)._isClip
+}
+
+export function isStaticClip(target: unknown): target is FragmentClip {
+  return isFragmentClip(target) && target._isStatic
 }
 
 export function isArrayOf<T>(
@@ -23,20 +27,27 @@ export function isArrayOf<T>(
   isT: (target: unknown) => target is T
 ): targets is T[] {
   if (Array.isArray(targets)) {
-    targets.forEach(t => {
-      if (!isT(t)) {
-        return false
-      }
-    })
-    return true
+    return isT(targets[0])
+    // targets.forEach(t => {
+    //   if (!isT(t)) {
+    //     return false
+    //   }
+    // })
+    // return true
   }
   return false
 }
 
-export const isDocumentFragmentArray = (targets: unknown) =>
-  isArrayOf<DocumentFragment>(targets, isDocumentFragment)
-export const isFragmentClipArray = (targets: unknown) =>
-  isArrayOf<FragmentClip>(targets, isFragmentClip)
+export const isDocumentFragmentArray = (
+  target: unknown
+): target is DocumentFragment[] =>
+  isArrayOf<DocumentFragment>(target, isDocumentFragment)
+export const isFragmentClipArray = (
+  target: unknown
+): target is FragmentClip[] => isArrayOf<FragmentClip>(target, isFragmentClip)
+
+export const isStaticClipArray = (target: unknown) =>
+  isArrayOf(target, isStaticClip)
 
 export function isFragmentClipOrArray(
   target: unknown

@@ -11,11 +11,10 @@ const props = {
 
 let p = createContext(props)
 
-console.log(p)
-
-setInterval(() => {
-  p.person.age = p.person.age + 1
-}, 1000)
+// setInterval(() => {
+//   p.person.age = p.person.age + 1
+//   console.log(p.person.age)
+// }, 1000)
 
 const temp = html`
   <div>
