@@ -19,7 +19,7 @@ let p = createContext(props)
 const temp = html`
   <div>
     haaaaaaaaaaaaa
-    <button onclick="${() => alert(1)}">+1</button>
+    <button @click="${() => alert(1)}">+1</button>
     ${TestComponent({ ...props, color: 'blue' })}
   </div>
 `
@@ -36,5 +36,7 @@ class TestShadow extends HTMLElement {
 customElements.define('test-shadow', TestShadow)
 
 Render(html`
-  <test-shadow> </test-shadow>
+  <test-shadow>
+    tragedy
+  </test-shadow>
 `)

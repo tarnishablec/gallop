@@ -11,7 +11,7 @@ type Prop = {
 
 export const TestComponent: Component = ({ person, logg, color }: Prop) => html`
   <div @click="${logg}">
-    <span>a test template ${person.age}</span>
+    <span>a test template ${person.age + 1}</span>
     <slot :style="color: ${color}">
       <p>this is default</p>
     </slot>

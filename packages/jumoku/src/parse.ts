@@ -4,17 +4,20 @@ import {
   isStaticClip,
   isFragmentClipArray,
   isFunction,
-  isFragmentClipOrArray
+  isFragmentClipOrArray,
+  isNodeAttribute
 } from './is'
 
 type ClipFlagMap = Map<number, FragmentClip | FragmentClip[]>
 type FuncFlagMap = Map<number, Function>
-type NormalFlagMap = Map<number, any>
+type TextFlagMap = Map<number, string>
+type AttrFlagMap = Map<number, string>
 
 export type FlagMaps = {
   clipFlagMap: ClipFlagMap
   funcFlagMap: FuncFlagMap
-  normalFlagMap: NormalFlagMap
+  textFlagMap: TextFlagMap
+  attrFlagMap: AttrFlagMap
 }
 
 export type FragmentClip = {
@@ -31,47 +34,59 @@ export function html(
   const flagMaps: FlagMaps = {
     clipFlagMap: new Map(),
     funcFlagMap: new Map(),
-    normalFlagMap: new Map()
+    textFlagMap: new Map(),
+    attrFlagMap: new Map()
   }
   const raw = strs.reduce((acc, cur, index) => {
-    return `${acc}${cur}${placeFlag(vals[index], index, flagMaps)}`
+    return `${acc}${cur}${placeFlag(vals[index], index, flagMaps, cur)}`
   }, '')
 
   let fragment = document.createRange().createContextualFragment(raw)
   drawFlags(fragment, flagMaps)
   fragment.normalize()
-  let _isStatic = !vals
+  let _isStatic = vals.length === 0
   const res = {
     fragment: cleanNode(fragment).cloneNode(true) as DocumentFragment,
     _isClip: true,
     _isStatic,
     ...flagMaps
   }
-  console.log(res)
+  console.log({
+    fragment: cleanNode(fragment).cloneNode(true) as DocumentFragment,
+    _isClip: true,
+    _isStatic,
+    ...flagMaps
+  })
   return res
 }
 
-function placeFlag(val: unknown, index: number, flagMaps: FlagMaps) {
+function placeFlag(
+  val: unknown,
+  index: number,
+  flagMaps: FlagMaps,
+  front?: string
+) {
   if (!val) {
     return ''
   }
   if (isFragmentClipOrArray(val)) {
     flagMaps.clipFlagMap.set(index, val)
-    return `<span id="doc-flag-${index}"></span>`
+    return `<span id="clip-flag-${index}"></span>`
   }
   if (isFunction(val)) {
     flagMaps.funcFlagMap.set(index, val)
     // console.log(val.toString())
     return val
-  } else {
-    flagMaps.normalFlagMap.set(index, val)
+  }
+  if (isNodeAttribute(val, front!)) {
+    flagMaps.textFlagMap.set(index, val.toString())
     return val as any
   }
 }
 
 function drawFlags(fragment: DocumentFragment, flagMaps: FlagMaps) {
   flagMaps.clipFlagMap.forEach((val, key) => {
-    const flag = fragment.querySelector(`span#doc-flag-${key}`)!
+    const flag = fragment.querySelector(`span#clip-flag-${key}`)!
     if (isFragmentClip(val)) {
       flag.parentNode?.replaceChild(val.fragment, flag)
     } else if (isFragmentClipArray(val)) {

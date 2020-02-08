@@ -1,4 +1,3 @@
-import { Component } from './component'
 import { isObject } from './is'
 
 export type Context = object
@@ -19,6 +18,6 @@ const createProxy = <T extends object>(raw: T, sideEffect: Function): T => {
 export const createContext = <T extends object>(state: T) =>
   createProxy(state, updateComponent)
 
-function updateComponent(component: Component) {
+function updateComponent() {
   console.log('!!!!state changed!!!!')
 }

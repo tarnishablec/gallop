@@ -14,6 +14,13 @@ export function isFunction(target: unknown): target is Function {
   return target instanceof Function
 }
 
+export function isNodeAttribute(
+  _target: unknown,
+  front: string
+): _target is string {
+  return /:(([A-Za-z]|-)+)="/.test(front)
+}
+
 export function isFragmentClip(target: unknown): target is FragmentClip {
   return (target as any)._isClip
 }
