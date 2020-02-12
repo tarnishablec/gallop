@@ -9,7 +9,13 @@ type Prop = {
   [key: string]: any
 }
 
-export const TestComponent: Component = ({ person, logg, color }: Prop) => html`
+export const vue: any = {}
+
+export const TestComponent: Component = (vue.test = ({
+  person,
+  logg,
+  color
+}: Prop) => html`
   <div @click="${logg}">
     <span>a test template ${person.age + 1}</span>
     <slot :style="color: ${color}">
@@ -27,7 +33,7 @@ export const TestComponent: Component = ({ person, logg, color }: Prop) => html`
     )}
     ${TestTwo(2)}
   </div>
-`
+`)
 
 const TestTwo = (a: number) => html`
   <div>${a}</div>

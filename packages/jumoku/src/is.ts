@@ -62,6 +62,6 @@ export function isFragmentClipOrArray(
   return isFragmentClip(target) || isFragmentClipArray(target)
 }
 
-export function isObject(target: unknown): target is object {
+export function isObject<T extends object>(target: T): target is T {
   return target instanceof Object
 }

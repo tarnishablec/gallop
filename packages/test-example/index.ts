@@ -1,4 +1,4 @@
-import { TestComponent } from './src/components/TestComponent'
+import { TestComponent, vue } from './src/components/TestComponent'
 import { html, Render, createContext } from '@jumoku/jumoku'
 
 const props = {
@@ -40,3 +40,5 @@ Render(html`
     tragedy
   </test-shadow>
 `)
+
+console.log(vue)

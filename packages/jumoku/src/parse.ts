@@ -8,6 +8,8 @@ import {
   isNodeAttribute
 } from './is'
 
+const range = document.createRange()
+
 type ClipFlagMap = Map<number, FragmentClip | FragmentClip[]>
 type FuncFlagMap = Map<number, Function>
 type TextFlagMap = Map<number, string>
@@ -30,7 +32,6 @@ export function html(
   strs: TemplateStringsArray,
   ...vals: unknown[]
 ): FragmentClip {
-  // console.log(vals)
   const flagMaps: FlagMaps = {
     clipFlagMap: new Map(),
     funcFlagMap: new Map(),
@@ -41,7 +42,8 @@ export function html(
     return `${acc}${cur}${placeFlag(vals[index], index, flagMaps, cur)}`
   }, '')
 
-  let fragment = document.createRange().createContextualFragment(raw)
+  console.log(document.createRange())
+  let fragment = range.createContextualFragment(raw)
   drawFlags(fragment, flagMaps)
   fragment.normalize()
   let _isStatic = vals.length === 0
@@ -64,7 +66,7 @@ function placeFlag(
   val: unknown,
   index: number,
   flagMaps: FlagMaps,
-  front?: string
+  front: string
 ) {
   if (!val) {
     return ''
@@ -75,12 +77,12 @@ function placeFlag(
   }
   if (isFunction(val)) {
     flagMaps.funcFlagMap.set(index, val)
-    // console.log(val.toString())
     return val
   }
   if (isNodeAttribute(val, front!)) {
-    flagMaps.textFlagMap.set(index, val.toString())
-    return val as any
+    console.log(front.match(/(?<=:(.+))="/)![1])
+    flagMaps.attrFlagMap.set(index, val.toString())
+    return val
   }
 }
 

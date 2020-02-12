@@ -1,5 +1,10 @@
 import { FragmentClip, FlagMaps } from './parse'
 import { Context } from './context'
+import { createProxy } from './utils'
+
+export const componentPool: {
+  [key: string]: Component
+} = createProxy({}, (target, prop, val) => createShadow(prop as string, val))
 
 export type Component = (
   props: any,
@@ -7,24 +12,11 @@ export type Component = (
   context?: Context
 ) => FragmentClip
 
-export type ComponentRenderer = (
-  clip: FragmentClip,
-  flagMaps: FlagMaps
-) => FragmentClip
-
-// export const componentRenderer: ComponentRenderer = (
-//   clip,
-//   flagMaps
-// ): FragmentClip => {
-
-//   return
-// }
-
 type Options = {
   slot?: string
 }
 
-export function createShadow(name: string, clip: FragmentClip) {
+export const createShadow = (name: string, clip: FragmentClip) => {
   customElements.define(
     name,
     class Shadow extends HTMLElement {
