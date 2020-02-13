@@ -1,6 +1,7 @@
 import { FragmentClip, FlagMaps } from './parse'
 import { Context } from './context'
 import { createProxy } from './utils'
+import { isFragmentClip } from './is'
 
 export const componentPool: {
   [key: string]: Component
@@ -16,15 +17,26 @@ type Options = {
   slot?: string
 }
 
-export const createShadow = (name: string, clip: FragmentClip) => {
+export function createShadow(name: string, clip: FragmentClip): void
+export function createShadow(
+  name: string,
+  clipBuilder: () => FragmentClip
+): void
+export function createShadow(
+  name: string,
+  clipOrBuilder: FragmentClip | (() => FragmentClip)
+) {
   customElements.define(
     name,
     class Shadow extends HTMLElement {
       constructor() {
         super()
-        this.attachShadow({ mode: 'open' }).appendChild(
-          clip.fragment.cloneNode(true)
-        )
+        if (isFragmentClip(clipOrBuilder)) {
+          this.attachShadow({ mode: 'open' }).appendChild(
+            clipOrBuilder.fragment.cloneNode(true)
+          )
+        } else {
+        }
       }
     }
   )

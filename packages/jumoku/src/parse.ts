@@ -8,12 +8,10 @@ import {
   isNodeAttribute
 } from './is'
 
-const range = document.createRange()
-
 type ClipFlagMap = Map<number, FragmentClip | FragmentClip[]>
 type FuncFlagMap = Map<number, Function>
 type TextFlagMap = Map<number, string>
-type AttrFlagMap = Map<number, string>
+type AttrFlagMap = Map<number, { name: string; value: any }>
 
 export type FlagMaps = {
   clipFlagMap: ClipFlagMap
@@ -27,6 +25,8 @@ export type FragmentClip = {
   _isClip: boolean
   _isStatic: boolean
 } & FlagMaps
+
+const range = document.createRange()
 
 export function html(
   strs: TemplateStringsArray,
@@ -42,7 +42,6 @@ export function html(
     return `${acc}${cur}${placeFlag(vals[index], index, flagMaps, cur)}`
   }, '')
 
-  console.log(document.createRange())
   let fragment = range.createContextualFragment(raw)
   drawFlags(fragment, flagMaps)
   fragment.normalize()
@@ -80,8 +79,8 @@ function placeFlag(
     return val
   }
   if (isNodeAttribute(val, front!)) {
-    console.log(front.match(/(?<=:(.+))="/)![1])
-    flagMaps.attrFlagMap.set(index, val.toString())
+    const name = front.match(/(?<=:(.+))="/)![1]
+    flagMaps.attrFlagMap.set(index, { name: name, value: val })
     return val
   }
 }

@@ -1,67 +1,45 @@
 import { FragmentClip } from './parse'
 
-export function isText(target: unknown): target is Text {
-  return target instanceof Text
-}
+export const isText = (val: unknown): val is Text => val instanceof Text
 
-export function isDocumentFragment(
-  target: unknown
-): target is DocumentFragment {
-  return target instanceof DocumentFragment
-}
+export const isDocumentFragment = (val: unknown): val is DocumentFragment =>
+  val instanceof DocumentFragment
 
-export function isFunction(target: unknown): target is Function {
-  return target instanceof Function
-}
+export const isFunction = (val: unknown): val is Function =>
+  val instanceof Function
 
-export function isNodeAttribute(
-  _target: unknown,
-  front: string
-): _target is string {
-  return /:(([A-Za-z]|-)+)="/.test(front)
-}
+export const isNodeAttribute = (_val: unknown, front: string): _val is string =>
+  /:(([A-Za-z]|-)+)="/.test(front)
 
-export function isFragmentClip(target: unknown): target is FragmentClip {
-  return (target as any)._isClip
-}
+export const isFragmentClip = (val: unknown): val is FragmentClip =>
+  (val as any)._isClip
 
-export function isStaticClip(target: unknown): target is FragmentClip {
-  return isFragmentClip(target) && target._isStatic
-}
+export const isStaticClip = (val: unknown): val is FragmentClip =>
+  isFragmentClip(val) && val._isStatic
 
 export function isArrayOf<T>(
-  targets: unknown,
-  isT: (target: unknown) => target is T
-): targets is T[] {
-  if (Array.isArray(targets)) {
-    return isT(targets[0])
-    // targets.forEach(t => {
-    //   if (!isT(t)) {
-    //     return false
-    //   }
-    // })
-    // return true
+  vals: unknown,
+  isT: (val: unknown) => val is T
+): vals is T[] {
+  if (Array.isArray(vals)) {
+    return isT(vals[0])
   }
   return false
 }
 
 export const isDocumentFragmentArray = (
-  target: unknown
-): target is DocumentFragment[] =>
-  isArrayOf<DocumentFragment>(target, isDocumentFragment)
-export const isFragmentClipArray = (
-  target: unknown
-): target is FragmentClip[] => isArrayOf<FragmentClip>(target, isFragmentClip)
+  val: unknown
+): val is DocumentFragment[] =>
+  isArrayOf<DocumentFragment>(val, isDocumentFragment)
+export const isFragmentClipArray = (val: unknown): val is FragmentClip[] =>
+  isArrayOf<FragmentClip>(val, isFragmentClip)
 
-export const isStaticClipArray = (target: unknown) =>
-  isArrayOf(target, isStaticClip)
+export const isStaticClipArray = (val: unknown) => isArrayOf(val, isStaticClip)
 
-export function isFragmentClipOrArray(
-  target: unknown
-): target is FragmentClip | FragmentClip[] {
-  return isFragmentClip(target) || isFragmentClipArray(target)
-}
+export const isFragmentClipOrArray = (
+  val: unknown
+): val is FragmentClip | FragmentClip[] =>
+  isFragmentClip(val) || isFragmentClipArray(val)
 
-export function isObject<T extends object>(target: T): target is T {
-  return target instanceof Object
-}
+export const isObject = <T extends object>(val: T): val is T =>
+  val instanceof Object

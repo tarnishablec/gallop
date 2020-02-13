@@ -1,5 +1,5 @@
 import { TestComponent, vue } from './src/components/TestComponent'
-import { html, Render, createContext } from '@jumoku/jumoku'
+import { html, Render, createContext, createShadow } from '@jumoku/jumoku'
 
 const props = {
   person: {
@@ -11,34 +11,23 @@ const props = {
 
 let p = createContext(props)
 
-// setInterval(() => {
-//   p.person.age = p.person.age + 1
-//   console.log(p.person.age)
-// }, 1000)
+createShadow(
+  'test-shadow',
+  html`
+    <div>
+      haaaaaaaaaaaaa
+      <button @click="${() => alert(1)}">+1</button>
+      ${TestComponent({ ...props, color: 'blue' })}
+    </div>
+  `
+)
 
-const temp = html`
-  <div>
-    haaaaaaaaaaaaa
-    <button @click="${() => alert(1)}">+1</button>
-    ${TestComponent({ ...props, color: 'blue' })}
-  </div>
-`
-
-class TestShadow extends HTMLElement {
-  constructor() {
-    super()
-    this.attachShadow({ mode: 'open' }).appendChild(
-      temp.fragment.cloneNode(true)
-    )
-  }
-}
-
-customElements.define('test-shadow', TestShadow)
+createShadow('test-comp', TestComponent({ ...p, color: 'blue' }))
 
 Render(html`
   <test-shadow>
     tragedy
+    <test-comp></test-comp>
   </test-shadow>
 `)
-
-console.log(vue)
+console.log(createContext(vue))

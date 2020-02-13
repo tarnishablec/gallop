@@ -7,6 +7,8 @@ const { DefinePlugin } = require('webpack')
 
 const ProdMode = process.env.NODE_ENV === 'production'
 
+console.log(__dirname)
+
 module.exports = {
   mode: 'development',
   entry: {

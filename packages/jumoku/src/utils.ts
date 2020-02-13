@@ -1,4 +1,4 @@
-import { isObject } from './is'
+import { isObject, isFunction } from './is'
 
 export const createProxy = <T extends object>(
   raw: T,
@@ -17,7 +17,9 @@ export const createProxy = <T extends object>(
     },
     get: (target, prop, reciver) => {
       const res = Reflect.get(target, prop, reciver)
-      return isObject(res) ? createProxy(res, sideEffect) : res
+      return isObject(res) && !isFunction(res)
+        ? createProxy(res, sideEffect)
+        : res
     }
   })
 }

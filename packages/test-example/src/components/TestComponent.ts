@@ -1,4 +1,4 @@
-import { html, Component } from '@jumoku/jumoku'
+import { html } from '@jumoku/jumoku'
 
 type Prop = {
   person: {
@@ -11,19 +11,16 @@ type Prop = {
 
 export const vue: any = {}
 
-export const TestComponent: Component = (vue.test = ({
-  person,
-  logg,
-  color
-}: Prop) => html`
+export const TestComponent = ({ person, logg, color }: Prop) => html`
   <div @click="${logg}">
     <span>a test template ${person.age + 1}</span>
-    <slot :style="color: ${color}">
+    <slot :style="color: ${color}" :color="${color}">
       <p>this is default</p>
     </slot>
     ${person.children.map(
       c => html`
         <div>${c}</div>
+        1
       `
     )}
     ${person.children.map(
@@ -33,7 +30,7 @@ export const TestComponent: Component = (vue.test = ({
     )}
     ${TestTwo(2)}
   </div>
-`)
+`
 
 const TestTwo = (a: number) => html`
   <div>${a}</div>
