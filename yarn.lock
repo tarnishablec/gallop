@@ -6898,6 +6898,18 @@ listr@^0.14.3:
     p-map "^2.0.0"
     rxjs "^6.3.3"
 
+lit-element@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.npm.taobao.org/lit-element/download/lit-element-2.2.1.tgz#79c94d8cfdc2d73b245656e37991bd1e4811d96f"
+  integrity sha1-eclNjP3C1zskVlbjeZG9HkgR2W8=
+  dependencies:
+    lit-html "^1.0.0"
+
+lit-html@^1.0.0:
+  version "1.1.2"
+  resolved "https://registry.npm.taobao.org/lit-html/download/lit-html-1.1.2.tgz#2e3560a7075210243649c888ad738eaf0daa8374"
+  integrity sha1-LjVgpwdSECQ2SciIrXOOrw2qg3Q=
+
 load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.npm.taobao.org/load-json-file/download/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"

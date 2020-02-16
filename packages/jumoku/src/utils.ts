@@ -1,4 +1,13 @@
-import { isText } from './is'
+import { isText, isDocumentFragment } from './is'
+
+export type Primitive =
+  | null
+  | undefined
+  | boolean
+  | number
+  | string
+  | Symbol
+  | bigint
 
 export const getBindAttrName = (front: string) =>
   front.match(/(?<=:(.+))="/)![1]
@@ -15,3 +24,21 @@ export const cleanNode = <T extends Node>(node: T): T => {
   })
   return res
 }
+
+const div = document.createElement('div')
+
+export const getFragmentContent = (
+  val: DocumentFragment | DocumentFragment[]
+): string => {
+  let nest = div.cloneNode() as HTMLDivElement
+  if (isDocumentFragment(val)) {
+    nest.appendChild(val.cloneNode(true))
+  } else {
+    val.forEach(v => {
+      nest.appendChild(v.cloneNode(true))
+    })
+  }
+  return nest.innerHTML
+}
+
+export const marker = () => `{{${String(Math.random()).slice(2)}-marker}}`

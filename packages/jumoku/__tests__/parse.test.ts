@@ -21,5 +21,13 @@ describe('parse', () => {
         `.textContent
       ).toBe(frag.textContent)
     })
+    test('val template', () => {
+      const temp = html`
+        <div>
+          Hello
+          <slot name="ok"></slot>
+        </div>
+      `
+    })
   })
 })

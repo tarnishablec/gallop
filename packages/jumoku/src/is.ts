@@ -1,20 +1,24 @@
-export const isText = (val: unknown): val is Text =>
-  val instanceof Text
+import { Primitive } from './utils'
 
-export const isEmptyArray = (val: Array<unknown>): boolean =>
-  val.length === 0
+export const isPrimitive = (value: unknown): value is Primitive => {
+  return (
+    value === null ||
+    !(typeof value === 'object' || typeof value === 'function')
+  )
+}
 
-export const isDocumentFragment = (
-  val: unknown
-): val is DocumentFragment => val instanceof DocumentFragment
+export const isText = (val: unknown): val is Text => val instanceof Text
+
+export const isEmptyArray = (val: Array<unknown>): boolean => val.length === 0
+
+export const isDocumentFragment = (val: unknown): val is DocumentFragment =>
+  val instanceof DocumentFragment
 
 export const isFunction = (val: unknown): val is Function =>
   val instanceof Function
 
-export const isNodeAttribute = (
-  _val: unknown,
-  front: string
-): _val is string => /:(([A-Za-z]|-)+)="/.test(front)
+export const isNodeAttribute = (_val: unknown, front: string): _val is string =>
+  /:(([A-Za-z]|-)+)="/.test(front)
 
 export function isArrayOf<T>(
   vals: unknown,
