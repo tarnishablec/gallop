@@ -1,13 +1,13 @@
 import { Primitive } from './utils'
 
-export const isPrimitive = (value: unknown): value is Primitive => {
-  return (
-    value === null ||
-    !(typeof value === 'object' || typeof value === 'function')
-  )
-}
+export const isPrimitive = (value: unknown): value is Primitive =>
+  value === null || !(typeof value === 'object' || typeof value === 'function')
 
-export const isText = (val: unknown): val is Text => val instanceof Text
+export const isText = (val: Node): val is Text =>
+  val.nodeType === Node.TEXT_NODE
+
+export const isElement = (val: Node): val is Element =>
+  val.nodeType === Node.ELEMENT_NODE
 
 export const isEmptyArray = (val: Array<unknown>): boolean => val.length === 0
 

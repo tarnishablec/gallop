@@ -9,9 +9,6 @@ export type Primitive =
   | Symbol
   | bigint
 
-export const getBindAttrName = (front: string) =>
-  front.match(/(?<=:(.+))="/)![1]
-
 export const cleanNode = <T extends Node>(node: T): T => {
   let res = node.cloneNode() as T
 
@@ -25,12 +22,10 @@ export const cleanNode = <T extends Node>(node: T): T => {
   return res
 }
 
-const div = document.createElement('div')
-
 export const getFragmentContent = (
   val: DocumentFragment | DocumentFragment[]
 ): string => {
-  let nest = div.cloneNode() as HTMLDivElement
+  let nest = document.createElement('div') as HTMLDivElement
   if (isDocumentFragment(val)) {
     nest.appendChild(val.cloneNode(true))
   } else {
@@ -41,4 +36,4 @@ export const getFragmentContent = (
   return nest.innerHTML
 }
 
-export const marker = () => `{{${String(Math.random()).slice(2)}-marker}}`
+export const generateMarker = () => `{{${String(Math.random()).slice(2)}}}`

@@ -2,7 +2,7 @@ import { isObject, isFunction } from './is'
 
 // const collectionTypes = new Set<Function>([Set, Map, WeakMap, WeakSet])
 
-export const createProxy = <T extends object | Array<any>>(
+export const createProxy = <T extends object>(
   raw: T,
   setSideEffect?: (
     target: T,

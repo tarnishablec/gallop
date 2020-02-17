@@ -1,3 +1,5 @@
+import { BaseComponent } from './baseComponent'
+
 function component(
   name: string,
   initialState: any,
@@ -5,7 +7,7 @@ function component(
 ) {
   customElements.define(
     name,
-    class Shadow extends HTMLElement {
+    class extends BaseComponent {
       constructor() {
         super()
         this.attachShadow({ mode: 'open' }).appendChild(builder(initialState))
