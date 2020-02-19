@@ -1,7 +1,9 @@
 import {
   isDocumentFragment,
   isDocumentFragmentArray,
-  isNodeAttribute
+  isNodeAttribute,
+  isFragmentClip,
+  isFragmentClipArray
 } from './is'
 import { boundAttrRegex } from './regexps'
 import { cleanNode, generateMarker, getFragmentContent } from './utils'
@@ -37,12 +39,16 @@ export class FragmentClip {
     )
     return template
   }
+
+  useEffect(a: any) {
+    return this
+  }
 }
 
 function placeMarker(cur: string, val: unknown) {
   let front = cur
   let res = val
-  if (isDocumentFragment(val) || isDocumentFragmentArray(val)) {
+  if (isFragmentClip(val) || isFragmentClipArray(val)) {
     res = markerComment
   }
   if (isNodeAttribute(val, front)) {

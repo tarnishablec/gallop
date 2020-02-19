@@ -1,16 +1,30 @@
 import { BaseComponent } from './baseComponent'
+import { FragmentClip } from './fragmentClip'
+import { html } from './parse'
 
-function component(
+type Options = {
+  props: any
+  hooks?: any
+}
+
+type Component = {}
+
+export function component(
   name: string,
-  initialState: any,
-  builder: (...args: unknown[]) => DocumentFragment
+  builder: (options: Options) => FragmentClip
 ) {
   customElements.define(
     name,
     class extends BaseComponent {
+      created(): void {
+        throw new Error('Method not implemented.')
+      }
+      mounted(): void {
+        throw new Error('Method not implemented.')
+      }
       constructor() {
         super()
-        this.attachShadow({ mode: 'open' }).appendChild(builder(initialState))
+        this.attachShadow({ mode: 'open' })
       }
     }
   )

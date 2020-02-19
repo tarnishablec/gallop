@@ -3,7 +3,13 @@ export abstract class BaseComponent extends HTMLElement {
     super()
   }
 
-  init() {}
+  static get observedAttributes() {
+    return ['c', 'l']
+  }
+
+  abstract created(): void
+
+  abstract mounted(): void
 
   update() {}
 }

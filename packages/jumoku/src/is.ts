@@ -1,4 +1,5 @@
 import { Primitive } from './utils'
+import { FragmentClip } from './fragmentClip'
 
 export const isPrimitive = (value: unknown): value is Primitive =>
   value === null || !(typeof value === 'object' || typeof value === 'function')
@@ -11,15 +12,6 @@ export const isElement = (val: Node): val is Element =>
 
 export const isEmptyArray = (val: Array<unknown>): boolean => val.length === 0
 
-export const isDocumentFragment = (val: unknown): val is DocumentFragment =>
-  val instanceof DocumentFragment
-
-export const isFunction = (val: unknown): val is Function =>
-  val instanceof Function
-
-export const isNodeAttribute = (_val: unknown, front: string): _val is string =>
-  /:(([A-Za-z]|-)+)="/.test(front)
-
 export function isArrayOf<T>(
   vals: unknown,
   isT: (val: unknown) => val is T
@@ -30,10 +22,24 @@ export function isArrayOf<T>(
   return false
 }
 
+export const isDocumentFragment = (val: unknown): val is DocumentFragment =>
+  val instanceof DocumentFragment
+
 export const isDocumentFragmentArray = (
   val: unknown
-): val is DocumentFragment[] =>
-  isArrayOf<DocumentFragment>(val, isDocumentFragment)
+): val is DocumentFragment[] => isArrayOf(val, isDocumentFragment)
+
+export const isFunction = (val: unknown): val is Function =>
+  val instanceof Function
+
+export const isNodeAttribute = (val: unknown, front: string): val is string =>
+  /:(([A-Za-z]|-)+)="/.test(front)
+
+export const isFragmentClip = (val: unknown): val is FragmentClip =>
+  val instanceof FragmentClip
+
+export const isFragmentClipArray = (val: unknown): val is FragmentClip[] =>
+  isArrayOf(val, isFragmentClip)
 
 export const isObject = <T extends object>(val: T): val is T =>
   val instanceof Object

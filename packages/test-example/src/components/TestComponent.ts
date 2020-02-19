@@ -10,25 +10,27 @@ export const TestTemplate = ({
   children: string[]
   color: string
   click: Function
-}) => html`
-  <div>
-    <h1>
-      <span :color="${color}">Hello Test Template</span>
-    </h1>
-    <button @click="${click}">click</button>
-    <span>${name}</span>
-    ${children.map(
-      c => html`
-        <li>${c}</li>
-      `
-    )}
-    ${children.map(
-      (c, index) => html`
-        ${TestChild(index)}
-      `
-    )}
-  </div>
-`
+}) => {
+  return html`
+    <div>
+      <h1>
+        <span :color="${color}">Hello Test Template</span>
+      </h1>
+      <button @click="${click}">click</button>
+      <span>${name}</span>
+      ${children.map(
+        c => html`
+          <li>${c}</li>
+        `
+      )}
+      ${children.map(
+        (c, index) => html`
+          ${TestChild(index)}
+        `
+      )}
+    </div>
+  `
+}
 
 const TestChild = (a: number) => html`
   <div>
