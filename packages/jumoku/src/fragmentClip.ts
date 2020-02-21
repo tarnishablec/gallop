@@ -6,7 +6,7 @@ import {
   isEmptyArray
 } from './is'
 import { boundAttrRegex } from './regexps'
-import { cleanNode, getFragmentContent, addJoiner } from './utils'
+import { cleanNode, getFragmentContent, replaceSpaceToNbsp } from './utils'
 import { boundAttrSuffix } from './attrs'
 import { Marker } from './marker'
 
@@ -53,7 +53,7 @@ function placeMarker(cur: string, val: unknown) {
     res = Marker.clipArray
   }
   if (val && isPrimitive(val) && !isNodeAttribute(val, front)) {
-    front = addJoiner(cur)
+    front = replaceSpaceToNbsp(cur)
     res = Marker.text
   }
   if (isNodeAttribute(val, front)) {

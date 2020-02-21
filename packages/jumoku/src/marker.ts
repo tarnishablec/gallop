@@ -1,6 +1,6 @@
 export const generateMarker = () => `{{${String(Math.random()).slice(2)}}}`
 
-export const marker = generateMarker()
+const marker = generateMarker()
 
 export const Marker = {
   clip: `<!--$clip$${marker}-->`,
