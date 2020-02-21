@@ -1,16 +1,14 @@
 import {
-  isDocumentFragment,
-  isDocumentFragmentArray,
   isNodeAttribute,
   isFragmentClip,
-  isFragmentClipArray
+  isFragmentClipArray,
+  isPrimitive,
+  isEmptyArray
 } from './is'
 import { boundAttrRegex } from './regexps'
-import { cleanNode, generateMarker, getFragmentContent } from './utils'
+import { cleanNode, getFragmentContent, addJoiner } from './utils'
 import { boundAttrSuffix } from './attrs'
-
-export const marker = generateMarker()
-const markerComment = `<!--${marker}-->`
+import { Marker } from './marker'
 
 const range = document.createRange()
 
@@ -48,12 +46,19 @@ export class FragmentClip {
 function placeMarker(cur: string, val: unknown) {
   let front = cur
   let res = val
-  if (isFragmentClip(val) || isFragmentClipArray(val)) {
-    res = markerComment
+  if (isFragmentClip(val)) {
+    res = Marker.clip
+  }
+  if (isFragmentClipArray(val) || isEmptyArray(val)) {
+    res = Marker.clipArray
+  }
+  if (val && isPrimitive(val) && !isNodeAttribute(val, front)) {
+    front = addJoiner(cur)
+    res = Marker.text
   }
   if (isNodeAttribute(val, front)) {
     front = cur.replace(boundAttrRegex, `${boundAttrSuffix}="`)
-    res = marker
+    res = Marker.attr
   }
   return `${front}${res ?? ''}`
 }

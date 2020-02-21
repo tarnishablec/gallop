@@ -36,4 +36,4 @@ export const getFragmentContent = (
   return nest.innerHTML
 }
 
-export const generateMarker = () => `{{${String(Math.random()).slice(2)}}}`
+export const addJoiner = (str: string) => `&zwnj;${str}&zwnj;`

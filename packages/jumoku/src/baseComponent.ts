@@ -4,7 +4,7 @@ export abstract class BaseComponent extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['c', 'l']
+    return []
   }
 
   abstract created(): void

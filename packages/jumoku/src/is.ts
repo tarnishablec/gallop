@@ -10,7 +10,8 @@ export const isText = (val: Node): val is Text =>
 export const isElement = (val: Node): val is Element =>
   val.nodeType === Node.ELEMENT_NODE
 
-export const isEmptyArray = (val: Array<unknown>): boolean => val.length === 0
+export const isEmptyArray = (val: unknown): boolean =>
+  val instanceof Array && val.length === 0
 
 export function isArrayOf<T>(
   vals: unknown,
@@ -33,7 +34,8 @@ export const isFunction = (val: unknown): val is Function =>
   val instanceof Function
 
 export const isNodeAttribute = (val: unknown, front: string): val is string =>
-  /:(([A-Za-z]|-)+)="/.test(front)
+  /\s:(([A-Za-z]|-)+)="/.test(front) &&
+  front.lastIndexOf('<') > front.lastIndexOf('>')
 
 export const isFragmentClip = (val: unknown): val is FragmentClip =>
   val instanceof FragmentClip

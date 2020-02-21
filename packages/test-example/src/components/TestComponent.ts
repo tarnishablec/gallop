@@ -1,5 +1,11 @@
 import { html } from '@jumoku/jumoku'
 
+const TestChild = (a: number) => html`
+  <div>
+    this is test child ${a}
+  </div>
+`
+
 export const TestTemplate = ({
   name,
   children,
@@ -17,10 +23,11 @@ export const TestTemplate = ({
         <span :color="${color}">Hello Test Template</span>
       </h1>
       <button @click="${click}">click</button>
-      <span>${name}</span>
+      <span>this ${name} is &lt;span&gt; :name="" ${name} yes</span>
+      ${name}
       ${children.map(
         c => html`
-          <li>${c}</li>
+          <li>666${c}666</li>
         `
       )}
       ${children.map(
@@ -28,12 +35,8 @@ export const TestTemplate = ({
           ${TestChild(index)}
         `
       )}
+      <div>hello</div>
+      ${TestChild(5)}
     </div>
   `
 }
-
-const TestChild = (a: number) => html`
-  <div>
-    this is test child ${a}
-  </div>
-`
