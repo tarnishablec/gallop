@@ -1,6 +1,7 @@
 import { BaseComponent } from './baseComponent'
 import { FragmentClip } from './fragmentClip'
-import { html } from './parse'
+
+const componentPool = new WeakMap<TemplateStringsArray, FragmentClip>()
 
 type Options = {
   props: any

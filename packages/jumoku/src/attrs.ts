@@ -1,4 +1,4 @@
-import { boundAttrRegex } from './regexps'
+export const boundAttrRegex = /(?<=(\s+:\S+))="/
 
 export const getBoundAttrName = (front: string) =>
   front.match(boundAttrRegex)![1]

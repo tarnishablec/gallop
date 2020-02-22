@@ -3,11 +3,11 @@ import {
   isFragmentClip,
   isFragmentClipArray,
   isPrimitive,
-  isEmptyArray
+  isEmptyArray,
+  isFunction
 } from './is'
-import { boundAttrRegex } from './regexps'
-import { cleanNode, getFragmentContent, replaceSpaceToNbsp } from './utils'
-import { boundAttrSuffix } from './attrs'
+import { cleanNode, getFragmentContent, replaceSpaceToZwnj } from './utils'
+import { boundAttrSuffix, boundAttrRegex } from './attrs'
 import { Marker } from './marker'
 
 const range = document.createRange()
@@ -48,17 +48,16 @@ function placeMarker(cur: string, val: unknown) {
   let res = val
   if (isFragmentClip(val)) {
     res = Marker.clip
-  }
-  if (isFragmentClipArray(val) || isEmptyArray(val)) {
+  } else if (isFragmentClipArray(val) || isEmptyArray(val)) {
     res = Marker.clipArray
-  }
-  if (val && isPrimitive(val) && !isNodeAttribute(val, front)) {
-    front = replaceSpaceToNbsp(cur)
-    res = Marker.text
-  }
-  if (isNodeAttribute(val, front)) {
+  } else if (isNodeAttribute(val, front)) {
     front = cur.replace(boundAttrRegex, `${boundAttrSuffix}="`)
     res = Marker.attr
+  } else if (val && isPrimitive(val)) {
+    front = replaceSpaceToZwnj(cur)
+    res = Marker.text
+  } else if (isFunction(val)) {
+    res = Marker.func
   }
   return `${front}${res ?? ''}`
 }

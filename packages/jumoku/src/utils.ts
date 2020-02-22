@@ -38,19 +38,23 @@ export const getFragmentContent = (
 
 const getTailSpaceLength = (str: string) => {
   let res = str.match(/(\S){1}\s*$/)
-  console.log(res)
+  if (!res) {
+    return 0
+  }
   let len = res![0].length
   return res![1].startsWith('>') ? 0 : len - 1
 }
 
 const getHeadSpaceLength = (str: string) => {
   let res = str.match(/^\s*(\S){1}/)
-  console.log(res)
+  if (!res) {
+    return 0
+  }
   let len = res![0].length
   return res![1].endsWith('<') ? 0 : len - 1
 }
 
-export const replaceSpaceToNbsp = (str: string) => {
+export const replaceSpaceToZwnj = (str: string) => {
   let tlen = getTailSpaceLength(str)
   let hlen = getHeadSpaceLength(str)
   let tsps = ''

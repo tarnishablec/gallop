@@ -22,6 +22,10 @@ const walker = document.createTreeWalker(
 console.log(walker.currentNode)
 
 while (walker.nextNode()) {
+  let cur = walker.currentNode
+  if (cur instanceof Element) {
+    console.log(cur.attributes)
+  }
   console.log(walker.currentNode)
 }
 
