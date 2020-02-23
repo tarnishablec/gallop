@@ -24,6 +24,7 @@ export const TestTemplate = ({
       </span>
     </h1>
     <button @click="${click}">click</button>
+    <slot name="default"></slot>
     <span>
       this ${name} is &lt;span&gt; &quot;${name}&quot; :name="${color}" ${name}
       yes

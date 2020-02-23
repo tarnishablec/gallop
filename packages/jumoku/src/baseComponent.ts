@@ -1,8 +1,4 @@
 export abstract class BaseComponent extends HTMLElement {
-  constructor() {
-    super()
-  }
-
   static get observedAttributes() {
     return []
   }

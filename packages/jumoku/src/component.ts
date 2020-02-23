@@ -3,16 +3,13 @@ import { FragmentClip } from './fragmentClip'
 
 const componentPool = new WeakMap<TemplateStringsArray, FragmentClip>()
 
-type Options = {
-  props: any
-  hooks?: any
-}
+type Props = Record<string, any>
 
 type Component = {}
 
 export function component(
   name: string,
-  builder: (options: Options) => FragmentClip
+  builder: (porps: Props) => FragmentClip
 ) {
   customElements.define(
     name,
@@ -23,6 +20,19 @@ export function component(
       mounted(): void {
         throw new Error('Method not implemented.')
       }
+
+      static get observedAttributes() {
+        return []
+      }
+
+      connectedCallback() {}
+
+      disconnectedCallback() {}
+
+      adoptedCallback() {}
+
+      attributeChangedCallback() {}
+
       constructor() {
         super()
         this.attachShadow({ mode: 'open' })

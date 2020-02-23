@@ -1,5 +1,8 @@
 import { isText, isDocumentFragment } from './is'
 
+export const createTreeWalker = (node: Node) =>
+  document.createTreeWalker(node, 133, null, false)
+
 export type Primitive =
   | null
   | undefined

@@ -12,26 +12,18 @@ function nnn() {
   alert(1)
 }
 
-// debugger
-
-const walker = document.createTreeWalker(
-  TestTemplate(prop).getTemplate().content,
-  133
-)
+const walker = document.createTreeWalker(TestTemplate(prop).getDof(), 133)
 
 console.log(walker.currentNode)
 
 while (walker.nextNode()) {
   let cur = walker.currentNode
-  if (cur instanceof Element) {
-    console.log(cur.attributes)
-  }
-  console.log(walker.currentNode)
+  console.log(cur)
 }
 
-render(TestTemplate(prop).getTemplate().content)
+render(TestTemplate(prop).getDof())
 
-// import { html, LitElement, property, customElement } from 'lit-element'
+import { html, LitElement, property, customElement } from 'lit-element'
 
 // class TestTest extends LitElement {
 //   @property() message = 'hi'

@@ -14,7 +14,7 @@ const range = document.createRange()
 
 export class FragmentClip {
   readonly strs: TemplateStringsArray
-  readonly vals: ReadonlyArray<unknown>
+  readonly vals: unknown[]
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     this.strs = strs
@@ -30,15 +30,15 @@ export class FragmentClip {
       .trim()
   }
 
-  getTemplate() {
-    let template = document.createElement('template')
-    template.innerHTML = getFragmentContent(
-      cleanNode(range.createContextualFragment(this.getHtml()))
-    )
-    return template
+  getDof() {
+    // let template = document.createElement('template')
+    // template.innerHTML = getFragmentContent(
+    return cleanNode(range.createContextualFragment(this.getHtml()))
+    // )
+    // return template
   }
 
-  useEffect(a: any) {
+  use(a: any) {
     return this
   }
 }
