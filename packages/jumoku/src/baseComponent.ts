@@ -1,11 +1,5 @@
 export abstract class BaseComponent extends HTMLElement {
   static get observedAttributes() {
-    return []
+    return new Array<string>()
   }
-
-  abstract created(): void
-
-  abstract mounted(): void
-
-  update() {}
 }

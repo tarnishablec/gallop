@@ -6,22 +6,31 @@ import {
   isEmptyArray,
   isFunction
 } from './is'
-import { cleanNode, getFragmentContent, replaceSpaceToZwnj } from './utils'
+import { cleanNode, replaceSpaceToZwnj } from './utils'
 import { boundAttrSuffix, boundAttrRegex } from './attrs'
 import { Marker } from './marker'
+import { Context } from './context'
+import { Part } from './part'
+import { Hooks } from './hooks'
 
 const range = document.createRange()
 
 export class FragmentClip {
   readonly strs: TemplateStringsArray
   readonly vals: unknown[]
+  readonly rawHtml: string
+  parts: Part[]
+  dof: DocumentFragment
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     this.strs = strs
     this.vals = vals
+    this.rawHtml = this.getHtml()
+    this.dof = this.getDof()
+    this.parts = []
   }
 
-  getHtml() {
+  private getHtml() {
     return this.strs
       .reduce(
         (acc, cur, index) => `${acc}${placeMarker(cur, this.vals[index])}`,
@@ -31,16 +40,21 @@ export class FragmentClip {
   }
 
   getDof() {
-    // let template = document.createElement('template')
-    // template.innerHTML = getFragmentContent(
-    return cleanNode(range.createContextualFragment(this.getHtml()))
-    // )
-    // return template
+    return cleanNode(range.createContextualFragment(this.rawHtml))
   }
 
-  use(a: any) {
+  use<T extends object>(target: Context<T> | Hooks) {
+    if (target instanceof Context) {
+      target.watch(this)
+      console.log(target)
+    } else {
+    }
     return this
   }
+
+  mount() {}
+
+  update() {}
 }
 
 function placeMarker(cur: string, val: unknown) {

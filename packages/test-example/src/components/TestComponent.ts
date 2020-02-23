@@ -1,10 +1,12 @@
-import { html } from '@jumoku/jumoku'
+import { html, createContext } from '@jumoku/jumoku'
 
 const TestChild = (a: number) => html`
   <div>
     this is test child ${a}
   </div>
 `
+
+const [data, context] = createContext({ sex: 'boy' })
 
 export const TestTemplate = ({
   name,
@@ -16,31 +18,32 @@ export const TestTemplate = ({
   children: string[]
   color: string
   click: Function
-}) => html`
-  <div>
-    <h1>
-      <span :color="${color}" style="color:red" light dark="" :name="${name}">
-        Hello Test Template
+}) =>
+  html`
+    <div>
+      <h1>
+        <span :color="${color}" style="color:red" light dark="" :name="${name}">
+          Hello Test Template
+        </span>
+      </h1>
+      <button @click="${click}">click</button>
+      <slot name="default"></slot>
+      <span>
+        this ${name} is &lt;span&gt; &quot;${name}&quot; :name="${color}"
+        ${name} yes
       </span>
-    </h1>
-    <button @click="${click}">click</button>
-    <slot name="default"></slot>
-    <span>
-      this ${name} is &lt;span&gt; &quot;${name}&quot; :name="${color}" ${name}
-      yes
-    </span>
-    ${name} ${color}
-    ${children.map(
-      c => html`
-        <li>666${c}666</li>
-      `
-    )}
-    ${children.map(
-      (c, index) => html`
-        ${TestChild(index)}
-      `
-    )}
-    <div>hello</div>
-    ${TestChild(5)}
-  </div>
-`
+      ${name} ${color}
+      ${children.map(
+        c => html`
+          <li>666${c}666</li>
+        `
+      )}
+      ${children.map(
+        (c, index) => html`
+          ${TestChild(index)}
+        `
+      )}
+      <div>hello</div>
+      ${TestChild(5)}
+    </div>
+  `.use(context)

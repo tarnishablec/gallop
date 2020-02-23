@@ -1,5 +1,6 @@
 import { BaseComponent } from './baseComponent'
 import { FragmentClip } from './fragmentClip'
+import { getPropNamesFromFunction } from './utils'
 
 const componentPool = new WeakMap<TemplateStringsArray, FragmentClip>()
 
@@ -9,11 +10,17 @@ type Component = {}
 
 export function component(
   name: string,
-  builder: (porps: Props) => FragmentClip
+  builder: (props: Props) => FragmentClip
 ) {
+  const propNames = getPropNamesFromFunction(builder)
   customElements.define(
     name,
     class extends BaseComponent {
+      constructor() {
+        super()
+        this.attachShadow({ mode: 'open' })
+      }
+
       created(): void {
         throw new Error('Method not implemented.')
       }
@@ -22,7 +29,7 @@ export function component(
       }
 
       static get observedAttributes() {
-        return []
+        return ['a']
       }
 
       connectedCallback() {}
@@ -32,11 +39,6 @@ export function component(
       adoptedCallback() {}
 
       attributeChangedCallback() {}
-
-      constructor() {
-        super()
-        this.attachShadow({ mode: 'open' })
-      }
     }
   )
 }

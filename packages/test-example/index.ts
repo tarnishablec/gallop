@@ -12,18 +12,21 @@ function nnn() {
   alert(1)
 }
 
-const walker = document.createTreeWalker(TestTemplate(prop).getDof(), 133)
+const clip = TestTemplate(prop)
+// console.log(clip.rawHtml)
 
-console.log(walker.currentNode)
+const walker = document.createTreeWalker(clip.getDof(), 133)
+
+// console.log(walker.currentNode)
 
 while (walker.nextNode()) {
   let cur = walker.currentNode
-  console.log(cur)
+  // console.log(cur)
 }
 
-render(TestTemplate(prop).getDof())
+render(clip.getDof())
 
-import { html, LitElement, property, customElement } from 'lit-element'
+// import { html, LitElement, property, customElement } from 'lit-element'
 
 // class TestTest extends LitElement {
 //   @property() message = 'hi'
@@ -57,3 +60,6 @@ import { html, LitElement, property, customElement } from 'lit-element'
 //     .createContextualFragment(`<test-test>`)
 //     .cloneNode(true)
 // )
+
+const testA = ({ name }: { name: string }) => alert(name)
+console.log(testA)

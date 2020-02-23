@@ -4,6 +4,5 @@ export function html(
   strs: TemplateStringsArray,
   ...vals: unknown[]
 ): FragmentClip {
-  let clip = new FragmentClip(strs, vals)
-  return clip
+  return new FragmentClip(strs, vals)
 }

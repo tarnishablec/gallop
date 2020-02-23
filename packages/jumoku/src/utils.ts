@@ -1,4 +1,5 @@
 import { isText, isDocumentFragment } from './is'
+import { FragmentClip } from './fragmentClip'
 
 export const createTreeWalker = (node: Node) =>
   document.createTreeWalker(node, 133, null, false)
@@ -70,3 +71,10 @@ export const replaceSpaceToZwnj = (str: string) => {
   }
   return (hsps && '&zwnj;') + hsps + str.trim() + tsps + (tsps && '&zwnj;')
 }
+
+export const getPropNamesFromFunction = (func: Function) =>
+  func
+    .toString()
+    .match(/^\({(.*)}\)/)?.[1]
+    .split(',')
+    .map(a => a.trim()) ?? new Array<string>()
