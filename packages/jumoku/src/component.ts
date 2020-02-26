@@ -1,6 +1,6 @@
 import { BaseComponent } from './baseComponent'
 import { FragmentClip } from './fragmentClip'
-import { getPropNamesFromFunction } from './utils'
+import { getPropsFromFunction } from './utils'
 import { get } from 'lodash'
 
 const componentPool = new WeakMap<TemplateStringsArray, FragmentClip>()
@@ -13,7 +13,7 @@ export function component<P>(
   name: string,
   builder: (props: P) => FragmentClip
 ) {
-  const propNames = getPropNamesFromFunction(builder)
+  // const propNames = getPropsFromFunction(builder).props
   customElements.define(
     name,
     class extends BaseComponent {
@@ -25,7 +25,7 @@ export function component<P>(
       }
 
       static get observedAttributes() {
-        return propNames
+        return []
       }
 
       connectedCallback() {}

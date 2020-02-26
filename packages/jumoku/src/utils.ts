@@ -71,9 +71,64 @@ export const replaceSpaceToZwnj = (str: string) => {
   return (hsps && '&zwnj;') + hsps + str.trim() + tsps + (tsps && '&zwnj;')
 }
 
-export const getPropNamesFromFunction = (func: Function) =>
-  func
-    .toString()
-    .match(/^\({(.*)}\)/)?.[1]
-    .split(',')
-    .map(a => a.trim()) ?? new Array<string>()
+export function getPropsFromFunction<T>(func: (t: T) => unknown) {
+  let funcHead = digStringBlock(func.toString(), '(')
+  let propsStr = digStringBlock(funcHead, '{', false)
+  let rest = funcHead
+    .replace(new RegExp(`{\\s*${propsStr}\\s*}`), '')
+    .replace(/\s/g, '')
+  let def = digStringBlock(rest, '{')
+  return {
+    props: propsStr.split(','),
+    default: eval(`(${def})`) as T
+  }
+}
+
+export function digStringBlock(
+  rawStr: string,
+  head: '(' | '{' | '[' | '<' = '(',
+  edge: boolean = true
+) {
+  let end
+  switch (head) {
+    case '(':
+      end = ')'
+      break
+    case '{':
+      end = '}'
+      break
+    case '[':
+      end = ']'
+      break
+    case '<':
+      end = '>'
+      break
+    default:
+      break
+  }
+  let startIndex = rawStr.indexOf(head)
+  if (startIndex < 0) {
+    return ''
+  }
+  let endIndex
+  let arr = [...rawStr]
+  let stack = [0]
+  for (let i = startIndex + 1; i < arr.length; i++) {
+    if (arr[i] === head) {
+      stack.push(0)
+    } else if (arr[i] === end) {
+      stack.pop()
+    }
+
+    if (stack.length === 0) {
+      endIndex = i
+      return rawStr
+        .slice(
+          edge ? startIndex : startIndex + 1,
+          edge ? endIndex + 1 : endIndex
+        )
+        .trim()
+    }
+  }
+  return ''
+}

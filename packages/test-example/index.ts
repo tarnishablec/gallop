@@ -1,5 +1,9 @@
 import { TestTemplate } from './src/components/TestComponent'
-import { shallowRender, createProxy } from '@jumoku/jumoku'
+import {
+  shallowRender,
+  createProxy,
+  getPropsFromFunction
+} from '@jumoku/jumoku'
 
 const prop = {
   name: 'Chen Yihan',
@@ -62,14 +66,11 @@ shallowRender(clip)
 //     .cloneNode(true)
 // )
 
-const testA = ({ name }: { name: string }) => alert(name)
-console.log(testA)
-import { get } from 'lodash'
+const testA = (
+  { person }: { person: { name: string; age: Function } } = {
+    person: { name: 'yihan', age: () => alert(1) }
+  }
+) => alert(person)
+console.log(testA.toString())
 
-function aaa(prop: { name: string; person: { age: number } }) {
-  console.log(get(prop, 'prop.person.age'))
-}
-
-const a = {} as { name: string; person: { age: number } }
-
-aaa(a)
+console.log(getPropsFromFunction(testA))
