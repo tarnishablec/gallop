@@ -1,5 +1,12 @@
+import { FragmentClip } from './fragmentClip'
+
 const appRoot = document.querySelector('#app')!
 
-export const render = (val: DocumentFragment, location: Element = appRoot) => {
-  location.querySelector(`#app`)?.appendChild(val)
+export const shallowRender = (
+  val: FragmentClip,
+  location: Element = appRoot
+) => {
+  location.appendChild(val.shallowDof.cloneNode(true))
 }
+
+export const render = () => {}

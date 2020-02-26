@@ -1,5 +1,4 @@
 import { isText, isDocumentFragment } from './is'
-import { FragmentClip } from './fragmentClip'
 
 export const createTreeWalker = (node: Node) =>
   document.createTreeWalker(node, 133, null, false)

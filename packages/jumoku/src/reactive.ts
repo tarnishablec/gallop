@@ -18,12 +18,12 @@ export const createProxy = <T extends object>(
 ): T => {
   return new Proxy(raw, {
     set: (target, prop, val, receiver) => {
-      setSideEffect && setSideEffect!(target, prop, val, receiver)
+      setSideEffect?.(target, prop, val, receiver)
       console.log(`----proxy state changed-----${String(prop)}`)
       return Reflect.set(target, prop, val, receiver)
     },
     get: (target, prop, reciver) => {
-      getSideEffect && getSideEffect!(target, prop, reciver)
+      getSideEffect?.(target, prop, reciver)
       console.log(`----proxy state getted-----${String(prop)}`)
       const res = Reflect.get(target, prop, reciver)
       return isObject(res) && !isFunction(res)

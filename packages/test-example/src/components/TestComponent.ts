@@ -23,7 +23,7 @@ export const TestTemplate = ({
     <div>
       <h1>
         <span :color="${color}" style="color:red" light dark="" :name="${name}">
-          Hello Test Template
+          Hello Test Template ${data.sex}
         </span>
       </h1>
       <button @click="${click}">click</button>
@@ -46,4 +46,6 @@ export const TestTemplate = ({
       <div>hello</div>
       ${TestChild(5)}
     </div>
-  `.use(context)
+  `
+    .use(context)
+    .use(context)

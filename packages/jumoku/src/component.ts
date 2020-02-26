@@ -1,16 +1,17 @@
 import { BaseComponent } from './baseComponent'
 import { FragmentClip } from './fragmentClip'
 import { getPropNamesFromFunction } from './utils'
+import { get } from 'lodash'
 
 const componentPool = new WeakMap<TemplateStringsArray, FragmentClip>()
 
-type Props = Record<string, any>
+export type Props = Record<string, any>
 
 type Component = {}
 
-export function component(
+export function component<P>(
   name: string,
-  builder: (props: Props) => FragmentClip
+  builder: (props: P) => FragmentClip
 ) {
   const propNames = getPropNamesFromFunction(builder)
   customElements.define(
@@ -19,17 +20,12 @@ export function component(
       constructor() {
         super()
         this.attachShadow({ mode: 'open' })
-      }
-
-      created(): void {
-        throw new Error('Method not implemented.')
-      }
-      mounted(): void {
-        throw new Error('Method not implemented.')
+        let a = {} as P
+        builder(a)
       }
 
       static get observedAttributes() {
-        return ['a']
+        return propNames
       }
 
       connectedCallback() {}

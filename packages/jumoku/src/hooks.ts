@@ -1,1 +1,4 @@
-export type Hooks = {}
+export type Hooks = {
+  beforeMounted?: () => void
+  mounted?: () => void
+}
