@@ -1,9 +1,5 @@
 import { TestTemplate } from './src/components/TestComponent'
-import {
-  shallowRender,
-  createProxy,
-  getPropsFromFunction
-} from '@jumoku/jumoku'
+import { shallowRender, html, getPropsFromFunction } from '@jumoku/jumoku'
 
 const prop = {
   name: 'Chen Yihan',
@@ -67,10 +63,15 @@ shallowRender(clip)
 // )
 
 const testA = (
-  { person }: { person: { name: string; age: Function } } = {
-    person: { name: 'yihan', age: () => alert(1) }
+  { person, sex } = {
+    person: { name: 'yihan', age: () => alert(1) },
+    sex: true
   }
-) => alert(person)
+) => html`
+  <div>
+    <span>${person.name} ${sex}</span>
+  </div>
+`
 console.log(testA.toString())
 
 console.log(getPropsFromFunction(testA))

@@ -5,11 +5,12 @@ import { getPropsFromFunction } from '../src/utils'
 describe('utils', () => {
   test('getPropsFromFunction', () => {
     const testA = (
-      { person }: { person: { name: string; call: () => void } } = {
+      { person } = {
         person: { name: 'yihan', call: () => alert(1) }
       }
     ) => alert(person)
-    expect(getPropsFromFunction(testA).props).toEqual(['person'])
-    expect(getPropsFromFunction(testA).default?.person.name).toBe('yihan')
+    let { propsNames, defaultValue } = getPropsFromFunction(testA)
+    expect(propsNames).toEqual(['person'])
+    expect(defaultValue?.person.name).toBe('yihan')
   })
 })

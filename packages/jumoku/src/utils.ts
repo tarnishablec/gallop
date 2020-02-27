@@ -27,7 +27,7 @@ export const cleanNode = <T extends Node>(node: T): T => {
 
 export const getFragmentContent = (
   val: DocumentFragment | DocumentFragment[]
-): string => {
+) => {
   let nest = document.createElement('div') as HTMLDivElement
   if (isDocumentFragment(val)) {
     nest.appendChild(val.cloneNode(true))
@@ -72,43 +72,44 @@ export const replaceSpaceToZwnj = (str: string) => {
 }
 
 export function getPropsFromFunction<T>(func: (t: T) => unknown) {
-  let funcHead = digStringBlock(func.toString(), '(')
-  let propsStr = digStringBlock(funcHead, '{', false)
-  let rest = funcHead
-    .replace(new RegExp(`{\\s*${propsStr}\\s*}`), '')
-    .replace(/\s/g, '')
-  let def = digStringBlock(rest, '{')
+  let [funcHead] = digStringBlock(func.toString(), '(')
+  let [propsStr, defaultStr] = digStringBlock(funcHead, '{', false)
+  let [def] = digStringBlock(defaultStr, '{')
   return {
-    props: propsStr.split(','),
-    default: eval(`(${def})`) as T
+    propsNames: propsStr.split(',').map(p => p.trim()),
+    defaultValue: eval(`(${def})`) as T
   }
 }
 
 export function digStringBlock(
   rawStr: string,
-  head: '(' | '{' | '[' | '<' = '(',
+  head: '(' | '{' | '[' | '<' | '"' | "'" = '(',
   edge: boolean = true
-) {
-  let end
+): [string, string] {
+  let tail
   switch (head) {
     case '(':
-      end = ')'
+      tail = ')'
       break
     case '{':
-      end = '}'
+      tail = '}'
       break
     case '[':
-      end = ']'
+      tail = ']'
       break
     case '<':
-      end = '>'
+      tail = '>'
       break
-    default:
+    case '"':
+      tail = '"'
+      break
+    case "'":
+      tail = "'"
       break
   }
   let startIndex = rawStr.indexOf(head)
   if (startIndex < 0) {
-    return ''
+    return ['', rawStr]
   }
   let endIndex
   let arr = [...rawStr]
@@ -116,19 +117,22 @@ export function digStringBlock(
   for (let i = startIndex + 1; i < arr.length; i++) {
     if (arr[i] === head) {
       stack.push(0)
-    } else if (arr[i] === end) {
+    } else if (arr[i] === tail) {
       stack.pop()
     }
 
     if (stack.length === 0) {
       endIndex = i
-      return rawStr
-        .slice(
-          edge ? startIndex : startIndex + 1,
-          edge ? endIndex + 1 : endIndex
-        )
-        .trim()
+      return [
+        rawStr
+          .slice(
+            edge ? startIndex : startIndex + 1,
+            edge ? endIndex + 1 : endIndex
+          )
+          .trim(),
+        rawStr.slice(endIndex + 1)
+      ]
     }
   }
-  return ''
+  throw new Error('syntax error')
 }
