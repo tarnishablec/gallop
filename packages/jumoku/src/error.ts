@@ -1,3 +1,3 @@
 export const componentNamingError = new Error(
-  `name of component should be camel case & two or more words`
+  `name of component should be lower case & two or more words`
 )

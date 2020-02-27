@@ -1,5 +1,10 @@
 import { TestTemplate } from './src/components/TestComponent'
-import { shallowRender, html, getPropsFromFunction } from '@jumoku/jumoku'
+import {
+  shallowRender,
+  html,
+  getPropsFromFunction,
+  component
+} from '@jumoku/jumoku'
 
 const prop = {
   name: 'Chen Yihan',
@@ -75,3 +80,16 @@ const testA = (
 console.log(testA.toString())
 
 console.log(getPropsFromFunction(testA))
+
+component(
+  'test-t',
+  (
+    { name, age }: { name: string; age: number } = { name: 'yoho', age: 12 }
+  ) => html`
+    <div :age="${age}">${name}</div>
+  `
+)
+
+shallowRender(html`
+  <test-t age="1"></test-t>
+`)

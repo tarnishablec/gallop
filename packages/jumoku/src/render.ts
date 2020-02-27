@@ -3,10 +3,10 @@ import { FragmentClip } from './fragmentClip'
 const appRoot = document.querySelector('#app')!
 
 export const shallowRender = (
-  val: FragmentClip,
+  clip: FragmentClip,
   location: Element = appRoot
 ) => {
-  location.appendChild(val.shallowDof.cloneNode(true))
+  location.appendChild(clip.shallowDof)
 }
 
 export const render = () => {}
