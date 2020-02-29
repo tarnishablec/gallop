@@ -22,7 +22,14 @@ export const TestTemplate = ({
   html`
     <div>
       <h1>
-        <span :color="${color}" style="color:red" light dark="" :name="${name}">
+        <span
+          :color="${color}"
+          style="color:red"
+          width="${1}"
+          light
+          dark=""
+          .name="${name}"
+        >
           Hello Test Template ${data.sex}
         </span>
       </h1>

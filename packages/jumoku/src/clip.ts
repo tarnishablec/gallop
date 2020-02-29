@@ -4,44 +4,67 @@ import {
   isFragmentClipArray,
   isPrimitive,
   isEmptyArray,
-  isFunction
+  isFunction,
+  isElement,
+  isBindingProp,
+  isStaticProp
 } from './is'
-import { cleanNode, replaceSpaceToZwnj } from './utils'
-// import { boundAttrSuffix, boundAttrRegex } from './attrs'
+import { replaceSpaceToZwnj } from './utils'
 import { Marker } from './marker'
 import { Context } from './context'
 import { Part } from './part'
 import { Hooks } from './hooks'
+import { createTreeWalker } from './utils'
 
 const range = document.createRange()
 
-export class FragmentClip {
+export class Clip {
   readonly strs: TemplateStringsArray
   readonly vals: unknown[]
   readonly shallowHtml: string
   readonly shallowDof: DocumentFragment
 
-  parts: Part[]
+  partMap: Part[]
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     this.strs = strs
     this.vals = vals
     this.shallowHtml = this.getShaHtml()
     this.shallowDof = this.getShaDof()
-    this.parts = []
+    this.partMap = []
+
+    const walker = createTreeWalker(this.shallowDof)
+
+    while (walker.nextNode()) {
+      let cur = walker.currentNode as Element | Text | Comment
+      if (isElement(cur)) {
+        let attrs = cur.attributes
+        let length = attrs.length
+        for (let i = 0; i < length; i++) {
+          let attr = attrs[i]
+          if (attr.name.startsWith(':')) {
+            console.dir(cur) //binding props
+            console.log(cur.getAttribute(attrs[i].name))
+          } else if (attr.name.startsWith('.')) {
+          }
+        }
+      }
+    }
   }
 
   getShaHtml() {
     return this.strs
       .reduce(
-        (acc, cur, index) => `${acc}${placeMarker(cur, this.vals[index])}`,
+        (acc, cur, index) =>
+          `${acc}${placeMarker(cur, this.vals[index], index)}`,
         ''
       )
       .trim()
   }
 
   getShaDof() {
-    return cleanNode(range.createContextualFragment(this.shallowHtml))
+    let res = range.createContextualFragment(this.shallowHtml)
+    return res
   }
 
   use<T extends object>(target: Context<T> | Hooks) {
@@ -57,15 +80,18 @@ export class FragmentClip {
   update() {}
 }
 
-function placeMarker(cur: string, val: unknown) {
+function placeMarker(cur: string, val: unknown, index: number) {
   let front = cur
   let res = val
   if (isFragmentClip(val)) {
     res = Marker.clip
   } else if (isFragmentClipArray(val) || isEmptyArray(val)) {
-    res = Marker.clipArray
+    res = Marker.clips
+  } else if (isBindingProp(val, front)) {
+    res = Marker.prop.binding
+  } else if (isStaticProp(val, front)) {
+    res = Marker.prop.static
   } else if (isNodeAttribute(val, front)) {
-    // front = cur.replace(boundAttrRegex, `${boundAttrSuffix}="`)
     res = Marker.attr
   } else if (val && isPrimitive(val)) {
     front = replaceSpaceToZwnj(cur)

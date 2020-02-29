@@ -1,9 +1,9 @@
-import { FragmentClip } from './fragmentClip'
+import { Clip } from './clip'
 
 const appRoot = document.querySelector('#app')!
 
 export const shallowRender = (
-  clip: FragmentClip,
+  clip: Clip,
   location: Element = appRoot
 ) => {
   location.appendChild(clip.shallowDof)

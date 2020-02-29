@@ -1,11 +1,15 @@
-export const generateMarker = () => `{{${String(Math.random()).slice(2)}}}`
+const generateMarker = () => `{{${String(Math.random()).slice(2)}}}`
 
-export const markerIndex = generateMarker()
+const markerIndex = generateMarker()
 
 export const Marker = {
   clip: `<!--$clip$${markerIndex}-->`,
   text: `<!--$text$${markerIndex}-->`,
   func: `<!--$func$${markerIndex}-->`,
   attr: `<!--$attr$${markerIndex}-->`,
-  clipArray: `<!--$clips$${markerIndex}-->`
+  prop: {
+    binding: `<!--$bprop$${markerIndex}-->`,
+    static: `<!--$sprop$${markerIndex}-->`
+  },
+  clips: `<!--$clips$${markerIndex}-->`
 }

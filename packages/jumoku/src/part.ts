@@ -1,48 +1,22 @@
-export interface Part {
+export abstract class Part {
   readonly value: unknown
 
-  setValue(value: unknown): void
+  constructor(val: unknown) {
+    this.value = val
+  }
 
-  commit(): void
-
-  equals(): boolean
+  abstract tryUpdate(val: unknown): unknown
 }
 
-export class ClipPart implements Part {
-  equals(): boolean {
-    throw new Error('Method not implemented.')
-  }
-  value: unknown
-  setValue(value: unknown): void {
-    throw new Error('Method not implemented.')
-  }
-  commit(): void {
-    throw new Error('Method not implemented.')
-  }
-}
+export class AttrPart extends Part {
+  readonly targetNode: Element
 
-export class AttrPart implements Part {
-  equals(): boolean {
-    throw new Error('Method not implemented.')
+  constructor(node: Element, name: string, val: string) {
+    super(val)
+    this.targetNode = node
   }
-  value: unknown
-  setValue(value: unknown): void {
-    throw new Error('Method not implemented.')
-  }
-  commit(): void {
-    throw new Error('Method not implemented.')
-  }
-}
 
-export class EventPart implements Part {
-  equals(): boolean {
-    throw new Error('Method not implemented.')
-  }
-  value: unknown
-  setValue(value: unknown): void {
-    throw new Error('Method not implemented.')
-  }
-  commit(): void {
-    throw new Error('Method not implemented.')
+  tryUpdate(val: string) {
+    this.targetNode.setAttribute(name, val)
   }
 }

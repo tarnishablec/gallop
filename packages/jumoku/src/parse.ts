@@ -1,8 +1,4 @@
-import { FragmentClip } from './fragmentClip'
+import { Clip } from './clip'
 
-export function html(
-  strs: TemplateStringsArray,
-  ...vals: unknown[]
-): FragmentClip {
-  return new FragmentClip(strs, vals)
-}
+export const html = (strs: TemplateStringsArray, ...vals: unknown[]) =>
+  new Clip(strs, vals)

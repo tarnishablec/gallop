@@ -1,8 +1,8 @@
 import { Primitive } from './utils'
-import { FragmentClip } from './fragmentClip'
+import { Clip } from './clip'
 
-export const isPrimitive = (value: unknown): value is Primitive =>
-  value === null || !(typeof value === 'object' || typeof value === 'function')
+export const isPrimitive = (val: unknown): val is Primitive =>
+  val === null || !(typeof val === 'object' || typeof val === 'function')
 
 export const isText = (val: Node): val is Text =>
   val.nodeType === Node.TEXT_NODE
@@ -34,15 +34,26 @@ export const isFunction = (val: unknown): val is Function =>
   val instanceof Function
 
 export const isNodeAttribute = (val: unknown, front: string): val is string =>
-  /\s:(([A-Za-z]|-)+)="/.test(front) &&
+  /\s(([A-Za-z]|-)+)="/.test(front) &&
   (front.lastIndexOf('<') > front.lastIndexOf('>') ||
-    /=\s*".*"\s+:[A-Za-z]+="/.test(front) ||
+    /=\s*".*"\s+[A-Za-z]+="/.test(front) ||
     /^"\s+/.test(front))
 
-export const isFragmentClip = (val: unknown): val is FragmentClip =>
-  val instanceof FragmentClip
+export const isBindingProp = (val: unknown, front: string): val is String =>
+  /\s:(([A-Za-z]|-)+)="$/.test(front) &&
+  (front.lastIndexOf('<') > front.lastIndexOf('>') ||
+    /=\s*".*"\s+[A-Za-z]+="/.test(front) ||
+    /^"\s+/.test(front))
 
-export const isFragmentClipArray = (val: unknown): val is FragmentClip[] =>
+export const isStaticProp = (val: unknown, front: string): val is String =>
+  /\s\.(([A-Za-z]|-)+)="$/.test(front) &&
+  (front.lastIndexOf('<') > front.lastIndexOf('>') ||
+    /=\s*".*"\s+[A-Za-z]+="/.test(front) ||
+    /^"\s+/.test(front))
+
+export const isFragmentClip = (val: unknown): val is Clip => val instanceof Clip
+
+export const isFragmentClipArray = (val: unknown): val is Clip[] =>
   isArrayOf(val, isFragmentClip)
 
 export const isObject = <T extends object>(val: T): val is T =>

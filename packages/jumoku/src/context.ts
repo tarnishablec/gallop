@@ -1,10 +1,10 @@
 import { createProxy } from './reactive'
-import { FragmentClip } from './fragmentClip'
+import { Clip } from './clip'
 
 export class Context<T extends object> {
   raw: T
   proxy: [T, Context<T>]
-  watchedInstances: Set<FragmentClip> = new Set()
+  watchedInstances: Set<Clip> = new Set()
 
   constructor(raw: T) {
     this.raw = raw
@@ -15,11 +15,11 @@ export class Context<T extends object> {
     this.watchedInstances.forEach(c => c.update())
   }
 
-  watch(clipInstance: FragmentClip) {
+  watch(clipInstance: Clip) {
     this.watchedInstances.add(clipInstance)
   }
 
-  unwatch(clipInstance: FragmentClip) {
+  unwatch(clipInstance: Clip) {
     this.watchedInstances.delete(clipInstance)
   }
 }

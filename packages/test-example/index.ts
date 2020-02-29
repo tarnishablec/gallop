@@ -22,12 +22,12 @@ const clip = TestTemplate(prop)
 
 const walker = document.createTreeWalker(clip.getShaDof(), 133)
 
-// console.log(walker.currentNode)
+console.dir(walker.currentNode)
 
-while (walker.nextNode()) {
-  let cur = walker.currentNode
-  console.log(cur.nodeName)
-}
+// while (walker.nextNode()) {
+//   let cur = walker.currentNode
+//   console.dir(cur)
+// }
 
 console.log(clip.shallowDof)
 shallowRender(clip)
@@ -84,12 +84,23 @@ console.log(getPropsFromFunction(testA))
 component(
   'test-t',
   (
-    { name, age }: { name: string; age: number } = { name: 'yoho', age: 12 }
+    {
+      name,
+      age,
+      person
+    }: { name: string; age: number; person: { name: string; age: number } } = {
+      name: 'yoho',
+      age: 12,
+      person: { name: 'uuu', age: 12 }
+    }
   ) => html`
-    <div :age="${age}">${name}</div>
+    <div :age="${age}" :person="${person}">${name}</div>
   `
 )
 
 shallowRender(html`
-  <test-t age="1"></test-t>
+  <test-t .age="${{ name: 1 }}"></test-t>
 `)
+
+let age = document.querySelector('test-t')?.getAttribute('age')
+console.log(age)
