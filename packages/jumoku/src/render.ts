@@ -1,23 +1,18 @@
-import { Clip } from './clip'
+import { ShallowClip } from './clip'
 
 const appRoot = document.querySelector('#app')!
 
 const appContainer = document.createDocumentFragment()
 
-export const shallowRender = (clip: Clip, container: Node = appContainer) => {
+export const shallowRender = (clip: ShallowClip, container: Node = appContainer) => {
   if (container instanceof ShadowRoot) {
-    container.appendChild(clip.getShaDof().cloneNode(true))
+    container.appendChild(clip.createInstance().dof)
   } else {
     container.appendChild(clip.getShaDof())
   }
-
-  clip.parts.forEach((p, index) => {
-    p.setValue(clip.vals[index])
-    p.commit()
-  })
 }
 
-export const render = (clip: Clip, location: Node = appContainer) => {
+export const render = (clip: ShallowClip, location: Node = appContainer) => {
   shallowRender(clip, location)
   appRoot.appendChild(appContainer)
 }

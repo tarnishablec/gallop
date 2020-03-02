@@ -1,4 +1,4 @@
-import { Clip } from './clip'
+import { ShallowClip } from './clip'
 import { getPropsFromFunction } from './utils'
 import { componentNamingError } from './error'
 import { UpdatableElement } from './updatableElement'
@@ -6,9 +6,11 @@ import { shallowRender } from './render'
 
 export const componentPool = new Set<string>()
 
+export type Component = (props?: unknown) => ShallowClip
+
 export function component<P extends object>(
   name: string,
-  builder: (props?: P) => Clip
+  builder: (props?: P) => ShallowClip
 ) {
   if (!checkComponentName(name)) {
     throw componentNamingError
@@ -17,7 +19,7 @@ export function component<P extends object>(
   let initClip = builder(defaultProp)
 
   const Clazz = class extends UpdatableElement<P> {
-    clip: Clip = initClip
+    clip: ShallowClip = initClip
 
     constructor() {
       super(defaultProp!)
@@ -45,7 +47,6 @@ export function component<P extends object>(
       oldValue: unknown,
       newValue: unknown
     ) {
-      this.clip.update()
     }
   }
   customElements.define(name, Clazz)

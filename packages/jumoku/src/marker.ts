@@ -10,10 +10,7 @@ export const Marker = {
   text: `<!--$text$${markerIndex}-->`,
   func: `<!--$func$${markerIndex}-->`,
   attr: `<!--$attr$${markerIndex}-->`,
-  prop: {
-    binding: `<!--$bprop$${markerIndex}-->`,
-    static: `<!--$sprop$${markerIndex}-->`
-  },
+  prop: `<!--$prop$${markerIndex}-->`,
   clips: {
     start: `<!--$clipshead$${markerIndex}-->`,
     end: `<!--$clipstail$${markerIndex}-->`

@@ -1,5 +1,5 @@
 import { Primitive } from './utils'
-import { Clip } from './clip'
+import { ShallowClip } from './clip'
 import { UpdatableElement } from './updatableElement'
 
 export const isPrimitive = (val: unknown): val is Primitive =>
@@ -35,26 +35,20 @@ export const isFunction = (val: unknown): val is Function =>
   val instanceof Function
 
 export const isNodeAttribute = (val: unknown, front: string): val is string =>
-  /\s(([A-Za-z]|-)+)="/.test(front) &&
+  /\s\.(([A-Za-z]|-)+)="/.test(front) &&
   (front.lastIndexOf('<') > front.lastIndexOf('>') ||
     /=\s*".*"\s+[A-Za-z]+="/.test(front) ||
     /^"\s+/.test(front))
 
-export const isBindingProp = (val: unknown, front: string): val is String =>
+export const isNodeProp = (val: unknown, front: string): val is String =>
   /\s:(([A-Za-z]|-)+)="$/.test(front) &&
   (front.lastIndexOf('<') > front.lastIndexOf('>') ||
     /=\s*".*"\s+[A-Za-z]+="/.test(front) ||
     /^"\s+/.test(front))
 
-export const isStaticProp = (val: unknown, front: string): val is String =>
-  /\s\.(([A-Za-z]|-)+)="$/.test(front) &&
-  (front.lastIndexOf('<') > front.lastIndexOf('>') ||
-    /=\s*".*"\s+[A-Za-z]+="/.test(front) ||
-    /^"\s+/.test(front))
+export const isFragmentClip = (val: unknown): val is ShallowClip => val instanceof ShallowClip
 
-export const isFragmentClip = (val: unknown): val is Clip => val instanceof Clip
-
-export const isFragmentClipArray = (val: unknown): val is Clip[] =>
+export const isFragmentClipArray = (val: unknown): val is ShallowClip[] =>
   isArrayOf(val, isFragmentClip)
 
 export const isObject = <T extends object>(val: T): val is T =>

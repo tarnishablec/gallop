@@ -1,4 +1,4 @@
-import { Clip } from './clip'
+import { ShallowClip } from './clip'
 
 export const html = (strs: TemplateStringsArray, ...vals: unknown[]) =>
-  new Clip(strs, vals)
+  new ShallowClip(strs, vals)

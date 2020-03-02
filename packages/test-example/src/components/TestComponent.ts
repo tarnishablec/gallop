@@ -5,6 +5,7 @@ const TestChild = (a: number) => html`
     this is test child ${a}
   </div>
 `
+export const [data, context] = createContext({ age: 1 })
 
 export const TestTemplate = ({
   name,
@@ -17,8 +18,6 @@ export const TestTemplate = ({
   color: string
   click: Function
 }) => {
-  const [data, context] = createContext({ sex: 'boy' })
-
   return html`
     <div>
       <h1>
@@ -30,7 +29,7 @@ export const TestTemplate = ({
           dark=""
           name="${name}"
         >
-          Hello Test Template ${data.sex}
+          Hello Test Template ${data.age}
         </span>
       </h1>
       <button @click="${click}">click</button>
@@ -55,5 +54,5 @@ export const TestTemplate = ({
       <div>hello</div>
       ${TestChild(5)}
     </div>
-  `.use(context)
+  `
 }
