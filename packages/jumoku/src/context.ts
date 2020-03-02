@@ -16,6 +16,7 @@ export class Context<T extends object> {
   }
 
   watch(clipInstance: Clip) {
+    // console.log(`context watch ${clipInstance.shallowHtml}`)
     this.watchedInstances.add(clipInstance)
   }
 
@@ -28,3 +29,4 @@ export const createContext = <T extends object>(raw: T) =>
   new Context(raw).proxy
 
 // let [a, context] = createContext({ a: 1 })
+

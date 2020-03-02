@@ -5,66 +5,51 @@ import {
   isPrimitive,
   isEmptyArray,
   isFunction,
-  isElement,
   isBindingProp,
   isStaticProp
 } from './is'
-import { replaceSpaceToZwnj } from './utils'
+import { replaceSpaceToZwnj, createTreeWalker } from './utils'
 import { Marker } from './marker'
 import { Context } from './context'
-import { Part } from './part'
 import { Hooks } from './hooks'
-import { createTreeWalker } from './utils'
+import { Part } from './part'
 
 const range = document.createRange()
+
+const shallowDofCache = new Map<string, DocumentFragment>()
 
 export class Clip {
   readonly strs: TemplateStringsArray
   readonly vals: unknown[]
   readonly shallowHtml: string
-  readonly shallowDof: DocumentFragment
 
-  partMap: Part[]
+  parts: Part[] = []
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     this.strs = strs
     this.vals = vals
     this.shallowHtml = this.getShaHtml()
-    this.shallowDof = this.getShaDof()
-    this.partMap = []
 
-    const walker = createTreeWalker(this.shallowDof)
-
-    while (walker.nextNode()) {
-      let cur = walker.currentNode as Element | Text | Comment
-      if (isElement(cur)) {
-        let attrs = cur.attributes
-        let length = attrs.length
-        for (let i = 0; i < length; i++) {
-          let attr = attrs[i]
-          if (attr.name.startsWith(':')) {
-            console.dir(cur) //binding props
-            console.log(cur.getAttribute(attrs[i].name))
-          } else if (attr.name.startsWith('.')) {
-          }
-        }
-      }
-    }
+    const walker = createTreeWalker(this.getShaDof())
+    
   }
 
   getShaHtml() {
     return this.strs
       .reduce(
-        (acc, cur, index) =>
-          `${acc}${placeMarker(cur, this.vals[index], index)}`,
+        (acc, cur, index) => `${acc}${this.placeMarker(cur, this.vals[index])}`,
         ''
       )
       .trim()
   }
 
   getShaDof() {
-    let res = range.createContextualFragment(this.shallowHtml)
-    return res
+    return (
+      shallowDofCache.get(this.shallowHtml) ??
+      shallowDofCache
+        .set(this.shallowHtml, range.createContextualFragment(this.shallowHtml))
+        .get(this.shallowHtml)!
+    )
   }
 
   use<T extends object>(target: Context<T> | Hooks) {
@@ -78,26 +63,31 @@ export class Clip {
   mount() {}
 
   update() {}
+
+  placeMarker(cur: string, val: unknown) {
+    let front = cur
+    let res
+    if (isFragmentClip(val)) {
+      res = `${Marker.clip.start}${Marker.clip.end}`
+    } else if (isFragmentClipArray(val) || isEmptyArray(val)) {
+      res = `${Marker.clips.start}${Marker.clips.end}`
+    } else if (isBindingProp(val, front)) {
+      res = Marker.prop.binding
+    } else if (isStaticProp(val, front)) {
+      res = Marker.prop.static
+    } else if (isNodeAttribute(val, front)) {
+      res = Marker.attr
+    } else if (val && isPrimitive(val)) {
+      front = replaceSpaceToZwnj(cur)
+      res = Marker.text
+    } else if (isFunction(val)) {
+      res = Marker.func
+    }
+    return `${front}${res ?? ''}`
+  }
 }
 
-function placeMarker(cur: string, val: unknown, index: number) {
-  let front = cur
-  let res = val
-  if (isFragmentClip(val)) {
-    res = Marker.clip
-  } else if (isFragmentClipArray(val) || isEmptyArray(val)) {
-    res = Marker.clips
-  } else if (isBindingProp(val, front)) {
-    res = Marker.prop.binding
-  } else if (isStaticProp(val, front)) {
-    res = Marker.prop.static
-  } else if (isNodeAttribute(val, front)) {
-    res = Marker.attr
-  } else if (val && isPrimitive(val)) {
-    front = replaceSpaceToZwnj(cur)
-    res = Marker.text
-  } else if (isFunction(val)) {
-    res = Marker.func
-  }
-  return `${front}${res ?? ''}`
+export interface ShallowPart<T> {
+  index: number
+  type: T
 }

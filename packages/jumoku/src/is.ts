@@ -1,5 +1,6 @@
 import { Primitive } from './utils'
 import { Clip } from './clip'
+import { UpdatableElement } from './updatableElement'
 
 export const isPrimitive = (val: unknown): val is Primitive =>
   val === null || !(typeof val === 'object' || typeof val === 'function')
@@ -58,3 +59,7 @@ export const isFragmentClipArray = (val: unknown): val is Clip[] =>
 
 export const isObject = <T extends object>(val: T): val is T =>
   val instanceof Object
+
+export const isUpdatableElement = <P extends object>(
+  val: Element
+): val is UpdatableElement<P> => val instanceof UpdatableElement

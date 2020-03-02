@@ -7,24 +7,24 @@ export const createProxy = <T extends object>(
   setSideEffect?: (
     target: T,
     prop: string | number | symbol,
-    val: any,
-    receiver: any
+    val: unknown,
+    receiver: unknown
   ) => void,
   getSideEffect?: (
     target: T,
     prop: string | number | symbol,
-    receiver: any
+    receiver: unknown
   ) => void
 ): T => {
   return new Proxy(raw, {
     set: (target, prop, val, receiver) => {
       setSideEffect?.(target, prop, val, receiver)
-      console.log(`----proxy state changed-----${String(prop)}`)
+      // console.log(`----proxy state changed-----${String(prop)}`)
       return Reflect.set(target, prop, val, receiver)
     },
     get: (target, prop, reciver) => {
       getSideEffect?.(target, prop, reciver)
-      console.log(`----proxy state getted-----${String(prop)}`)
+      // console.log(`----proxy state getted-----${String(prop)}`)
       const res = Reflect.get(target, prop, reciver)
       return isObject(res) && !isFunction(res)
         ? createProxy(res, setSideEffect, getSideEffect)

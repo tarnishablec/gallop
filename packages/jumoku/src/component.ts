@@ -1,38 +1,35 @@
 import { Clip } from './clip'
 import { getPropsFromFunction } from './utils'
 import { componentNamingError } from './error'
+import { UpdatableElement } from './updatableElement'
+import { shallowRender } from './render'
 
-export function component<P>(
+export const componentPool = new Set<string>()
+
+export function component<P extends object>(
   name: string,
-  builder: (props: P) => Clip
+  builder: (props?: P) => Clip
 ) {
   if (!checkComponentName(name)) {
     throw componentNamingError
   }
-  let { propsNames, defaultValue } = getPropsFromFunction(builder)
-  let defaultClip = builder(defaultValue)
+  let { propsNames, defaultProp } = getPropsFromFunction(builder)
+  let initClip = builder(defaultProp)
 
-  const Clazz = class extends HTMLElement {
-    static strs = defaultClip.strs
-    static shallowDof = defaultClip.shallowDof
-  
+  const Clazz = class extends UpdatableElement<P> {
+    clip: Clip = initClip
+
     constructor() {
-      super()
-      // this.attachShadow({ mode: 'open' }).appendChild( )
+      super(defaultProp!)
+      shallowRender(initClip, this.attachShadow({ mode: 'open' }))
     }
-
-    mount() {
-      // this.shadowRoot?.innerHTML = getFragmentContent()
-    }
-
-    update() {}
 
     static get observedAttributes() {
       return propsNames.map(p => `:${p}`)
     }
 
     connectedCallback() {
-      console.log('connected')
+      // console.log(`connected ${this.localName}`)
     }
 
     disconnectedCallback() {
@@ -47,9 +44,12 @@ export function component<P>(
       name: string,
       oldValue: unknown,
       newValue: unknown
-    ) {}
+    ) {
+      this.clip.update()
+    }
   }
   customElements.define(name, Clazz)
+  componentPool.add(name)
 }
 
 const checkComponentName = (name: string) => {

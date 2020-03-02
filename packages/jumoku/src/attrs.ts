@@ -1,6 +1,7 @@
-export const boundAttrRegex = /(?<=(\s+:\S+))="/
+export const attributeConvertor = (element: Element, attrName: string) => {
+  const prefix = attrName[0]
 
-export const getBoundAttrName = (front: string) =>
-  front.match(boundAttrRegex)![1]
+  if (prefix === ':') {
 
-export const boundAttrSuffix = `$attr$`
+  }
+}

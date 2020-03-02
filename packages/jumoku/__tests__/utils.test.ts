@@ -9,8 +9,8 @@ describe('utils', () => {
         person: { name: 'yihan', call: () => alert(1) }
       }
     ) => alert(person)
-    let { propsNames, defaultValue } = getPropsFromFunction(testA)
+    let { propsNames, defaultProp } = getPropsFromFunction(testA)
     expect(propsNames).toEqual(['person'])
-    expect(defaultValue?.person.name).toBe('yihan')
+    expect(defaultProp?.person.name).toBe('yihan')
   })
 })

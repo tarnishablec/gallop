@@ -6,8 +6,6 @@ const TestChild = (a: number) => html`
   </div>
 `
 
-const [data, context] = createContext({ sex: 'boy' })
-
 export const TestTemplate = ({
   name,
   children,
@@ -18,17 +16,19 @@ export const TestTemplate = ({
   children: string[]
   color: string
   click: Function
-}) =>
-  html`
+}) => {
+  const [data, context] = createContext({ sex: 'boy' })
+
+  return html`
     <div>
       <h1>
         <span
-          :color="${color}"
+          color="${color}"
           style="color:red"
           width="${1}"
           light
           dark=""
-          .name="${name}"
+          name="${name}"
         >
           Hello Test Template ${data.sex}
         </span>
@@ -39,10 +39,12 @@ export const TestTemplate = ({
         this ${name} is &lt;span&gt; &quot;${name}&quot; :name="${color}"
         ${name} yes
       </span>
+      <test-a></test-a>
+      <test-a></test-a>
       ${name} ${color}
       ${children.map(
-        c => html`
-          <li>666${c}666</li>
+        () => html`
+          <li>666666</li>
         `
       )}
       ${children.map(
@@ -53,6 +55,5 @@ export const TestTemplate = ({
       <div>hello</div>
       ${TestChild(5)}
     </div>
-  `
-    .use(context)
-    .use(context)
+  `.use(context)
+}

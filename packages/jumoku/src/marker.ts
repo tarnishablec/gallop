@@ -3,7 +3,10 @@ const generateMarker = () => `{{${String(Math.random()).slice(2)}}}`
 const markerIndex = generateMarker()
 
 export const Marker = {
-  clip: `<!--$clip$${markerIndex}-->`,
+  clip: {
+    start: `<!--$cliphead$${markerIndex}-->`,
+    end: `<!--$cliptail$${markerIndex}-->`
+  },
   text: `<!--$text$${markerIndex}-->`,
   func: `<!--$func$${markerIndex}-->`,
   attr: `<!--$attr$${markerIndex}-->`,
@@ -11,5 +14,8 @@ export const Marker = {
     binding: `<!--$bprop$${markerIndex}-->`,
     static: `<!--$sprop$${markerIndex}-->`
   },
-  clips: `<!--$clips$${markerIndex}-->`
+  clips: {
+    start: `<!--$clipshead$${markerIndex}-->`,
+    end: `<!--$clipstail$${markerIndex}-->`
+  }
 }

@@ -1,6 +1,4 @@
 export { html } from './parse'
-export { shallowRender } from './render'
+export { render } from './render'
 export { component } from './component'
 export { createContext } from './context'
-export { createProxy } from './reactive'
-export { getPropsFromFunction } from './utils'

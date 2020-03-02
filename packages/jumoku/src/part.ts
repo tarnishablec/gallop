@@ -1,22 +1,30 @@
-export abstract class Part {
-  readonly value: unknown
+import { Clip } from './clip'
 
-  constructor(val: unknown) {
-    this.value = val
-  }
+export interface Part {}
 
-  abstract tryUpdate(val: unknown): unknown
+export interface Part {
+  index: number
+  value: unknown
+  setValue(val: unknown): void
+  commit(): void
+  equals(): boolean
 }
 
-export class AttrPart extends Part {
-  readonly targetNode: Element
+export class ClipPart implements Part {
+  value: unknown
+  startNode!: Node
+  endNode!: Node
+  index: number = -1
 
-  constructor(node: Element, name: string, val: string) {
-    super(val)
-    this.targetNode = node
+  constructor(index: number) {
+    this.index = index
+  }
+  equals(): boolean {
+    throw new Error('Method not implemented.')
   }
 
-  tryUpdate(val: string) {
-    this.targetNode.setAttribute(name, val)
+  setValue(val: unknown): void {}
+  commit(): void {
+    console.log(`committed`)
   }
 }

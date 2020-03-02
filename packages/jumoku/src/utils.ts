@@ -1,4 +1,4 @@
-import { isText, isDocumentFragment } from './is'
+import { isDocumentFragment } from './is'
 
 export const createTreeWalker = (node: Node) =>
   document.createTreeWalker(node, 133, null, false)
@@ -64,7 +64,7 @@ export function getPropsFromFunction<T>(func: (t: T) => unknown) {
   let [def] = digStringBlock(defaultStr, '{')
   return {
     propsNames: propsStr.split(',').map(p => p.trim()),
-    defaultValue: eval(`(${def})`) as T
+    defaultProp: eval(`(${def})`) as T
   }
 }
 
