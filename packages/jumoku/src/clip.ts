@@ -88,7 +88,7 @@ export class Clip {
 
   constructor(dof: DocumentFragment, shallowParts: Part[]) {
     this.dof = dof
-    this.parts = shallowParts
+    this.parts = shallowParts.map(p => p.clone())
 
     this.attachPart()
     console.log(this.parts)

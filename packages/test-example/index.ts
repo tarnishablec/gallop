@@ -61,3 +61,27 @@ render(html`
 // setInterval(() => {
 //   data.age += 1
 // }, 2000)
+
+class A {
+  a: { a: number }[]
+  constructor(a: any[]) {
+    this.a = a
+  }
+}
+
+let a = new A([{ a: 1 }, { a: 1 }])
+
+console.log(a)
+
+class C {
+  c: { a: number }[]
+  constructor(a: A) {
+    this.c = [...a.a]
+    this.c[1].a = 123123123
+  }
+}
+
+let c = new C(a)
+
+console.log(c)
+console.log(a)

@@ -21,12 +21,26 @@ export abstract class Part {
   abstract setValue(val: unknown): void
   abstract commit(): void
   abstract equals(): boolean
+
+  clone(): Part {
+    switch (this.type) {
+      case 'prop':
+        return new PorpPart(this.index)
+      case 'attr':
+        return new AttrPart(this.index)
+      case 'clip':
+        return new ClipPart(this.index)
+      case 'no':
+        return new NoPart(-1)
+    }
+  }
 }
 
 export class NoPart extends Part {
   constructor(index: number) {
     super(index)
     this.type = 'no'
+    this.index = -1
   }
 
   setValue(val: unknown): void {
