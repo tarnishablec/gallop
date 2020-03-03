@@ -38,8 +38,6 @@ export const TestTemplate = ({
         this ${name} is &lt;span&gt; &quot;${name}&quot; :name="${color}"
         ${name} yes
       </span>
-      <test-a></test-a>
-      <test-a></test-a>
       ${name} ${color}
       ${children.map(
         () => html`

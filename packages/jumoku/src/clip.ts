@@ -10,7 +10,7 @@ import {
 } from './is'
 import { replaceSpaceToZwnj, createTreeWalker } from './utils'
 import { Marker } from './marker'
-import { Part, NoPart, ClipPart, PorpPart, AttrPart } from './part'
+import { Part, ShallowPart } from './part'
 
 const range = document.createRange()
 
@@ -21,7 +21,7 @@ export class ShallowClip {
   readonly vals: unknown[]
   readonly shallowHtml: string
 
-  shallowParts: Part[] = []
+  shallowParts: ShallowPart[] = []
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     this.strs = strs
@@ -58,21 +58,22 @@ export class ShallowClip {
   placeMarker(cur: string, val: unknown, index: number) {
     let front = cur
     let res
-    let part = new NoPart(index)
+    let part = new ShallowPart(index)
     if (isFragmentClip(val)) {
       res = `${Marker.clip.start}${Marker.clip.end}`
-      part = new ClipPart(index)
+      part.setType('clip')
     } else if (isFragmentClipArray(val) || isEmptyArray(val)) {
       res = `${Marker.clips.start}${Marker.clips.end}`
     } else if (isNodeProp(val, front)) {
       res = Marker.prop
-      part = new PorpPart(index)
+      part.setType('prop')
     } else if (isNodeAttribute(val, front)) {
       res = Marker.attr
-      part = new AttrPart(index)
+      part.setType('attr')
     } else if (val && isPrimitive(val)) {
       front = replaceSpaceToZwnj(cur)
       res = Marker.text
+      part.setType('text')
     } else if (isFunction(val)) {
       res = Marker.func
     }
@@ -86,12 +87,23 @@ export class Clip {
   dof: DocumentFragment
   parts: Part[]
 
-  constructor(dof: DocumentFragment, shallowParts: Part[]) {
+  constructor(dof: DocumentFragment, shallowParts: ShallowPart[]) {
     this.dof = dof
-    this.parts = shallowParts.map(p => p.clone())
+    this.parts = shallowParts.map(p => p.makeReal())
 
     this.attachPart()
+
     console.log(this.parts)
+  }
+
+  update(values: ReadonlyArray<unknown>) {
+    this.parts.forEach((part, index) => {
+      part && !(part instanceof ShallowPart) && part.setValue(values[index])
+    })
+
+    this.parts.forEach(part => {
+      part && !(part instanceof ShallowPart) && part.commit()
+    })
   }
 
   attachPart() {
@@ -100,10 +112,19 @@ export class Clip {
 
     while (count < this.parts.length) {
       walker.nextNode()
-      let cur = walker.currentNode as Element | Comment | null
+      let cur = walker.currentNode
+
+      if (cur.previousSibling instanceof Text) {
+        let pre = cur.previousSibling
+        if (/^\s*$/.test(pre.wholeText)) {
+          pre.parentNode?.removeChild(pre)
+        }
+      }
+
       if (cur === null) {
         break
       }
+
       if (isElement(cur)) {
         const attributes = cur.attributes
         const attrLength = attributes.length
@@ -121,8 +142,10 @@ export class Clip {
         if (type === 'cliphead' || type === 'clipshead') {
           this.parts[count]?.setLocation({
             startNode: cur,
-            endNode: cur.nextSibling!
+            endNode: cur.nextSibling! as Comment
           })
+        } else if (type === 'text') {
+          this.parts[count]?.setLocation({ textNodePre: cur })
         }
         walker.nextNode()
         count++

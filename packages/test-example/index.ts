@@ -1,4 +1,4 @@
-import { html, component, createContext, render } from '@jumoku/jumoku'
+import { html, component, render } from '@jumoku/jumoku'
 import './src/components/Lit'
 import { TestTemplate } from './src/components/TestComponent'
 
@@ -28,28 +28,24 @@ component(
           this is test-a
         </strong>
       </span>
-      <span style="color:green">${name}</span>
-      <span>${age}</span>
+      <div style="color:lightgreen">${name}</div>
+      <div>${age}</div>
       <span .style="${`color:${person.color}`}">66666</span>
       <slot></slot>
     </div>
   `
 )
 
-const [data, context] = createContext({ a: 1 })
-
 component(
   'test-b',
   (
-    { age, name }: { age: number; name: string } = { age: 1, name: 'bbbbbb' }
+    { age, names }: { age: number; names: string } = { age: 1, names: 'bbbbbb' }
   ) => {
     return html`
-      <test-a :name="${name}" :age="${age}">
+      <test-a :name="${names}" :age="${age}">
         asd
       </test-a>
-      <test-a :name="${name}" :age="${age}">
-        asd
-      </test-a>
+      ${TestTemplate(prop)}
     `
   }
 )
@@ -61,27 +57,3 @@ render(html`
 // setInterval(() => {
 //   data.age += 1
 // }, 2000)
-
-class A {
-  a: { a: number }[]
-  constructor(a: any[]) {
-    this.a = a
-  }
-}
-
-let a = new A([{ a: 1 }, { a: 1 }])
-
-console.log(a)
-
-class C {
-  c: { a: number }[]
-  constructor(a: A) {
-    this.c = [...a.a]
-    this.c[1].a = 123123123
-  }
-}
-
-let c = new C(a)
-
-console.log(c)
-console.log(a)

@@ -1,8 +1,8 @@
 import { ShallowClip } from './clip'
 import { getPropsFromFunction } from './utils'
-import { componentNamingError } from './error'
+import { componentNamingError, componentExistError } from './error'
 import { UpdatableElement } from './updatableElement'
-import { shallowRender } from './render'
+import { render } from './render'
 
 export const componentPool = new Set<string>()
 
@@ -15,15 +15,20 @@ export function component<P extends object>(
   if (!checkComponentName(name)) {
     throw componentNamingError
   }
+  if (componentPool.has(name)) {
+    throw componentExistError
+  }
   let { propsNames, defaultProp } = getPropsFromFunction(builder)
   let initClip = builder(defaultProp)
 
   const Clazz = class extends UpdatableElement<P> {
     clip: ShallowClip = initClip
 
+    updatable: boolean = false
+
     constructor() {
       super(defaultProp!)
-      shallowRender(initClip, this.attachShadow({ mode: 'open' }))
+      render(initClip, this.attachShadow({ mode: 'open' }))
     }
 
     static get observedAttributes() {
@@ -31,7 +36,12 @@ export function component<P extends object>(
     }
 
     connectedCallback() {
+      this.enableUpdate()
       // console.log(`connected ${this.localName}`)
+    }
+
+    enableUpdate() {
+      this.updatable = true
     }
 
     disconnectedCallback() {
@@ -40,13 +50,6 @@ export function component<P extends object>(
 
     adoptedCallback() {
       console.log(`adopted`)
-    }
-
-    attributeChangedCallback(
-      name: string,
-      oldValue: unknown,
-      newValue: unknown
-    ) {
     }
   }
   customElements.define(name, Clazz)

@@ -1,13 +1,14 @@
-import { ShallowClip } from './clip'
+import { UpdatableElement } from './updatableElement'
 
 type PartLocation =
   | { node: Node; name: string }
-  | { startNode: Node; endNode: Node }
+  | { startNode: Comment; endNode: Comment }
+  | { textNodePre: Comment }
 
+type PartType = 'attr' | 'prop' | 'clip' | 'text' | 'no'
 export abstract class Part {
   index: number
   value: unknown
-  type!: 'attr' | 'prop' | 'clip' | 'no'
   protected location!: PartLocation
 
   setLocation(location: PartLocation) {
@@ -18,64 +19,102 @@ export abstract class Part {
     this.index = index
   }
 
-  abstract setValue(val: unknown): void
+  setValue(val: unknown): void {
+    this.value = val
+  }
   abstract commit(): void
   abstract equals(): boolean
+}
 
-  clone(): Part {
+export class ShallowPart<
+  P extends object = {},
+  K extends keyof P = never
+> extends Part {
+  type: PartType = 'no'
+  def?: P[K]
+
+  constructor(index: number, def?: P[K]) {
+    super(index)
+    this.index = -1
+    if (def !== undefined) {
+      this.def = def!
+    }
+  }
+
+  setType(type: PartType) {
+    this.type = type
+  }
+
+  makeReal(): Part {
     switch (this.type) {
       case 'prop':
-        return new PorpPart(this.index)
+        return new PorpPart<P, K>(this.index)
       case 'attr':
         return new AttrPart(this.index)
       case 'clip':
         return new ClipPart(this.index)
+      case 'text':
+        return new TextPart(this.index)
       case 'no':
-        return new NoPart(-1)
+        return this
     }
   }
-}
 
-export class NoPart extends Part {
-  constructor(index: number) {
-    super(index)
-    this.type = 'no'
-    this.index = -1
-  }
-
-  setValue(val: unknown): void {
-    throw new Error('Method not implemented.')
-  }
-  commit(): void {
-    throw new Error('Method not implemented.')
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setValue(val: unknown): void {}
+  commit(): void {}
   equals(): boolean {
     throw new Error('Method not implemented.')
   }
 }
 
 export class AttrPart extends Part {
-  value: string = ''
+  value!: string
+  location!: { node: Element; name: string }
 
   constructor(index: number) {
     super(index)
-    this.type = 'attr'
   }
 
-  setValue(val: unknown): void {}
-  commit(): void {}
+  commit(): void {
+    let { node, name } = this.location
+    node.setAttribute(name, this.value)
+  }
   equals(): boolean {
     throw new Error('Method not implemented.')
   }
 }
 
-export class PorpPart extends Part {
+export class PorpPart<P extends object, K extends keyof P> extends Part {
+  value!: P[K]
+  location!: { node: UpdatableElement<P>; name: K }
+
   constructor(index: number) {
     super(index)
-    this.type = 'prop'
   }
-  setValue(val: unknown): void {}
-  commit(): void {}
+  equals(): boolean {
+    throw new Error('Method not implemented.')
+  }
+  commit(): void {
+    let { node, name } = this.location
+    node.$props[name] = this.value
+  }
+}
+
+export class TextPart extends Part {
+  value!: string
+  location!: { textNodePre: Comment | Text }
+
+  constructor(index: number) {
+    super(index)
+  }
+
+  commit(): void {
+    let pre = this.location.textNodePre
+    let next = new Text(this.value)
+    this.location.textNodePre = next
+    pre.parentNode?.replaceChild(next, pre)
+  }
   equals(): boolean {
     throw new Error('Method not implemented.')
   }
@@ -83,16 +122,15 @@ export class PorpPart extends Part {
 
 export class ClipPart extends Part {
   value: unknown
+  location!: { startNode: Comment; endNode: Comment }
 
   constructor(index: number) {
     super(index)
-    this.type = 'clip'
   }
   equals(): boolean {
     throw new Error('Method not implemented.')
   }
 
-  setValue(val: unknown): void {}
   commit(): void {
     console.log(`committed`)
   }

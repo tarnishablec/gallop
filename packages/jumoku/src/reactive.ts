@@ -14,10 +14,16 @@ export const createProxy = <T extends object>(
     target: T,
     prop: string | number | symbol,
     receiver: unknown
-  ) => void
+  ) => void,
+  lock: boolean = true
 ): T => {
   return new Proxy(raw, {
     set: (target, prop, val, receiver) => {
+      if (lock) {
+        if (!(prop in target)) {
+          throw new Error('can not set to locked object')
+        }
+      }
       setSideEffect?.(target, prop, val, receiver)
       console.log(`----proxy state changed-----${String(prop)}`)
       return Reflect.set(target, prop, val, receiver)

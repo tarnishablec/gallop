@@ -1,4 +1,4 @@
-import { isDocumentFragment } from './is'
+import { isText } from './is'
 
 export const createTreeWalker = (node: Node) =>
   document.createTreeWalker(node, 133, null, false)
@@ -11,20 +11,6 @@ export type Primitive =
   | string
   | Symbol
   | bigint
-
-export const getFragmentContent = (
-  val: DocumentFragment | DocumentFragment[]
-) => {
-  let nest = document.createElement('div') as HTMLDivElement
-  if (isDocumentFragment(val)) {
-    nest.appendChild(val.cloneNode(true))
-  } else {
-    val.forEach(v => {
-      nest.appendChild(v.cloneNode(true))
-    })
-  }
-  return nest.innerHTML
-}
 
 const getTailSpaceLength = (str: string) => {
   let res = str.match(/(\S){1}\s*$/)
