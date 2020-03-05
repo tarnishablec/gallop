@@ -45,11 +45,9 @@ export function component<P extends object>(
     }
 
     disconnectedCallback() {
-      console.log(`disconnected`)
     }
 
     adoptedCallback() {
-      console.log(`adopted`)
     }
   }
   customElements.define(name, Clazz)

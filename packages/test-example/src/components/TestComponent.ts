@@ -1,12 +1,10 @@
-import { html, createContext } from '@jumoku/jumoku'
+import { html, createContext, useState } from '@jumoku/jumoku'
 
 const TestChild = (a: number) => html`
   <div>
     this is test child ${a}
   </div>
 `
-export const [data, context] = createContext({ age: 1 })
-
 export const TestTemplate = ({
   name,
   children,
@@ -21,19 +19,11 @@ export const TestTemplate = ({
   return html`
     <div>
       <h1>
-        <span
-          color="${color}"
-          style="color:red"
-          width="${1}"
-          light
-          dark=""
-          name="${name}"
-        >
-          Hello Test Template ${data.age}
+        <span style="color:red" light dark>
+          Hello Test Template
         </span>
       </h1>
       <button @click="${click}">click</button>
-      <slot name="default"></slot>
       <span>
         this ${name} is &lt;span&gt; &quot;${name}&quot; :name="${color}"
         ${name} yes

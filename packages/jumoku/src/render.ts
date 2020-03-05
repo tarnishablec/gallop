@@ -1,17 +1,14 @@
-import { ShallowClip } from './clip'
+import { ShallowClip, Clip } from './clip'
+import { Part } from './part'
 
 const appRoot = document.querySelector('#app')!
 
-export const render = (shaClip: ShallowClip, location: Node = appRoot) => {
+let rootClip: Clip
+
+export const render = (shaClip: ShallowClip, container: Node = appRoot) => {
   let clip = shaClip.createInstance()
-  location.appendChild(clip.dof)
+  rootClip = clip
+  container.appendChild(clip.dof)
 
-  clip.parts.forEach((p,index)=>{
-    p.setValue(shaClip.vals[index])
-  })
-
-  clip.parts.forEach((p)=>{
-    p.commit()
-  })
+  clip.update(shaClip.vals)
 }
-

@@ -1,5 +1,3 @@
-import { isText } from './is'
-
 export const createTreeWalker = (node: Node) =>
   document.createTreeWalker(node, 133, null, false)
 

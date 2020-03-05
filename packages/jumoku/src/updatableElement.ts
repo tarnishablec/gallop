@@ -1,7 +1,7 @@
-import { createProxy } from './reactive'
+import { createProxy, Proxyed } from './reactive'
 
 export abstract class UpdatableElement<P extends object> extends HTMLElement {
-  $props: P
+  $props: Proxyed<P>
   constructor(prop: P) {
     super()
     this.$props = createProxy(prop, () => this.update())

@@ -43,17 +43,18 @@ component(
   ) => {
     return html`
       <test-a :name="${names}" :age="${age}">
-        asd
+        <button @click.once="${() => console.log(1)}">
+          click
+        </button>
       </test-a>
       ${TestTemplate(prop)}
     `
   }
 )
 
-render(html`
-  <test-b></test-b>
-`)
+render(TestTemplate(prop))
 
 // setInterval(() => {
 //   data.age += 1
 // }, 2000)
+

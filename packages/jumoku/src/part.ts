@@ -1,11 +1,15 @@
 import { UpdatableElement } from './updatableElement'
+import { ShallowClip } from './clip'
+import { generateEventOptions } from './event'
+import { Proxyed } from './reactive'
 
 type PartLocation =
   | { node: Node; name: string }
   | { startNode: Comment; endNode: Comment }
-  | { textNodePre: Comment }
+  | { textNodePre: Comment | Text }
 
-type PartType = 'attr' | 'prop' | 'clip' | 'text' | 'no'
+type PartType = 'attr' | 'prop' | 'clip' | 'text' | 'event' | 'clips' | 'no'
+
 export abstract class Part {
   index: number
   value: unknown
@@ -22,22 +26,26 @@ export abstract class Part {
   setValue(val: unknown): void {
     this.value = val
   }
+
+  equals(val: unknown) {
+    return this.value === val
+  }
+
   abstract commit(): void
-  abstract equals(): boolean
 }
 
 export class ShallowPart<
   P extends object = {},
-  K extends keyof P = never
+  K extends keyof Proxyed<P> = never
 > extends Part {
   type: PartType = 'no'
-  def?: P[K]
+  defp?: P[K] //default prop
 
   constructor(index: number, def?: P[K]) {
     super(index)
     this.index = -1
     if (def !== undefined) {
-      this.def = def!
+      this.defp = def!
     }
   }
 
@@ -55,7 +63,9 @@ export class ShallowPart<
         return new ClipPart(this.index)
       case 'text':
         return new TextPart(this.index)
-      case 'no':
+      case 'event':
+        return new EventPart(this.index)
+      default:
         return this
     }
   }
@@ -63,38 +73,25 @@ export class ShallowPart<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setValue(val: unknown): void {}
   commit(): void {}
-  equals(): boolean {
-    throw new Error('Method not implemented.')
-  }
 }
 
 export class AttrPart extends Part {
   value!: string
   location!: { node: Element; name: string }
 
-  constructor(index: number) {
-    super(index)
-  }
-
   commit(): void {
     let { node, name } = this.location
     node.setAttribute(name, this.value)
   }
-  equals(): boolean {
-    throw new Error('Method not implemented.')
-  }
 }
 
-export class PorpPart<P extends object, K extends keyof P> extends Part {
-  value!: P[K]
+export class PorpPart<
+  P extends object,
+  K extends keyof Proxyed<P>
+> extends Part {
+  value!: Proxyed<P>[K]
   location!: { node: UpdatableElement<P>; name: K }
 
-  constructor(index: number) {
-    super(index)
-  }
-  equals(): boolean {
-    throw new Error('Method not implemented.')
-  }
   commit(): void {
     let { node, name } = this.location
     node.$props[name] = this.value
@@ -105,31 +102,29 @@ export class TextPart extends Part {
   value!: string
   location!: { textNodePre: Comment | Text }
 
-  constructor(index: number) {
-    super(index)
-  }
-
   commit(): void {
     let pre = this.location.textNodePre
     let next = new Text(this.value)
     this.location.textNodePre = next
     pre.parentNode?.replaceChild(next, pre)
   }
-  equals(): boolean {
-    throw new Error('Method not implemented.')
+}
+
+export class EventPart extends Part {
+  value!: (e?: Event) => unknown
+  location!: { node: Element; name: keyof DocumentEventMap }
+
+  commit(): void {
+    let { node, name } = this.location
+    let [eventName, ...opts] = name.split('.')
+    let option = generateEventOptions(new Set(opts))
+    node.addEventListener(eventName, this.value, option)
   }
 }
 
 export class ClipPart extends Part {
-  value: unknown
+  value!: ShallowClip
   location!: { startNode: Comment; endNode: Comment }
-
-  constructor(index: number) {
-    super(index)
-  }
-  equals(): boolean {
-    throw new Error('Method not implemented.')
-  }
 
   commit(): void {
     console.log(`committed`)

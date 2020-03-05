@@ -76,6 +76,7 @@ export class ShallowClip {
       part.setType('text')
     } else if (isFunction(val)) {
       res = Marker.func
+      part.setType('event')
     }
 
     val && this.shallowParts.push(part)
@@ -119,6 +120,9 @@ export class Clip {
         if (/^\s*$/.test(pre.wholeText)) {
           pre.parentNode?.removeChild(pre)
         }
+        // else{
+        //   pre.parentNode?.replaceChild(new Text(pre.wholeText.replace(/(^\s+)|(\s+$)/g,'')),pre)
+        // }
       }
 
       if (cur === null) {
@@ -144,10 +148,10 @@ export class Clip {
             startNode: cur,
             endNode: cur.nextSibling! as Comment
           })
+          walker.nextNode()
         } else if (type === 'text') {
           this.parts[count]?.setLocation({ textNodePre: cur })
         }
-        walker.nextNode()
         count++
       }
     }
