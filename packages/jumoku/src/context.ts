@@ -16,3 +16,23 @@ export const createContext = <T extends object>(raw: T) =>
   new Context(raw).proxy
 
 // let [a, context] = createContext({ a: 1 })
+
+export const useState = <T extends object>(initValue: T) => {
+  return initValue as T
+}
+
+export class State<T extends object> {
+  initValue: T
+
+  constructor(val: T) {
+    this.initValue = val
+  }
+}
+
+export class StateFactory<T extends object> {
+  initValue: T
+
+  constructor(val: T) {
+    this.initValue = val
+  }
+}

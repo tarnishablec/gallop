@@ -1,12 +1,27 @@
-import { ShallowClip } from './clip'
+import { ShallowClip, Clip } from './clip'
 import { getPropsFromFunction } from './utils'
 import { componentNamingError, componentExistError } from './error'
-import { UpdatableElement } from './updatableElement'
-import { render } from './render'
+import { Proxyed, createProxy } from './reactive'
+
+let currentElement = null
 
 export const componentPool = new Set<string>()
 
-export type Component = (props?: unknown) => ShallowClip
+export abstract class UpdatableElement<P extends object> extends HTMLElement {
+  $props: Proxyed<P>
+  $state: Proxyed<unknown>
+  constructor(prop: P) {
+    super()
+    this.$props = createProxy(prop, () => this.update())
+  }
+
+  connectedCallback() {
+    currentElement = this
+    console.log(currentElement)
+  }
+  
+  update() {}
+}
 
 export function component<P extends object>(
   name: string,
@@ -22,33 +37,31 @@ export function component<P extends object>(
   let initClip = builder(defaultProp)
 
   const Clazz = class extends UpdatableElement<P> {
-    clip: ShallowClip = initClip
-
+    static initShaClip: ShallowClip = initClip
+    clip: Clip
     updatable: boolean = false
 
     constructor() {
       super(defaultProp!)
-      render(initClip, this.attachShadow({ mode: 'open' }))
+      this.clip = new Clip(
+        Clazz.initShaClip.getShaDof().cloneNode(true) as DocumentFragment,
+        Clazz.initShaClip.shallowParts
+      )
+      this.clip.update(Clazz.initShaClip.vals)
+      this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
     }
 
     static get observedAttributes() {
       return propsNames.map(p => `:${p}`)
     }
 
-    connectedCallback() {
-      this.enableUpdate()
-      // console.log(`connected ${this.localName}`)
-    }
-
     enableUpdate() {
       this.updatable = true
     }
 
-    disconnectedCallback() {
-    }
+    disconnectedCallback() {}
 
-    adoptedCallback() {
-    }
+    adoptedCallback() {}
   }
   customElements.define(name, Clazz)
   componentPool.add(name)
@@ -64,3 +77,5 @@ export const convertClassName = (name: string) =>
     .split('-')
     .map(n => n.replace(/^[a-z]/, i => i.toUpperCase()))
     .join('')
+
+const mergeProp = () => {}

@@ -1,6 +1,6 @@
 import { html, component, render } from '@jumoku/jumoku'
 import './src/components/Lit'
-import { TestTemplate } from './src/components/TestComponent'
+import { TestTemplate, TestChild } from './src/components/TestComponent'
 
 const prop = {
   name: 'Chen Yihan',
@@ -39,12 +39,12 @@ component(
 component(
   'test-b',
   (
-    { age, names }: { age: number; names: string } = { age: 1, names: 'bbbbbb' }
+    { age, names }: { age: number; names?: string } = { age: 1, names: 'ppp' }
   ) => {
     return html`
       <test-a :name="${names}" :age="${age}">
-        <button @click.once="${() => console.log(1)}">
-          click
+        <button @click="${(e:Event) => console.log(e)}">
+          <slot name="pp"></slot>
         </button>
       </test-a>
       ${TestTemplate(prop)}
@@ -57,4 +57,3 @@ render(TestTemplate(prop))
 // setInterval(() => {
 //   data.age += 1
 // }, 2000)
-

@@ -1,8 +1,13 @@
 import { html, createContext, useState } from '@jumoku/jumoku'
 
-const TestChild = (a: number) => html`
+export const TestChild = (a: number) => html`
   <div>
     this is test child ${a}
+    ${[1, 2, 3].map(
+      n => html`
+        <h1>${n}</h1>
+      `
+    )}
   </div>
 `
 export const TestTemplate = ({

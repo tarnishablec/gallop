@@ -48,6 +48,8 @@ export class ShallowClip {
     )
   }
 
+  use() {}
+
   createInstance() {
     return new Clip(
       this.getShaDof().cloneNode(true) as DocumentFragment,
@@ -64,13 +66,14 @@ export class ShallowClip {
       part.setType('clip')
     } else if (isFragmentClipArray(val) || isEmptyArray(val)) {
       res = `${Marker.clips.start}${Marker.clips.end}`
+      part.setType('clips')
     } else if (isNodeProp(val, front)) {
       res = Marker.prop
       part.setType('prop')
     } else if (isNodeAttribute(val, front)) {
       res = Marker.attr
       part.setType('attr')
-    } else if (val && isPrimitive(val)) {
+    } else if (isPrimitive(val)) {
       front = replaceSpaceToZwnj(cur)
       res = Marker.text
       part.setType('text')
@@ -79,7 +82,7 @@ export class ShallowClip {
       part.setType('event')
     }
 
-    val && this.shallowParts.push(part)
+    this.shallowParts.push(part)
     return `${front}${res ?? ''}`
   }
 }
@@ -94,20 +97,21 @@ export class Clip {
 
     this.attachPart()
 
-    console.log(this.parts)
+    // console.log(this.parts)
   }
 
   update(values: ReadonlyArray<unknown>) {
+    // console.log(values)
     this.parts.forEach((part, index) => {
-      part && !(part instanceof ShallowPart) && part.setValue(values[index])
+      part.setValue(values[index])
     })
 
     this.parts.forEach(part => {
-      part && !(part instanceof ShallowPart) && part.commit()
+      part.commit()
     })
   }
 
-  attachPart() {
+  private attachPart() {
     const walker = createTreeWalker(this.dof)
     let count = 0
 

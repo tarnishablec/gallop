@@ -1,6 +1,6 @@
 import { Primitive } from './utils'
 import { ShallowClip } from './clip'
-import { UpdatableElement } from './updatableElement'
+import { UpdatableElement } from './component'
 import { _isProxy } from './reactive'
 
 export const isPrimitive = (val: unknown): val is Primitive =>
@@ -17,6 +17,9 @@ export const isDocumentFragment = (val: unknown): val is DocumentFragment =>
 
 export const isEmptyArray = (val: unknown): boolean =>
   val instanceof Array && val.length === 0
+
+export const isNumber = (val: unknown): val is Number =>
+  typeof val === 'number' && isFinite(val)
 
 export function isArrayOf<T>(
   vals: unknown,
@@ -47,7 +50,8 @@ export const isNodeProp = (val: unknown, front: string): val is String =>
     /=\s*".*"\s+[A-Za-z]+="/.test(front) ||
     /^"\s+/.test(front))
 
-export const isFragmentClip = (val: unknown): val is ShallowClip => val instanceof ShallowClip
+export const isFragmentClip = (val: unknown): val is ShallowClip =>
+  val instanceof ShallowClip
 
 export const isFragmentClipArray = (val: unknown): val is ShallowClip[] =>
   isArrayOf(val, isFragmentClip)
