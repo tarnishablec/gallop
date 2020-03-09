@@ -42,9 +42,11 @@ component(
     { age, names }: { age: number; names?: string } = { age: 1, names: 'ppp' }
   ) => {
     return html`
-      <test-a :name="${names}" :age="${age}">
-        <button @click="${(e:Event) => console.log(e)}">
-          <slot name="pp"></slot>
+      <test-a :name="${names}" :age="${1}" a>
+        <button
+          @click="${(e: Event) => console.log(e)}"
+        >
+          <slot></slot>
         </button>
       </test-a>
       ${TestTemplate(prop)}
@@ -52,7 +54,9 @@ component(
   }
 )
 
-render(TestTemplate(prop))
+render(html`
+  <test-b></test-b>
+`)
 
 // setInterval(() => {
 //   data.age += 1

@@ -1,7 +1,7 @@
 import { html, createContext, useState } from '@jumoku/jumoku'
 
 export const TestChild = (a: number) => html`
-  <div>
+  <div style="background-color:red">
     this is test child ${a}
     ${[1, 2, 3].map(
       n => html`

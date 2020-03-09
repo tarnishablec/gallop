@@ -33,7 +33,12 @@ export class ShallowClip {
     return this.strs
       .reduce(
         (acc, cur, index) =>
-          `${acc}${this.placeMarker(cur, this.vals[index], index)}`,
+          `${acc}${this.placeMarker(
+            cur,
+            this.vals[index],
+            index,
+            this.strs.length
+          )}`,
         ''
       )
       .trim()
@@ -57,10 +62,12 @@ export class ShallowClip {
     )
   }
 
-  placeMarker(cur: string, val: unknown, index: number) {
+  placeMarker(cur: string, val: unknown, index: number, length: number) {
     let front = cur
     let res
     let part = new ShallowPart(index)
+    let isTail = index === length - 1
+
     if (isFragmentClip(val)) {
       res = `${Marker.clip.start}${Marker.clip.end}`
       part.setType('clip')
@@ -82,8 +89,8 @@ export class ShallowClip {
       part.setType('event')
     }
 
-    this.shallowParts.push(part)
-    return `${front}${res ?? ''}`
+    !isTail && this.shallowParts.push(part)
+    return `${front}${isTail ? '' : res}`
   }
 }
 
@@ -101,7 +108,7 @@ export class Clip {
   }
 
   update(values: ReadonlyArray<unknown>) {
-    // console.log(values)
+    console.log(values)
     this.parts.forEach((part, index) => {
       part.setValue(values[index])
     })
@@ -138,9 +145,10 @@ export class Clip {
         const attrLength = attributes.length
 
         for (let i = 0; i < attrLength; i++) {
-          let name = attributes[0].name
+          let name = attributes[i].name
           let prefix = name[0]
           if (prefix === '.' || prefix === ':' || prefix === '@') {
+            console.log(name)
             this.parts[count]?.setLocation({ node: cur, name: name.slice(1) })
             count++
           }
