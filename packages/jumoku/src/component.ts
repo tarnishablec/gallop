@@ -47,7 +47,7 @@ export function component<P extends object>(
         Clazz.initShaClip.getShaDof().cloneNode(true) as DocumentFragment,
         Clazz.initShaClip.shallowParts
       )
-      console.log(Clazz.initShaClip)
+      // console.log(Clazz.initShaClip)
       this.clip.update(Clazz.initShaClip.vals)
       this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
     }

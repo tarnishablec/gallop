@@ -1,4 +1,4 @@
-import { html, component, render } from '@jumoku/jumoku'
+import { html, component, render, useState } from '@jumoku/jumoku'
 import './src/components/Lit'
 import { TestTemplate, TestChild } from './src/components/TestComponent'
 
@@ -39,13 +39,18 @@ component(
 component(
   'test-b',
   (
-    { age, names }: { age: number; names?: string } = { age: 1, names: 'ppp' }
+    { age, color, names }: { age: number; color: string; names?: string } = {
+      age: 1,
+      color: 'green',
+      names: 'ppp'
+    }
   ) => {
+    let [] = useState({tick:1})
+
     return html`
-      <test-a :name="${names}" :age="${1}" a>
-        <button
-          @click="${(e: Event) => console.log(e)}"
-        >
+      <div class="test-b-header">test-b</div>
+      <test-a :name="${names}" :age="${age}" a>
+        <button @click="${(e: Event) => console.log(e)}">
           <slot></slot>
         </button>
       </test-a>
@@ -55,7 +60,7 @@ component(
 )
 
 render(html`
-  <test-b></test-b>
+  <test-b>click</test-b>
 `)
 
 // setInterval(() => {

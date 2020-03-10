@@ -11,6 +11,7 @@ import {
 import { replaceSpaceToZwnj, createTreeWalker } from './utils'
 import { Marker } from './marker'
 import { Part, ShallowPart } from './part'
+import { StyleClip } from './parse'
 
 const range = document.createRange()
 
@@ -53,13 +54,15 @@ export class ShallowClip {
     )
   }
 
-  use() {}
-
   createInstance() {
     return new Clip(
       this.getShaDof().cloneNode(true) as DocumentFragment,
       this.shallowParts
     )
+  }
+
+  useStyle(style:StyleClip){
+    
   }
 
   placeMarker(cur: string, val: unknown, index: number, length: number) {
@@ -108,13 +111,9 @@ export class Clip {
   }
 
   update(values: ReadonlyArray<unknown>) {
-    console.log(values)
+    // console.log(values)
     this.parts.forEach((part, index) => {
       part.setValue(values[index])
-    })
-
-    this.parts.forEach(part => {
-      part.commit()
     })
   }
 
@@ -148,7 +147,6 @@ export class Clip {
           let name = attributes[i].name
           let prefix = name[0]
           if (prefix === '.' || prefix === ':' || prefix === '@') {
-            console.log(name)
             this.parts[count]?.setLocation({ node: cur, name: name.slice(1) })
             count++
           }

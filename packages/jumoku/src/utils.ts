@@ -107,3 +107,33 @@ export function digStringBlock(
   }
   throw new Error('syntax error')
 }
+
+const hasOwn = Object.hasOwnProperty
+const is = Object.is
+const keys = <T, K extends keyof T>(val: T) => Object.keys(val) as K[]
+
+export const shallowEqual = (objA: unknown, objB: unknown) => {
+  if (is(objA, objB)) return true
+
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
+    return false
+  }
+
+  const keysA = keys(objA)
+  const keysB = keys(objB)
+
+  if (keysA.length !== keysB.length) return false
+
+  for (let i = 0; i < keysA.length; i++) {
+    if (!hasOwn.call(objB, keysA[i]) || !is(objA[keysA[i]], objB[keysA[i]])) {
+      return false
+    }
+  }
+
+  return true
+}

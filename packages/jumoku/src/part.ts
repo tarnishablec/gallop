@@ -3,6 +3,7 @@ import { generateEventOptions } from './event'
 import { Proxyed } from './reactive'
 import { removeNodes } from './dom'
 import { UpdatableElement } from './component'
+import { shallowEqual } from './utils'
 
 type PartLocation =
   | { node: Node; name: string }
@@ -14,6 +15,7 @@ type PartType = 'attr' | 'prop' | 'clip' | 'text' | 'event' | 'clips' | 'no'
 export abstract class Part {
   index: number
   value: unknown
+  oldValue: unknown = null
   protected location!: PartLocation
 
   setLocation(location: PartLocation) {
@@ -25,11 +27,15 @@ export abstract class Part {
   }
 
   setValue(val: unknown): void {
-    this.value = val
+    if (!this.checkEqual(val)) {
+      this.oldValue = this.value
+      this.value = val
+      this.commit()
+    }
   }
 
-  equals(val: unknown) {
-    return this.value === val
+  checkEqual(val: unknown) {
+    return shallowEqual(val, this.oldValue)
   }
 
   abstract commit(): void
@@ -65,9 +71,9 @@ export class ShallowPart extends Part {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setValue(val: unknown): void {}
-  commit(): void {}
+  commit(): void {
+    throw new Error('Method not implemented.')
+  }
 }
 
 export class AttrPart extends Part {
@@ -120,23 +126,23 @@ export class ClipPart extends Part {
   value!: ShallowClip
   location!: { startNode: Comment; endNode: Comment }
 
-  commit(): void {
-    this.resolve()
+  init() {
+    this.clear()
+
+    let clip = this.value.createInstance()
+    clip.update(this.value.vals)
+    this.location.startNode.parentNode?.insertBefore(
+      clip.dof,
+      this.location.endNode
+    )
   }
+
+  commit() {}
 
   clear(startNode: Node = this.location.startNode) {
     removeNodes(
       this.location.startNode.parentNode!,
       startNode,
-      this.location.endNode
-    )
-  }
-
-  resolve() {
-    let clip = this.value.createInstance()
-    clip.update(this.value.vals)
-    this.location.startNode.parentNode?.insertBefore(
-      clip.dof,
       this.location.endNode
     )
   }
@@ -146,19 +152,9 @@ export class ClipsPart extends Part {
   value!: ShallowClip[]
   location!: { startNode: Comment; endNode: Comment }
 
-  commit(): void {
-    this.resolve()
-  }
+  create() {
+    this.clear()
 
-  clear(startNode: Node = this.location.startNode) {
-    removeNodes(
-      this.location.startNode.parentNode!,
-      startNode,
-      this.location.endNode
-    )
-  }
-
-  resolve() {
     let clips = new Array<Clip>()
 
     this.value.forEach(c => clips.push(c.createInstance()))
@@ -169,5 +165,15 @@ export class ClipsPart extends Part {
         this.location.endNode
       )
     })
+  }
+
+  commit() {}
+
+  clear(startNode: Node = this.location.startNode) {
+    removeNodes(
+      this.location.startNode.parentNode!,
+      startNode,
+      this.location.endNode
+    )
   }
 }

@@ -69,7 +69,7 @@
   "include": [
     "packages/*/src",
     "packages/*/index.ts",
-    "packages/global.d.ts",
-    "packages/*/__tests__"
+    "packages/*/__tests__",
+    "global.d.ts"
   ]
 }

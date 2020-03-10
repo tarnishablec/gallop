@@ -1,12 +1,7 @@
-import { createProxy } from "./reactive"
+import { createProxy } from './reactive'
 
-export type Hooks = {
-  beforeMounted?: () => void
-  mounted?: () => void
-}
-
-const stateMap = new WeakMap()
-
-export const useState = <T>(raw: T) => {
-  return []
-}
+export const useState = <T extends object>(initValue: T) => [
+  createProxy(initValue)
+]
+export const useEffect = () => {}
+export const useContext = () => {}
