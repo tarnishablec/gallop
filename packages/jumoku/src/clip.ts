@@ -57,13 +57,12 @@ export class ShallowClip {
   createInstance() {
     return new Clip(
       this.getShaDof().cloneNode(true) as DocumentFragment,
+      this.shallowHtml,
       this.shallowParts
     )
   }
 
-  useStyle(style:StyleClip){
-    
-  }
+  useStyle(style: StyleClip) {}
 
   placeMarker(cur: string, val: unknown, index: number, length: number) {
     let front = cur
@@ -99,10 +98,16 @@ export class ShallowClip {
 
 export class Clip {
   dof: DocumentFragment
+  html: string
   parts: Part[]
 
-  constructor(dof: DocumentFragment, shallowParts: ShallowPart[]) {
+  constructor(
+    dof: DocumentFragment,
+    html: string,
+    shallowParts: ShallowPart[]
+  ) {
     this.dof = dof
+    this.html = html
     this.parts = shallowParts.map(p => p.makeReal())
 
     this.attachPart()

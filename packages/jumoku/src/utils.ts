@@ -110,7 +110,7 @@ export function digStringBlock(
 
 const hasOwn = Object.hasOwnProperty
 const is = Object.is
-const keys = <T, K extends keyof T>(val: T) => Object.keys(val) as K[]
+const keys = <T>(val: T) => Object.keys(val) as Array<keyof T>
 
 export const shallowEqual = (objA: unknown, objB: unknown) => {
   if (is(objA, objB)) return true

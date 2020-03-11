@@ -63,4 +63,4 @@ export const isUpdatableElement = <P extends object>(
   val: Element
 ): val is UpdatableElement<P> => val instanceof UpdatableElement
 
-export const isProxy = <T extends object>(val: T) => _isProxy in val
+export const isProxy = <T extends object>(val: T) => (val as any)[_isProxy] ?? false

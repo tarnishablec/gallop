@@ -1,6 +1,5 @@
 import { ShallowClip, Clip } from './clip'
 import { generateEventOptions } from './event'
-import { Proxyed } from './reactive'
 import { removeNodes } from './dom'
 import { UpdatableElement } from './component'
 import { shallowEqual } from './utils'
@@ -82,7 +81,12 @@ export class AttrPart extends Part {
 
   commit(): void {
     let { node, name } = this.location
-    node.setAttribute(name, this.value)
+    if (name === 'style') {
+      let style = node.getAttribute('style')
+      node.setAttribute(name, style ? `${style};${this.value}` : this.value)
+    } else {
+      node.setAttribute(name, this.value)
+    }
   }
 }
 
@@ -92,9 +96,7 @@ export class PorpPart<P extends object, K extends keyof P> extends Part {
 
   commit(): void {
     let { node, name } = this.location
-    node.$props[name as keyof Proxyed<P>] = this.value as Proxyed<
-      P
-    >[keyof Proxyed<P>]
+    ;(node.$props as P)[name] = this.value
   }
 }
 
@@ -113,6 +115,14 @@ export class TextPart extends Part {
 export class EventPart extends Part {
   value!: (e?: Event) => unknown
   location!: { node: Element; name: keyof DocumentEventMap }
+
+  checkEqual(val: unknown) {
+    if (!(val instanceof Function)) {
+      throw new Error('should be a function')
+    } else {
+      return val.toString() === this.value?.toString()
+    }
+  }
 
   commit(): void {
     let { node, name } = this.location
@@ -137,7 +147,9 @@ export class ClipPart extends Part {
     )
   }
 
-  commit() {}
+  commit() {
+    this.init()
+  }
 
   clear(startNode: Node = this.location.startNode) {
     removeNodes(
@@ -152,7 +164,7 @@ export class ClipsPart extends Part {
   value!: ShallowClip[]
   location!: { startNode: Comment; endNode: Comment }
 
-  create() {
+  init() {
     this.clear()
 
     let clips = new Array<Clip>()
@@ -167,7 +179,9 @@ export class ClipsPart extends Part {
     })
   }
 
-  commit() {}
+  commit() {
+    this.init()
+  }
 
   clear(startNode: Node = this.location.startNode) {
     removeNodes(

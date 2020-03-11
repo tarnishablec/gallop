@@ -1,4 +1,9 @@
-import { html, component, render, useState } from '@jumoku/jumoku'
+import {
+  html,
+  component,
+  render,
+  useState,
+} from '@jumoku/jumoku'
 import './src/components/Lit'
 import { TestTemplate, TestChild } from './src/components/TestComponent'
 
@@ -35,25 +40,39 @@ component(
     </div>
   `
 )
+const testFunc = (a: number, b: number) => console.log(a + b)
 
 component(
   'test-b',
   (
     { age, color, names }: { age: number; color: string; names?: string } = {
       age: 1,
-      color: 'green',
+      color: 'purple',
       names: 'ppp'
     }
   ) => {
-    let [] = useState({tick:1})
+    // let [] = useState({tick:1})
 
     return html`
-      <div class="test-b-header">test-b</div>
-      <test-a :name="${names}" :age="${age}" a>
-        <button @click="${(e: Event) => console.log(e)}">
-          <slot></slot>
-        </button>
-      </test-a>
+      <div
+        class="test-b-header"
+        style="background-color:red"
+        .style="${`color:${color}`}"
+      >
+        test-b age:${age}
+      </div>
+      <div>
+        <test-a :name="${names}" :age="${age}" a>
+          <button
+            @click.once="${(e: Event) => {
+              testFunc(age, age)
+              console.log(e)
+            }}"
+          >
+            <slot></slot>
+          </button>
+        </test-a>
+      </div>
       ${TestTemplate(prop)}
     `
   }
@@ -61,8 +80,16 @@ component(
 
 render(html`
   <test-b>click</test-b>
+  <style>
+    body {
+      background: lightgreen;
+    }
+  </style>
 `)
+
+let testB = document.querySelector('test-b')!
 
 // setInterval(() => {
 //   data.age += 1
 // }, 2000)
+

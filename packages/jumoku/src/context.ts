@@ -1,8 +1,8 @@
-import { createProxy, Proxyed } from './reactive'
+import { createProxy } from './reactive'
 
 export class Context<T extends object> {
   raw: T
-  proxy: [Proxyed<T>, Context<T>]
+  proxy: [T, Context<T>]
 
   constructor(raw: T) {
     this.raw = raw

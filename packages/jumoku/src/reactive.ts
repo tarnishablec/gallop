@@ -4,8 +4,6 @@ import { isObject, isFunction, isProxy } from './is'
 
 export const _isProxy = Symbol('isProxy')
 
-export type Proxyed<T> = T | { [_isProxy]: true }
-
 export const createProxy = <T extends object>(
   raw: T,
   setSideEffect?: (
@@ -20,8 +18,8 @@ export const createProxy = <T extends object>(
     receiver: unknown
   ) => void,
   lock: boolean = true
-): Proxyed<T> => {
-  let res = new Proxy(raw, {
+): T =>
+  new Proxy(raw, {
     set: (target, prop, val, receiver) => {
       if (lock) {
         if (!(prop in target)) {
@@ -33,6 +31,10 @@ export const createProxy = <T extends object>(
       return Reflect.set(target, prop, val, receiver)
     },
     get: (target, prop, reciver) => {
+      if (prop === _isProxy) {
+        return true
+      }
+
       getSideEffect?.(target, prop, reciver)
       // console.log(`----proxy state getted-----${String(prop)}`)
       const res = Reflect.get(target, prop, reciver)
@@ -41,8 +43,6 @@ export const createProxy = <T extends object>(
         : res
     }
   })
-  return { [_isProxy]: true, ...res }
-}
 
 // type A<T> = T | { a: number }
 

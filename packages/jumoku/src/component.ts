@@ -1,26 +1,26 @@
 import { ShallowClip, Clip } from './clip'
 import { getPropsFromFunction } from './utils'
 import { componentNamingError, componentExistError } from './error'
-import { Proxyed, createProxy } from './reactive'
+import { createProxy } from './reactive'
 
 let currentElement = null
 
 export const componentPool = new Set<string>()
 
 export abstract class UpdatableElement<P extends object> extends HTMLElement {
-  $props: Proxyed<P>
-  $state: Proxyed<unknown>
-  constructor(prop: P) {
+  $props: P | undefined
+  $state: unknown
+  constructor(initProp?: P) {
     super()
-    this.$props = createProxy(prop, () => this.update())
+    this.$props = initProp ? createProxy(initProp, () => this.update()) : undefined
   }
 
   connectedCallback() {
     currentElement = this
     console.log(currentElement)
   }
-  
-  update() {}
+
+  abstract update(): void
 }
 
 export function component<P extends object>(
@@ -42,18 +42,26 @@ export function component<P extends object>(
     updatable: boolean = false
 
     constructor() {
-      super(defaultProp!)
-      this.clip = new Clip(
-        Clazz.initShaClip.getShaDof().cloneNode(true) as DocumentFragment,
-        Clazz.initShaClip.shallowParts
-      )
+      super(defaultProp)
+      this.clip = Clazz.initShaClip.createInstance()
       // console.log(Clazz.initShaClip)
       this.clip.update(Clazz.initShaClip.vals)
       this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
+
+      console.log(this.$props)
     }
 
     static get observedAttributes() {
       return propsNames.map(p => `:${p}`)
+    }
+
+    update() {
+      let shaClip = builder(this.$props as P)
+      if (shaClip.shallowHtml === this.clip.html) {
+        this.clip.update(shaClip.vals)
+      } else {
+        this.clip = shaClip.createInstance()
+      }
     }
 
     enableUpdate() {
