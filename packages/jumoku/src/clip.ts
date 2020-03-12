@@ -62,7 +62,9 @@ export class ShallowClip {
     )
   }
 
-  useStyle(style: StyleClip) {}
+  useStyle(style: StyleClip) {
+    return style
+  }
 
   placeMarker(cur: string, val: unknown, index: number, length: number) {
     let front = cur

@@ -1,4 +1,4 @@
-import { html, createContext, useState } from '@jumoku/jumoku'
+import { html } from '@jumoku/jumoku'
 
 export const TestChild = (a: number) => html`
   <div style="background-color:red">

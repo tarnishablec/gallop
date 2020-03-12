@@ -13,13 +13,17 @@ export abstract class UpdatableElement<P extends object> extends HTMLElement {
   constructor(initProp?: P) {
     super()
     this.$props = initProp
-      ? createProxy(initProp, () => this.update())
+      ? createProxy(initProp, () => {
+        setTimeout(() => {
+          this.update()
+        }, 0);
+      })
       : undefined
   }
 
   connectedCallback() {
     currentElement = this
-    // console.log(currentElement)
+    console.log(currentElement)
   }
 
   abstract update(): void
@@ -58,14 +62,8 @@ export function component<P extends object>(
     }
 
     update() {
-      console.log(this.$props)
-      let shaClip = builder(this.$props)
-      if (shaClip.shallowHtml === this.clip.html) {
-        this.clip.update(shaClip.vals)
-      } else {
-        this.clip = shaClip.createInstance()
-        this.clip.update(shaClip.vals)
-      }
+      // console.log(this.$props)
+      this.clip.update(builder(this.$props).vals)
     }
 
     disconnectedCallback() {}

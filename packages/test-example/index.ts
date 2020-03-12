@@ -1,6 +1,6 @@
-import { html, component, render, useState } from '@jumoku/jumoku'
+import { html, component, render } from '@jumoku/jumoku'
 import './src/components/Lit'
-import { TestTemplate, TestChild } from './src/components/TestComponent'
+import { TestTemplate } from './src/components/TestComponent'
 
 const prop = {
   name: 'Chen Yihan',
@@ -56,7 +56,7 @@ component(
       >
         test-b age:${age}
       </div>
-      <test-a :name="${names}" :age="${age}" a>
+      <test-a :name="${names}" :age="${age}">
         <button
           @click.once="${(e: Event) => {
             testFunc(age, age)
@@ -83,15 +83,14 @@ render(html`
 let testB = document.querySelector('test-b')!
 
 let ppp = (testB as any).$props
-console.log(ppp)
 
 let intv = setInterval(() => {
-  ppp.age += 1
-},1000)
+  ppp.age += 2
+}, 1000)
 
 setTimeout(() => {
   clearInterval(intv)
-}, 10000);
+}, 10000)
 // setInterval(() => {
 //   data.age += 1
 // }, 2000)
