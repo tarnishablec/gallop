@@ -40,10 +40,16 @@ const testFunc = (a: number, b: number) => console.log(a + b)
 component(
   'test-b',
   (
-    { age, color, names }: { age: number; color: string; names?: string } = {
+    {
+      age,
+      color,
+      names,
+      children
+    }: { age: number; color: string; names?: string; children: string[] } = {
       age: 1,
       color: 'purple',
-      names: 'ppp'
+      names: 'ppp',
+      children: ['alice', 'bob', 'celina']
     }
   ) => {
     // let [] = useState({tick:1})
@@ -56,6 +62,11 @@ component(
       >
         test-b age:${age}
       </div>
+      ${children.map(
+        c => html`
+          <li>${c}</li>
+        `
+      )}
       <test-a :name="${names}" :age="${age}">
         <button
           @click.once="${(e: Event) => {
@@ -85,12 +96,12 @@ let testB = document.querySelector('test-b')!
 let ppp = (testB as any).$props
 
 let intv = setInterval(() => {
-  ppp.age += 2
+  ppp.children.push('li')
 }, 1000)
 
 setTimeout(() => {
   clearInterval(intv)
-}, 10000)
+}, 20000)
 // setInterval(() => {
 //   data.age += 1
 // }, 2000)

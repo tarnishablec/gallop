@@ -188,7 +188,10 @@ export class ClipsPart extends Part {
   setValue(shaClips: ShallowClip[]) {
     let same = false
 
-    if (shaClips?.[0]?.shallowHtml === this.value?.[0]?.html) {
+    if (
+      shaClips?.length === this.value?.length &&
+      shaClips?.[0]?.shallowHtml === this.value?.[0]?.html
+    ) {
       for (let i = 0; i < this.shaValue.length; i++) {
         for (let j = 0; j < this.shaValue[i].vals.length; j++) {
           if (this.shaValue[i].vals[j] !== shaClips[i].vals[j]) {

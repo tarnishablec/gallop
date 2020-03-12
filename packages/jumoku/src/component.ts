@@ -13,11 +13,16 @@ export abstract class UpdatableElement<P extends object> extends HTMLElement {
   constructor(initProp?: P) {
     super()
     this.$props = initProp
-      ? createProxy(initProp, () => {
-        setTimeout(() => {
-          this.update()
-        }, 0);
-      })
+      ? createProxy(
+          initProp,
+          () => {
+            setTimeout(() => {
+              this.update()
+            }, 0)
+          },
+          undefined,
+          false
+        )
       : undefined
   }
 
@@ -84,5 +89,3 @@ export const convertClassName = (name: string) =>
     .split('-')
     .map(n => n.replace(/^[a-z]/, i => i.toUpperCase()))
     .join('')
-
-const mergeProp = () => {}

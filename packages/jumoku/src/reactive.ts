@@ -39,7 +39,7 @@ export const createProxy = <T extends object>(
       // console.log(`----proxy state getted-----${String(prop)}`)
       const res = Reflect.get(target, prop, reciver)
       return isObject(res) && !isFunction(res) && !isProxy(res)
-        ? createProxy(res, setSideEffect, getSideEffect)
+        ? createProxy(res, setSideEffect, getSideEffect, lock)
         : res
     }
   })

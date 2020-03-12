@@ -35,8 +35,8 @@ export const TestTemplate = ({
       </span>
       ${name} ${color}
       ${children.map(
-        () => html`
-          <li>666666</li>
+        c => html`
+          <li>${c}</li>
         `
       )}
       ${children.map(
