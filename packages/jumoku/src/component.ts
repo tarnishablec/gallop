@@ -12,12 +12,14 @@ export abstract class UpdatableElement<P extends object> extends HTMLElement {
   $state: unknown
   constructor(initProp?: P) {
     super()
-    this.$props = initProp ? createProxy(initProp, () => this.update()) : undefined
+    this.$props = initProp
+      ? createProxy(initProp, () => this.update())
+      : undefined
   }
 
   connectedCallback() {
     currentElement = this
-    console.log(currentElement)
+    // console.log(currentElement)
   }
 
   abstract update(): void
@@ -48,7 +50,7 @@ export function component<P extends object>(
       this.clip.update(Clazz.initShaClip.vals)
       this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
 
-      console.log(this.$props)
+      // console.log(this.$props)
     }
 
     static get observedAttributes() {
@@ -56,16 +58,14 @@ export function component<P extends object>(
     }
 
     update() {
-      let shaClip = builder(this.$props as P)
+      console.log(this.$props)
+      let shaClip = builder(this.$props)
       if (shaClip.shallowHtml === this.clip.html) {
         this.clip.update(shaClip.vals)
       } else {
         this.clip = shaClip.createInstance()
+        this.clip.update(shaClip.vals)
       }
-    }
-
-    enableUpdate() {
-      this.updatable = true
     }
 
     disconnectedCallback() {}

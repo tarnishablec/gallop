@@ -50,11 +50,11 @@ export const isNodeProp = (val: unknown, front: string): val is String =>
     /=\s*".*"\s+[A-Za-z]+="/.test(front) ||
     /^"\s+/.test(front))
 
-export const isFragmentClip = (val: unknown): val is ShallowClip =>
+export const isShallowClip = (val: unknown): val is ShallowClip =>
   val instanceof ShallowClip
 
-export const isFragmentClipArray = (val: unknown): val is ShallowClip[] =>
-  isArrayOf(val, isFragmentClip)
+export const isShallowClipArray = (val: unknown): val is ShallowClip[] =>
+  isArrayOf(val, isShallowClip)
 
 export const isObject = <T extends object>(val: T): val is T =>
   val instanceof Object

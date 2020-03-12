@@ -1,9 +1,4 @@
-import {
-  html,
-  component,
-  render,
-  useState,
-} from '@jumoku/jumoku'
+import { html, component, render, useState } from '@jumoku/jumoku'
 import './src/components/Lit'
 import { TestTemplate, TestChild } from './src/components/TestComponent'
 
@@ -24,7 +19,7 @@ component(
     }: { name: string; age: number; person: { color: string; age: number } } = {
       name: 'yoho',
       age: 12,
-      person: { color: 'red', age: 12 }
+      person: { color: 'yellow', age: 12 }
     }
   ) => html`
     <div>
@@ -61,18 +56,16 @@ component(
       >
         test-b age:${age}
       </div>
-      <div>
-        <test-a :name="${names}" :age="${age}" a>
-          <button
-            @click.once="${(e: Event) => {
-              testFunc(age, age)
-              console.log(e)
-            }}"
-          >
-            <slot></slot>
-          </button>
-        </test-a>
-      </div>
+      <test-a :name="${names}" :age="${age}" a>
+        <button
+          @click.once="${(e: Event) => {
+            testFunc(age, age)
+            console.log(e)
+          }}"
+        >
+          <slot></slot>
+        </button>
+      </test-a>
       ${TestTemplate(prop)}
     `
   }
@@ -89,7 +82,16 @@ render(html`
 
 let testB = document.querySelector('test-b')!
 
+let ppp = (testB as any).$props
+console.log(ppp)
+
+let intv = setInterval(() => {
+  ppp.age += 1
+},1000)
+
+setTimeout(() => {
+  clearInterval(intv)
+}, 10000);
 // setInterval(() => {
 //   data.age += 1
 // }, 2000)
-

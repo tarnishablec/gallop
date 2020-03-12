@@ -1,7 +1,7 @@
 import {
   isNodeAttribute,
-  isFragmentClip,
-  isFragmentClipArray,
+  isShallowClip,
+  isShallowClipArray,
   isPrimitive,
   isEmptyArray,
   isFunction,
@@ -70,10 +70,10 @@ export class ShallowClip {
     let part = new ShallowPart(index)
     let isTail = index === length - 1
 
-    if (isFragmentClip(val)) {
+    if (isShallowClip(val)) {
       res = `${Marker.clip.start}${Marker.clip.end}`
       part.setType('clip')
-    } else if (isFragmentClipArray(val) || isEmptyArray(val)) {
+    } else if (isShallowClipArray(val) || isEmptyArray(val)) {
       res = `${Marker.clips.start}${Marker.clips.end}`
       part.setType('clips')
     } else if (isNodeProp(val, front)) {
@@ -99,7 +99,7 @@ export class ShallowClip {
 export class Clip {
   dof: DocumentFragment
   html: string
-  parts: Part[]
+  parts: Part[] = []
 
   constructor(
     dof: DocumentFragment,
@@ -135,9 +135,6 @@ export class Clip {
         if (/^\s*$/.test(pre.wholeText)) {
           pre.parentNode?.removeChild(pre)
         }
-        // else{
-        //   pre.parentNode?.replaceChild(new Text(pre.wholeText.replace(/(^\s+)|(\s+$)/g,'')),pre)
-        // }
       }
 
       if (cur === null) {

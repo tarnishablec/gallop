@@ -78,16 +78,22 @@ export class ShallowPart extends Part {
 export class AttrPart extends Part {
   value!: string
   location!: { node: Element; name: string }
+  styleCache: string = ''
 
-  commit(): void {
+  init(): void {
+    let { node } = this.location
+    this.styleCache = node.getAttribute('style') ?? ''
+  }
+
+  commit() {
     let { node, name } = this.location
     if (name === 'style') {
-      let style = node.getAttribute('style')
-      node.setAttribute(name, style ? `${style};${this.value}` : this.value)
+      node.setAttribute(name, `${this.styleCache};${this.value}`)
     } else {
       node.setAttribute(name, this.value)
     }
   }
+  clear() {}
 }
 
 export class PorpPart<P extends object, K extends keyof P> extends Part {
@@ -98,6 +104,8 @@ export class PorpPart<P extends object, K extends keyof P> extends Part {
     let { node, name } = this.location
     ;(node.$props as P)[name] = this.value
   }
+
+  init() {}
 }
 
 export class TextPart extends Part {
@@ -133,49 +141,86 @@ export class EventPart extends Part {
 }
 
 export class ClipPart extends Part {
-  value!: ShallowClip
+  value!: Clip
   location!: { startNode: Comment; endNode: Comment }
+  shaValue!: ShallowClip
 
   init() {
     this.clear()
 
-    let clip = this.value.createInstance()
-    clip.update(this.value.vals)
     this.location.startNode.parentNode?.insertBefore(
-      clip.dof,
+      this.value.dof,
       this.location.endNode
     )
   }
 
+  setValue(shaClip: ShallowClip) {
+    this.shaValue = shaClip
+
+    if (shaClip.shallowHtml === this.value?.html) {
+      this.commit()
+    } else {
+      this.value = shaClip.createInstance()
+      this.commit()
+      this.init()
+    }
+  }
+
   commit() {
-    this.init()
+    this.value.update(this.shaValue.vals)
   }
 
   clear(startNode: Node = this.location.startNode) {
+    // console.log(startNode)
     removeNodes(
-      this.location.startNode.parentNode!,
-      startNode,
+      startNode.parentNode!,
+      startNode.nextSibling,
       this.location.endNode
     )
   }
 }
 
 export class ClipsPart extends Part {
-  value!: ShallowClip[]
+  value!: Clip[]
   location!: { startNode: Comment; endNode: Comment }
+  shaValue!: ShallowClip[]
+
+  setValue(shaClips: ShallowClip[]) {
+    let same = false
+
+    if (shaClips?.[0]?.shallowHtml === this.value?.[0]?.html) {
+      for (let i = 0; i < this.shaValue.length; i++) {
+        for (let j = 0; j < this.shaValue[i].vals.length; j++) {
+          if (this.shaValue[i].vals[j] !== shaClips[i].vals[j]) {
+            same = false
+            break
+          }
+        }
+      }
+      same = true
+    } else if (!same) {
+      this.shaValue = shaClips
+      this.value = []
+      this.shaValue.forEach(sc => {
+        let clip = sc.createInstance()
+        this.value.push(clip)
+      })
+
+      // console.log(this.value)
+      this.value.forEach((v, index) => {
+        v.update(this.shaValue[index].vals)
+      })
+      this.commit()
+    }
+  }
 
   init() {
     this.clear()
 
-    let clips = new Array<Clip>()
-
-    this.value.forEach(c => clips.push(c.createInstance()))
-    clips.forEach((c, index) => {
-      c.update(this.value[index].vals)
-      this.location.startNode.parentNode?.insertBefore(
-        c.dof,
-        this.location.endNode
-      )
+    let { startNode, endNode } = this.location
+    let parent = startNode.parentNode
+    this.value.forEach(v => {
+      parent?.insertBefore(v.dof, endNode)
     })
   }
 
@@ -185,8 +230,8 @@ export class ClipsPart extends Part {
 
   clear(startNode: Node = this.location.startNode) {
     removeNodes(
-      this.location.startNode.parentNode!,
-      startNode,
+      startNode.parentNode!,
+      startNode.nextSibling,
       this.location.endNode
     )
   }

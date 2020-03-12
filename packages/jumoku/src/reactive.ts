@@ -27,7 +27,7 @@ export const createProxy = <T extends object>(
         }
       }
       setSideEffect?.(target, prop, val, receiver)
-      console.log(`----proxy state changed-----${String(prop)}`)
+      // console.log(`----proxy state changed-----${String(prop)}`)
       return Reflect.set(target, prop, val, receiver)
     },
     get: (target, prop, reciver) => {
