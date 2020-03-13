@@ -1,4 +1,5 @@
 import { isObject, isFunction, isProxy } from './is'
+import { LockedProxyError } from './error'
 
 // const collectionTypes = new Set<Function>([Set, Map, WeakMap, WeakSet])
 
@@ -17,13 +18,13 @@ export const createProxy = <T extends object>(
     prop: string | number | symbol,
     receiver: unknown
   ) => void,
-  lock: boolean = true
+  lock: boolean = false
 ): T =>
   new Proxy(raw, {
     set: (target, prop, val, receiver) => {
       if (lock) {
         if (!(prop in target)) {
-          throw new Error('can not set to locked object')
+          throw LockedProxyError
         }
       }
       setSideEffect?.(target, prop, val, receiver)

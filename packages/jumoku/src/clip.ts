@@ -6,12 +6,29 @@ import {
   isEmptyArray,
   isFunction,
   isNodeProp,
-  isElement
+  isElement,
+  isFunctions
 } from './is'
 import { replaceSpaceToZwnj, createTreeWalker } from './utils'
 import { Marker } from './marker'
-import { Part, ShallowPart } from './part'
+import {
+  Part,
+  PartType,
+  PartLocation,
+  TextPart,
+  AttrPart,
+  AttrPropLocation,
+  PorpPart,
+  EventPart,
+  EventInstance,
+  EventLocation,
+  TextLocation,
+  ClipPart,
+  clipLocation,
+  ClipsPart
+} from './part'
 import { StyleClip } from './parse'
+import { NoTypePartError } from './error'
 
 const range = document.createRange()
 
@@ -22,7 +39,7 @@ export class ShallowClip {
   readonly vals: unknown[]
   readonly shallowHtml: string
 
-  shallowParts: ShallowPart[] = []
+  shallowParts: PartType[] = []
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     this.strs = strs
@@ -58,7 +75,8 @@ export class ShallowClip {
     return new Clip(
       this.getShaDof().cloneNode(true) as DocumentFragment,
       this.shallowHtml,
-      this.shallowParts
+      this.shallowParts,
+      this.vals
     )
   }
 
@@ -69,31 +87,31 @@ export class ShallowClip {
   placeMarker(cur: string, val: unknown, index: number, length: number) {
     let front = cur
     let res
-    let part = new ShallowPart(index)
+    let partType: PartType = 'no'
     let isTail = index === length - 1
 
     if (isShallowClip(val)) {
       res = `${Marker.clip.start}${Marker.clip.end}`
-      part.setType('clip')
+      partType = 'clip'
+    } else if (isFunction(val) || isFunctions(val)) {
+      res = Marker.func
+      partType = 'event'
     } else if (isShallowClipArray(val) || isEmptyArray(val)) {
       res = `${Marker.clips.start}${Marker.clips.end}`
-      part.setType('clips')
+      partType = 'clips'
     } else if (isNodeProp(val, front)) {
       res = Marker.prop
-      part.setType('prop')
+      partType = 'prop'
     } else if (isNodeAttribute(val, front)) {
       res = Marker.attr
-      part.setType('attr')
+      partType = 'attr'
     } else if (isPrimitive(val)) {
       front = replaceSpaceToZwnj(cur)
       res = Marker.text
-      part.setType('text')
-    } else if (isFunction(val)) {
-      res = Marker.func
-      part.setType('event')
+      partType = 'text'
     }
 
-    !isTail && this.shallowParts.push(part)
+    !isTail && this.shallowParts.push(partType)
     return `${front}${isTail ? '' : res}`
   }
 }
@@ -101,20 +119,29 @@ export class ShallowClip {
 export class Clip {
   dof: DocumentFragment
   html: string
+  shallowParts: PartType[]
   parts: Part[] = []
+  initVals: unknown[]
 
   constructor(
     dof: DocumentFragment,
     html: string,
-    shallowParts: ShallowPart[]
+    shallowParts: PartType[],
+    initVals: unknown[]
   ) {
     this.dof = dof
     this.html = html
-    this.parts = shallowParts.map(p => p.makeReal())
-
+    this.initVals = initVals
+    this.shallowParts = shallowParts
     this.attachPart()
 
     // console.log(this.parts)
+  }
+
+  init() {
+    this.parts.forEach(part => {
+      part.init()
+    })
   }
 
   update(values: ReadonlyArray<unknown>) {
@@ -128,9 +155,13 @@ export class Clip {
     const walker = createTreeWalker(this.dof)
     let count = 0
 
-    while (count < this.parts.length) {
+    while (count < this.initVals.length) {
       walker.nextNode()
       let cur = walker.currentNode
+
+      if (cur === null) {
+        break
+      }
 
       if (cur.previousSibling instanceof Text) {
         let pre = cur.previousSibling
@@ -139,35 +170,96 @@ export class Clip {
         }
       }
 
-      if (cur === null) {
-        break
-      }
-
       if (isElement(cur)) {
         const attributes = cur.attributes
-        const attrLength = attributes.length
+        const { length } = attributes
 
-        for (let i = 0; i < attrLength; i++) {
+        for (let i = 0; i < length; i++) {
           let name = attributes[i].name
           let prefix = name[0]
           if (prefix === '.' || prefix === ':' || prefix === '@') {
-            this.parts[count]?.setLocation({ node: cur, name: name.slice(1) })
+            const n = name.slice(1)
+            let p = createPart(
+              count,
+              this.shallowParts[count],
+              this.initVals[count],
+              { node: cur, name: n }
+            )
+            this.parts.push(p)
             count++
           }
         }
       } else if (cur instanceof Comment) {
         const type = cur.data.match(/\$(\S*)\$/)?.[1]
         if (type === 'cliphead' || type === 'clipshead') {
-          this.parts[count]?.setLocation({
-            startNode: cur,
-            endNode: cur.nextSibling! as Comment
-          })
+          let p = createPart(
+            count,
+            this.shallowParts[count],
+            this.initVals[count] as ShallowClip,
+            {
+              startNode: cur,
+              endNode: cur.nextSibling! as Comment
+            }
+          )
+          this.parts.push(p)
           walker.nextNode()
         } else if (type === 'text') {
-          this.parts[count]?.setLocation({ textNodePre: cur })
+          let p = createPart(
+            count,
+            this.shallowParts[count],
+            this.initVals[count],
+            {
+              node: cur
+            }
+          )
+          this.parts.push(p)
         }
         count++
       }
     }
+  }
+}
+
+const createPart = (
+  index: number,
+  type: PartType,
+  initVal: unknown,
+  location: PartLocation
+) => {
+  switch (type) {
+    case 'text':
+      return new TextPart(index, initVal as string, location as TextLocation)
+    case 'attr':
+      return new AttrPart(
+        index,
+        initVal as string,
+        location as AttrPropLocation
+      )
+    case 'prop':
+      return new PorpPart(
+        index,
+        initVal as string,
+        location as AttrPropLocation
+      )
+    case 'event':
+      return new EventPart(
+        index,
+        initVal as EventInstance | EventInstance[],
+        location as EventLocation
+      )
+    case 'clip':
+      return new ClipPart(
+        index,
+        initVal as ShallowClip,
+        location as clipLocation
+      )
+    case 'clips':
+      return new ClipsPart(
+        index,
+        initVal as ShallowClip[],
+        location as clipLocation
+      )
+    default:
+      throw NoTypePartError
   }
 }

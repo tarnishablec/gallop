@@ -25,7 +25,7 @@ export function isArrayOf<T>(
   vals: unknown,
   isT: (val: unknown) => val is T
 ): vals is T[] {
-  if (Array.isArray(vals)) {
+  if (Array.isArray(vals) && vals.length) {
     return isT(vals[0])
   }
   return false
@@ -37,6 +37,9 @@ export const isDocumentFragmentArray = (
 
 export const isFunction = (val: unknown): val is Function =>
   val instanceof Function
+
+export const isFunctions = (val: unknown): val is Function[] =>
+  isArrayOf(val, isFunction)
 
 export const isNodeAttribute = (val: unknown, front: string): val is string =>
   /\s\.(([A-Za-z]|-)+)="/.test(front) &&
@@ -63,4 +66,5 @@ export const isUpdatableElement = <P extends object>(
   val: Element
 ): val is UpdatableElement<P> => val instanceof UpdatableElement
 
-export const isProxy = <T extends object>(val: T) => (val as any)[_isProxy] ?? false
+export const isProxy = <T extends object>(val: T) =>
+  (val as any)[_isProxy] ?? false

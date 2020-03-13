@@ -137,3 +137,11 @@ export const shallowEqual = (objA: unknown, objB: unknown) => {
 
   return true
 }
+
+export const twoStrArrayCompare = (arrA: string[], arrB: string[]): boolean => {
+  if (arrA.length !== arrB.length) {
+    return false
+  }
+
+  return arrA.join('') === arrB.join('')
+}

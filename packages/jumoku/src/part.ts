@@ -1,21 +1,38 @@
-import { ShallowClip, Clip } from './clip'
+import { shallowEqual, twoStrArrayCompare } from './utils'
+import { Clip, ShallowClip } from './clip'
+import { UpdatableElement } from './component'
+import { NotUpdatableError } from './error'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
-import { UpdatableElement } from './component'
-import { shallowEqual } from './utils'
 
-type PartLocation =
-  | { node: Node; name: string }
-  | { startNode: Comment; endNode: Comment }
-  | { textNodePre: Comment | Text }
+export type AttrPropLocation = { node: Element; name: string }
+export type EventLocation = { node: Element; name: string }
+export type TextLocation = { node: Comment | Text }
+export type clipLocation = { startNode: Comment; endNode: Comment }
 
-type PartType = 'attr' | 'prop' | 'clip' | 'text' | 'event' | 'clips' | 'no'
+export type EventInstance = (this: Document, e: Event) => unknown
+
+export type PartLocation =
+  | AttrPropLocation
+  | clipLocation
+  | EventLocation
+  | TextLocation
+  | undefined
+
+export type PartType =
+  | 'attr'
+  | 'prop'
+  | 'clip'
+  | 'text'
+  | 'event'
+  | 'clips'
+  | 'no'
 
 export abstract class Part {
   index: number
   value: unknown
   oldValue: unknown = null
-  protected location!: PartLocation
+  location: PartLocation
 
   setLocation(location: PartLocation) {
     this.location = location
@@ -24,6 +41,10 @@ export abstract class Part {
   constructor(index: number) {
     this.index = index
   }
+
+  abstract init(): void
+  abstract clear(): void
+  abstract commit(): void
 
   setValue(val: unknown): void {
     if (!this.checkEqual(val)) {
@@ -36,206 +57,234 @@ export abstract class Part {
   checkEqual(val: unknown) {
     return shallowEqual(val, this.oldValue)
   }
-
-  abstract commit(): void
 }
 
-export class ShallowPart extends Part {
-  type: PartType = 'no'
-
-  constructor(index: number) {
-    super(index)
-  }
-
-  setType(type: PartType) {
-    this.type = type
-  }
-
-  makeReal(): Part {
-    switch (this.type) {
-      case 'prop':
-        return new PorpPart(this.index)
-      case 'attr':
-        return new AttrPart(this.index)
-      case 'clip':
-        return new ClipPart(this.index)
-      case 'text':
-        return new TextPart(this.index)
-      case 'event':
-        return new EventPart(this.index)
-      case 'clips':
-        return new ClipsPart(this.index)
-      default:
-        return this
-    }
-  }
-
-  commit(): void {
+export class PorpPart extends Part {
+  clear(): void {
     throw new Error('Method not implemented.')
+  }
+  location: AttrPropLocation
+  value: string
+
+  constructor(index: number, val: string, location: AttrPropLocation) {
+    super(index)
+    this.value = val
+    this.location = location
+  }
+
+  init(): void {
+    this.commit()
+  }
+  commit(): void {
+    let { name, node } = this.location
+    if (!(node instanceof UpdatableElement)) {
+      throw NotUpdatableError
+    } else {
+      node.$props[name] = this.value
+    }
   }
 }
 
 export class AttrPart extends Part {
-  value!: string
-  location!: { node: Element; name: string }
-  styleCache: string = ''
+  location: { node: Element; name: string }
+  value: string
+  styleCache?: string
 
+  constructor(
+    index: number,
+    val: string,
+    location: { node: Element; name: string }
+  ) {
+    super(index)
+    this.value = val
+    this.location = location
+  }
+  clear(): void {
+    this.location.node.removeAttribute(this.location.name)
+  }
   init(): void {
-    let { node } = this.location
-    this.styleCache = node.getAttribute('style') ?? ''
-  }
-
-  commit() {
-    let { node, name } = this.location
+    let { name, node } = this.location
     if (name === 'style') {
-      node.setAttribute(name, `${this.styleCache};${this.value}`)
-    } else {
-      node.setAttribute(name, this.value)
+      this.styleCache = node.getAttribute('style') ?? undefined
     }
+    this.commit()
   }
-  clear() {}
-}
-
-export class PorpPart<P extends object, K extends keyof P> extends Part {
-  value!: P[K]
-  location!: { node: UpdatableElement<P>; name: keyof P }
-
   commit(): void {
-    let { node, name } = this.location
-    ;(node.$props as P)[name] = this.value
+    let { name, node } = this.location
+    let res: string
+    if (name === 'style') {
+      res = `${this.styleCache ?? ''};${this.value}`
+    } else {
+      res = this.value
+    }
+    node.setAttribute(name, res)
   }
-
-  init() {}
 }
 
 export class TextPart extends Part {
-  value!: string | number | undefined | null
-  location!: { textNodePre: Comment | Text }
-
   commit(): void {
-    let pre = this.location.textNodePre
-    let next = new Text(this.value?.toString())
-    this.location.textNodePre = next
-    pre.parentNode?.replaceChild(next, pre)
+    let { node } = this.location
+    node.parentNode?.replaceChild(new Text(this.value.toString()), node)
+  }
+  clear(): void {
+    let { node } = this.location
+    node.parentNode?.replaceChild(new Text(), node)
+  }
+  init(): void {
+    this.commit()
+  }
+  location: TextLocation
+  value: string | number
+
+  constructor(index: number, val: string, location: TextLocation) {
+    super(index)
+    this.location = location
+    this.value = val
   }
 }
 
 export class EventPart extends Part {
-  value!: (e?: Event) => unknown
-  location!: { node: Element; name: keyof DocumentEventMap }
-
-  checkEqual(val: unknown) {
-    if (!(val instanceof Function)) {
-      throw new Error('should be a function')
+  commit(): void {
+    let { node } = this.location
+    if (this.value instanceof Array) {
+      this.value.forEach(v => {
+        let ev = this.tryGetFromCache(v)
+        node.addEventListener(this.eventName, ev, this.options)
+      })
     } else {
-      return val.toString() === this.value?.toString()
+      node.addEventListener(
+        this.eventName,
+        this.tryGetFromCache(this.value),
+        this.options
+      )
+    }
+  }
+  clear(): void {
+    this.eventCache.forEach(val => {
+      this.location.node.removeEventListener(this.eventName, val, this.options)
+    })
+    this.eventCache.clear()
+  }
+  init(): void {
+    this.commit()
+  }
+
+  setValue(val: EventInstance | EventInstance[]) {
+    let temp = []
+    if (val instanceof Array) {
+      temp = val.map(v => v.toString())
+    } else {
+      temp = [val.toString()]
+    }
+    if (twoStrArrayCompare(temp, Array.from(this.eventCache.keys()))) {
+      return
+    } else {
+      this.clear()
+      this.commit()
     }
   }
 
-  commit(): void {
-    let { node, name } = this.location
-    let [eventName, ...opts] = name.split('.')
-    let option = generateEventOptions(new Set(opts))
-    node.addEventListener(eventName, this.value, option)
+  tryGetFromCache(e: EventInstance) {
+    return (
+      this.eventCache.get(e.toString()) ??
+      this.eventCache.set(e.toString(), e).get(e.toString())!
+    )
+  }
+
+  location: EventLocation
+  value: EventInstance | EventInstance[]
+  eventCache: Map<string, EventInstance> = new Map()
+  options: AddEventListenerOptions
+  eventName: keyof DocumentEventMap
+
+  constructor(
+    index: number,
+    val: EventInstance | EventInstance[],
+    location: EventLocation
+  ) {
+    super(index)
+    this.location = location
+    const { name } = this.location
+    const [eventName, ...opts] = name.split('.')
+    this.options = generateEventOptions(new Set(opts))
+    this.eventName = eventName as keyof DocumentEventMap
+    this.value = val
   }
 }
 
 export class ClipPart extends Part {
-  value!: Clip
-  location!: { startNode: Comment; endNode: Comment }
-  shaValue!: ShallowClip
-
-  init() {
-    this.clear()
-
-    this.location.startNode.parentNode?.insertBefore(
-      this.value.dof,
-      this.location.endNode
-    )
+  commit(): void {
+    this.value.update(this.shaValue.vals)
+  }
+  clear(): void {
+    let { startNode, endNode } = this.location
+    removeNodes(startNode.parentNode!, startNode.nextSibling, endNode)
+  }
+  init(): void {
+    let { startNode, endNode } = this.location
+    let parent = startNode.parentNode!
+    parent.insertBefore(this.value.dof, endNode)
+    this.commit()
   }
 
-  setValue(shaClip: ShallowClip) {
-    this.shaValue = shaClip
-
-    if (shaClip.shallowHtml === this.value?.html) {
+  setValue(val: ShallowClip) {
+    this.shaValue = val
+    if (this.shaValue.shallowHtml === this.value.html) {
       this.commit()
     } else {
-      this.value = shaClip.createInstance()
-      this.commit()
+      this.value = this.shaValue.createInstance()
+      this.clear()
       this.init()
     }
   }
+  location: clipLocation
+  value: Clip
+  shaValue: ShallowClip
 
-  commit() {
-    this.value.update(this.shaValue.vals)
-  }
-
-  clear(startNode: Node = this.location.startNode) {
-    // console.log(startNode)
-    removeNodes(
-      startNode.parentNode!,
-      startNode.nextSibling,
-      this.location.endNode
-    )
+  constructor(index: number, val: ShallowClip, location: clipLocation) {
+    super(index)
+    this.location = location
+    this.shaValue = val
+    this.value = val.createInstance()
   }
 }
 
 export class ClipsPart extends Part {
-  value!: Clip[]
-  location!: { startNode: Comment; endNode: Comment }
-  shaValue!: ShallowClip[]
-
-  setValue(shaClips: ShallowClip[]) {
-    let same = false
-
-    if (
-      shaClips?.length === this.value?.length &&
-      shaClips?.[0]?.shallowHtml === this.value?.[0]?.html
-    ) {
-      for (let i = 0; i < this.shaValue.length; i++) {
-        for (let j = 0; j < this.shaValue[i].vals.length; j++) {
-          if (this.shaValue[i].vals[j] !== shaClips[i].vals[j]) {
-            same = false
-            break
-          }
-        }
-      }
-      same = true
-    } else if (!same) {
-      this.shaValue = shaClips
-      this.value = []
-      this.shaValue.forEach(sc => {
-        let clip = sc.createInstance()
-        this.value.push(clip)
-      })
-
-      // console.log(this.value)
-      this.value.forEach((v, index) => {
-        v.update(this.shaValue[index].vals)
-      })
-      this.commit()
-    }
-  }
-
-  init() {
-    this.clear()
-
+  commit(): void {
     let { startNode, endNode } = this.location
     let parent = startNode.parentNode
     this.value.forEach(v => {
       parent?.insertBefore(v.dof, endNode)
     })
   }
-
-  commit() {
-    this.init()
+  clear(): void {
+    let { startNode, endNode } = this.location
+    removeNodes(startNode.parentNode!, startNode.nextSibling, endNode)
+  }
+  init(): void {
+    this.commit()
   }
 
-  clear(startNode: Node = this.location.startNode) {
-    removeNodes(
-      startNode.parentNode!,
-      startNode.nextSibling,
-      this.location.endNode
-    )
+  setValue(vals: ShallowClip[]) {
+   
+  }
+
+  resetValue() {
+    return this.shaValues.reduce((acc, cur) => {
+      let clip = cur.createInstance()
+      acc.push(clip)
+      return acc
+    }, new Array<Clip>())
+  }
+
+  location: clipLocation
+  value: Clip[]
+  shaValues: ShallowClip[]
+
+  constructor(index: number, val: ShallowClip[], location: clipLocation) {
+    super(index)
+    this.location = location
+    this.shaValues = val
+    this.value = this.resetValue()
   }
 }

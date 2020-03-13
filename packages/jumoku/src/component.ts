@@ -1,6 +1,6 @@
 import { ShallowClip, Clip } from './clip'
 import { getPropsFromFunction } from './utils'
-import { componentNamingError, componentExistError } from './error'
+import { ComponentNamingError, ComponentExistError } from './error'
 import { createProxy } from './reactive'
 
 let currentElement = null
@@ -39,35 +39,32 @@ export function component<P extends object>(
   builder: (props?: P) => ShallowClip
 ) {
   if (!checkComponentName(name)) {
-    throw componentNamingError
+    throw ComponentNamingError
   }
   if (componentPool.has(name)) {
-    throw componentExistError
+    throw ComponentExistError
   }
-  let { propsNames, defaultProp } = getPropsFromFunction(builder)
-  let initClip = builder(defaultProp)
+  let { defaultProp } = getPropsFromFunction(builder)
 
   const Clazz = class extends UpdatableElement<P> {
-    static initShaClip: ShallowClip = initClip
+    initShaClip: ShallowClip
     clip: Clip
     updatable: boolean = false
 
     constructor() {
       super(defaultProp)
-      this.clip = Clazz.initShaClip.createInstance()
-      // console.log(Clazz.initShaClip)
-      this.clip.update(Clazz.initShaClip.vals)
-      this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
-
       // console.log(this.$props)
-    }
-
-    static get observedAttributes() {
-      return propsNames.map(p => `:${p}`)
+      this.initShaClip = builder({ ...defaultProp, ...this.$props } as P)
+      this.clip = this.initShaClip.createInstance()
+      // console.log(Clazz.initShaClip)
+      this.clip.init()
+      this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
+      // console.log(this.$props)
     }
 
     update() {
-      // console.log(this.$props)
+      console.log(this.$props)
+      // debugger
       this.clip.update(builder(this.$props).vals)
     }
 

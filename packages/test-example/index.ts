@@ -96,12 +96,12 @@ let testB = document.querySelector('test-b')!
 let ppp = (testB as any).$props
 
 let intv = setInterval(() => {
-  ppp.children.push('li')
+  ppp.age += 1
 }, 1000)
 
 setTimeout(() => {
   clearInterval(intv)
-}, 20000)
+}, 5000)
 // setInterval(() => {
 //   data.age += 1
 // }, 2000)
