@@ -11,7 +11,7 @@ still working...
         register web component in functional way 
                 component('name-name',({props})=>html`
                     <div>${props}</div>
-                `)
+                `.useContext([someContext]))
 
         common feature in react
 
