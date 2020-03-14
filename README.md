@@ -1,6 +1,8 @@
 # jumoku
 still working...
 
+        yarn add @jumoku/jumoku
+
 //Feature
         
         register web component in functional way 
