@@ -9,7 +9,7 @@ import {
   isElement,
   isFunctions
 } from './is'
-import { replaceSpaceToZwnj, createTreeWalker } from './utils'
+import { replaceSpaceToZwnj, createTreeWalker, OBJ } from './utils'
 import { Marker } from './marker'
 import {
   Part,
@@ -29,6 +29,8 @@ import {
 } from './part'
 import { StyleClip } from './parse'
 import { NoTypePartError } from './error'
+import { UpdatableElement } from './component'
+import { Context } from './context'
 
 const range = document.createRange()
 
@@ -41,6 +43,7 @@ export class ShallowClip {
 
   key: unknown = null
 
+  contexts: Context<OBJ>[] = []
   shallowParts: PartType[] = []
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
@@ -74,13 +77,17 @@ export class ShallowClip {
   }
 
   createInstance() {
-    return new Clip(
+    let clip = new Clip(
       this.getShaDof().cloneNode(true) as DocumentFragment,
       this.shallowHtml,
       this.shallowParts,
       this.vals,
       this.key
     )
+    this.contexts.forEach(c => {
+      c.watch(clip)
+    })
+    return clip
   }
 
   useStyle(style: StyleClip) {
@@ -89,6 +96,11 @@ export class ShallowClip {
 
   useKey(key: unknown) {
     this.key = key
+    return this
+  }
+
+  useContext(contexts: Context<OBJ>[]) {
+    this.contexts = contexts
     return this
   }
 
@@ -131,6 +143,8 @@ export class Clip {
   parts: Part[] = []
   initVals: unknown[]
   key: unknown
+
+  elementInstance?: UpdatableElement<any>
 
   constructor(
     dof: DocumentFragment,

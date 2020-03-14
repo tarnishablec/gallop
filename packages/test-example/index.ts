@@ -1,4 +1,4 @@
-import { html, component, render } from '@jumoku/jumoku'
+import { html, component, render, createContext } from '@jumoku/jumoku'
 import { TestTemplate } from './src/components/TestComponent'
 
 const prop = {
@@ -36,6 +36,8 @@ component(
 )
 const testFunc = (a: number, b: number) => console.log(a + b)
 
+let [data, context] = createContext({ tick: 1 })
+
 component(
   'test-b',
   (
@@ -61,6 +63,7 @@ component(
       >
         test-b age:${age}
       </div>
+      <div>tick context: ${data.tick}</div>
       <div>With key list diff</div>
       ${children.map(c =>
         html`
@@ -78,7 +81,7 @@ component(
         </button>
       </test-a>
       ${TestTemplate(prop)}
-    `
+    `.useContext([context])
   }
 )
 
@@ -98,6 +101,10 @@ let ppp = (testB as any).$props
 let intv = setInterval(() => {
   ppp.age += 1
   ppp.children.unshift(`ppp${Date.now()}`)
+}, 1000)
+
+setInterval(() => {
+  data.tick += 1
 }, 1000)
 
 setTimeout(() => {

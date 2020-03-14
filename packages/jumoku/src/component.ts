@@ -5,29 +5,31 @@ import { createProxy } from './reactive'
 
 // let currentElement = null
 
+type Compoent<P> = (props?: P) => ShallowClip
+
 export const componentPool = new Set<string>()
 
 export abstract class UpdatableElement<P extends object> extends HTMLElement {
   $props: P | undefined
   $state: unknown
+  builder: Compoent<P>
 
   hooksEnable: boolean = false
 
-  constructor(initProp?: P) {
+  constructor(initProp: P, builder: Compoent<P>) {
     super()
-    this.$props = initProp
-      ? createProxy(
-          initProp,
-          () => {
-            // console.log(`${this.tagName} updated`)
-            setTimeout(() => {
-              this.update()
-            }, 0)
-          },
-          undefined,
-          false
-        )
-      : undefined
+    this.builder = builder
+    this.$props = createProxy(
+      initProp,
+      () => {
+        // console.log(`${this.tagName} updated`)
+        setTimeout(() => {
+          this.update()
+        }, 0)
+      },
+      undefined,
+      false
+    )
   }
 
   connectedCallback() {
@@ -45,7 +47,7 @@ export abstract class UpdatableElement<P extends object> extends HTMLElement {
 
 export function component<P extends object>(
   name: string,
-  builder: (props?: P) => ShallowClip
+  builder: Compoent<P>
 ) {
   if (!checkComponentName(name)) {
     throw ComponentNamingError
@@ -61,16 +63,17 @@ export function component<P extends object>(
     updatable: boolean = false
 
     constructor() {
-      super(defaultProp)
+      super(defaultProp ?? ({} as P), builder)
       this.clip = Clazz.initShaClip.createInstance()
       this.clip.init()
+      this.clip.elementInstance = this
       this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
     }
 
     update() {
       // console.log(this.$props)
       // debugger
-      this.clip.update(builder(this.$props).vals)
+      this.clip.update(this.builder(this.$props!).vals)
     }
   }
   customElements.define(name, Clazz)

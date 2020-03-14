@@ -1,6 +1,8 @@
 export const createTreeWalker = (node: Node) =>
   document.createTreeWalker(node, 133, null, false)
 
+export interface OBJ extends Object {}
+
 export type Primitive =
   | null
   | undefined
