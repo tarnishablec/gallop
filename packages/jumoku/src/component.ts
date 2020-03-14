@@ -31,7 +31,7 @@ export abstract class UpdatableElement<P extends object> extends HTMLElement {
   }
 
   connectedCallback() {
-    currentElement = this
+    // currentElement = this
     this.hooksEnable = true
     // console.log(currentElement)
   }
