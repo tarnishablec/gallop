@@ -5,6 +5,8 @@ still working...
 
 
 //Feature
+
+        use template literals to auto detect dynamic & static code
         
         register web component in functional way 
                 component('name-name',({props})=>html`
@@ -15,6 +17,7 @@ still working...
 
         : to bind props of component
         . to bind attributes 
+        @ to bind events, support @click.once.capture.passive like vue
 
         useKey() to enable list diff by keys
 
@@ -33,5 +36,6 @@ still working...
         async update queue                                       ✔      
 
         scoped css by shadowdom
+        
+        scoped scss inject
 
-![example](https://github.com/tarnishablec/jumoku/blob/master/packages/test-example/other/test.png)
