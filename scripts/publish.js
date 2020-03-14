@@ -4,6 +4,8 @@ main()
 
 async function main() {
   await run(`git add .`)
-  await run(`git commit`)
+  try {
+    await run(`git commit`)
+  } catch (error) {}
   await run(`lerna publish`)
 }
