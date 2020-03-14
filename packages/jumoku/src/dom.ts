@@ -13,3 +13,17 @@ export const removeNodes = (
 export const insertAfter = (parent: Node, newNode: Node, after: Node) => {
   parent.insertBefore(newNode, after.nextSibling)
 }
+
+export const getNodesBetween = (start: Node, end: Node) => {
+  if (!start.parentNode?.isSameNode(end.parentNode)) {
+    throw new Error('not same parent')
+  }
+
+  let res: Node[] = []
+  let n = start.nextSibling!
+  while (!n.isSameNode(end)) {
+    res.push(n)
+    n = n.nextSibling!
+  }
+  return res
+}

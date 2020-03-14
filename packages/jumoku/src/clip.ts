@@ -90,9 +90,10 @@ export class ShallowClip {
     return clip
   }
 
-  useStyle(style: StyleClip) {
-    return style
-  }
+  // useStyle(style: StyleClip) {
+  //  TODO
+  // return this
+  // }
 
   useKey(key: unknown) {
     this.key = key

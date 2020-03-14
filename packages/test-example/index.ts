@@ -110,3 +110,11 @@ setInterval(() => {
 setTimeout(() => {
   clearInterval(intv)
 }, 5000)
+
+setTimeout(() => {
+  ppp.children.push(`ppp${Date.now()}`)
+}, 6000)
+
+setTimeout(() => {
+  ppp.children.splice(6, 0, `ppp${Date.now()}`)
+}, 7000)

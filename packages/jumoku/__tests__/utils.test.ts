@@ -35,9 +35,8 @@ describe('utils', () => {
     let res = keyListDiff(a, b)
 
     expect(res).toEqual({
-      delete: [1],
+      remove: [1],
       add: [0, 4, 6, 8],
-      nochange: [5],
       move: [
         { from: 0, to: 1 },
         { from: 2, to: 3 },

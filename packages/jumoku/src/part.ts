@@ -9,7 +9,7 @@ import { Clip, ShallowClip } from './clip'
 import { UpdatableElement } from './component'
 import { NotUpdatableError, DuplicatedKeyError } from './error'
 import { generateEventOptions } from './event'
-import { removeNodes, insertAfter } from './dom'
+import { removeNodes, insertAfter, getNodesBetween } from './dom'
 import { isEmptyArray } from './is'
 
 export type AttrEventLocation = { node: Element; name: string }
@@ -268,11 +268,42 @@ export class ClipPart extends Part {
 
 export class ClipsPart extends Part {
   update(): void {
-    // let { startNode, endNode } = this.location
-    // let parent = startNode.parentNode
-    // this.value.forEach(v => {
-    //   parent?.insertBefore(v.dof, endNode)
-    // })
+    let oldKeys = this.keys
+    let { add, remove, move } = keyListDiff(oldKeys, this.newKeys)
+    if (isEmptyArray(add) && isEmptyArray(remove) && isEmptyArray(move)) {
+      // console.log(`nothing to change`)
+    } else {
+      let parent = this.location.startNode.parentNode!
+
+      let r = 0
+      remove.forEach(index => {
+        parent.removeChild(parent.childNodes[index + r])
+        this.value.splice(index + r, 1)
+        r--
+      })
+      add.forEach(index => {
+        let clip = this.shaValues[index].createInstance()
+        clip.init()
+        let { startNode, endNode } = this.location
+
+        this.elementCache[index]
+          ? parent.insertBefore(clip.dof, this.elementCache[index])
+          : parent.insertBefore(clip.dof, endNode)
+        this.elementCache = getNodesBetween(startNode, endNode)
+        this.value.splice(index, 0, clip)
+      })
+      move.forEach(({ from, to }) => {
+        if (this.newKeys[to] === this.value[to].key) {
+          //do nothing
+        } else {
+          let m = parent.removeChild(this.elementCache[from])
+          insertAfter(parent, m, parent.childNodes[to])
+          moveInArray(this.value, from, to)
+        }
+      })
+      this.keys = this.value.map(v => v.key)
+      console.log(this.keys)
+    }
   }
   clear(): void {
     let { startNode, endNode } = this.location
@@ -289,50 +320,20 @@ export class ClipsPart extends Part {
     this.value.forEach(v => {
       parent?.insertBefore(v.dof, endNode)
     })
+
+    this.elementCache = getNodesBetween(startNode, endNode)
   }
 
   setValue(vals: ShallowClip[]) {
     this.shaValues = vals
-    let newKeys = vals.map(v => v.key)
-    let temp = dedup(newKeys)
+    this.newKeys = vals.map(v => v.key)
+    let temp = dedup(this.newKeys)
 
     if (temp?.[0] !== null) {
-      if (temp.length !== newKeys.length) {
+      if (temp.length !== this.newKeys.length) {
         throw DuplicatedKeyError
       } else {
-        let oldKeys = this.keys
-        let { add, remove, move } = keyListDiff(oldKeys, newKeys)
-        if (isEmptyArray(add) && isEmptyArray(remove) && isEmptyArray(move)) {
-          // console.log(`nothing to change`)
-        } else {
-          let parent = this.location.startNode.parentNode!
-          let cache = new Array<Node>()
-          parent.childNodes.forEach(c => {
-            cache.push(c)
-          })
-          let r = 0
-          remove.forEach(index => {
-            parent.removeChild(parent.childNodes[index + r])
-            this.value.splice(index + r, 1)
-            r--
-          })
-          add.forEach(index => {
-            let clip = this.shaValues[index].createInstance()
-            clip.init()
-            insertAfter(parent, clip.dof, parent.childNodes[index + 1])
-            this.value.splice(index, 0, clip)
-          })
-          move.forEach(({ from, to }) => {
-            if (newKeys[to] === this.value[to].key) {
-              //do nothing
-            } else {
-              let m = parent.removeChild(cache[from])
-              insertAfter(parent, m, parent.childNodes[to])
-              moveInArray(this.value, from, to)
-            }
-          })
-          this.keys = this.value.map(v => v.key)
-        }
+        this.update()
       }
     } else {
       this.clear()
@@ -356,6 +357,8 @@ export class ClipsPart extends Part {
   value: Clip[] = []
   shaValues: ShallowClip[]
   keys: unknown[] = []
+  newKeys: unknown[] = []
+  elementCache: Node[] = []
 
   constructor(index: number, val: ShallowClip[], location: clipLocation) {
     super(index)

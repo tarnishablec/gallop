@@ -13,6 +13,7 @@ export abstract class UpdatableElement<P extends object> extends HTMLElement {
   $props: P | undefined
   $state: unknown
   builder: Compoent<P>
+  clip!: Clip
 
   hooksEnable: boolean = false
 
@@ -59,7 +60,6 @@ export function component<P extends object>(
 
   const Clazz = class extends UpdatableElement<P> {
     static initShaClip: ShallowClip = builder(defaultProp)
-    clip: Clip
     updatable: boolean = false
 
     constructor() {
