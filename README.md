@@ -20,12 +20,15 @@ still working...
 
         auto minimize update
 
+        for more detail, check package/test-example
 
 //TODO  
 
-        hooks           useState()
-                        useEffect() 
+        hooks                   useState()
+                                useEffect() 
         
-        context         useContext() ✔
+        context                 useContext() ✔
+
+        async update queue      
 
 ![example](https://github.com/tarnishablec/jumoku/blob/master/packages/test-example/other/test.png)
