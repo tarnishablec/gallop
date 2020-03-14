@@ -14,4 +14,4 @@ export const NotUpdatableError = new Error(
   'props can only be used on updatable element'
 )
 
-export const DuplicatedKeyError = new Error(`key value deplicated`)
+export const DuplicatedKeyError = new Error(`key value duplicated`)

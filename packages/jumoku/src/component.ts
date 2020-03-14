@@ -68,7 +68,7 @@ export function component<P extends object>(
     }
 
     update() {
-      console.log(this.$props)
+      // console.log(this.$props)
       // debugger
       this.clip.update(builder(this.$props).vals)
     }

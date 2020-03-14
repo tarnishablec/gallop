@@ -1,9 +1,16 @@
-import { shallowEqual, twoStrArrayCompare, keyListDiff, dedup } from './utils'
+import {
+  shallowEqual,
+  twoStrArrayCompare,
+  keyListDiff,
+  dedup,
+  moveInArray
+} from './utils'
 import { Clip, ShallowClip } from './clip'
 import { UpdatableElement } from './component'
 import { NotUpdatableError, DuplicatedKeyError } from './error'
 import { generateEventOptions } from './event'
-import { removeNodes } from './dom'
+import { removeNodes, insertAfter } from './dom'
+import { isEmptyArray } from './is'
 
 export type AttrEventLocation = { node: Element; name: string }
 export type PropLocation = { node: UpdatableElement<any>; name: string }
@@ -261,23 +268,31 @@ export class ClipPart extends Part {
 
 export class ClipsPart extends Part {
   update(): void {
-    let { startNode, endNode } = this.location
-    let parent = startNode.parentNode
-
-    this.value.forEach(v => {
-      parent?.insertBefore(v.dof, endNode)
-    })
+    // let { startNode, endNode } = this.location
+    // let parent = startNode.parentNode
+    // this.value.forEach(v => {
+    //   parent?.insertBefore(v.dof, endNode)
+    // })
   }
   clear(): void {
     let { startNode, endNode } = this.location
     removeNodes(startNode.parentNode!, startNode.nextSibling, endNode)
   }
+
   init(): void {
     this.value.forEach(v => v.init())
-    this.update()
+    let { startNode, endNode } = this.location
+    let parent = startNode.parentNode
+
+    this.keys = this.value.map(v => v.key)
+
+    this.value.forEach(v => {
+      parent?.insertBefore(v.dof, endNode)
+    })
   }
 
   setValue(vals: ShallowClip[]) {
+    this.shaValues = vals
     let newKeys = vals.map(v => v.key)
     let temp = dedup(newKeys)
 
@@ -286,12 +301,41 @@ export class ClipsPart extends Part {
         throw DuplicatedKeyError
       } else {
         let oldKeys = this.keys
-        let diffRes = keyListDiff(oldKeys, newKeys)
-        console.log(diffRes)
+        let { add, remove, move } = keyListDiff(oldKeys, newKeys)
+        if (isEmptyArray(add) && isEmptyArray(remove) && isEmptyArray(move)) {
+          console.log(`nothing to change`)
+        } else {
+          let parent = this.location.startNode.parentNode!
+          let cache = new Array<Node>()
+          parent.childNodes.forEach(c => {
+            cache.push(c)
+          })
+          let r = 0
+          remove.forEach(index => {
+            parent.removeChild(parent.childNodes[index + r])
+            this.value.splice(index + r, 1)
+            r--
+          })
+          add.forEach(index => {
+            let clip = this.shaValues[index].createInstance()
+            clip.init()
+            insertAfter(parent, clip.dof, parent.childNodes[index + 1])
+            this.value.splice(index, 0, clip)
+          })
+          move.forEach(({ from, to }) => {
+            if (newKeys[to] === this.value[to].key) {
+              //do nothing
+            } else {
+              let m = parent.removeChild(cache[from])
+              insertAfter(parent, m, parent.childNodes[to])
+              moveInArray(this.value, from, to)
+            }
+          })
+          this.keys = this.value.map(v => v.key)
+        }
       }
     } else {
       this.clear()
-      this.shaValues = vals
       this.resetValue()
       this.init()
     }

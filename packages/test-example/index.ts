@@ -1,5 +1,4 @@
 import { html, component, render } from '@jumoku/jumoku'
-import './src/components/Lit'
 import { TestTemplate } from './src/components/TestComponent'
 
 const prop = {
@@ -62,10 +61,11 @@ component(
       >
         test-b age:${age}
       </div>
-      ${children.map((c, index) =>
+      <div>With key list diff</div>
+      ${children.map(c =>
         html`
           <li>${c}</li>
-        `.useKey(index)
+        `.useKey(c)
       )}
       <test-a :name="${names}" :age="${age}">
         <button
@@ -97,11 +97,9 @@ let ppp = (testB as any).$props
 
 let intv = setInterval(() => {
   ppp.age += 1
+  ppp.children.unshift(`ppp${Date.now()}`)
 }, 1000)
 
 setTimeout(() => {
   clearInterval(intv)
 }, 5000)
-// setInterval(() => {
-//   data.age += 1
-// }, 2000)

@@ -147,21 +147,21 @@ export const twoStrArrayCompare = (arrA: string[], arrB: string[]): boolean => {
 }
 
 type DiffResult = {
-  delete: number[]
+  remove: number[]
   add: number[]
   move: { from: number; to: number }[]
 }
 
 export const keyListDiff = (pre: unknown[], next: unknown[]) => {
   let res: DiffResult = {
-    delete: [],
+    remove: [],
     add: [],
     move: []
   }
   pre.forEach((p, index) => {
     const i = next.indexOf(p)
     if (i < 0) {
-      res.delete.push(index)
+      res.remove.push(index)
     } else if (i !== index) {
       res.move.push({ from: index, to: i })
     }
@@ -177,3 +177,15 @@ export const keyListDiff = (pre: unknown[], next: unknown[]) => {
 }
 
 export const dedup = (arr: unknown[]) => Array.from(new Set(arr))
+
+export const removeFromArray = (arr: unknown[], index: number) => {
+  if (index > arr.length - 1) {
+    throw new Error('splice out of range')
+  }
+  return arr.splice(index, 1)[0]
+}
+
+export const moveInArray = (arr: unknown[], from: number, to: number) => {
+  let temp = removeFromArray(arr, from)
+  arr.splice(to, 0, temp)
+}
