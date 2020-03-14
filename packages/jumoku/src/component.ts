@@ -3,7 +3,7 @@ import { getPropsFromFunction } from './utils'
 import { ComponentNamingError, ComponentExistError } from './error'
 import { createProxy } from './reactive'
 
-let currentElement = null
+// let currentElement = null
 
 export const componentPool = new Set<string>()
 
