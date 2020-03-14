@@ -2,6 +2,7 @@
 still working...
 
 //Feature
+        
         register web component in functional way 
                 component('name-name',({props})=>html`
                     <div>${props}</div>
@@ -10,7 +11,7 @@ still working...
         common feature in react
 
         useKey() to enable list diff by keys
-        
+
         auto miniest update
 
 
