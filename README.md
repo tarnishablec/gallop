@@ -10,9 +10,12 @@ still working...
 
         common feature in react
 
+        : to bind props of component
+        . to bind attributes 
+
         useKey() to enable list diff by keys
 
-        auto miniest update
+        auto minimize update
 
 
 //TODO  
