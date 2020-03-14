@@ -38,7 +38,7 @@ component(
 
 let [data, context] = createContext({
   tick: 1,
-  children: ['alice', 'bob', 'celina']
+  children: ['alice', 'bob', 'celina', 'dylan', 'ethan', 'elias']
 })
 
 component(
@@ -63,9 +63,19 @@ component(
       <div>tick context: ${data.tick}</div>
       <div>With key list diff</div>
       <div>${names}</div>
-      ${data.children.map(c =>
+      ${data.children.map((c, index) =>
         html`
-          <li>${c}</li>
+          <div>
+            <span>${c}</span>
+            <button
+              @click="${() => {
+                console.log(index)
+                data.children.splice(index, 1)
+              }}"
+            >
+              delete this
+            </button>
+          </div>
         `.useKey(c)
       )}
       <button @click="${() => data.children.pop()}">Delete last</button>
@@ -95,24 +105,3 @@ render(html`
     }
   </style>
 `)
-
-let testB = document.querySelector('test-b')!
-
-let ppp = (testB as any).$props
-
-let intv = setInterval(() => {
-  ppp.age += 1
-  data.children.unshift(`ppp${Date.now()}`)
-}, 1000)
-
-setInterval(() => {
-  data.tick += 1
-}, 1000)
-
-setTimeout(() => {
-  clearInterval(intv)
-}, 5000)
-
-setTimeout(() => {
-  data.children.splice(6, 0, `ppp${Date.now()}`)
-}, 6000)

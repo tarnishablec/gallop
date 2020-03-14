@@ -331,11 +331,15 @@ export class ClipsPart extends Part {
     let temp = dedup(this.newKeys)
 
     if (temp?.[0] !== null) {
-      if (temp.length !== this.newKeys.length) {
-        throw DuplicatedKeyError
-      } else {
-        this.update()
-      }
+      // if (temp.length !== this.newKeys.length) {
+      //   throw DuplicatedKeyError
+      // } else {
+      //   this.update()
+      // }
+
+      this.clear()
+      this.resetValue()
+      this.init()
     } else {
       this.clear()
       this.resetValue()
