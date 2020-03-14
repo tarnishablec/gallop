@@ -24,11 +24,14 @@ still working...
 
 //TODO  
 
-        hooks                   useState()
-                                useEffect() 
+        hooks                           useState()
+                                        useEffect() 
+                                        useContext()             ✔
         
-        context                 useContext() ✔
+        context                                                  ✔
 
         async update queue      
+
+        scoped css by shadowdom
 
 ![example](https://github.com/tarnishablec/jumoku/blob/master/packages/test-example/other/test.png)
