@@ -274,17 +274,18 @@ export class ClipsPart extends Part {
       // console.log(`nothing to change`)
     } else {
       let parent = this.location.startNode.parentNode!
+      let { startNode, endNode } = this.location
 
       let r = 0
       remove.forEach(index => {
-        parent.removeChild(parent.childNodes[index + r])
+        parent.removeChild(this.elementCache[index])
+        this.elementCache = getNodesBetween(startNode, endNode)
         this.value.splice(index + r, 1)
         r--
       })
       add.forEach(index => {
         let clip = this.shaValues[index].createInstance()
         clip.init()
-        let { startNode, endNode } = this.location
 
         this.elementCache[index]
           ? parent.insertBefore(clip.dof, this.elementCache[index])

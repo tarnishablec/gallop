@@ -27,7 +27,6 @@ import {
   clipLocation,
   ClipsPart
 } from './part'
-import { StyleClip } from './parse'
 import { NoTypePartError } from './error'
 import { UpdatableElement } from './component'
 import { Context } from './context'

@@ -1,12 +1,12 @@
 import { html, component, render, createContext } from '@jumoku/jumoku'
-import { TestTemplate } from './src/components/TestComponent'
+// import { TestTemplate } from './src/components/TestComponent'
 
-const prop = {
-  name: 'Chen Yihan',
-  children: ['alice', 'bob', 'celina'],
-  color: 'red',
-  click: () => alert(1)
-}
+// const prop = {
+//   name: 'Chen Yihan',
+//   children: ['alice', 'bob', 'celina'],
+//   color: 'red',
+//   click: () => alert(1)
+// }
 
 component(
   'test-a',
@@ -34,23 +34,20 @@ component(
     </div>
   `
 )
-const testFunc = (a: number, b: number) => console.log(a + b)
+// const testFunc = (a: number, b: number) => console.log(a + b)
 
-let [data, context] = createContext({ tick: 1 })
+let [data, context] = createContext({
+  tick: 1,
+  children: ['alice', 'bob', 'celina']
+})
 
 component(
   'test-b',
   (
-    {
-      age,
-      color,
-      names,
-      children
-    }: { age: number; color: string; names?: string; children: string[] } = {
+    { age, color, names }: { age: number; color: string; names?: string } = {
       age: 1,
       color: 'purple',
-      names: 'ppp',
-      children: ['alice', 'bob', 'celina']
+      names: 'yihan'
     }
   ) => {
     // let [] = useState({tick:1})
@@ -65,11 +62,13 @@ component(
       </div>
       <div>tick context: ${data.tick}</div>
       <div>With key list diff</div>
-      ${children.map(c =>
+      <div>${names}</div>
+      ${data.children.map(c =>
         html`
           <li>${c}</li>
         `.useKey(c)
       )}
+      <button @click="${() => data.children.pop()}">Delete last</button>
     `.useContext([context])
   }
 )
@@ -103,7 +102,7 @@ let ppp = (testB as any).$props
 
 let intv = setInterval(() => {
   ppp.age += 1
-  ppp.children.unshift(`ppp${Date.now()}`)
+  data.children.unshift(`ppp${Date.now()}`)
 }, 1000)
 
 setInterval(() => {
@@ -115,9 +114,5 @@ setTimeout(() => {
 }, 5000)
 
 setTimeout(() => {
-  ppp.children.push(`ppp${Date.now()}`)
+  data.children.splice(6, 0, `ppp${Date.now()}`)
 }, 6000)
-
-setTimeout(() => {
-  ppp.children.splice(6, 0, `ppp${Date.now()}`)
-}, 7000)
