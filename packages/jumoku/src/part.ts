@@ -303,7 +303,7 @@ export class ClipsPart extends Part {
         let oldKeys = this.keys
         let { add, remove, move } = keyListDiff(oldKeys, newKeys)
         if (isEmptyArray(add) && isEmptyArray(remove) && isEmptyArray(move)) {
-          console.log(`nothing to change`)
+          // console.log(`nothing to change`)
         } else {
           let parent = this.location.startNode.parentNode!
           let cache = new Array<Node>()

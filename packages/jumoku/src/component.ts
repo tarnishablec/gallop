@@ -19,7 +19,7 @@ export abstract class UpdatableElement<P extends object> extends HTMLElement {
       ? createProxy(
           initProp,
           () => {
-            console.log(`${this.tagName} updated`)
+            // console.log(`${this.tagName} updated`)
             setTimeout(() => {
               this.update()
             }, 0)
@@ -33,7 +33,7 @@ export abstract class UpdatableElement<P extends object> extends HTMLElement {
   connectedCallback() {
     currentElement = this
     this.hooksEnable = true
-    console.log(currentElement)
+    // console.log(currentElement)
   }
 
   disconnectedCallback() {}
