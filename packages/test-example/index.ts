@@ -70,7 +70,12 @@ component(
           <li>${c}</li>
         `.useKey(c)
       )}
-      <test-a :name="${names}" :age="${age}">
+    `.useContext([context])
+  }
+)
+
+{
+  /* <test-a :name="${names}" :age="${age}">
         <button
           @click.once="${(e: Event) => {
             testFunc(age, age)
@@ -80,10 +85,8 @@ component(
           <slot></slot>
         </button>
       </test-a>
-      ${TestTemplate(prop)}
-    `.useContext([context])
-  }
-)
+      ${TestTemplate(prop)} */
+}
 
 render(html`
   <test-b>click once</test-b>

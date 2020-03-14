@@ -30,7 +30,7 @@ still working...
         
         context                                                  ✔
 
-        async update queue      
+        async update queue                                       ✔      
 
         scoped css by shadowdom
 

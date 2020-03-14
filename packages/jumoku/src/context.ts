@@ -21,19 +21,15 @@ export class Context<T extends object> {
 
   private update() {
     this.watchedInstances.forEach(clip => {
-      // console.log(clip)
+      // console.log(this.watchedInstances)
       let elementInstance = clip.elementInstance!
-      setTimeout(() => {
-        clip.update(elementInstance.builder(elementInstance.$props).vals)
-      }, 0)
+      elementInstance.enupdateQueue()
     })
   }
 }
 
 export const createContext = <T extends object>(raw: T) =>
   new Context(raw).proxy
-
-// let [a, context] = createContext({ a: 1 })
 
 export const useState = <T extends object>(initValue: T) => {
   return initValue as T

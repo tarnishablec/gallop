@@ -82,11 +82,9 @@ export class ShallowClip {
       this.shallowHtml,
       this.shallowParts,
       this.vals,
-      this.key
+      this.key,
+      this.contexts
     )
-    this.contexts.forEach(c => {
-      c.watch(clip)
-    })
     return clip
   }
 
@@ -144,6 +142,8 @@ export class Clip {
   parts: Part[] = []
   initVals: unknown[]
   key: unknown
+  contexts: Context<OBJ>[]
+  uuid: number
 
   elementInstance?: UpdatableElement<any>
 
@@ -152,7 +152,8 @@ export class Clip {
     html: string,
     shallowParts: PartType[],
     initVals: unknown[],
-    key: unknown
+    key: unknown,
+    contexts: Context<OBJ>[]
   ) {
     this.key = key
     this.dof = dof
@@ -160,6 +161,9 @@ export class Clip {
     this.initVals = initVals
     this.shallowParts = shallowParts
     this.attachPart()
+    this.contexts = contexts
+
+    this.uuid = Date.now()
 
     // console.log(this.parts)
   }

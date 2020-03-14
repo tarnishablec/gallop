@@ -302,7 +302,7 @@ export class ClipsPart extends Part {
         }
       })
       this.keys = this.value.map(v => v.key)
-      console.log(this.keys)
+      // console.log(this.keys)
     }
   }
   clear(): void {

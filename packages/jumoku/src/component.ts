@@ -5,6 +5,25 @@ import { createProxy } from './reactive'
 
 // let currentElement = null
 
+const updateQueue = new Set<Clip>()
+
+let dirty = false
+
+const requestUpdate = () => {
+  if (dirty === true) {
+    return
+  }
+  dirty = true
+  requestAnimationFrame(() => {
+    // console.log(updateQueue)
+    updateQueue.forEach(c => {
+      let instance = c.elementInstance!
+      c.update(instance.builder(instance.$props).vals)
+    })
+    dirty = false
+  })
+}
+
 type Compoent<P> = (props?: P) => ShallowClip
 
 export const componentPool = new Set<string>()
@@ -24,26 +43,33 @@ export abstract class UpdatableElement<P extends object> extends HTMLElement {
       initProp,
       () => {
         // console.log(`${this.tagName} updated`)
-        setTimeout(() => {
-          this.update()
-        }, 0)
+        this.enupdateQueue()
       },
       undefined,
       false
     )
   }
 
-  connectedCallback() {
-    // currentElement = this
-    this.hooksEnable = true
-    // console.log(currentElement)
+  enupdateQueue() {
+    updateQueue.add(this.clip)
+    requestUpdate()
   }
 
-  disconnectedCallback() {}
+  connectedCallback() {
+    this.hooksEnable = true
+
+    this.clip.contexts.forEach(c => {
+      c.watch(this.clip)
+    })
+  }
+
+  disconnectedCallback() {
+    this.clip.contexts.forEach(c => {
+      c.unwatch(this.clip)
+    })
+  }
 
   adoptedCallback() {}
-
-  abstract update(): void
 }
 
 export function component<P extends object>(
@@ -68,12 +94,6 @@ export function component<P extends object>(
       this.clip.init()
       this.clip.elementInstance = this
       this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
-    }
-
-    update() {
-      // console.log(this.$props)
-      // debugger
-      this.clip.update(this.builder(this.$props!).vals)
     }
   }
   customElements.define(name, Clazz)
