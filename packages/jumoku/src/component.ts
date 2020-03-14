@@ -10,12 +10,16 @@ export const componentPool = new Set<string>()
 export abstract class UpdatableElement<P extends object> extends HTMLElement {
   $props: P | undefined
   $state: unknown
+
+  hooksEnable: boolean = false
+
   constructor(initProp?: P) {
     super()
     this.$props = initProp
       ? createProxy(
           initProp,
           () => {
+            console.log(`${this.tagName} updated`)
             setTimeout(() => {
               this.update()
             }, 0)
@@ -28,8 +32,13 @@ export abstract class UpdatableElement<P extends object> extends HTMLElement {
 
   connectedCallback() {
     currentElement = this
+    this.hooksEnable = true
     console.log(currentElement)
   }
+
+  disconnectedCallback() {}
+
+  adoptedCallback() {}
 
   abstract update(): void
 }
@@ -47,19 +56,15 @@ export function component<P extends object>(
   let { defaultProp } = getPropsFromFunction(builder)
 
   const Clazz = class extends UpdatableElement<P> {
-    initShaClip: ShallowClip
+    static initShaClip: ShallowClip = builder(defaultProp)
     clip: Clip
     updatable: boolean = false
 
     constructor() {
       super(defaultProp)
-      // console.log(this.$props)
-      this.initShaClip = builder({ ...defaultProp, ...this.$props } as P)
-      this.clip = this.initShaClip.createInstance()
-      // console.log(Clazz.initShaClip)
+      this.clip = Clazz.initShaClip.createInstance()
       this.clip.init()
       this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
-      // console.log(this.$props)
     }
 
     update() {
@@ -67,10 +72,6 @@ export function component<P extends object>(
       // debugger
       this.clip.update(builder(this.$props).vals)
     }
-
-    disconnectedCallback() {}
-
-    adoptedCallback() {}
   }
   customElements.define(name, Clazz)
   componentPool.add(name)

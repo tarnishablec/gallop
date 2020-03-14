@@ -28,7 +28,7 @@ component(
           this is test-a
         </strong>
       </span>
-      <div style="color:lightgreen">${name}</div>
+      <div style="color:deepgreen">${name}</div>
       <div>${age}</div>
       <span .style="${`color:${person.color}`}">66666</span>
       <slot></slot>
@@ -62,10 +62,10 @@ component(
       >
         test-b age:${age}
       </div>
-      ${children.map(
-        c => html`
+      ${children.map((c, index) =>
+        html`
           <li>${c}</li>
-        `
+        `.useKey(index)
       )}
       <test-a :name="${names}" :age="${age}">
         <button
@@ -83,7 +83,7 @@ component(
 )
 
 render(html`
-  <test-b>click</test-b>
+  <test-b>click once</test-b>
   <style>
     body {
       background: lightgreen;

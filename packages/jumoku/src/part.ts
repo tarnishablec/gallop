@@ -1,21 +1,21 @@
-import { shallowEqual, twoStrArrayCompare } from './utils'
+import { shallowEqual, twoStrArrayCompare, keyListDiff, dedup } from './utils'
 import { Clip, ShallowClip } from './clip'
 import { UpdatableElement } from './component'
-import { NotUpdatableError } from './error'
+import { NotUpdatableError, DuplicatedKeyError } from './error'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
 
-export type AttrPropLocation = { node: Element; name: string }
-export type EventLocation = { node: Element; name: string }
+export type AttrEventLocation = { node: Element; name: string }
+export type PropLocation = { node: UpdatableElement<any>; name: string }
 export type TextLocation = { node: Comment | Text }
 export type clipLocation = { startNode: Comment; endNode: Comment }
 
 export type EventInstance = (this: Document, e: Event) => unknown
 
 export type PartLocation =
-  | AttrPropLocation
+  | AttrEventLocation
+  | PropLocation
   | clipLocation
-  | EventLocation
   | TextLocation
   | undefined
 
@@ -31,7 +31,6 @@ export type PartType =
 export abstract class Part {
   index: number
   value: unknown
-  oldValue: unknown = null
   location: PartLocation
 
   setLocation(location: PartLocation) {
@@ -44,44 +43,52 @@ export abstract class Part {
 
   abstract init(): void
   abstract clear(): void
-  abstract commit(): void
+  abstract update(): void
 
   setValue(val: unknown): void {
     if (!this.checkEqual(val)) {
-      this.oldValue = this.value
       this.value = val
-      this.commit()
+      this.update()
     }
   }
 
   checkEqual(val: unknown) {
-    return shallowEqual(val, this.oldValue)
+    return shallowEqual(val, this.value)
   }
 }
 
 export class PorpPart extends Part {
-  clear(): void {
-    throw new Error('Method not implemented.')
-  }
-  location: AttrPropLocation
-  value: string
+  location: PropLocation
+  value: unknown
 
-  constructor(index: number, val: string, location: AttrPropLocation) {
+  constructor(index: number, val: unknown, location: PropLocation) {
     super(index)
     this.value = val
     this.location = location
   }
 
+  clear(): void {}
+
   init(): void {
-    this.commit()
-  }
-  commit(): void {
     let { name, node } = this.location
     if (!(node instanceof UpdatableElement)) {
       throw NotUpdatableError
     } else {
       node.$props[name] = this.value
     }
+  }
+
+  setValue(val: unknown) {
+    let { name, node } = this.location
+    node = node as UpdatableElement<any>
+    this.value = val
+    if (!shallowEqual(node.$props[name], this.value)) {
+      this.update()
+    }
+  }
+
+  update(): void {
+    this.location.node.$props[this.location.name] = this.value
   }
 }
 
@@ -107,9 +114,9 @@ export class AttrPart extends Part {
     if (name === 'style') {
       this.styleCache = node.getAttribute('style') ?? undefined
     }
-    this.commit()
+    this.update()
   }
-  commit(): void {
+  update(): void {
     let { name, node } = this.location
     let res: string
     if (name === 'style') {
@@ -122,16 +129,18 @@ export class AttrPart extends Part {
 }
 
 export class TextPart extends Part {
-  commit(): void {
+  update(): void {
     let { node } = this.location
-    node.parentNode?.replaceChild(new Text(this.value.toString()), node)
+    let next = new Text(this.value.toString())
+    this.location.node = next
+    node.parentNode?.replaceChild(next, node)
   }
   clear(): void {
     let { node } = this.location
     node.parentNode?.replaceChild(new Text(), node)
   }
   init(): void {
-    this.commit()
+    this.update()
   }
   location: TextLocation
   value: string | number
@@ -144,7 +153,9 @@ export class TextPart extends Part {
 }
 
 export class EventPart extends Part {
-  commit(): void {
+  update(): void {
+    this.clear()
+
     let { node } = this.location
     if (this.value instanceof Array) {
       this.value.forEach(v => {
@@ -166,7 +177,7 @@ export class EventPart extends Part {
     this.eventCache.clear()
   }
   init(): void {
-    this.commit()
+    this.update()
   }
 
   setValue(val: EventInstance | EventInstance[]) {
@@ -179,8 +190,7 @@ export class EventPart extends Part {
     if (twoStrArrayCompare(temp, Array.from(this.eventCache.keys()))) {
       return
     } else {
-      this.clear()
-      this.commit()
+      this.update()
     }
   }
 
@@ -191,7 +201,7 @@ export class EventPart extends Part {
     )
   }
 
-  location: EventLocation
+  location: AttrEventLocation
   value: EventInstance | EventInstance[]
   eventCache: Map<string, EventInstance> = new Map()
   options: AddEventListenerOptions
@@ -200,7 +210,7 @@ export class EventPart extends Part {
   constructor(
     index: number,
     val: EventInstance | EventInstance[],
-    location: EventLocation
+    location: AttrEventLocation
   ) {
     super(index)
     this.location = location
@@ -213,7 +223,7 @@ export class EventPart extends Part {
 }
 
 export class ClipPart extends Part {
-  commit(): void {
+  update(): void {
     this.value.update(this.shaValue.vals)
   }
   clear(): void {
@@ -224,13 +234,13 @@ export class ClipPart extends Part {
     let { startNode, endNode } = this.location
     let parent = startNode.parentNode!
     parent.insertBefore(this.value.dof, endNode)
-    this.commit()
+    this.value.init()
   }
 
   setValue(val: ShallowClip) {
     this.shaValue = val
     if (this.shaValue.shallowHtml === this.value.html) {
-      this.commit()
+      this.update()
     } else {
       this.value = this.shaValue.createInstance()
       this.clear()
@@ -250,9 +260,10 @@ export class ClipPart extends Part {
 }
 
 export class ClipsPart extends Part {
-  commit(): void {
+  update(): void {
     let { startNode, endNode } = this.location
     let parent = startNode.parentNode
+
     this.value.forEach(v => {
       parent?.insertBefore(v.dof, endNode)
     })
@@ -262,29 +273,50 @@ export class ClipsPart extends Part {
     removeNodes(startNode.parentNode!, startNode.nextSibling, endNode)
   }
   init(): void {
-    this.commit()
+    this.value.forEach(v => v.init())
+    this.update()
   }
 
   setValue(vals: ShallowClip[]) {
-   
+    let newKeys = vals.map(v => v.key)
+    let temp = dedup(newKeys)
+
+    if (temp?.[0] !== null) {
+      if (temp.length !== newKeys.length) {
+        throw DuplicatedKeyError
+      } else {
+        let oldKeys = this.keys
+        let diffRes = keyListDiff(oldKeys, newKeys)
+        console.log(diffRes)
+      }
+    } else {
+      this.clear()
+      this.shaValues = vals
+      this.resetValue()
+      this.init()
+    }
   }
 
   resetValue() {
-    return this.shaValues.reduce((acc, cur) => {
-      let clip = cur.createInstance()
-      acc.push(clip)
-      return acc
-    }, new Array<Clip>())
+    this.value = []
+    this.shaValues.forEach(s => {
+      let clip = s.createInstance()
+      this.value.push(clip)
+    })
+    this.value.forEach((v, index) => {
+      v.update(this.shaValues[index].vals)
+    })
   }
 
   location: clipLocation
-  value: Clip[]
+  value: Clip[] = []
   shaValues: ShallowClip[]
+  keys: unknown[] = []
 
   constructor(index: number, val: ShallowClip[], location: clipLocation) {
     super(index)
     this.location = location
     this.shaValues = val
-    this.value = this.resetValue()
+    this.resetValue()
   }
 }

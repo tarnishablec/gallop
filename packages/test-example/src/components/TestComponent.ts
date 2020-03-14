@@ -39,10 +39,12 @@ export const TestTemplate = ({
           <li>${c}</li>
         `
       )}
-      ${children.map(
-        (c, index) => html`
-          ${TestChild(index)}
-        `
+      ${children.map((c, index) =>
+        index % 2
+          ? html`
+              <div>${c}</div>
+            `
+          : TestChild(index)
       )}
       <div>hello</div>
       ${TestChild(5)}

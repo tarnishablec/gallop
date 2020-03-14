@@ -145,3 +145,35 @@ export const twoStrArrayCompare = (arrA: string[], arrB: string[]): boolean => {
 
   return arrA.join('') === arrB.join('')
 }
+
+type DiffResult = {
+  delete: number[]
+  add: number[]
+  move: { from: number; to: number }[]
+}
+
+export const keyListDiff = (pre: unknown[], next: unknown[]) => {
+  let res: DiffResult = {
+    delete: [],
+    add: [],
+    move: []
+  }
+  pre.forEach((p, index) => {
+    const i = next.indexOf(p)
+    if (i < 0) {
+      res.delete.push(index)
+    } else if (i !== index) {
+      res.move.push({ from: index, to: i })
+    }
+  })
+  next.forEach((n, index) => {
+    const i = pre.indexOf(n)
+    if (i < 0) {
+      res.add.push(index)
+    }
+  })
+
+  return res
+}
+
+export const dedup = (arr: unknown[]) => Array.from(new Set(arr))

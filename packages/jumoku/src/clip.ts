@@ -17,11 +17,11 @@ import {
   PartLocation,
   TextPart,
   AttrPart,
-  AttrPropLocation,
+  AttrEventLocation,
+  PropLocation,
   PorpPart,
   EventPart,
   EventInstance,
-  EventLocation,
   TextLocation,
   ClipPart,
   clipLocation,
@@ -38,6 +38,8 @@ export class ShallowClip {
   readonly strs: TemplateStringsArray
   readonly vals: unknown[]
   readonly shallowHtml: string
+
+  key: unknown = null
 
   shallowParts: PartType[] = []
 
@@ -76,12 +78,18 @@ export class ShallowClip {
       this.getShaDof().cloneNode(true) as DocumentFragment,
       this.shallowHtml,
       this.shallowParts,
-      this.vals
+      this.vals,
+      this.key
     )
   }
 
   useStyle(style: StyleClip) {
     return style
+  }
+
+  useKey(key: unknown) {
+    this.key = key
+    return this
   }
 
   placeMarker(cur: string, val: unknown, index: number, length: number) {
@@ -122,13 +130,16 @@ export class Clip {
   shallowParts: PartType[]
   parts: Part[] = []
   initVals: unknown[]
+  key: unknown
 
   constructor(
     dof: DocumentFragment,
     html: string,
     shallowParts: PartType[],
-    initVals: unknown[]
+    initVals: unknown[],
+    key: unknown
   ) {
+    this.key = key
     this.dof = dof
     this.html = html
     this.initVals = initVals
@@ -233,19 +244,15 @@ const createPart = (
       return new AttrPart(
         index,
         initVal as string,
-        location as AttrPropLocation
+        location as AttrEventLocation
       )
     case 'prop':
-      return new PorpPart(
-        index,
-        initVal as string,
-        location as AttrPropLocation
-      )
+      return new PorpPart(index, initVal, location as PropLocation)
     case 'event':
       return new EventPart(
         index,
         initVal as EventInstance | EventInstance[],
-        location as EventLocation
+        location as AttrEventLocation
       )
     case 'clip':
       return new ClipPart(
