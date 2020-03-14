@@ -1,7 +1,8 @@
 # jumoku
 still working...
 
-        yarn add @jumoku/jumoku
+        yarn add @jumoku/jumoku 
+        
 
 //Feature
         
