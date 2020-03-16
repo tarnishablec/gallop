@@ -1,6 +1,6 @@
 {
   "name": "@jumoku/jumoku",
-  "version": "0.0.3-alpha.2",
+  "version": "0.0.4-alpha.0",
   "description": "jumoku",
   "main": "src/index.ts",
   "module": "dist/jumoku.esm.js",
