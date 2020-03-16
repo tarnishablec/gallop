@@ -12,7 +12,9 @@ still working...
 
         component('name-name',
         ({props})=>html`
-                <div>${props}</div>
+                let [state] = useState({initState})
+
+                <div>${state}</div>
         `.useContext([someContext]))
 
         common feature in react
@@ -27,7 +29,7 @@ still working...
 
 //TODO  
 
-        hooks                           useState()
+        hooks                           useState()               ✔
                                         useEffect() 
                                         useContext()             ✔
         
