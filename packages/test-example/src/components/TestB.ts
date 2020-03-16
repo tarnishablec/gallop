@@ -1,32 +1,19 @@
-import {
-  html,
-  component,
-  render,
-  createContext,
-  useState
-} from '@jumoku/jumoku'
+import { createContext, component, useState, html } from '@jumoku/jumoku'
+import './TestA'
 
-let [data, context] = createContext({
+export let [data, context] = createContext({
   tok: 1,
   children: [2, 4, 6, 8, 7, 10, 0, 22]
 })
 
-component('test-a', () => {
-  console.log(`a used`)
-  return html`
-    <div>
-      <button @click="${() => {}}">
-        aaaa
-      </button>
-      <hr />
-    </div>
-  `
-})
-
-component('test-b', () => {
+component('test-b', ({ name }: { name: string } = { name: 'yihan' }) => {
   let [state] = useState({ tick: 1 })
 
   return html`
+    <div>${name}</div>
+    <test-a></test-a>
+    <hr />
+    <hr />
     <div>
       <button
         @click="${() => {
@@ -48,15 +35,3 @@ component('test-b', () => {
     </div>
   `.useContext([context])
 })
-
-render(html`
-  <test-b></test-b>
-  <hr />
-  <hr />
-  <test-b></test-b>
-  <style>
-    body {
-      background: lightgreen;
-    }
-  </style>
-`)

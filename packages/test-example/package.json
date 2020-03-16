@@ -2,9 +2,9 @@
   "name": "@jumoku/test-example",
   "version": "0.0.4-alpha.0",
   "description": "test-example",
-  "main": "./index.ts",
+  "main": "./App.ts",
   "files": [
-    "index.ts",
+    "App.ts",
     "src"
   ],
   "scripts": {

@@ -68,3 +68,5 @@ export const isUpdatableElement = (
 
 export const isProxy = <T extends object>(val: T) =>
   (val as any)[_isProxy] ?? false
+
+export const isMarker = (val: string) => /^<!--\$porp\${.*}-->$/.test(val)

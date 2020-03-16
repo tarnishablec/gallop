@@ -17,4 +17,3 @@ export const useState = <T extends object>(initValue: T): [T] => {
   throw StateCanNotUseError
 }
 export const useEffect = () => {}
-export const useContext = () => {}

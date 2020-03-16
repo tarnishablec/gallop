@@ -21,7 +21,6 @@ export class Context<T extends object> {
 
   private update() {
     this.watchedInstances.forEach(clip => {
-      // console.log(this.watchedInstances)
       let elementInstance = clip.elementInstance!
       elementInstance.enupdateQueue()
     })

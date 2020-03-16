@@ -2,6 +2,7 @@ import { ShallowClip, Clip } from './clip'
 import { getPropsFromFunction, OBJ } from './utils'
 import { ComponentNamingError, ComponentExistError } from './error'
 import { createProxy } from './reactive'
+import { isMarker } from './is'
 
 const updateQueue = new Set<Clip>()
 
@@ -14,7 +15,6 @@ const requestUpdate = () => {
   dirty = true
 
   requestAnimationFrame(() => {
-    // console.log(updateQueue)
     updateQueue.forEach(c => {
       let instance = c.elementInstance!
       setCurrentHandle(instance)
@@ -32,22 +32,22 @@ export const resolveCurrentHandle = () => currentHandleElement
 export const setCurrentHandle = (el: UpdatableElement<any, any>) =>
   (currentHandleElement = el)
 
-type Compoent<P> = (props?: P) => ShallowClip
+type Component<P> = (props?: P) => ShallowClip
 
 export const componentPool = new Set<string>()
 
 export abstract class UpdatableElement<
-  P extends object,
-  S extends object
+  P extends OBJ,
+  S extends OBJ
 > extends HTMLElement {
   $props?: P
   $state?: S
-  builder: Compoent<P>
+  builder: Component<P>
   clip!: Clip
 
   hooksEnable: boolean = false
 
-  constructor(builder: Compoent<P>, initProp?: P) {
+  constructor(builder: Component<P>, initProp?: P) {
     super()
     this.builder = builder
     this.$props = initProp
@@ -88,10 +88,7 @@ export abstract class UpdatableElement<
   adoptedCallback() {}
 }
 
-export function component<P extends object>(
-  name: string,
-  builder: Compoent<P>
-) {
+export function component<P extends OBJ>(name: string, builder: Component<P>) {
   if (!checkComponentName(name)) {
     throw ComponentNamingError
   }
@@ -100,17 +97,26 @@ export function component<P extends object>(
   }
 
   let { defaultProp } = getPropsFromFunction(builder)
+
   const Clazz = class extends UpdatableElement<P, OBJ> {
-    static initShaClip: ShallowClip
+    // static initShaClip: ShallowClip
     updatable: boolean = false
+    static initialProp?: P
 
     constructor() {
       super(builder, defaultProp)
       setCurrentHandle(this)
-      Clazz.initShaClip = builder(defaultProp)
-      this.clip = Clazz.initShaClip.createInstance()
+      // Clazz.initShaClip = builder(defaultProp)
+      this.clip = builder(defaultProp).createInstance()
       this.clip.init()
       this.clip.elementInstance = this
+      Array.from(this.attributes)
+        .filter(a => /^:\s*/.test(a.name) && !isMarker(a.value))
+        .forEach(attr => {
+          this.$props![
+            attr.name.slice(1) as keyof P
+          ] = attr.value as NonNullable<P>[keyof P]
+        })
       this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
     }
   }

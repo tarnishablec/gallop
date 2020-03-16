@@ -12,7 +12,7 @@ console.log(__dirname)
 module.exports = {
   mode: 'development',
   entry: {
-    main: './index.ts'
+    main: './App.ts'
   },
   output: {
     filename: 'js/[name].js',

@@ -1,12 +1,11 @@
 import { ShallowClip } from './clip'
 
-const appRoot = document.querySelector('#app')!
-
 export const render = (
   shaClip: ShallowClip,
-  container: Element = appRoot,
-  before?: Node
+  container: Element = document.body,
+  before: Node = document.querySelector('noscript#tail')!
 ) => {
-  let dof = shaClip.getShaDof()
-  container.insertBefore(dof, before ?? null)
+  let clip = shaClip.createInstance()
+  clip.init()
+  container.insertBefore(clip.dof, before ?? null)
 }
