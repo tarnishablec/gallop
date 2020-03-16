@@ -27,15 +27,15 @@ export const createProxy = <T extends object>(
           throw LockedProxyError
         }
       }
-      setSideEffect?.(target, prop, val, receiver)
       // console.log(`----proxy state changed-----${String(prop)}`)
-      return Reflect.set(target, prop, val, receiver)
+      let res = Reflect.set(target, prop, val, receiver)
+      setSideEffect?.(target, prop, val, receiver)
+      return res
     },
     get: (target, prop, reciver) => {
       if (prop === _isProxy) {
         return true
       }
-
       getSideEffect?.(target, prop, reciver)
       // console.log(`----proxy state getted-----${String(prop)}`)
       const res = Reflect.get(target, prop, reciver)

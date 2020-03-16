@@ -1,4 +1,4 @@
-import { Primitive } from './utils'
+import { Primitive, OBJ } from './utils'
 import { ShallowClip } from './clip'
 import { UpdatableElement } from './component'
 import { _isProxy } from './reactive'
@@ -62,9 +62,9 @@ export const isShallowClipArray = (val: unknown): val is ShallowClip[] =>
 export const isObject = <T extends object>(val: T): val is T =>
   val instanceof Object
 
-export const isUpdatableElement = <P extends object>(
-  val: Element
-): val is UpdatableElement<P> => val instanceof UpdatableElement
+export const isUpdatableElement = (
+  val: unknown
+): val is UpdatableElement<OBJ, OBJ> => val instanceof UpdatableElement
 
 export const isProxy = <T extends object>(val: T) =>
   (val as any)[_isProxy] ?? false

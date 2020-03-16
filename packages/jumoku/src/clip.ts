@@ -76,7 +76,7 @@ export class ShallowClip {
   }
 
   createInstance() {
-    let clip = new Clip(
+    return new Clip(
       this.getShaDof().cloneNode(true) as DocumentFragment,
       this.shallowHtml,
       this.shallowParts,
@@ -84,7 +84,6 @@ export class ShallowClip {
       this.key,
       this.contexts
     )
-    return clip
   }
 
   // useStyle(style: StyleClip) {
@@ -144,7 +143,7 @@ export class Clip {
   contexts: Context<OBJ>[]
   uuid: number
 
-  elementInstance?: UpdatableElement<any>
+  elementInstance?: UpdatableElement<any, any>
 
   constructor(
     dof: DocumentFragment,
@@ -190,13 +189,6 @@ export class Clip {
 
       if (cur === null) {
         break
-      }
-
-      if (cur.previousSibling instanceof Text) {
-        let pre = cur.previousSibling
-        if (/^\s*$/.test(pre.wholeText)) {
-          pre.parentNode?.removeChild(pre)
-        }
       }
 
       if (isElement(cur)) {

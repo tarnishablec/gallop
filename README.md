@@ -9,9 +9,11 @@ still working...
         use template literals to auto detect dynamic & static code
         
         register web component in functional way 
-                component('name-name',({props})=>html`
-                    <div>${props}</div>
-                `.useContext([someContext]))
+
+        component('name-name',
+        ({props})=>html`
+                <div>${props}</div>
+        `.useContext([someContext]))
 
         common feature in react
 
@@ -19,11 +21,9 @@ still working...
         . to bind attributes 
         @ to bind events, support @click.once.capture.passive like vue
 
-        useKey() to enable list diff by keys
-
         auto minimize update
 
-        for more detail, check package/test-example
+        for more detail, check packages/test-example
 
 //TODO  
 

@@ -1,19 +1,18 @@
 import {
   shallowEqual,
   twoStrArrayCompare,
-  keyListDiff,
   dedup,
-  moveInArray
+  keyListDiff,
+  OBJ
 } from './utils'
 import { Clip, ShallowClip } from './clip'
 import { UpdatableElement } from './component'
-import { NotUpdatableError, DuplicatedKeyError } from './error'
+import { NotUpdatableError } from './error'
 import { generateEventOptions } from './event'
 import { removeNodes, insertAfter, getNodesBetween } from './dom'
-import { isEmptyArray } from './is'
 
 export type AttrEventLocation = { node: Element; name: string }
-export type PropLocation = { node: UpdatableElement<any>; name: string }
+export type PropLocation = { node: UpdatableElement<OBJ, OBJ>; name: string }
 export type TextLocation = { node: Comment | Text }
 export type clipLocation = { startNode: Comment; endNode: Comment }
 
@@ -81,21 +80,21 @@ export class PorpPart extends Part {
     if (!(node instanceof UpdatableElement)) {
       throw NotUpdatableError
     } else {
-      node.$props[name] = this.value
+      node.$props![name] = this.value
     }
   }
 
   setValue(val: unknown) {
     let { name, node } = this.location
-    node = node as UpdatableElement<any>
+    node = node as UpdatableElement<OBJ, OBJ>
     this.value = val
-    if (!shallowEqual(node.$props[name], this.value)) {
+    if (!shallowEqual(node.$props![name], this.value)) {
       this.update()
     }
   }
 
   update(): void {
-    this.location.node.$props[this.location.name] = this.value
+    this.location.node.$props![this.location.name] = this.value
   }
 }
 
@@ -139,8 +138,8 @@ export class TextPart extends Part {
   update(): void {
     let { node } = this.location
     let next = new Text(this.value.toString())
-    this.location.node = next
     node.parentNode?.replaceChild(next, node)
+    this.location.node = next
   }
   clear(): void {
     let { node } = this.location
@@ -240,8 +239,8 @@ export class ClipPart extends Part {
   init(): void {
     let { startNode, endNode } = this.location
     let parent = startNode.parentNode!
-    parent.insertBefore(this.value.dof, endNode)
     this.value.init()
+    parent.insertBefore(this.value.dof, endNode)
   }
 
   setValue(val: ShallowClip) {
@@ -268,43 +267,42 @@ export class ClipPart extends Part {
 
 export class ClipsPart extends Part {
   update(): void {
-    let oldKeys = this.keys
-    let { add, remove, move } = keyListDiff(oldKeys, this.newKeys)
-    if (isEmptyArray(add) && isEmptyArray(remove) && isEmptyArray(move)) {
-      // console.log(`nothing to change`)
-    } else {
-      let parent = this.location.startNode.parentNode!
-      let { startNode, endNode } = this.location
+    let { startNode, endNode } = this.location
+    let parent = startNode.parentNode!
+    let nodeCache = getNodesBetween(startNode, endNode)
 
-      let r = 0
-      remove.forEach(index => {
-        parent.removeChild(this.elementCache[index])
-        this.elementCache = getNodesBetween(startNode, endNode)
-        this.value.splice(index + r, 1)
-        r--
-      })
-      add.forEach(index => {
-        let clip = this.shaValues[index].createInstance()
-        clip.init()
+    let diffRes = keyListDiff(this.keys, this.newKeys)
 
-        this.elementCache[index]
-          ? parent.insertBefore(clip.dof, this.elementCache[index])
-          : parent.insertBefore(clip.dof, endNode)
-        this.elementCache = getNodesBetween(startNode, endNode)
-        this.value.splice(index, 0, clip)
-      })
-      move.forEach(({ from, to }) => {
-        if (this.newKeys[to] === this.value[to].key) {
-          //do nothing
-        } else {
-          let m = parent.removeChild(this.elementCache[from])
-          insertAfter(parent, m, parent.childNodes[to])
-          moveInArray(this.value, from, to)
-        }
-      })
-      this.keys = this.value.map(v => v.key)
-      // console.log(this.keys)
-    }
+    let after: Node
+    diffRes.forEach(d => {
+      switch (d.type) {
+        case 'insert':
+          {
+            let clip = this.shaValues[d.newIndex].createInstance()
+            clip.init()
+            let dof = clip.dof
+            let last = dof.lastChild ?? dof
+
+            if (!d.after) {
+              parent.insertBefore(dof, nodeCache[0])
+            } else {
+              insertAfter(parent, dof, after)
+            }
+            after = last
+          }
+          break
+        case 'remove':
+          parent.removeChild(nodeCache[d.oldIndex])
+          break
+        case 'move':
+          {
+          }
+          break
+
+        default:
+          break
+      }
+    })
   }
   clear(): void {
     let { startNode, endNode } = this.location
@@ -318,11 +316,11 @@ export class ClipsPart extends Part {
 
     this.keys = this.value.map(v => v.key)
 
+    let doc = document.createDocumentFragment()
     this.value.forEach(v => {
-      parent?.insertBefore(v.dof, endNode)
+      doc.appendChild(v.dof)
     })
-
-    this.elementCache = getNodesBetween(startNode, endNode)
+    parent?.insertBefore(doc, endNode)
   }
 
   setValue(vals: ShallowClip[]) {
@@ -337,6 +335,8 @@ export class ClipsPart extends Part {
       //   this.update()
       // }
 
+      //TODO
+
       this.clear()
       this.resetValue()
       this.init()
@@ -345,6 +345,8 @@ export class ClipsPart extends Part {
       this.resetValue()
       this.init()
     }
+
+    this.keys = this.newKeys
   }
 
   resetValue() {
@@ -363,7 +365,6 @@ export class ClipsPart extends Part {
   shaValues: ShallowClip[]
   keys: unknown[] = []
   newKeys: unknown[] = []
-  elementCache: Node[] = []
 
   constructor(index: number, val: ShallowClip[], location: clipLocation) {
     super(index)

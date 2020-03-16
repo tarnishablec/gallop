@@ -1,7 +1,9 @@
 export const createTreeWalker = (node: Node) =>
   document.createTreeWalker(node, 133, null, false)
 
-export interface OBJ extends Object {}
+export interface OBJ extends Object {
+  [name: string]: unknown
+}
 
 export type Primitive =
   | null
@@ -50,7 +52,7 @@ export function getPropsFromFunction<T>(func: (t: T) => unknown) {
   let [def] = digStringBlock(defaultStr, '{')
   return {
     propsNames: propsStr.split(',').map(p => p.trim()),
-    defaultProp: eval(`(${def})`) as T
+    defaultProp: def ? (eval(`(${def})`) as T) : undefined
   }
 }
 
@@ -148,30 +150,43 @@ export const twoStrArrayCompare = (arrA: string[], arrB: string[]): boolean => {
   return arrA.join('') === arrB.join('')
 }
 
-type DiffResult = {
-  remove: number[]
-  add: number[]
-  move: { from: number; to: number }[]
-}
+type Change =
+  | {
+      type: 'insert'
+      newIndex: number
+      after: unknown
+    }
+  | {
+      type: 'move'
+      oldIndex: number
+      after: unknown
+    }
+  | {
+      type: 'remove'
+      oldIndex: number
+    }
 
 export const keyListDiff = (pre: unknown[], next: unknown[]) => {
-  let res: DiffResult = {
-    remove: [],
-    add: [],
-    move: []
-  }
-  pre.forEach((p, index) => {
-    const i = next.indexOf(p)
-    if (i < 0) {
-      res.remove.push(index)
-    } else if (i !== index) {
-      res.move.push({ from: index, to: i })
+  let res: Change[] = []
+  let lastIndex = 0
+  let lastPlacedNode: unknown = null
+
+  next.forEach((item, i) => {
+    let j = pre.indexOf(item)
+    if (j < 0) {
+      res.push({ type: 'insert', newIndex: i, after: lastPlacedNode })
+    } else {
+      if (i !== j && j < lastIndex) {
+        res.push({ type: 'move', oldIndex: j, after: lastPlacedNode })
+      }
     }
+    lastPlacedNode = item
+    lastIndex = Math.max(i, j)
   })
-  next.forEach((n, index) => {
-    const i = pre.indexOf(n)
-    if (i < 0) {
-      res.add.push(index)
+
+  pre.forEach((item, i) => {
+    if (next.indexOf(item) < 0) {
+      res.push({ type: 'remove', oldIndex: i })
     }
   })
 
@@ -180,14 +195,7 @@ export const keyListDiff = (pre: unknown[], next: unknown[]) => {
 
 export const dedup = (arr: unknown[]) => Array.from(new Set(arr))
 
-export const removeFromArray = (arr: unknown[], index: number) => {
-  if (index > arr.length - 1) {
-    throw new Error('splice out of range')
-  }
-  return arr.splice(index, 1)[0]
-}
-
-export const moveInArray = (arr: unknown[], from: number, to: number) => {
-  let temp = removeFromArray(arr, from)
-  arr.splice(to, 0, temp)
+export const moveInArray = (list: unknown[], from: number, to: number) => {
+  let item = list.splice(from, 1)
+  list.splice(to, 0, item[0])
 }

@@ -1,6 +1,11 @@
 'use strict'
 
-import { getPropsFromFunction, shallowEqual, keyListDiff } from '../src/utils'
+import {
+  getPropsFromFunction,
+  shallowEqual,
+  keyListDiff,
+  moveInArray
+} from '../src/utils'
 
 describe('utils', () => {
   test('getPropsFromFunction', () => {
@@ -29,20 +34,32 @@ describe('utils', () => {
   })
 
   test('diff result', () => {
-    const a = [2, 4, 6, 8, 7, 10]
-    const b = [5, 2, 8, 6, 9, 10, 3, 7, 1]
+    const a = [9, 1, 2, 5, 4, 6, 8]
+    const b = [7, 3, 9, 8, 5, 0, 4]
 
     let res = keyListDiff(a, b)
+    console.log(res)
 
-    expect(res).toEqual({
-      remove: [1],
-      add: [0, 4, 6, 8],
-      move: [
-        { from: 0, to: 1 },
-        { from: 2, to: 3 },
-        { from: 3, to: 2 },
-        { from: 4, to: 7 }
-      ]
-    })
+    expect(res).toEqual([
+      { type: 'insert', newIndex: 0, after: null },
+      { type: 'insert', newIndex: 1, after: 7 },
+      { type: 'move', oldIndex: 0, after: 3 },
+      { type: 'move', oldIndex: 3, after: 8 },
+      { type: 'insert', newIndex: 5, after: 5 },
+      { type: 'move', oldIndex: 4, after: 0 },
+      { type: 'remove', oldIndex: 1 },
+      { type: 'remove', oldIndex: 2 },
+      { type: 'remove', oldIndex: 5 }
+    ])
+  })
+
+  test('move in array', () => {
+    let arr = [5, 2, 6, 8, 9, 7, 3, 10]
+    moveInArray(arr, 2, 3)
+    expect(arr).toEqual([5, 2, 8, 6, 9, 7, 3, 10])
+    moveInArray(arr, 6, 1)
+    expect(arr).toEqual([5, 3, 2, 8, 6, 9, 7, 10])
+    moveInArray(arr, 0, 4)
+    expect(arr).toEqual([3, 2, 8, 6, 5, 9, 7, 10])
   })
 })

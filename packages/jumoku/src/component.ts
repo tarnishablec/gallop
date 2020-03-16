@@ -1,9 +1,7 @@
 import { ShallowClip, Clip } from './clip'
-import { getPropsFromFunction } from './utils'
+import { getPropsFromFunction, OBJ } from './utils'
 import { ComponentNamingError, ComponentExistError } from './error'
 import { createProxy } from './reactive'
-
-// let currentElement = null
 
 const updateQueue = new Set<Clip>()
 
@@ -14,40 +12,58 @@ const requestUpdate = () => {
     return
   }
   dirty = true
+
   requestAnimationFrame(() => {
     // console.log(updateQueue)
     updateQueue.forEach(c => {
       let instance = c.elementInstance!
+      setCurrentHandle(instance)
       c.update(instance.builder(instance.$props).vals)
     })
+    updateQueue.clear()
     dirty = false
   })
 }
+
+let currentHandleElement: UpdatableElement<any, any>
+
+export const resolveCurrentHandle = () => currentHandleElement
+
+export const setCurrentHandle = (el: UpdatableElement<any, any>) =>
+  (currentHandleElement = el)
 
 type Compoent<P> = (props?: P) => ShallowClip
 
 export const componentPool = new Set<string>()
 
-export abstract class UpdatableElement<P extends object> extends HTMLElement {
-  $props: P | undefined
-  $state: unknown
+export abstract class UpdatableElement<
+  P extends object,
+  S extends object
+> extends HTMLElement {
+  $props?: P
+  $state?: S
   builder: Compoent<P>
   clip!: Clip
 
   hooksEnable: boolean = false
 
-  constructor(initProp: P, builder: Compoent<P>) {
+  constructor(builder: Compoent<P>, initProp?: P) {
     super()
     this.builder = builder
-    this.$props = createProxy(
-      initProp,
-      () => {
-        // console.log(`${this.tagName} updated`)
-        this.enupdateQueue()
-      },
-      undefined,
-      false
-    )
+    this.$props = initProp
+      ? createProxy(
+          initProp,
+          () => {
+            this.enupdateQueue()
+          },
+          undefined,
+          false
+        )
+      : undefined
+  }
+
+  initializeState(initState: S) {
+    this.$state = initState
   }
 
   enupdateQueue() {
@@ -82,14 +98,16 @@ export function component<P extends object>(
   if (componentPool.has(name)) {
     throw ComponentExistError
   }
-  let { defaultProp } = getPropsFromFunction(builder)
 
-  const Clazz = class extends UpdatableElement<P> {
-    static initShaClip: ShallowClip = builder(defaultProp)
+  let { defaultProp } = getPropsFromFunction(builder)
+  const Clazz = class extends UpdatableElement<P, OBJ> {
+    static initShaClip: ShallowClip
     updatable: boolean = false
 
     constructor() {
-      super(defaultProp ?? ({} as P), builder)
+      super(builder, defaultProp)
+      setCurrentHandle(this)
+      Clazz.initShaClip = builder(defaultProp)
       this.clip = Clazz.initShaClip.createInstance()
       this.clip.init()
       this.clip.elementInstance = this
