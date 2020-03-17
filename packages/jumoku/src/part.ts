@@ -103,7 +103,7 @@ export class AttrPart extends Part {
   init(): void {
     let { name, node } = this.location
     if (name === 'style') {
-      this.styleCache = node.getAttribute('style') ?? undefined
+      this.styleCache = node.getAttribute('style') ?? ''
     }
     this.update()
   }
@@ -111,7 +111,7 @@ export class AttrPart extends Part {
     let { name, node } = this.location
     let res: string
     if (name === 'style') {
-      res = `${this.styleCache ?? ''};${this.value}`
+      res = `${this.styleCache ?? ''}${this.styleCache ? ';' : ''}${this.value}`
     } else {
       res = this.value
     }

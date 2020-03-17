@@ -45,13 +45,13 @@ export abstract class UpdatableElement extends HTMLElement {
   constructor(builder: Component, propNames: string[]) {
     super()
     this.builder = builder
-    this.propNames = propNames
+    this.propNames = propNames.map(n => n.toLowerCase())
     if (propNames.length) {
-      let p = new Array(propNames.length).fill(undefined)
+      let p = new Array(this.propNames.length).fill(undefined)
       const attr = this.attributes
-      let staticProps = extractProp(attr)
+      let staticProps = extractProp(attr) //lower
       for (const key in staticProps) {
-        let index = propNames.indexOf(key)
+        let index = this.propNames.indexOf(key)
         if (index >= 0) {
           p[index] = staticProps[key]
         }

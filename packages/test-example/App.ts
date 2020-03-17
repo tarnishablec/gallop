@@ -1,11 +1,13 @@
 import { component, html, render, useState } from '@jumoku/jumoku'
 import './src/components/TestB'
 
-component('app-root', (/**/) => {
+component('app-root', (titleFront: string, titleBack: string) => {
   let [state] = useState({ age: 1, color: 'red' })
 
   return html`
-    <h1 .style="${`color:${state.color}`}">App Root</h1>
+    <h1 style="font-style:italic" .style="${`color:${state.color}`}">
+      ${titleFront}&nbsp;${titleBack}
+    </h1>
     <button @click="${() => (state.age += 1)}">age +1</button>
     <button
       @click="${() => (state.color = state.color === 'red' ? 'green' : 'red')}"
@@ -22,10 +24,10 @@ component('app-root', (/**/) => {
   `
 })
 
-//-------------app root must not add props----------------//
+const titleBack = 'Root'
 
 render(html`
-  <app-root></app-root>
+  <app-root :titleFront="App" :titleBack="${titleBack}"></app-root>
   <style>
     body {
       background: lightgreen;

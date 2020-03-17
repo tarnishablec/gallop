@@ -13,10 +13,10 @@ component('test-b', (name: string, age: number = 25) => {
   return html`
     <h3>name is ${name}; age is ${age}</h3>
     <div>${state.tick}</div>
-    <button @click="${() => (state.tick += 1)}">tick +1</button>
+    <button @click="${() => (state.tick += 1)}">state tick +1</button>
     <hr />
     <test-c :age="${state.tick}"></test-c>
     <div>${data.tok}</div>
-    <button @click="${() => (data.tok += 1)}">tick +1</button>
+    <button @click="${() => (data.tok += 1)}">context tok +1</button>
   `.useContext([context])
 })
