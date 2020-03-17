@@ -1,10 +1,4 @@
-import {
-  shallowEqual,
-  twoStrArrayCompare,
-  dedup,
-  keyListDiff,
-  OBJ
-} from './utils'
+import { shallowEqual, twoStrArrayCompare, dedup, keyListDiff } from './utils'
 import { Clip, ShallowClip } from './clip'
 import { UpdatableElement } from './component'
 import { NotUpdatableError } from './error'
@@ -12,7 +6,7 @@ import { generateEventOptions } from './event'
 import { removeNodes, insertAfter, getNodesBetween } from './dom'
 
 export type AttrEventLocation = { node: Element; name: string }
-export type PropLocation = { node: UpdatableElement<OBJ, OBJ>; name: string }
+export type PropLocation = { node: UpdatableElement; name: string }
 export type TextLocation = { node: Comment | Text }
 export type clipLocation = { startNode: Comment; endNode: Comment }
 
@@ -76,25 +70,20 @@ export class PorpPart extends Part {
   clear(): void {}
 
   init(): void {
-    let { name, node } = this.location
+    let { node } = this.location
     if (!(node instanceof UpdatableElement)) {
       throw NotUpdatableError
-    } else {
-      node.$props![name] = this.value
     }
+    this.update()
   }
 
   setValue(val: unknown) {
-    let { name, node } = this.location
-    node = node as UpdatableElement<OBJ, OBJ>
     this.value = val
-    if (!shallowEqual(node.$props![name], this.value)) {
-      this.update()
-    }
   }
 
   update(): void {
-    this.location.node.$props![this.location.name] = this.value
+    let { name, node } = this.location
+    node.mergeProps(name, this.value)
   }
 }
 
@@ -137,7 +126,7 @@ export class AttrPart extends Part {
 export class TextPart extends Part {
   update(): void {
     let { node } = this.location
-    let next = new Text(this.value.toString())
+    let next = new Text(this.value?.toString())
     node.parentNode?.replaceChild(next, node)
     this.location.node = next
   }

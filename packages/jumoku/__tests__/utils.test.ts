@@ -1,22 +1,34 @@
 'use strict'
 
 import {
-  getPropsFromFunction,
   shallowEqual,
   keyListDiff,
-  moveInArray
+  moveInArray,
+  extractProp,
+  getFuncArgNames
 } from '../src/utils'
 
 describe('utils', () => {
-  test('getPropsFromFunction', () => {
-    const testA = (
-      { person } = {
-        person: { name: 'yihan', call: () => alert(1) }
-      }
-    ) => alert(person)
-    let { propsNames, defaultProp } = getPropsFromFunction(testA)
-    expect(propsNames).toEqual(['person'])
-    expect(defaultProp?.person.name).toBe('yihan')
+  test('getFuncArgNames', () => {
+    const func = (
+      _you = { name: 'yi,han', children: [{ his: true }] },
+      b: number,
+      c: Array<number> = [12, 3]
+    ) => `${_you.name}${b}${c[1]}`
+
+    expect(getFuncArgNames(func)).toEqual(['_you', 'b', 'c'])
+    expect(getFuncArgNames(getFuncArgNames)).toEqual(['func'])
+    expect(getFuncArgNames(() => console.log(1))).toEqual([])
+    expect(
+      getFuncArgNames(
+        (
+          a: { person: { name: string; age: number } } = {
+            person: { name: 'yihan', age: 25 }
+          },
+          b_ss: number = 'asd,"{}asd'.length
+        ) => console.log(a.person.age + b_ss)
+      )
+    ).toEqual(['a', 'b_ss'])
   })
 
   test('shallowEqual', () => {
@@ -38,8 +50,6 @@ describe('utils', () => {
     const b = [7, 3, 9, 8, 5, 0, 4]
 
     let res = keyListDiff(a, b)
-    console.log(res)
-
     expect(res).toEqual([
       { type: 'insert', newIndex: 0, after: null },
       { type: 'insert', newIndex: 1, after: 7 },
@@ -61,5 +71,14 @@ describe('utils', () => {
     expect(arr).toEqual([5, 3, 2, 8, 6, 9, 7, 10])
     moveInArray(arr, 0, 4)
     expect(arr).toEqual([3, 2, 8, 6, 5, 9, 7, 10])
+  })
+
+  test('extract prop', () => {
+    let div = document.createElement('div')
+    div.innerHTML = `<div :name="yihan"></div>`
+
+    expect(extractProp((div.firstChild as Element)?.attributes)).toEqual({
+      name: 'yihan'
+    })
   })
 })

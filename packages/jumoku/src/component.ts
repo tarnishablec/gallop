@@ -1,8 +1,7 @@
 import { ShallowClip, Clip } from './clip'
-import { getPropsFromFunction, OBJ } from './utils'
+import { OBJ, getFuncArgNames, extractProp } from './utils'
 import { ComponentNamingError, ComponentExistError } from './error'
 import { createProxy } from './reactive'
-import { isMarker } from './is'
 
 const updateQueue = new Set<Clip>()
 
@@ -18,52 +17,54 @@ const requestUpdate = () => {
     updateQueue.forEach(c => {
       let instance = c.elementInstance!
       setCurrentHandle(instance)
-      c.update(instance.builder(instance.$props).vals)
+      c.update(instance.builder.apply(instance, instance.$props ?? []).vals)
     })
     updateQueue.clear()
     dirty = false
   })
 }
 
-let currentHandleElement: UpdatableElement<any, any>
+let currentHandleElement: UpdatableElement
 
 export const resolveCurrentHandle = () => currentHandleElement
 
-export const setCurrentHandle = (el: UpdatableElement<any, any>) =>
+export const setCurrentHandle = (el: UpdatableElement) =>
   (currentHandleElement = el)
 
-type Component<P> = (props?: P) => ShallowClip
+type Component = (...props: any[]) => ShallowClip
 
 export const componentPool = new Set<string>()
 
-export abstract class UpdatableElement<
-  P extends OBJ,
-  S extends OBJ
-> extends HTMLElement {
-  $props?: P
-  $state?: S
-  builder: Component<P>
+export abstract class UpdatableElement extends HTMLElement {
+  builder: Component
+  propNames: string[]
+  $props?: unknown[]
+  $state?: unknown
   clip!: Clip
 
-  hooksEnable: boolean = false
-
-  constructor(builder: Component<P>, initProp?: P) {
+  constructor(builder: Component, propNames: string[]) {
     super()
     this.builder = builder
-    this.$props = initProp
-      ? createProxy(
-          initProp,
-          () => {
-            this.enupdateQueue()
-          },
-          undefined,
-          false
-        )
-      : undefined
-  }
-
-  initializeState(initState: S) {
-    this.$state = initState
+    this.propNames = propNames
+    if (propNames.length) {
+      let p = new Array(propNames.length).fill(undefined)
+      const attr = this.attributes
+      let staticProps = extractProp(attr)
+      for (const key in staticProps) {
+        let index = propNames.indexOf(key)
+        if (index >= 0) {
+          p[index] = staticProps[key]
+        }
+      }
+      this.$props = createProxy(p, () => this.enupdateQueue())
+    }
+    setCurrentHandle(this)
+    let shallow = this.builder.apply(this, this.$props ?? [])
+    const clip = shallow.createInstance()
+    this.clip = clip
+    this.clip.elementInstance = this
+    this.clip.init()
+    this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
   }
 
   enupdateQueue() {
@@ -72,8 +73,6 @@ export abstract class UpdatableElement<
   }
 
   connectedCallback() {
-    this.hooksEnable = true
-
     this.clip.contexts.forEach(c => {
       c.watch(this.clip)
     })
@@ -86,9 +85,18 @@ export abstract class UpdatableElement<
   }
 
   adoptedCallback() {}
+
+  mergeProps(name: string, val: unknown) {
+    let index = this.propNames.indexOf(name)
+    if (index >= 0) {
+      this.$props ? (this.$props[index] = val) : null
+    }
+  }
+
+  dispatchUpdate() {}
 }
 
-export function component<P extends OBJ>(name: string, builder: Component<P>) {
+export function component<P extends OBJ>(name: string, builder: Component) {
   if (!checkComponentName(name)) {
     throw ComponentNamingError
   }
@@ -96,28 +104,11 @@ export function component<P extends OBJ>(name: string, builder: Component<P>) {
     throw ComponentExistError
   }
 
-  let { defaultProp } = getPropsFromFunction(builder)
+  const propNames = getFuncArgNames(builder)
 
-  const Clazz = class extends UpdatableElement<P, OBJ> {
-    // static initShaClip: ShallowClip
-    updatable: boolean = false
-    static initialProp?: P
-
+  const Clazz = class extends UpdatableElement {
     constructor() {
-      super(builder, defaultProp)
-      setCurrentHandle(this)
-      // Clazz.initShaClip = builder(defaultProp)
-      this.clip = builder(defaultProp).createInstance()
-      this.clip.init()
-      this.clip.elementInstance = this
-      Array.from(this.attributes)
-        .filter(a => /^:\s*/.test(a.name) && !isMarker(a.value))
-        .forEach(attr => {
-          this.$props![
-            attr.name.slice(1) as keyof P
-          ] = attr.value as NonNullable<P>[keyof P]
-        })
-      this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
+      super(builder, propNames)
     }
   }
   customElements.define(name, Clazz)
@@ -128,9 +119,3 @@ const checkComponentName = (name: string) => {
   const arr = name.split('-')
   return arr[arr.length - 1] && arr.length >= 2 && name.toLowerCase() === name
 }
-
-export const convertClassName = (name: string) =>
-  name
-    .split('-')
-    .map(n => n.replace(/^[a-z]/, i => i.toUpperCase()))
-    .join('')

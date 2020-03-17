@@ -1,3 +1,5 @@
+import { isMarker } from './is'
+
 export const createTreeWalker = (node: Node) =>
   document.createTreeWalker(node, 133, null, false)
 
@@ -198,4 +200,74 @@ export const dedup = (arr: unknown[]) => Array.from(new Set(arr))
 export const moveInArray = (list: unknown[], from: number, to: number) => {
   let item = list.splice(from, 1)
   list.splice(to, 0, item[0])
+}
+
+export const extractProp = (attr: NamedNodeMap) => {
+  let res = {} as OBJ
+  Array.from(attr)
+    .filter(a => /^:\s*/.test(a.name) && !isMarker(a.value))
+    .forEach(a => {
+      let { name, value } = a
+      res[name.slice(1)] = value
+    })
+  return res
+}
+
+export const lastOf = <T>(arr: Array<T>) => arr[arr.length - 1]
+
+export function getFuncArgNames(func: Function) {
+  const [funcHead] = digStringBlock(func.toString(), undefined, false)
+  const arr = funcHead.replace(/\s/g, '')
+  let res = []
+  let temp = ''
+  let canPush = true
+  let blockStack = []
+
+  for (let i = 0; i < arr.length; i++) {
+    const isInBlock = !!blockStack.length
+    const cur = arr[i]
+    if (isMatchedSymbol(lastOf(blockStack), cur)) {
+      blockStack.pop()
+      continue
+    } else if (
+      ['(', ')', '[', ']', '{', '}', '<', '>', '"', "'"].includes(cur)
+    ) {
+      blockStack.push(cur)
+    }
+
+    if (!isInBlock) {
+      if (cur === ',') {
+        canPush = true
+        continue
+      }
+      if (canPush) {
+        temp += cur
+        if ([',', '='].includes(arr[i + 1]) || i + 1 === arr.length) {
+          res.push(temp)
+          temp = ''
+          canPush = false
+        }
+      }
+    }
+  }
+  return res
+}
+
+export function isMatchedSymbol(front: string | undefined, back: string) {
+  switch (back) {
+    case ')':
+      return front === '('
+    case '}':
+      return front === '{'
+    case ']':
+      return front === '['
+    case '>':
+      return front === '<'
+    case '"':
+      return front === '"'
+    case "'":
+      return front === "'"
+    default:
+      return false
+  }
 }

@@ -11,7 +11,7 @@ export const useState = <T extends object>(initValue: T): [T] => {
         (current.$state = createProxy(initValue, () => current.enupdateQueue()))
       ]
     } else {
-      return [current.$state]
+      return [current.$state] as [T]
     }
   }
   throw StateCanNotUseError

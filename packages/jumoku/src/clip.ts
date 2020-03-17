@@ -7,7 +7,8 @@ import {
   isFunction,
   isNodeProp,
   isElement,
-  isFunctions
+  isFunctions,
+  isMarker
 } from './is'
 import { replaceSpaceToZwnj, createTreeWalker, OBJ } from './utils'
 import { Marker } from './marker'
@@ -42,6 +43,7 @@ export class ShallowClip {
 
   key: unknown = null
 
+  defaultUse: unknown
   contexts: Context<OBJ>[] = []
   shallowParts: PartType[] = []
 
@@ -96,6 +98,11 @@ export class ShallowClip {
     return this
   }
 
+  useDefault(defaultUse: unknown) {
+    this.defaultUse = defaultUse
+    return this
+  }
+
   useContext(contexts: Context<OBJ>[]) {
     this.contexts = contexts
     return this
@@ -143,7 +150,7 @@ export class Clip {
   contexts: Context<OBJ>[]
   uuid: number
 
-  elementInstance?: UpdatableElement<any, any>
+  elementInstance?: UpdatableElement
 
   constructor(
     dof: DocumentFragment,
@@ -192,13 +199,17 @@ export class Clip {
       }
 
       if (isElement(cur)) {
-        const attributes = cur.attributes
-        const { length } = attributes
+        const attr = cur.attributes
+        const { length } = attr
 
         for (let i = 0; i < length; i++) {
-          let name = attributes[i].name
+          let name = attr[i].name
           let prefix = name[0]
-          if (prefix === '.' || prefix === ':' || prefix === '@') {
+          if (
+            prefix === '.' ||
+            (prefix === ':' && isMarker(attr[i].value)) ||
+            prefix === '@'
+          ) {
             const n = name.slice(1)
             let p = createPart(
               count,
@@ -216,7 +227,7 @@ export class Clip {
           let p = createPart(
             count,
             this.shallowParts[count],
-            this.initVals[count] as ShallowClip,
+            this.initVals[count],
             {
               startNode: cur,
               endNode: cur.nextSibling! as Comment

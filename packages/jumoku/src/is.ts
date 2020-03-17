@@ -62,11 +62,11 @@ export const isShallowClipArray = (val: unknown): val is ShallowClip[] =>
 export const isObject = <T extends object>(val: T): val is T =>
   val instanceof Object
 
-export const isUpdatableElement = (
-  val: unknown
-): val is UpdatableElement<OBJ, OBJ> => val instanceof UpdatableElement
+export const isUpdatableElement = (val: unknown): val is UpdatableElement =>
+  val instanceof UpdatableElement
 
 export const isProxy = <T extends object>(val: T) =>
   (val as any)[_isProxy] ?? false
 
-export const isMarker = (val: string) => /^<!--\$porp\${.*}-->$/.test(val)
+export const isMarker = (val: string) =>
+  /^<!--\$(attr|prop|func)\${{\d+}}-->$/.test(val)
