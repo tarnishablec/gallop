@@ -5,7 +5,6 @@ export const render = (
   container: Element = document.body,
   before: Node = document.querySelector('noscript#tail')!
 ) => {
-  let clip = shaClip.createInstance()
-  clip.init()
-  container.insertBefore(clip.dof, before ?? null)
+  let dof = shaClip.createShallowInstance()
+  container.insertBefore(dof, before ?? null)
 }

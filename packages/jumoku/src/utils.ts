@@ -226,6 +226,7 @@ export function getFuncArgNames(func: Function) {
   for (let i = 0; i < arr.length; i++) {
     const isInBlock = !!blockStack.length
     const cur = arr[i]
+
     if (isMatchedSymbol(lastOf(blockStack), cur)) {
       blockStack.pop()
       continue

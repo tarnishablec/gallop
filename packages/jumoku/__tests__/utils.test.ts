@@ -7,6 +7,7 @@ import {
   extractProp,
   getFuncArgNames
 } from '../src/utils'
+import { useState, html } from '../src'
 
 describe('utils', () => {
   test('getFuncArgNames', () => {
@@ -15,6 +16,18 @@ describe('utils', () => {
       b: number,
       c: Array<number> = [12, 3]
     ) => `${_you.name}${b}${c[1]}`
+
+    const builder = (name: string, age: number = 25) => {
+      let [state] = useState({ tick: 1 })
+
+      return html`
+        <h3>name is ${name}; age is ${age}</h3>
+        <div>${state.tick}</div>
+        <button @click="${() => (state.tick += 1)}">tick +1</button>
+        <hr />
+        <test-c :age="${state.tick}"></test-c>
+      `
+    }
 
     expect(getFuncArgNames(func)).toEqual(['_you', 'b', 'c'])
     expect(getFuncArgNames(getFuncArgNames)).toEqual(['func'])
@@ -29,6 +42,7 @@ describe('utils', () => {
         ) => console.log(a.person.age + b_ss)
       )
     ).toEqual(['a', 'b_ss'])
+    expect(getFuncArgNames(builder)).toEqual(['name', 'age'])
   })
 
   test('shallowEqual', () => {

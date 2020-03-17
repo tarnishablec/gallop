@@ -77,6 +77,15 @@ export class ShallowClip {
     )
   }
 
+  createShallowInstance() {
+    return range.createContextualFragment(
+      this.strs.reduce(
+        (acc, cur, index) => `${acc}${cur}${this.vals[index] ?? ''}`,
+        ''
+      )
+    )
+  }
+
   createInstance() {
     return new Clip(
       this.getShaDof().cloneNode(true) as DocumentFragment,

@@ -1,4 +1,4 @@
-import { Primitive, OBJ } from './utils'
+import { Primitive } from './utils'
 import { ShallowClip } from './clip'
 import { UpdatableElement } from './component'
 import { _isProxy } from './reactive'

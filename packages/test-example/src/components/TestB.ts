@@ -1,5 +1,6 @@
 import { createContext, component, useState, html } from '@jumoku/jumoku'
 import './TestA'
+import './TestC'
 
 export let [data, context] = createContext({
   tok: 1,
@@ -14,6 +15,7 @@ component('test-b', (name: string, age: number = 25) => {
     <div>${state.tick}</div>
     <button @click="${() => (state.tick += 1)}">tick +1</button>
     <hr />
+    <test-c :age="${state.tick}"></test-c>
     <div>${data.tok}</div>
     <button @click="${() => (data.tok += 1)}">tick +1</button>
   `.useContext([context])

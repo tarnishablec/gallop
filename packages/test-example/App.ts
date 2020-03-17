@@ -1,11 +1,17 @@
 import { component, html, render, useState } from '@jumoku/jumoku'
 import './src/components/TestB'
 
-component('app-root', () => {
-  let [state] = useState({ age: 1 })
+component('app-root', (/**/) => {
+  let [state] = useState({ age: 1, color: 'red' })
 
   return html`
-    <h1>App Root</h1>
+    <h1 .style="${`color:${state.color}`}">App Root</h1>
+    <button @click="${() => (state.age += 1)}">age +1</button>
+    <button
+      @click="${() => (state.color = state.color === 'red' ? 'green' : 'red')}"
+    >
+      switch color
+    </button>
     <test-b :name="edge" :age="${state.age}"></test-b>
     <hr />
     <hr />

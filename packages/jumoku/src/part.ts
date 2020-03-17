@@ -77,10 +77,6 @@ export class PorpPart extends Part {
     this.update()
   }
 
-  setValue(val: unknown) {
-    this.value = val
-  }
-
   update(): void {
     let { name, node } = this.location
     node.mergeProps(name, this.value)
