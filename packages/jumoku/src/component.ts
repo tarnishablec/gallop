@@ -33,7 +33,7 @@ export const resolveCurrentHandle = () => currentHandleElement
 export const setCurrentHandle = (el: UpdatableElement) =>
   (currentHandleElement = el)
 
-type Component = (...props: any[]) => ShallowClip
+type Component = (this: UpdatableElement, ...props: any[]) => ShallowClip
 
 export const componentPool = new Set<string>()
 
@@ -42,6 +42,8 @@ export abstract class UpdatableElement extends HTMLElement {
   propNames: string[]
   $props?: unknown[]
   $state?: unknown
+  $refs?: Element[]
+  $alive: boolean = false
   clip!: Clip
 
   constructor(builder: Component, propNames: string[]) {
@@ -79,6 +81,7 @@ export abstract class UpdatableElement extends HTMLElement {
   }
 
   connectedCallback() {
+    this.$alive = true
     this.clip.contexts.forEach(c => {
       c.watch(this.clip)
     })
@@ -111,6 +114,7 @@ export function component<P extends OBJ>(name: string, builder: Component) {
   const propNames = getFuncArgNames(builder)
 
   const Clazz = class extends UpdatableElement {
+    static propNames: string[]
     constructor() {
       super(builder, propNames)
     }

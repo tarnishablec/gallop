@@ -41,7 +41,7 @@ still working...
 
         async update queue                                       ✔      
 
-        scoped css by shadowdom
+        dynamic scoped css by shadowdom
         
         scoped scss inject
 

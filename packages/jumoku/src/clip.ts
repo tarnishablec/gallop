@@ -40,6 +40,7 @@ export class ShallowClip {
   private readonly strs: TemplateStringsArray
   private readonly vals: unknown[]
   private readonly shallowHtml: string
+  // private readonly shaUuid: string
 
   private key: unknown = null
 
@@ -86,7 +87,7 @@ export class ShallowClip {
 
   _createShallowInstance() {
     return new Clip(
-      this._getShaDof() as DocumentFragment,
+      this._getShaDof(),
       this.shallowHtml,
       this.shallowParts,
       this.vals,
@@ -227,15 +228,15 @@ export class Clip {
       }
 
       if (isElement(cur)) {
-        const attr = cur.attributes
-        const { length } = attr
+        const attrs = cur.attributes
+        const { length } = attrs
 
         for (let i = 0; i < length; i++) {
-          let name = attr[i].name
+          let name = attrs[i].name
           let prefix = name[0]
           if (
             prefix === '.' ||
-            (prefix === ':' && isMarker(attr[i].value)) ||
+            (prefix === ':' && isMarker(attrs[i].value)) ||
             prefix === '@'
           ) {
             const n = name.slice(1)

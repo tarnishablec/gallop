@@ -1,8 +1,7 @@
-import { component, html } from '@jumoku/jumoku'
+import { component, html, useRef } from '@jumoku/jumoku'
 
-component(
-  'test-c',
-  (age: number) => html`
-    <div>test-c ${age}</div>
+component('test-c', (age: number) => {
+  return html`
+    <span>test-c ${age}</span>
   `
-)
+})

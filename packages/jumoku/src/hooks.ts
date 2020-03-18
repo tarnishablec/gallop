@@ -19,7 +19,5 @@ export const useState = <T extends object>(initValue: T): [T] => {
 
 export function useRef(element?: Element) {
   let current = resolveCurrentHandle()
-
-  console.log(current)
-  return [element]
+  return [element, current]
 }
