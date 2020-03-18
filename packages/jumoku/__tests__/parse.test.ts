@@ -29,13 +29,6 @@ describe('parse', () => {
         )}
       </div>
     `
-    expect(testHtml.shallowParts).toEqual([
-      'attr',
-      'text',
-      'event',
-      'clip',
-      'clip',
-      'clips'
-    ])
+    expect(testHtml._getVals()[2]).toEqual(click)
   })
 })

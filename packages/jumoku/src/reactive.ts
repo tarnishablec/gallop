@@ -1,8 +1,6 @@
 import { isObject, isFunction, isProxy } from './is'
 import { LockedProxyError } from './error'
 
-// const collectionTypes = new Set<Function>([Set, Map, WeakMap, WeakSet])
-
 export const _isProxy = Symbol('isProxy')
 
 export const createProxy = <T extends object>(
@@ -13,6 +11,7 @@ export const createProxy = <T extends object>(
     val: unknown,
     receiver: unknown
   ) => void,
+  shouldTriggerSetSideEffect: boolean = true,
   getSideEffect?: (
     target: T,
     prop: string | number | symbol,
@@ -29,7 +28,9 @@ export const createProxy = <T extends object>(
       }
       // console.log(`----proxy state changed-----${String(prop)}`)
       let res = Reflect.set(target, prop, val, receiver)
-      setSideEffect?.(target, prop, val, receiver)
+      if (shouldTriggerSetSideEffect) {
+        setSideEffect?.(target, prop, val, receiver)
+      }
       return res
     },
     get: (target, prop, reciver) => {
@@ -40,7 +41,13 @@ export const createProxy = <T extends object>(
       // console.log(`----proxy state getted-----${String(prop)}`)
       const res = Reflect.get(target, prop, reciver)
       return isObject(res) && !isFunction(res) && !isProxy(res)
-        ? createProxy(res, setSideEffect, getSideEffect, lock)
+        ? createProxy(
+            res,
+            setSideEffect,
+            shouldTriggerSetSideEffect,
+            getSideEffect,
+            lock
+          )
         : res
     }
   })

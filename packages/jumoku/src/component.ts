@@ -14,10 +14,12 @@ const requestUpdate = () => {
   dirty = true
 
   requestAnimationFrame(() => {
+    // console.log(updateQueue)
+    // debugger
     updateQueue.forEach(c => {
       let instance = c.elementInstance!
       setCurrentHandle(instance)
-      c.update(instance.builder.apply(instance, instance.$props ?? []).vals)
+      instance.dispatchUpdate()
     })
     updateQueue.clear()
     dirty = false
@@ -60,11 +62,15 @@ export abstract class UpdatableElement extends HTMLElement {
     }
     setCurrentHandle(this)
     let shallow = this.builder.apply(this, this.$props ?? [])
-    const clip = shallow.createInstance()
+    const clip = shallow._createInstance()
     this.clip = clip
     this.clip.elementInstance = this
     this.clip.init()
     this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
+  }
+
+  dispatchUpdate() {
+    this.clip.update(this.builder.apply(this, this.$props ?? [])._getVals())
   }
 
   enupdateQueue() {
@@ -92,8 +98,6 @@ export abstract class UpdatableElement extends HTMLElement {
       this.$props ? (this.$props[index] = val) : null
     }
   }
-
-  dispatchUpdate() {}
 }
 
 export function component<P extends OBJ>(name: string, builder: Component) {

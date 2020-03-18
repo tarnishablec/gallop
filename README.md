@@ -25,13 +25,17 @@ still working...
 
         auto minimize update
 
+        built-in state management solution
+
         for more detail, check packages/test-example
 
 //TODO  
 
         hooks                           useState()               ✔
-                                        useEffect() 
                                         useContext()             ✔
+                                        useEffect() 
+                                        useRef()
+                                        useMemo()
         
         context                                                  ✔
 

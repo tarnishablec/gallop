@@ -14,5 +14,6 @@ export const Marker = {
   clips: {
     start: `<!--$clipshead$${markerIndex}-->`,
     end: `<!--$clipstail$${markerIndex}-->`
-  }
+  },
+  ref: `<!--$ref$${markerIndex}-->`
 }

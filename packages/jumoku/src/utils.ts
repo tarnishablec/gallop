@@ -48,15 +48,15 @@ export const replaceSpaceToZwnj = (str: string) => {
   return (hsps && '&zwnj;') + hsps + str.trim() + tsps + (tsps && '&zwnj;')
 }
 
-export function getPropsFromFunction<T>(func: (t: T) => unknown) {
-  let [funcHead] = digStringBlock(func.toString(), '(')
-  let [propsStr, defaultStr] = digStringBlock(funcHead, '{', false)
-  let [def] = digStringBlock(defaultStr, '{')
-  return {
-    propsNames: propsStr.split(',').map(p => p.trim()),
-    defaultProp: def ? (eval(`(${def})`) as T) : undefined
-  }
-}
+// export function getPropsFromFunction<T>(func: (t: T) => unknown) {
+//   let [funcHead] = digStringBlock(func.toString(), '(')
+//   let [propsStr, defaultStr] = digStringBlock(funcHead, '{', false)
+//   let [def] = digStringBlock(defaultStr, '{')
+//   return {
+//     propsNames: propsStr.split(',').map(p => p.trim()),
+//     defaultProp: def ? (eval(`(${def})`) as T) : undefined
+//   }
+// }
 
 export function digStringBlock(
   rawStr: string,

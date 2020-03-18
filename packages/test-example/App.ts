@@ -1,10 +1,11 @@
-import { component, html, render, useState } from '@jumoku/jumoku'
+import { component, html, render, useState, useRef } from '@jumoku/jumoku'
 import './src/components/TestB'
 
 component('app-root', (titleFront: string, titleBack: string) => {
   let [state] = useState({ age: 1, color: 'red' })
+  let [ref] = useRef()
 
-  return html`
+  let res = html`
     <h1 style="font-style:italic" .style="${`color:${state.color}`}">
       ${titleFront}&nbsp;${titleBack}
     </h1>
@@ -22,6 +23,8 @@ component('app-root', (titleFront: string, titleBack: string) => {
     <hr />
     <test-a></test-a>
   `
+  console.log(ref)
+  return res
 })
 
 const titleBack = 'Root'

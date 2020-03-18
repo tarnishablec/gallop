@@ -53,6 +53,12 @@ export const isNodeProp = (val: unknown, front: string): val is String =>
     /=\s*".*"\s+[A-Za-z]+="/.test(front) ||
     /^"\s+/.test(front))
 
+export const isNodeRef = (val: unknown, front: string): val is String =>
+  /\s#(([A-Za-z]|-)+)="$/.test(front) &&
+  (front.lastIndexOf('<') > front.lastIndexOf('>') ||
+    /=\s*".*"\s+[A-Za-z]+="/.test(front) ||
+    /^"\s+/.test(front))
+
 export const isShallowClip = (val: unknown): val is ShallowClip =>
   val instanceof ShallowClip
 

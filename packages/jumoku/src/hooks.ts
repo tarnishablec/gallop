@@ -16,4 +16,10 @@ export const useState = <T extends object>(initValue: T): [T] => {
   }
   throw StateCanNotUseError
 }
-export const useEffect = () => {}
+
+export function useRef(element?: Element) {
+  let current = resolveCurrentHandle()
+
+  console.log(current)
+  return [element]
+}

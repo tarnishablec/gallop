@@ -215,7 +215,7 @@ export class EventPart extends Part {
 
 export class ClipPart extends Part {
   update(): void {
-    this.value.update(this.shaValue.vals)
+    this.value.update(this.shaValue._getVals())
   }
   clear(): void {
     let { startNode, endNode } = this.location
@@ -230,10 +230,10 @@ export class ClipPart extends Part {
 
   setValue(val: ShallowClip) {
     this.shaValue = val
-    if (this.shaValue.shallowHtml === this.value.html) {
+    if (this.shaValue._getShaHtml() === this.value.html) {
       this.update()
     } else {
-      this.value = this.shaValue.createInstance()
+      this.value = this.shaValue._createInstance()
       this.clear()
       this.init()
     }
@@ -246,7 +246,7 @@ export class ClipPart extends Part {
     super(index)
     this.location = location
     this.shaValue = val
-    this.value = val.createInstance()
+    this.value = val._createInstance()
   }
 }
 
@@ -263,7 +263,7 @@ export class ClipsPart extends Part {
       switch (d.type) {
         case 'insert':
           {
-            let clip = this.shaValues[d.newIndex].createInstance()
+            let clip = this.shaValues[d.newIndex]._createInstance()
             clip.init()
             let dof = clip.dof
             let last = dof.lastChild ?? dof
@@ -310,7 +310,7 @@ export class ClipsPart extends Part {
 
   setValue(vals: ShallowClip[]) {
     this.shaValues = vals
-    this.newKeys = vals.map(v => v.key)
+    // this.newKeys = vals.map(v => v.key)
     let temp = dedup(this.newKeys)
 
     if (temp?.[0] !== null) {
@@ -337,11 +337,11 @@ export class ClipsPart extends Part {
   resetValue() {
     this.value = []
     this.shaValues.forEach(s => {
-      let clip = s.createInstance()
+      let clip = s._createInstance()
       this.value.push(clip)
     })
     this.value.forEach((v, index) => {
-      v.update(this.shaValues[index].vals)
+      v.update(this.shaValues[index]._getVals())
     })
   }
 

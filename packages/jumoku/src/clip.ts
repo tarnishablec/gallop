@@ -37,23 +37,23 @@ const range = document.createRange()
 const shallowDofCache = new Map<string, DocumentFragment>()
 
 export class ShallowClip {
-  readonly strs: TemplateStringsArray
-  readonly vals: unknown[]
-  readonly shallowHtml: string
+  private readonly strs: TemplateStringsArray
+  private readonly vals: unknown[]
+  private readonly shallowHtml: string
 
-  key: unknown = null
+  private key: unknown = null
 
-  defaultUse: unknown
-  contexts: Context<OBJ>[] = []
-  shallowParts: PartType[] = []
+  private contexts: Context<OBJ>[] = []
+  private effects: Function[] = []
+  private shallowParts: PartType[] = [] //ts 3.8.3 feature
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     this.strs = strs
     this.vals = vals
-    this.shallowHtml = this.getShaHtml()
+    this.shallowHtml = this.initShaHtml()
   }
 
-  getShaHtml() {
+  private initShaHtml() {
     return this.strs
       .reduce(
         (acc, cur, index) =>
@@ -68,7 +68,14 @@ export class ShallowClip {
       .trim()
   }
 
-  getShaDof() {
+  _getShaHtml() {
+    return this.shallowHtml
+  }
+  _getVals() {
+    return this.vals
+  }
+
+  private _getShaDof() {
     return (
       shallowDofCache.get(this.shallowHtml) ??
       shallowDofCache
@@ -77,18 +84,20 @@ export class ShallowClip {
     )
   }
 
-  createShallowInstance() {
-    return range.createContextualFragment(
-      this.strs.reduce(
-        (acc, cur, index) => `${acc}${cur}${this.vals[index] ?? ''}`,
-        ''
-      )
+  _createShallowInstance() {
+    return new Clip(
+      this._getShaDof() as DocumentFragment,
+      this.shallowHtml,
+      this.shallowParts,
+      this.vals,
+      this.key,
+      this.contexts
     )
   }
 
-  createInstance() {
+  _createInstance() {
     return new Clip(
-      this.getShaDof().cloneNode(true) as DocumentFragment,
+      this._getShaDof().cloneNode(true) as DocumentFragment,
       this.shallowHtml,
       this.shallowParts,
       this.vals,
@@ -104,20 +113,23 @@ export class ShallowClip {
 
   useKey(key: unknown) {
     this.key = key
+    //TODO
     return this
   }
 
-  useDefault(defaultUse: unknown) {
-    this.defaultUse = defaultUse
-    return this
-  }
+  useEffect() {}
 
   useContext(contexts: Context<OBJ>[]) {
     this.contexts = contexts
     return this
   }
 
-  placeMarker(cur: string, val: unknown, index: number, length: number) {
+  private placeMarker(
+    cur: string,
+    val: unknown,
+    index: number,
+    length: number
+  ) {
     let front = cur
     let res
     let partType: PartType = 'no'
