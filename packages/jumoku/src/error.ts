@@ -19,3 +19,5 @@ export const DuplicatedKeyError = new Error(`key value duplicated`)
 export const StateCanNotUseError = new Error(
   'can not use state in pure component'
 )
+
+export const TemplateSyntaxError = new Error('template syntax error')

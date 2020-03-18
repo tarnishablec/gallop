@@ -1,7 +1,7 @@
 import { component, html, render, useState, useRef } from '@jumoku/jumoku'
 import './src/components/TestB'
 
-component('app-root', (titleFront: string, titleBack: string) => {
+component('app-root', (titleFront: string, titleBack: string = 'Rooot') => {
   let [state] = useState({ age: 1, color: 'red' })
   let [ref] = useRef()
 
@@ -23,7 +23,6 @@ component('app-root', (titleFront: string, titleBack: string) => {
     <hr />
     <test-a></test-a>
   `
-  console.log(ref)
   return res
 })
 

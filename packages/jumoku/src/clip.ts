@@ -28,7 +28,7 @@ import {
   clipLocation,
   ClipsPart
 } from './part'
-import { NoTypePartError } from './error'
+import { NoTypePartError, TemplateSyntaxError } from './error'
 import { UpdatableElement } from './component'
 import { Context } from './context'
 
@@ -45,7 +45,7 @@ export class ShallowClip {
 
   private contexts: Context<OBJ>[] = []
   private effects: Function[] = []
-  private shallowParts: PartType[] = [] //ts 3.8.3 feature
+  private shallowParts: PartType[] = [] //ts 3.8.3 feature #shallowParts can not pass lint-staged
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     this.strs = strs
@@ -130,10 +130,17 @@ export class ShallowClip {
     index: number,
     length: number
   ) {
-    let front = cur
+    let front = cur.trim()
     let res
     let partType: PartType = 'no'
     let isTail = index === length - 1
+    if (/\s\w+\s*=\s*"\s*$/.test(front)) {
+      throw TemplateSyntaxError
+    }
+
+    if (isTail) {
+      return front
+    }
 
     if (isShallowClip(val)) {
       res = `${Marker.clip.start}${Marker.clip.end}`
@@ -156,8 +163,8 @@ export class ShallowClip {
       partType = 'text'
     }
 
-    !isTail && this.shallowParts.push(partType)
-    return `${front}${isTail ? '' : res}`
+    this.shallowParts.push(partType)
+    return `${front}${res}`
   }
 }
 

@@ -29,6 +29,6 @@ describe('parse', () => {
         )}
       </div>
     `
-    expect(testHtml._getVals()[2]).toEqual(click)
+    expect(testHtml._getVals()[2]).toBe(click)
   })
 })
