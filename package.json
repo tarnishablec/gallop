@@ -50,7 +50,7 @@
     "lint-staged": "^10.0.8",
     "minimist": "^1.2.5",
     "prettier": "^1.19.1",
-    "rollup": "^2.0.6",
+    "rollup": "^2.1.0",
     "ts-jest": "^25.2.1",
     "typescript": "^3.8.3"
   }
