@@ -17,7 +17,10 @@ describe('utils', () => {
       c: Array<number> = [12, 3]
     ) => `${_you.name}${b}${c[1]}`
 
-    const builder = (name: string, age: number = 25) => {
+    const builder = (
+      /*asdasddfgas""daq,asdas{}*/ name: string,
+      /*asdasddfgas""daq,asdas{}*/ age: number = 25
+    ) => {
       let [state] = useState({ tick: 1 })
 
       return html`
@@ -31,7 +34,9 @@ describe('utils', () => {
 
     expect(getFuncArgNames(func)).toEqual(['_you', 'b', 'c'])
     expect(getFuncArgNames(getFuncArgNames)).toEqual(['func'])
-    expect(getFuncArgNames(() => console.log(1))).toEqual([])
+    expect(
+      getFuncArgNames((/*asdasddfgas""daq,asdas{}*/) => console.log(1))
+    ).toEqual([])
     expect(
       getFuncArgNames(
         (

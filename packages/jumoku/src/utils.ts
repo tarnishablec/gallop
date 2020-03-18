@@ -217,7 +217,7 @@ export const lastOf = <T>(arr: Array<T>) => arr[arr.length - 1]
 
 export function getFuncArgNames(func: Function) {
   const [funcHead] = digStringBlock(func.toString(), undefined, false)
-  const arr = funcHead.replace(/\s/g, '')
+  const arr = funcHead.replace(/(\/\*.*?\*\/)|\s/g, '')
   let res = []
   let temp = ''
   let canPush = true
