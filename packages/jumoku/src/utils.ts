@@ -120,7 +120,6 @@ const keys = <T>(val: T) => Object.keys(val) as Array<keyof T>
 
 export const shallowEqual = (objA: unknown, objB: unknown) => {
   if (is(objA, objB)) return true
-
   if (
     typeof objA !== 'object' ||
     objA === null ||
@@ -141,6 +140,18 @@ export const shallowEqual = (objA: unknown, objB: unknown) => {
     }
   }
 
+  return true
+}
+
+export const twoArrayShallowEqual = (arrA: unknown[], arrB: unknown[]) => {
+  if (arrA.length !== arrB.length) {
+    return false
+  }
+  for (let i = 0; i < arrA.length; i++) {
+    if (!shallowEqual(arrA[i], arrB[i])) {
+      return false
+    }
+  }
   return true
 }
 

@@ -30,5 +30,7 @@ component('test-b', (name: string, age: number = 25) => {
     )}
     <div>${data.tok}</div>
     <button @click="${() => (data.tok += 1)}">context tok +1</button>
-  `.useContext([context])
+  `
+    .useContext([context])
+    .useEffect(() => () => console.log('b disappear'))
 })

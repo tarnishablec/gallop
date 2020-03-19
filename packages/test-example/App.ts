@@ -1,28 +1,22 @@
-import { component, html, render, useState, useRef } from '@jumoku/jumoku'
+import { component, html, render, useState } from '@jumoku/jumoku'
 import './src/components/TestB'
 import './src/components/TestD'
 
 component('app-root', (titleFront: string, titleBack: string = 'Rooot') => {
-  let [state] = useState({ age: 1, color: 'red' })
-  let [ref, current] = useRef()
-
-  console.log(current)
+  let [state] = useState({ age: 1, color: 'red', show: true })
 
   return html`
     <h1 style="font-style:italic" .style="${`color:${state.color}`}">
       ${titleFront}&nbsp;${titleBack}
     </h1>
-    <button @click="${() => (state.age += 1)}">age +1</button>
     <button
-      @click="${() => (state.color = state.color === 'red' ? 'green' : 'red')}"
+      @click="${() => (state.color = Math.random() > 0.5 ? 'green' : 'red')}"
     >
       switch color
     </button>
-    <test-b :name="edge" :age="${state.age}"></test-b>
-    <hr />
-    <hr />
-    <test-d></test-d>
-  `
+  `.useEffect(() => {
+    console.log(state.color)
+  }, [state])
 })
 
 const titleBack = 'Root'

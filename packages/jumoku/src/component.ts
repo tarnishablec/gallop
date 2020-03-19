@@ -2,6 +2,7 @@ import { ShallowClip, Clip } from './clip'
 import { OBJ, getFuncArgNames, extractProp } from './utils'
 import { ComponentNamingError, ComponentExistError } from './error'
 import { createProxy } from './reactive'
+import { resolveEffect } from './hooks'
 
 const updateQueue = new Set<Clip>()
 
@@ -20,6 +21,7 @@ const requestUpdate = () => {
       let instance = c.elementInstance!
       setCurrentHandle(instance)
       instance.dispatchUpdate()
+      resolveEffect(c)
     })
     updateQueue.clear()
     dirty = false
@@ -114,7 +116,6 @@ export function component<P extends OBJ>(name: string, builder: Component) {
   const propNames = getFuncArgNames(builder)
 
   const Clazz = class extends UpdatableElement {
-    static propNames: string[]
     constructor() {
       super(builder, propNames)
     }

@@ -4,6 +4,7 @@ import { UpdatableElement } from './component'
 import { NotUpdatableError } from './error'
 import { generateEventOptions } from './event'
 import { removeNodes, insertAfter, getNodesBetween } from './dom'
+import { html } from '.'
 
 export type AttrEventLocation = { node: Element; name: string }
 export type PropLocation = { node: UpdatableElement; name: string }
@@ -229,7 +230,7 @@ export class ClipPart extends Part {
   }
 
   setValue(val: ShallowClip) {
-    this.shaValue = val
+    this.shaValue = val ? val : html``
     if (this.shaValue._getShaHtml() === this.value.html) {
       this.update()
     } else {

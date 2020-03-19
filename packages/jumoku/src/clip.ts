@@ -31,6 +31,7 @@ import {
 import { NoTypePartError, TemplateSyntaxError } from './error'
 import { UpdatableElement } from './component'
 import { Context } from './context'
+import { EffectRegistration, Effect } from './hooks'
 
 const range = document.createRange()
 
@@ -45,8 +46,8 @@ export class ShallowClip {
   private key: unknown = null
 
   private contexts: Context<OBJ>[] = []
-  private effects: Function[] = []
-  private shallowParts: PartType[] = [] //ts 3.8.3 feature #shallowParts can not pass lint-staged
+  private effectsRegs: EffectRegistration[] = []
+  private shallowParts: PartType[] = [] //ts 3.8.3 feature private fields #shallowParts can not pass ts-loader
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     this.strs = strs
@@ -92,7 +93,8 @@ export class ShallowClip {
       this.shallowParts,
       this.vals,
       this.key,
-      this.contexts
+      this.contexts,
+      this.effectsRegs
     )
   }
 
@@ -103,7 +105,8 @@ export class ShallowClip {
       this.shallowParts,
       this.vals,
       this.key,
-      this.contexts
+      this.contexts,
+      this.effectsRegs
     )
   }
 
@@ -118,7 +121,10 @@ export class ShallowClip {
     return this
   }
 
-  useEffect() {}
+  useEffect(effect: Effect, detect?: unknown[]) {
+    this.effectsRegs.push({ effect, detect })
+    return this
+  }
 
   useContext(contexts: Context<OBJ>[]) {
     this.contexts = contexts
@@ -177,7 +183,10 @@ export class Clip {
   initVals: unknown[]
   key: unknown
   contexts: Context<OBJ>[]
+  effectsRegs: EffectRegistration[]
   uuid: number
+
+  unmountCallback?: Function[]
 
   elementInstance?: UpdatableElement
 
@@ -187,7 +196,8 @@ export class Clip {
     shallowParts: PartType[],
     initVals: unknown[],
     key: unknown,
-    contexts: Context<OBJ>[]
+    contexts: Context<OBJ>[],
+    effectsRegs: EffectRegistration[]
   ) {
     this.key = key
     this.dof = dof
@@ -196,6 +206,7 @@ export class Clip {
     this.shallowParts = shallowParts
     this.attachPart()
     this.contexts = contexts
+    this.effectsRegs = effectsRegs
 
     this.uuid = Date.now()
 
