@@ -278,7 +278,7 @@ export class ClipsPart extends Part {
           }
           break
         case 'remove':
-          parent.removeChild(nodeCache[d.oldIndex])
+          // parent.removeChild(nodeCache[d.oldIndex])
           break
         case 'move':
           {

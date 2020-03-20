@@ -1,16 +1,16 @@
 import { createProxy, _hasChanged } from './reactive'
 import { StateCanNotUseError } from './error'
-import { resolveCurrentHandle } from './component'
+import { resolveCurrentHandle, UpdatableElement } from './component'
 import { isUpdatableElement, isProxy, isPrimitive } from './is'
-import { Clip } from './clip'
-import { twoArrayShallowEqual } from './utils'
 
 export const useState = <T extends object>(initValue: T): [T] => {
   let current = resolveCurrentHandle()
   if (isUpdatableElement(current)) {
     if (!current.$state) {
       return [
-        (current.$state = createProxy(initValue, () => current.enupdateQueue()))
+        (current.$state = createProxy(initValue, () =>
+          current?.enupdateQueue()
+        ))
       ]
     } else {
       return [current.$state] as [T]
@@ -28,43 +28,60 @@ export type Effect = () => (() => void) | void
 
 export type EffectRegistration = {
   effect: Effect
-  detect?: unknown[]
-  oldVal?: unknown[]
+  depends?: unknown[]
 }
 
-export const resolveEffect = (clip: Clip) => {
-  const regs = clip.effectsRegs
-  let desEffs: (() => void)[] = []
-  regs.forEach((reg, index) => {
-    if (!reg.detect) {
-      let res = reg.effect()
-      res ? desEffs.push(res) : null
-    } else if (reg.detect.length === 0) {
-      clip.effectsRegs.splice(index, 1)
-      let res = reg.effect()
-      res ? desEffs.push(res) : null
+export const useEffect = (effect: Effect, depends?: unknown[]) => {
+  const current = resolveCurrentHandle()
+  // console.log(current)
+  if (current) {
+    if (!current.effectsRegs) {
+      current.effectsRegs = []
+    }
+    if (!current.onceEffectIndexs) {
+      current.onceEffectIndexs = []
+    }
+    let index = current.effectsRegs.push({ effect, depends }) - 1
+    let { effect: eff, depends: deps } = current.effectsRegs[index]
+
+    if (!deps) {
+      current.mountCallbacks.push(eff)
+      current.updateCallbacks.push(eff)
+    } else if (deps.length === 0) {
+      current.mountCallbacks.push(eff)
     } else {
-      let deps = reg.detect
-      if (!reg.oldVal) {
-        clip.effectsRegs[index].oldVal = new Array(deps.length).fill(undefined)
+      if (!current.effectHookOldVals) {
+        current.effectHookOldVals = []
       }
-      deps.forEach((d, j) => {
-        let hasEffected = false
-        if (isPrimitive(d)) {
-          // console.log( clip.effectsRegs[index].oldVal![j])
-          // if (d !== reg.oldVal?.[j]) {
-          //   let res = hasEffected ? null : reg.effect()
-          //   res ? desEffs.push(res) : null
-          //  clip.effectsRegs[index].oldVal![j] = d
-          // }
-        } else if (isProxy(d as object)) {
-          if (Reflect.get(d as object, _hasChanged)) {
-            let res = hasEffected ? null : reg.effect()
-            res ? desEffs.push(res) : null
+      let triggered = false
+      for (let j = 0; j < deps.length; j++) {
+        if (isPrimitive(deps[j])) {
+          if (!current.effectHookOldVals![index]) {
+            current.effectHookOldVals[index] = []
+          }
+          if (current.effectHookOldVals[index][j] !== deps[j]) {
+            if (!triggered) {
+              current.mountCallbacks.push(eff)
+              current.updateCallbacks.push(eff)
+              triggered = true
+            }
+            current.effectHookOldVals[index][j] = deps[j]
+          }
+        } else if (isProxy(deps[j] as object)) {
+          if (Reflect.get(deps[j] as object, _hasChanged)) {
+            if (!triggered) {
+              current.mountCallbacks.push(eff)
+              current.updateCallbacks.push(eff)
+              triggered = true
+            }
           }
         }
-      })
+      }
     }
-  })
-  return desEffs.filter(a => !!a)
+  }
+}
+
+export const resolveEffect = (effect: Effect, current: UpdatableElement) => {
+  let res = effect()
+  res ? current.unmountCallbacks.push(res) : null
 }

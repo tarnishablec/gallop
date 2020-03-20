@@ -2,7 +2,7 @@ import { ShallowClip, Clip } from './clip'
 import { OBJ, getFuncArgNames, extractProp } from './utils'
 import { ComponentNamingError, ComponentExistError } from './error'
 import { createProxy } from './reactive'
-import { resolveEffect } from './hooks'
+import { EffectRegistration, resolveEffect, Effect } from './hooks'
 
 const updateQueue = new Set<Clip>()
 
@@ -15,24 +15,31 @@ const requestUpdate = () => {
   dirty = true
 
   requestAnimationFrame(() => {
-    // console.log(updateQueue)
-    // debugger
     updateQueue.forEach(c => {
       let instance = c.elementInstance!
       setCurrentHandle(instance)
+      instance.unmountCallbacks = []
+      instance.updateCallbacks = []
+      instance.mountCallbacks = []
       instance.dispatchUpdate()
-      resolveEffect(c)
+
+      if (!instance.firstRender) {
+        instance.updateCallbacks.forEach(cb => resolveEffect(cb, instance))
+      }
+
+      instance.effectsRegs ? (instance.effectsRegs = []) : null
+      setCurrentHandle(undefined)
     })
     updateQueue.clear()
     dirty = false
   })
 }
 
-let currentHandleElement: UpdatableElement
+let currentHandleElement: UpdatableElement | undefined
 
 export const resolveCurrentHandle = () => currentHandleElement
 
-export const setCurrentHandle = (el: UpdatableElement) =>
+export const setCurrentHandle = (el: UpdatableElement | undefined) =>
   (currentHandleElement = el)
 
 type Component = (this: UpdatableElement, ...props: any[]) => ShallowClip
@@ -47,6 +54,16 @@ export abstract class UpdatableElement extends HTMLElement {
   $refs?: Element[]
   $alive: boolean = false
   clip!: Clip
+
+  effectHookOldVals?: unknown[][]
+  effectsRegs?: EffectRegistration[]
+  onceEffectIndexs?: number[]
+
+  firstRender: boolean = true
+
+  mountCallbacks: Effect[] = []
+  updateCallbacks: (() => void)[] = []
+  unmountCallbacks: Effect[] = []
 
   constructor(builder: Component, propNames: string[]) {
     super()
@@ -66,8 +83,7 @@ export abstract class UpdatableElement extends HTMLElement {
     }
     setCurrentHandle(this)
     let shallow = this.builder.apply(this, this.$props ?? [])
-    const clip = shallow._createInstance()
-    this.clip = clip
+    this.clip = shallow._createInstance()
     this.clip.elementInstance = this
     this.clip.init()
     this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
@@ -87,12 +103,17 @@ export abstract class UpdatableElement extends HTMLElement {
     this.clip.contexts.forEach(c => {
       c.watch(this.clip)
     })
+    this.mountCallbacks.forEach(cb => resolveEffect(cb, this))
+    setTimeout(() => {
+      this.firstRender = false
+    }, 0)
   }
 
   disconnectedCallback() {
     this.clip.contexts.forEach(c => {
       c.unwatch(this.clip)
     })
+    this.unmountCallbacks.forEach(cb => cb())
   }
 
   adoptedCallback() {}

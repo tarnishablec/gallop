@@ -8,7 +8,8 @@ import {
   isNodeProp,
   isElement,
   isFunctions,
-  isMarker
+  isMarker,
+  isProxy
 } from './is'
 import { replaceSpaceToZwnj, createTreeWalker, OBJ } from './utils'
 import { Marker } from './marker'
@@ -29,9 +30,10 @@ import {
   ClipsPart
 } from './part'
 import { NoTypePartError, TemplateSyntaxError } from './error'
-import { UpdatableElement } from './component'
+import { UpdatableElement, resolveCurrentHandle } from './component'
 import { Context } from './context'
 import { EffectRegistration, Effect } from './hooks'
+import { _hasChanged } from './reactive'
 
 const range = document.createRange()
 
@@ -93,8 +95,7 @@ export class ShallowClip {
       this.shallowParts,
       this.vals,
       this.key,
-      this.contexts,
-      this.effectsRegs
+      this.contexts
     )
   }
 
@@ -105,8 +106,7 @@ export class ShallowClip {
       this.shallowParts,
       this.vals,
       this.key,
-      this.contexts,
-      this.effectsRegs
+      this.contexts
     )
   }
 
@@ -118,11 +118,6 @@ export class ShallowClip {
   useKey(key: unknown) {
     this.key = key
     //TODO
-    return this
-  }
-
-  useEffect(effect: Effect, detect?: unknown[]) {
-    this.effectsRegs.push({ effect, detect })
     return this
   }
 
@@ -183,10 +178,7 @@ export class Clip {
   initVals: unknown[]
   key: unknown
   contexts: Context<OBJ>[]
-  effectsRegs: EffectRegistration[]
   uuid: number
-
-  unmountCallback?: Function[]
 
   elementInstance?: UpdatableElement
 
@@ -196,8 +188,7 @@ export class Clip {
     shallowParts: PartType[],
     initVals: unknown[],
     key: unknown,
-    contexts: Context<OBJ>[],
-    effectsRegs: EffectRegistration[]
+    contexts: Context<OBJ>[]
   ) {
     this.key = key
     this.dof = dof
@@ -206,7 +197,6 @@ export class Clip {
     this.shallowParts = shallowParts
     this.attachPart()
     this.contexts = contexts
-    this.effectsRegs = effectsRegs
 
     this.uuid = Date.now()
 

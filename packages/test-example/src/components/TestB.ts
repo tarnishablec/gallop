@@ -1,4 +1,10 @@
-import { createContext, component, useState, html } from '@jumoku/jumoku'
+import {
+  createContext,
+  component,
+  useState,
+  html,
+  useEffect
+} from '@jumoku/jumoku'
 import './TestA'
 import './TestC'
 
@@ -9,6 +15,11 @@ export let [data, context] = createContext({
 
 component('test-b', (name: string, age: number = 25) => {
   let [state] = useState({ tick: 1 })
+
+  useEffect(() => {
+    console.log(state.tick)
+    return () => console.log(`end with ${state.tick}`)
+  }, [state.tick])
 
   return html`
     <h3>name is ${name}; age is ${age}</h3>
@@ -30,7 +41,5 @@ component('test-b', (name: string, age: number = 25) => {
     )}
     <div>${data.tok}</div>
     <button @click="${() => (data.tok += 1)}">context tok +1</button>
-  `
-    .useContext([context])
-    .useEffect(() => () => console.log('b disappear'))
+  `.useContext([context])
 })
