@@ -30,10 +30,9 @@ import {
   ClipsPart
 } from './part'
 import { NoTypePartError, TemplateSyntaxError } from './error'
-import { UpdatableElement, resolveCurrentHandle } from './component'
+import { UpdatableElement } from './component'
 import { Context } from './context'
-import { EffectRegistration, Effect } from './hooks'
-import { _hasChanged } from './reactive'
+import { EffectRegistration } from './hooks'
 
 const range = document.createRange()
 
