@@ -33,7 +33,7 @@ still working...
 
         hooks                           useState()               ✔
                                         useContext()             ✔
-                                        useEffect() 
+                                        useEffect()              ✔
                                         useRef()
                                         useMemo()
         
