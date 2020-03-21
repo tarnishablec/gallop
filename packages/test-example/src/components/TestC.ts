@@ -1,4 +1,4 @@
-import { component, html, useRef } from '@jumoku/jumoku'
+import { component, html } from '@jumoku/jumoku'
 
 component('test-c', (age: number) => {
   return html`

@@ -9,6 +9,7 @@
     "dist",
     "src"
   ],
+  "unpkg": "dist/jumoku.global.js",
   "types": "dist/jumoku.d.ts",
   "repository": {
     "type": "git",

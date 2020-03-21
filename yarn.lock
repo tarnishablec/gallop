@@ -2603,6 +2603,11 @@ asynckit@^0.4.0:
   resolved "https://registry.npm.taobao.org/asynckit/download/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
 
+at-least-node@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
+  integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
+
 atob-lite@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/atob-lite/download/atob-lite-2.0.0.tgz#0fef5ad46f1bd7a8502c65727f0367d5ee43d696"
@@ -4930,6 +4935,16 @@ fs-extra@^8.1.0:
     jsonfile "^4.0.0"
     universalify "^0.1.0"
 
+fs-extra@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-9.0.0.tgz#b6afc31036e247b2466dc99c29ae797d5d4580a3"
+  integrity sha512-pmEYSk3vYsG/bF651KPUXZ+hvjpgWYw/Gc7W9NFUe3ZVLczKKWIij3IKpOrQcdw4TILtibFslZ0UmR8Vvzig4g==
+  dependencies:
+    at-least-node "^1.0.0"
+    graceful-fs "^4.2.0"
+    jsonfile "^6.0.1"
+    universalify "^1.0.0"
+
 fs-minipass@^1.2.5:
   version "1.2.7"
   resolved "https://registry.npm.taobao.org/fs-minipass/download/fs-minipass-1.2.7.tgz#ccff8570841e7fe4265693da88936c55aed7f7c7"
@@ -6628,6 +6643,15 @@ jsonfile@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npm.taobao.org/jsonfile/download/jsonfile-4.0.0.tgz#8771aae0799b64076b76640fca058f9c10e33ecb"
   integrity sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=
+  optionalDependencies:
+    graceful-fs "^4.1.6"
+
+jsonfile@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-6.0.1.tgz#98966cba214378c8c84b82e085907b40bf614179"
+  integrity sha512-jR2b5v7d2vIOust+w3wtFKZIfpC2pnRmFAhAC/BuweZFQR8qZzxH1OyrQ10HmdVYiXWkYUqPVsz91cG7EL2FBg==
+  dependencies:
+    universalify "^1.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
 
@@ -9268,6 +9292,11 @@ send@0.17.1:
     range-parser "~1.2.1"
     statuses "~1.5.0"
 
+serialize-javascript@^1.7.0:
+  version "1.9.1"
+  resolved "https://registry.npm.taobao.org/serialize-javascript/download/serialize-javascript-1.9.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fserialize-javascript%2Fdownload%2Fserialize-javascript-1.9.1.tgz#cfc200aef77b600c47da9bb8149c943e798c2fdb"
+  integrity sha1-z8IArvd7YAxH2pu4FJyUPnmML9s=
+
 serialize-javascript@^2.1.2:
   version "2.1.2"
   resolved "https://registry.npm.taobao.org/serialize-javascript/download/serialize-javascript-2.1.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fserialize-javascript%2Fdownload%2Fserialize-javascript-2.1.2.tgz#ecec53b0e0317bdc95ef76ab7074b7384785fa61"
@@ -10296,13 +10325,28 @@ uglify-js@3.4.x:
     commander "~2.19.0"
     source-map "~0.6.1"
 
-uglify-js@^3.1.4:
+uglify-js@^3.1.4, uglify-js@^3.6.0:
   version "3.8.0"
   resolved "https://registry.npm.taobao.org/uglify-js/download/uglify-js-3.8.0.tgz#f3541ae97b2f048d7e7e3aa4f39fd8a1f5d7a805"
   integrity sha1-81Qa6XsvBI1+fjqk85/YofXXqAU=
   dependencies:
     commander "~2.20.3"
     source-map "~0.6.1"
+
+uglifyjs-webpack-plugin@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npm.taobao.org/uglifyjs-webpack-plugin/download/uglifyjs-webpack-plugin-2.2.0.tgz#e75bc80e7f1937f725954c9b4c5a1e967ea9d0d7"
+  integrity sha1-51vIDn8ZN/cllUybTFoeln6p0Nc=
+  dependencies:
+    cacache "^12.0.2"
+    find-cache-dir "^2.1.0"
+    is-wsl "^1.1.0"
+    schema-utils "^1.0.0"
+    serialize-javascript "^1.7.0"
+    source-map "^0.6.1"
+    uglify-js "^3.6.0"
+    webpack-sources "^1.4.0"
+    worker-farm "^1.7.0"
 
 uid-number@0.0.6:
   version "0.0.6"
@@ -10384,6 +10428,11 @@ universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.npm.taobao.org/universalify/download/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
   integrity sha1-tkb2m+OULavOzJ1mOcgNwQXvqmY=
+
+universalify@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/universalify/-/universalify-1.0.0.tgz#b61a1da173e8435b2fe3c67d29b9adf8594bd16d"
+  integrity sha512-rb6X1W158d7pRQBg5gkR8uPaSfiids68LTJQYOtEUhoJUWBdaQHsuT/EUduxXYxcrt4r5PJ4fuHW1MHT6p0qug==
 
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
