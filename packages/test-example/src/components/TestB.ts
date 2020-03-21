@@ -5,7 +5,6 @@ import {
   html,
   useEffect
 } from '@jumoku/jumoku'
-import './TestA'
 import './TestC'
 
 export let [data, context] = createContext({

@@ -2,6 +2,12 @@ import { component, html, render, useState, useEffect } from '@jumoku/jumoku'
 import './src/components/TestB'
 import './src/components/TestD'
 
+setTimeout(() => {
+  import('./src/components/TestA').then(({ TestA }) => {
+    TestA()
+  })
+}, 3000)
+
 component('app-root', (titleFront: string, titleBack: string = 'Rooot') => {
   let [state] = useState({ age: 1, color: 'red', show: true })
 
@@ -18,6 +24,7 @@ component('app-root', (titleFront: string, titleBack: string = 'Rooot') => {
     >
       switch color
     </button>
+    <test-a></test-a>
     <button @click="${() => (state.show = !state.show)}">
       ${state.show ? 'destory ' : 'create '}test-b
     </button>

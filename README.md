@@ -27,6 +27,8 @@ still working...
 
         built-in state management solution
 
+        naturally support async component by import()
+
         for more detail, check packages/test-example
 
 //TODO  
