@@ -1,4 +1,4 @@
-import { component, html } from '@jumoku/jumoku'
+import { component, html } from '@gallop/gallop'
 import { data, context } from './TestB'
 
 export const TestA = () =>

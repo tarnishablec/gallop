@@ -1,4 +1,4 @@
-import { component, html, render, useState, useEffect } from '@jumoku/jumoku'
+import { component, html, render, useState, useEffect } from '@gallop/gallop'
 import './src/components/TestB'
 import './src/components/TestD'
 
@@ -6,7 +6,7 @@ setTimeout(() => {
   import('./src/components/TestA').then(({ TestA }) => {
     TestA()
   })
-}, 3000)
+}, 10000)
 
 component('app-root', (titleFront: string, titleBack: string = 'Rooot') => {
   let [state] = useState({ age: 1, color: 'red', show: true })

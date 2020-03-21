@@ -1,11 +1,11 @@
-# `@jumoku/jumoku`
+# `@gallop/gallop`
 
 > TODO: description
 
 ## Usage
 
 ```
-const jumoku = require('@jumoku/jumoku');
+const gallop = require('@gallop/gallop');
 
 // TODO: DEMONSTRATE API
 ```

@@ -1,3 +1,3 @@
-import { component, html } from '@jumoku/jumoku'
+import { component, html } from '@gallop/gallop'
 
 component('test-d', () => html``)

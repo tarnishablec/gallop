@@ -1,7 +1,7 @@
-# jumoku
+# gallop
 still working...
 
-        yarn add @jumoku/jumoku 
+        yarn add @gallop/gallop 
 
 
 //Feature

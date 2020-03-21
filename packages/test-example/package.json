@@ -1,5 +1,5 @@
 {
-  "name": "@jumoku/test-example",
+  "name": "@gallop/test-example",
   "version": "0.0.6-y.1",
   "description": "test-example",
   "main": "./App.ts",
@@ -13,10 +13,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tarnishablec/jumoku.git"
+    "url": "https://github.com/tarnishablec/gallop.git"
   },
   "keywords": [
-    "jumoku"
+    "gallop"
   ],
   "sideEffects": false,
   "author": "tarnishablec <tarnishablec@outlook.com>",

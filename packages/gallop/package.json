@@ -1,22 +1,22 @@
 {
-  "name": "@jumoku/jumoku",
+  "name": "@gallop/gallop",
   "version": "0.0.6-y.0",
-  "description": "jumoku",
+  "description": "gallop",
   "main": "src/index.ts",
-  "module": "dist/jumoku.esm.js",
+  "module": "dist/gallop.esm.js",
   "files": [
     "index.js",
     "dist",
     "src"
   ],
-  "unpkg": "dist/jumoku.global.js",
-  "types": "dist/jumoku.d.ts",
+  "unpkg": "dist/gallop.global.js",
+  "types": "dist/gallop.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tarnishablec/jumoku.git"
+    "url": "https://github.com/tarnishablec/gallop.git"
   },
   "keywords": [
-    "jumoku"
+    "gallop"
   ],
   "directories": {
     "src": "src",

@@ -1,11 +1,11 @@
-# `@jumoku/test-example`
+# `@gallop/test-example`
 
 > TODO: description
 
 ## Usage
 
 ```
-const testExample = require('@jumoku/test-example');
+const testExample = require('@gallop/test-example');
 
 // TODO: DEMONSTRATE API
 ```

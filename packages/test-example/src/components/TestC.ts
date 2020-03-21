@@ -1,4 +1,4 @@
-import { component, html } from '@jumoku/jumoku'
+import { component, html } from '@gallop/gallop'
 
 component('test-c', (age: number) => {
   return html`

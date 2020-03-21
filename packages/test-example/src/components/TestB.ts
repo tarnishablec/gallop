@@ -4,7 +4,7 @@ import {
   useState,
   html,
   useEffect
-} from '@jumoku/jumoku'
+} from '@gallop/gallop'
 import './TestC'
 
 export let [data, context] = createContext({
