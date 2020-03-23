@@ -8,8 +8,7 @@ import {
   isNodeProp,
   isElement,
   isFunctions,
-  isMarker,
-  isProxy
+  isMarker
 } from './is'
 import { replaceSpaceToZwnj, createTreeWalker, OBJ } from './utils'
 import { Marker } from './marker'

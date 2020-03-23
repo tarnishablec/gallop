@@ -283,6 +283,8 @@ export function isMatchedSymbol(front: string | undefined, back: string) {
       return false
   }
 }
-
+{
+  /* 
 export const requestIdleCallback =
-  'requestIdleCallback' in window ? window.requestIdleCallback : null
+  'requestIdleCallback' in window ? window.requestIdleCallback : null */
+}

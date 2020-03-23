@@ -2,7 +2,7 @@
   "name": "@gallop/gallop",
   "version": "0.0.6-y.2",
   "description": "gallop",
-  "main": "src/index.ts",
+  "main": "index.js",
   "module": "dist/gallop.esm.js",
   "files": [
     "index.js",
