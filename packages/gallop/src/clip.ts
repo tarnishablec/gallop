@@ -193,7 +193,6 @@ export class Clip {
     this.html = html
     this.initVals = initVals
     this.shallowParts = shallowParts
-    this.attachPart()
     this.contexts = contexts
 
     this.uuid = Date.now()
@@ -214,7 +213,7 @@ export class Clip {
     })
   }
 
-  private attachPart() {
+  attachPart() {
     const walker = createTreeWalker(this.dof)
     let count = 0
 

@@ -85,7 +85,6 @@ export abstract class UpdatableElement extends HTMLElement {
     let shallow = this.builder.apply(this, this.$props ?? [])
     this.clip = shallow._createInstance()
     this.clip.elementInstance = this
-    this.clip.init()
     this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
   }
 

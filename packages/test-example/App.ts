@@ -22,7 +22,7 @@ component('app-root', (titleFront: string, titleBack: string = 'Rooot') => {
     <button
       @click="${() => (state.color = Math.random() > 0.5 ? 'green' : 'red')}"
     >
-      switch color
+      randomly switch color
     </button>
     <test-a></test-a>
     <button @click="${() => (state.show = !state.show)}">
