@@ -1,26 +1,30 @@
 # gallop
+
 still working...
 
-        yarn add @gallop/gallop 
-
+        yarn add @gallop/gallop
 
 //Feature
 
         use template literals to auto detect dynamic & static code
-        
-        register web component in functional way 
 
+        register web component in functional way
+
+   ```ts
+        let [data,context] = createContext({initContext})
         component('name-name',
-        ({props})=>html`
-                let [state] = useState({initState})
-
-                <div>${state}</div>
-        `.useContext([someContext]))
+        ({props})=>{
+          let [state] = useState({initState})
+          return html`
+            <div>${state}</div>
+          `.useContext([someContext]))
+        }
+  ```
 
         common feature in react
 
         : to bind props of component
-        . to bind attributes 
+        . to bind attributes
         @ to bind events, support @click.once.capture.passive like vue
 
         auto minimize update
@@ -31,19 +35,18 @@ still working...
 
         for more detail, check packages/test-example
 
-//TODO  
+//TODO
 
         hooks                           useState()               ✔
                                         useContext()             ✔
                                         useEffect()              ✔
                                         useRef()
                                         useMemo()
-        
+
         context                                                  ✔
 
-        async update queue                                       ✔      
+        async update queue                                       ✔
 
         dynamic scoped css by shadowdom
-        
-        scoped scss inject
 
+        scoped scss inject
