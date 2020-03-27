@@ -1,48 +1,20 @@
-import { component, html, render, useState, useEffect } from '@gallop/gallop'
-import './src/components/TestB'
-import './src/components/TestD'
+import { html } from '@gallop/gallop'
 
-setTimeout(() => {
-  import('./src/components/TestA').then(({ TestA }) => {
-    TestA()
-  })
-}, 10000)
+const a = 1
 
-component('app-root', (titleFront: string, titleBack: string = 'Rooot') => {
-  let [state] = useState({ age: 1, color: 'red', show: true })
-
-  useEffect(() => {
-    console.log(state.color)
-  }, [state.color])
-
-  return html`
-    <h1 style="font-style:italic" .style="${`color:${state.color}`}">
-      ${titleFront}&nbsp;${titleBack}
-    </h1>
-    <button
-      @click="${() => (state.color = Math.random() > 0.5 ? 'green' : 'red')}"
-    >
-      randomly switch color
-    </button>
-    <test-a></test-a>
-    <button @click="${() => (state.show = !state.show)}">
-      ${state.show ? 'destory ' : 'create '}test-b
-    </button>
-    ${state.show
+const test = html`
+  <div .style="${a}" #ref="${a}">
+    ${a} haha ${a}
+    <span>hello</span>
+  </div>
+  ${[1, 2, 3].map(a =>
+    a % 2
       ? html`
-          <test-b></test-b>
+          <div>${a}</div>
         `
-      : null}
-  `
-})
+      : a
+  )}
+  <span>asdas</span>
+`
 
-const titleBack = 'Root'
-
-render(html`
-  <app-root :titleFront="App" :titleBack="${titleBack}"></app-root>
-  <style>
-    body {
-      background: lightgreen;
-    }
-  </style>
-`)
+console.log(test)
