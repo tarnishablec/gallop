@@ -1,5 +1,3 @@
-const markerIndex = Math.random()
-  .toString()
-  .slice(2)
+const markerIndex = Math.random().toString().slice(2)
 
-export const marker = `<!--{{${markerIndex}}}-->`
+export const marker = `<!--{{${markerIndex}}}--><!--{{${markerIndex}}}-->`

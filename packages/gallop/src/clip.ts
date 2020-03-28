@@ -1,5 +1,6 @@
 import { marker } from './marker'
 import { Part } from './part'
+import { Context } from './context'
 
 const range = document.createRange()
 // https://www.measurethat.net/Benchmarks/ShowResult/100437
@@ -9,17 +10,44 @@ const shallowDofCache = new Map<string, DocumentFragment>()
 
 export class ShallowClip {
   shaHtml: string
+  vals: ReadonlyArray<unknown>
+  contexts?: Context<object>[]
 
-  constructor(strs: TemplateStringsArray) {
-    this.shaHtml = placeMarker(strs)
+  constructor(strs: TemplateStringsArray, vals: unknown[]) {
+    this.vals = vals
+    this.shaHtml = placeMarkerAndClean(strs)
   }
 
-  createInstance() {}
+  createInstance() {
+    return new Clip(this.getShaDof())
+  }
 
-  useContext() {}
+  createShallowInstance() {
+    return new Clip(range.createContextualFragment(this.shaHtml))
+  }
+
+  getShaDof() {
+    const res = (
+      shallowDofCache.get(this.shaHtml) ??
+      shallowDofCache
+        .set(this.shaHtml, range.createContextualFragment(this.shaHtml))
+        .get(this.shaHtml)
+    )?.cloneNode(true) as DocumentFragment
+
+    window.requestIdleCallback(() => {
+      //should ?
+      shallowDofCache.clear()
+    })
+
+    return res
+  }
+
+  useContext(contexts: Context<object>[]) {
+    this.contexts = contexts
+  }
 }
 
-const placeMarker = (strs: TemplateStringsArray) =>
+const placeMarkerAndClean = (strs: TemplateStringsArray) =>
   strs
     .join(marker)
     .replace(/(^\s)|(\s$)/, '')
@@ -30,4 +58,9 @@ const placeMarker = (strs: TemplateStringsArray) =>
 
 export class Clip {
   parts: Part[] = []
+  dof: DocumentFragment
+
+  constructor(dof: DocumentFragment) {
+    this.dof = dof
+  }
 }

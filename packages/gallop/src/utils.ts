@@ -1,5 +1,8 @@
-export const createTreeWalker = (root: Node) =>
-  document.createTreeWalker(root, 133)
+import { isMarker } from './is'
+
+export function createTreeWalker(root: Node) {
+  return document.createTreeWalker(root, 133)
+}
 
 export function digStringBlock(
   rawStr: string,
@@ -32,12 +35,11 @@ export function digStringBlock(
     return ['', rawStr]
   }
   let endIndex
-  let arr = [...rawStr]
   let stack = [0]
-  for (let i = startIndex + 1; i < arr.length; i++) {
-    if (arr[i] === head) {
+  for (let i = startIndex + 1; i < rawStr.length; i++) {
+    if (rawStr[i] === head) {
       stack.push(0)
-    } else if (arr[i] === tail) {
+    } else if (rawStr[i] === tail) {
       stack.pop()
     }
 
@@ -117,4 +119,46 @@ export function getFuncArgNames(func: Function) {
     }
   }
   return res
+}
+
+export function extractProps(attr: NamedNodeMap) {
+  return Array.from(attr)
+    .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
+    .reduce((acc, { name, value }) => {
+      Reflect.set(
+        acc,
+        name.slice(1),
+        isNaN(Number(value)) ? value : Number(value)
+      )
+      return acc
+    }, {})
+}
+
+const is = Object.is
+function keys<T>(val: T) {
+  return Object.keys(val) as Array<keyof T>
+}
+
+export function shallowEqual(objA: unknown, objB: unknown) {
+  if (is(objA, objB)) return true
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
+    return false
+  }
+
+  const keysA = keys(objA)
+  const keysB = keys(objB)
+
+  if (keysA.length !== keysB.length) return false
+
+  for (let i = 0; i < keysA.length; i++) {
+    if (!(keysA[i] in objB) || !is(objA[keysA[i]], objB[keysA[i]])) {
+      return false
+    }
+  }
+  return true
 }

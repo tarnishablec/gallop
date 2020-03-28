@@ -1,3 +1,5 @@
 'use strict'
 
-describe('is', () => {})
+describe('is', () => {
+  test('', () => {})
+})

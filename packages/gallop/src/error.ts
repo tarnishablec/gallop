@@ -5,3 +5,7 @@ export const ComponentNamingError = new SyntaxError(
 export const ComponentDuplicatedError = new Error(
   '	The CustomElementRegistry already contains an entry with the same name or the same constructor (or is otherwise already defined), or extends is specified and it is a valid custom element name, or extends is specified but the element it is trying to extend is an unknown element.'
 )
+
+export const LockedProxyError = new Error(
+  'can not set new propty locked object'
+)

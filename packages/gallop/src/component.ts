@@ -2,13 +2,14 @@ import { Clip, ShallowClip } from './clip'
 import { getFuncArgNames } from './utils'
 import { ComponentNamingError, ComponentDuplicatedError } from './error'
 
-let currentHandle: Clip
+let currentHandle: UpdatableElement
 
 export const resolveCurrentHandle = () => currentHandle
 
-export const setCurrentHandle = (clip: Clip) => (currentHandle = clip)
+export const setCurrentHandle = (clip: UpdatableElement) =>
+  (currentHandle = clip)
 
-const updateQueue = new Set<Clip>()
+const updateQueue = new Set<UpdatableElement>()
 
 let dirty = false
 
@@ -17,35 +18,62 @@ function requestUpdate() {
     return
   }
   dirty = true
-  requestAnimationFrame(() => {})
+  requestAnimationFrame(() => {
+    updateQueue.forEach((instance) => {
+      instance.dispatchUpdate()
+    })
+    dirty = false
+    updateQueue.clear()
+  })
 }
 
-export type Component = (...props: any[]) => ShallowClip
+export type ComponentBuilder = (...props: any[]) => ShallowClip
 
-export class UpdatableElement extends HTMLElement {
-  $props?: unknown
+export abstract class UpdatableElement extends HTMLElement {
+  $props: unknown[] = []
   $state?: unknown
-  $clip?: Clip
-  $builder: Component
+  $root: ShadowRoot | UpdatableElement
+  $builder: ComponentBuilder
 
-  constructor(builder: Component) {
+  $clip?: Clip
+
+  protected propNames?: string[]
+
+  constructor(builder: ComponentBuilder, shadow: boolean) {
     super()
     this.$builder = builder
+    this.$root = shadow ? this.attachShadow({ mode: 'open' }) : this
+    console.log('element constructed')
   }
 
-  enUpdateQueue() {}
+  enUpdateQueue() {
+    updateQueue.add(this)
+    requestUpdate()
+  }
 
   dispatchUpdate() {}
 
-  connectedCallback() {}
+  mergeProps() {}
 
-  disconnectedCallback() {}
+  requestUpdate() {}
+
+  connectedCallback() {
+    console.log(`${this.nodeName} connected`)
+  }
+
+  disconnectedCallback() {
+    console.log(`${this.nodeName} disconnected`)
+  }
 }
 
 const componentPool = new Set<string>()
 
-export function component(name: string, builder: Component) {
-  if (verifyComponentName(name)) {
+export function component(
+  name: string,
+  builder: ComponentBuilder,
+  shadow: boolean = true
+) {
+  if (!verifyComponentName(name)) {
     throw ComponentNamingError
   }
 
@@ -55,13 +83,14 @@ export function component(name: string, builder: Component) {
 
   const propNames = getFuncArgNames(builder)
 
-  const Clazz = class extends UpdatableElement {
+  const clazz = class extends UpdatableElement {
     constructor() {
-      super(builder)
+      super(builder, shadow)
+      this.propNames = propNames
     }
   }
 
-  customElements.define(name, Clazz)
+  customElements.define(name, clazz)
   componentPool.add(name)
 }
 
