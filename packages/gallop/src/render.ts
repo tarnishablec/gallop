@@ -5,6 +5,6 @@ export function render(
   container: Element | ShadowRoot = document.body,
   before: Node | null = container.firstChild
 ) {
-  const dof = shaClip.createShallowInstance().dof
+  const dof = shaClip.createInstance().dof
   container.insertBefore(dof, before)
 }

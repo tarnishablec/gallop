@@ -1,6 +1,6 @@
 import { html, component, render } from '@gallop/gallop'
 
-const test = (a: number) => html`
+const test = (a: number = 1) => html`
   <div .style="${a}">
     ${a} haha ${a}
     <span>hello</span>

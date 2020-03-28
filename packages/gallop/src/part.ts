@@ -9,4 +9,10 @@ export abstract class Part {
 
 export class NodePart extends Part {}
 
-export class AttrPart extends Part {}
+export class AttrPart extends Part {
+  constructor(index: number) {
+    super(index)
+  }
+}
+
+export function createPart() {}

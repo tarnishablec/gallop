@@ -131,7 +131,7 @@ export function extractProps(attr: NamedNodeMap) {
         isNaN(Number(value)) ? value : Number(value)
       )
       return acc
-    }, {})
+    }, {} as any)
 }
 
 const is = Object.is

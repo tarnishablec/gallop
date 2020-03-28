@@ -1,6 +1,9 @@
 import { marker } from './marker'
 import { Part } from './part'
 import { Context } from './context'
+import { createTreeWalker } from './utils'
+import { isMarker } from './is'
+import { cleanDofStr } from './dom'
 
 const range = document.createRange()
 // https://www.measurethat.net/Benchmarks/ShowResult/100437
@@ -11,19 +14,19 @@ const shallowDofCache = new Map<string, DocumentFragment>()
 export class ShallowClip {
   shaHtml: string
   vals: ReadonlyArray<unknown>
-  contexts?: Context<object>[]
+  contexts?: Set<Context<object>>
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     this.vals = vals
     this.shaHtml = placeMarkerAndClean(strs)
   }
 
-  createInstance() {
-    return new Clip(this.getShaDof())
+  createInstanceFromCache() {
+    return new Clip(this.getShaDof(), this.vals)
   }
 
-  createShallowInstance() {
-    return new Clip(range.createContextualFragment(this.shaHtml))
+  createInstance() {
+    return new Clip(range.createContextualFragment(this.shaHtml), this.vals)
   }
 
   getShaDof() {
@@ -35,7 +38,7 @@ export class ShallowClip {
     )?.cloneNode(true) as DocumentFragment
 
     window.requestIdleCallback(() => {
-      //should ?
+      //should or not?
       shallowDofCache.clear()
     })
 
@@ -43,24 +46,54 @@ export class ShallowClip {
   }
 
   useContext(contexts: Context<object>[]) {
-    this.contexts = contexts
+    if (!this.contexts) {
+      this.contexts = new Set()
+    }
+    contexts.forEach((c) => this.contexts!.add(c))
+    return this
   }
 }
 
 const placeMarkerAndClean = (strs: TemplateStringsArray) =>
-  strs
-    .join(marker)
-    .replace(/(^\s)|(\s$)/, '')
-    .replace(/>\s*/g, '>')
-    .replace(/\s*</g, '<')
-    .replace(/>(\s*?)</g, '><')
-    .trim()
+  cleanDofStr(strs.join(marker))
 
 export class Clip {
   parts: Part[] = []
   dof: DocumentFragment
+  initVals: ReadonlyArray<unknown>
 
-  constructor(dof: DocumentFragment) {
+  constructor(dof: DocumentFragment, initVals: ReadonlyArray<unknown>) {
     this.dof = dof
+    this.initVals = initVals
+  }
+
+  attachParts() {
+    const walker = createTreeWalker(this.dof)
+    const length = this.initVals.length
+    let count = 0
+    while (count < length) {
+      walker.nextNode()
+      const cur = walker.currentNode
+
+      if (cur === null) {
+        break
+      }
+
+      if (cur instanceof Element) {
+        const attrs = cur.attributes
+        const { length } = attrs
+        for (let i = 0; i < length; i++) {
+          const name = attrs[i].name
+          const prefix = name[0]
+          if (
+            prefix === '.' ||
+            (prefix === ':' && isMarker(attrs[i].value)) ||
+            prefix === '@'
+          ) {
+            const bindName = name.slice(1)
+          }
+        }
+      }
+    }
   }
 }

@@ -24,7 +24,7 @@ export const createProxy = <T extends object>(
     set: (target, prop, val, receiver) => {
       if (lock) {
         if (!(prop in target)) {
-          throw LockedProxyError
+          throw LockedProxyError(target)
         }
       }
       let hasChanged = !shallowEqual(Reflect.get(target, prop), val)
