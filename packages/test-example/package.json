@@ -1,6 +1,6 @@
 {
   "name": "@gallop/test-example",
-  "version": "0.0.6-y.2",
+  "version": "0.0.7-beta.0",
   "description": "test-example",
   "main": "./App.ts",
   "files": [
