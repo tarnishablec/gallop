@@ -54,15 +54,15 @@ still working...
 
 <p>
 <pre>
-        hooks                           useState()               ✔
-                                        useContext()             ✔
-                                        useEffect()              ✔
-                                        <span style="TEXT-DECORATION: line-through">useRef()</span>
-                                        <span style="TEXT-DECORATION: line-through">useMemo()</span>
+        hooks                           useState()               ✅
+                                        useContext()             ✅
+                                        useEffect()              ✅
+                                        useRef()                 ❌
+                                        useMemo()                ❓
 
-        context                                                  ✔
+        context                                                  ✅
 
-        async update queue                                       ✔
+        async update queue                                       ✅
 
         dynamic scoped css by shadowdom
 
