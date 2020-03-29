@@ -3,6 +3,7 @@ import path from 'path'
 import typescript from '@wessberg/rollup-plugin-ts'
 import json from '@rollup/plugin-json'
 import alias from '@rollup/plugin-alias'
+import cleanup from 'rollup-plugin-cleanup'
 const { scope } = require('./scripts/setting')
 
 if (!process.env.TARGET) {
@@ -13,7 +14,7 @@ const packagesDir = path.resolve(__dirname, 'packages')
 const packageDir = path.resolve(packagesDir, process.env.TARGET)
 const name = path.basename(packageDir)
 
-const resolve = p => path.resolve(packageDir, p)
+const resolve = (p) => path.resolve(packageDir, p)
 
 const pkg = require(resolve(`package.json`))
 const packageOptions = pkg.buildOptions || {}
@@ -38,7 +39,7 @@ const formats = {
 }
 
 const aliasOptions = { resolve: ['.ts'], entries: {} }
-fs.readdirSync(packagesDir).forEach(dir => {
+fs.readdirSync(packagesDir).forEach((dir) => {
   if (fs.statSync(path.resolve(packagesDir, dir)).isDirectory()) {
     aliasOptions.entries[`@${scope}/${dir}`] = path.resolve(
       packagesDir,
@@ -55,7 +56,8 @@ const CONFIG = {
       tsconfig: path.resolve(__dirname, 'tsconfig.json')
     }),
     json(),
-    alias(aliasOptions)
+    alias(aliasOptions),
+    cleanup()
   ]
 }
 
@@ -63,7 +65,7 @@ const defaultFormats = ['esm', 'cjs', 'global']
 const inlineFormats = process.env.FORMATS && process.env.FORMATS.split(',')
 const packageFormats = inlineFormats || packageOptions.formats || defaultFormats
 
-packageFormats.forEach(format => {
+packageFormats.forEach((format) => {
   CONFIG.output.push(
     Object.assign(formats[format], { name: name, extend: true })
   )

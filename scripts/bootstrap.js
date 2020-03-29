@@ -125,6 +125,7 @@ function initPkg(filePath, longName, shortName, args) {
       main: 'src/index.ts',
       module: `dist/${shortName}.esm.js`,
       files: [`index.js`, 'dist', 'src'],
+      unpkg: `dist/${shortName}.global.js`,
       types: `dist/${shortName}.d.ts`,
       repository: {
         type: 'git',

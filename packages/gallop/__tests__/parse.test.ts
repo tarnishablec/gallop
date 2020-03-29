@@ -1,34 +1,32 @@
-'use strict'
-
-import { html } from '../src/parse'
+import { html } from '../src'
+import { markerIndex } from '../src/marker'
 
 describe('parse', () => {
-  test('shallowClip', () => {
-    const title = 'This is title'
-    const color = 'red'
-    const click = (e: Event) => console.log(e)
-
-    const testHtml = html`
-      <div>
-        <h1 .style="${`color:${color}`}">${title}</h1>
-        <button @click="${click}">Click</button>
-        ${html`
-          <div>child1</div>
-        `}
-        ${html`
-          <div>child2</div>
-        `}
-        ${color.split('').map((c, index) =>
-          index % 2
-            ? html`
-                <div>${c}</div>
-              `
-            : html`
-                <span>${index}</span>
-              `
-        )}
-      </div>
-    `
-    expect(testHtml._getVals()[2]).toBe(click)
+  test('html', () => {
+    const n = 1
+    const domStr = Reflect.get(
+      html`
+        <div>
+          <span>this is span</span>
+          <p>this is p</p>
+          ${n}
+          <div>this is child</div>
+          <div>
+            <ul>
+              <li>1</li>
+              <li>2</li>
+              <li>3</li>
+            </ul>
+          </div>
+        </div>
+      `,
+      'shaHtml'
+    )
+    const dof = document.createRange().createContextualFragment(domStr)
+    expect((dof.firstChild as Element).localName).toBe('div')
+    expect(dof.firstChild?.childNodes[2].nodeType).toBe(Node.COMMENT_NODE)
+    expect((dof.firstChild?.childNodes[2] as Comment).data).toBe(
+      `{{${markerIndex}}}`
+    )
   })
 })

@@ -1,6 +1,6 @@
-import { isObject, isFunction, isProxy } from './is'
-import { LockedProxyError } from './error'
 import { shallowEqual } from './utils'
+import { isFunction, isObject, isProxy } from './is'
+import { LockedProxyError } from './error'
 
 export const _isProxy = Symbol('isProxy')
 export const _hasChanged = Symbol('hasChanged')
@@ -24,12 +24,11 @@ export const createProxy = <T extends object>(
     set: (target, prop, val, receiver) => {
       if (lock) {
         if (!(prop in target)) {
-          throw LockedProxyError
+          throw LockedProxyError(target)
         }
       }
       let hasChanged = !shallowEqual(Reflect.get(target, prop), val)
       Reflect.set(target, _hasChanged, hasChanged, receiver)
-
       let res = Reflect.set(target, prop, val, receiver)
       hasChanged && setSideEffect?.(target, prop, val, receiver)
       return res
@@ -38,17 +37,13 @@ export const createProxy = <T extends object>(
       if (prop === _isProxy) {
         return true
       }
+      if (prop === _hasChanged) {
+        return Reflect.get(target, _hasChanged) ?? false
+      }
       getSideEffect?.(target, prop, reciver)
-      // console.log(`----proxy state getted-----${String(prop)}`)
       const res = Reflect.get(target, prop, reciver)
       return isObject(res) && !isFunction(res) && !isProxy(res)
         ? createProxy(res, setSideEffect, getSideEffect, lock)
         : res
     }
   })
-
-// type A<T> = T | { a: number }
-
-// function test<T, K extends keyof T>(t: A<T>, k: K) {
-//   console.log(t[k])
-// }

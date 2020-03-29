@@ -1,320 +1,178 @@
-import {
-  isNodeAttribute,
-  isShallowClip,
-  isShallowClipArray,
-  isPrimitive,
-  isEmptyArray,
-  isFunction,
-  isNodeProp,
-  isElement,
-  isFunctions,
-  isMarker
-} from './is'
-import { replaceSpaceToZwnj, createTreeWalker, OBJ } from './utils'
-import { Marker } from './marker'
-import {
-  Part,
-  PartType,
-  PartLocation,
-  TextPart,
-  AttrPart,
-  AttrEventLocation,
-  PropLocation,
-  PorpPart,
-  EventPart,
-  EventInstance,
-  TextLocation,
-  ClipPart,
-  clipLocation,
-  ClipsPart
-} from './part'
-import { NoTypePartError, TemplateSyntaxError } from './error'
-import { UpdatableElement } from './component'
+import { marker, markerIndex } from './marker'
+import { Part, AttrPart, PropPart, EventPart, NodePart } from './part'
 import { Context } from './context'
-import { EffectRegistration } from './hooks'
+import { createTreeWalker } from './utils'
+import { isMarker } from './is'
+import { cleanDofStr, insertAfter } from './dom'
+import { UpdatableElement } from './component'
+import { NotUpdatableELementError } from './error'
+import { DoAble } from './do'
 
 const range = document.createRange()
+// https://www.measurethat.net/Benchmarks/ShowResult/100437
+// createContextualFragment vs innerHTML
 
 const shallowDofCache = new Map<string, DocumentFragment>()
 
-export class ShallowClip {
-  private readonly strs: TemplateStringsArray
-  private readonly vals: unknown[]
-  private readonly shallowHtml: string
-  // private readonly shaUuid: string
+export function createInstanceFromCache(this: ShallowClip) {
+  return new Clip(getShaDofFromCahce.apply(this), this.vals, this.contexts)
+}
 
-  private key: unknown = null
+export function createInstance(this: ShallowClip) {
+  return new Clip(
+    range.createContextualFragment(this.shaHtml),
+    this.vals,
+    this.contexts
+  )
+}
 
-  private contexts: Context<OBJ>[] = []
-  private effectsRegs: EffectRegistration[] = []
-  private shallowParts: PartType[] = [] //ts 3.8.3 feature private fields #shallowParts can not pass ts-loader
+export function getVals(this: ShallowClip) {
+  return this.vals
+}
+
+export function getShaHtml(this: ShallowClip) {
+  return this.shaHtml
+}
+
+export function getShaDofFromCahce(this: ShallowClip) {
+  const res = (
+    shallowDofCache.get(this.shaHtml) ??
+    shallowDofCache
+      .set(this.shaHtml, range.createContextualFragment(this.shaHtml))
+      .get(this.shaHtml)
+  )?.cloneNode(true) as DocumentFragment
+
+  window.requestIdleCallback?.(() => {
+    //should or not?
+    shallowDofCache.clear()
+  })
+  return res
+}
+
+const placeMarkerAndClean = (strs: TemplateStringsArray) =>
+  cleanDofStr(strs.join(marker))
+
+export class ShallowClip extends DoAble<ShallowClip> {
+  protected readonly shaHtml: string
+  protected readonly vals: ReadonlyArray<unknown>
+  protected contexts?: Set<Context<object>>
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
-    this.strs = strs
+    super()
     this.vals = vals
-    this.shallowHtml = this.initShaHtml()
+    this.shaHtml = placeMarkerAndClean(strs)
   }
 
-  private initShaHtml() {
-    return this.strs
-      .reduce(
-        (acc, cur, index) =>
-          `${acc}${this.placeMarker(
-            cur,
-            this.vals[index],
-            index,
-            this.strs.length
-          )}`,
-        ''
-      )
-      .trim()
-  }
-
-  _getShaHtml() {
-    return this.shallowHtml
-  }
-  _getVals() {
-    return this.vals
-  }
-
-  private _getShaDof() {
-    return (
-      shallowDofCache.get(this.shallowHtml) ??
-      shallowDofCache
-        .set(this.shallowHtml, range.createContextualFragment(this.shallowHtml))
-        .get(this.shallowHtml)!
-    )
-  }
-
-  _createShallowInstance() {
-    return new Clip(
-      this._getShaDof(),
-      this.shallowHtml,
-      this.shallowParts,
-      this.vals,
-      this.key,
-      this.contexts
-    )
-  }
-
-  _createInstance() {
-    return new Clip(
-      this._getShaDof().cloneNode(true) as DocumentFragment,
-      this.shallowHtml,
-      this.shallowParts,
-      this.vals,
-      this.key,
-      this.contexts
-    )
-  }
-
-  // useStyle(style: StyleClip) {
-  //  TODO
-  // return this
-  // }
-
-  useKey(key: unknown) {
-    this.key = key
-    //TODO
+  useContext(contexts: Context<object>[]) {
+    if (!this.contexts) {
+      this.contexts = new Set()
+    }
+    contexts.forEach((c) => this.contexts!.add(c))
     return this
-  }
-
-  useContext(contexts: Context<OBJ>[]) {
-    this.contexts = contexts
-    return this
-  }
-
-  private placeMarker(
-    cur: string,
-    val: unknown,
-    index: number,
-    length: number
-  ) {
-    let front = cur.trim()
-    let res
-    let partType: PartType = 'no'
-    let isTail = index === length - 1
-    if (/\s\w+\s*=\s*"\s*$/.test(front)) {
-      throw TemplateSyntaxError
-    }
-
-    if (isTail) {
-      return front
-    }
-
-    if (isShallowClip(val)) {
-      res = `${Marker.clip.start}${Marker.clip.end}`
-      partType = 'clip'
-    } else if (isFunction(val) || isFunctions(val)) {
-      res = Marker.func
-      partType = 'event'
-    } else if (isShallowClipArray(val) || isEmptyArray(val)) {
-      res = `${Marker.clips.start}${Marker.clips.end}`
-      partType = 'clips'
-    } else if (isNodeProp(val, front)) {
-      res = Marker.prop
-      partType = 'prop'
-    } else if (isNodeAttribute(val, front)) {
-      res = Marker.attr
-      partType = 'attr'
-    } else if (isPrimitive(val)) {
-      front = replaceSpaceToZwnj(cur)
-      res = Marker.text
-      partType = 'text'
-    }
-
-    this.shallowParts.push(partType)
-    return `${front}${res}`
   }
 }
 
 export class Clip {
-  dof: DocumentFragment
-  html: string
-  shallowParts: PartType[]
   parts: Part[] = []
-  initVals: unknown[]
-  key: unknown
-  contexts: Context<OBJ>[]
-  uuid: number
+  readonly initVals: ReadonlyArray<unknown>
 
-  elementInstance?: UpdatableElement
+  dof: DocumentFragment
+
+  contexts?: Set<Context<object>>
+
+  key?: unknown //TODO
 
   constructor(
     dof: DocumentFragment,
-    html: string,
-    shallowParts: PartType[],
-    initVals: unknown[],
-    key: unknown,
-    contexts: Context<OBJ>[]
+    initVals: ReadonlyArray<unknown>,
+    contexts?: Set<Context<object>>
   ) {
-    this.key = key
     this.dof = dof
-    this.html = html
     this.initVals = initVals
-    this.shallowParts = shallowParts
     this.contexts = contexts
-
-    this.uuid = Date.now()
-
-    // console.log(this.parts)
+    attachParts(this)
   }
 
-  init() {
-    this.parts.forEach(part => {
-      part.init()
-    })
-  }
-
-  update(values: ReadonlyArray<unknown>) {
-    // console.log(values)
-    this.parts.forEach((part, index) => {
-      part.setValue(values[index])
-    })
-  }
-
-  attachPart() {
-    const walker = createTreeWalker(this.dof)
-    let count = 0
-
-    while (count < this.initVals.length) {
-      walker.nextNode()
-      let cur = walker.currentNode
-
-      if (cur === null) {
-        break
-      }
-
-      if (isElement(cur)) {
-        const attrs = cur.attributes
-        const { length } = attrs
-
-        for (let i = 0; i < length; i++) {
-          let name = attrs[i].name
-          let prefix = name[0]
-          if (
-            prefix === '.' ||
-            (prefix === ':' && isMarker(attrs[i].value)) ||
-            prefix === '@'
-          ) {
-            const n = name.slice(1)
-            let p = createPart(
-              count,
-              this.shallowParts[count],
-              this.initVals[count],
-              { node: cur, name: n }
-            )
-            this.parts.push(p)
-            count++
-          }
-        }
-      } else if (cur instanceof Comment) {
-        const type = cur.data.match(/\$(\S*)\$/)?.[1]
-        if (type === 'cliphead' || type === 'clipshead') {
-          let p = createPart(
-            count,
-            this.shallowParts[count],
-            this.initVals[count],
-            {
-              startNode: cur,
-              endNode: cur.nextSibling! as Comment
-            }
-          )
-          this.parts.push(p)
-          walker.nextNode()
-        } else if (type === 'text') {
-          let p = createPart(
-            count,
-            this.shallowParts[count],
-            this.initVals[count],
-            {
-              node: cur
-            }
-          )
-          this.parts.push(p)
-        }
-        count++
-      }
-    }
+  tryUpdate(vals: ReadonlyArray<unknown>) {
+    this.parts.forEach((part, index) => part.setValue(vals[index]))
   }
 }
 
-const createPart = (
-  index: number,
-  type: PartType,
-  initVal: unknown,
-  location: PartLocation
-) => {
-  switch (type) {
-    case 'text':
-      return new TextPart(index, initVal as string, location as TextLocation)
-    case 'attr':
-      return new AttrPart(
-        index,
-        initVal as string,
-        location as AttrEventLocation
-      )
-    case 'prop':
-      return new PorpPart(index, initVal, location as PropLocation)
-    case 'event':
-      return new EventPart(
-        index,
-        initVal as EventInstance | EventInstance[],
-        location as AttrEventLocation
-      )
-    case 'clip':
-      return new ClipPart(
-        index,
-        initVal as ShallowClip,
-        location as clipLocation
-      )
-    case 'clips':
-      return new ClipsPart(
-        index,
-        initVal as ShallowClip[],
-        location as clipLocation
-      )
-    default:
-      throw NoTypePartError
+function attachParts(clip: Clip) {
+  const walker = createTreeWalker(clip.dof)
+  const length = clip.initVals.length
+  let count = 0
+  while (count < length) {
+    walker.nextNode()
+    const cur = walker.currentNode
+
+    if (cur === null) {
+      break
+    }
+
+    if (cur instanceof Element) {
+      const attrs = cur.attributes
+      const { length } = attrs
+      for (let i = 0; i < length; i++) {
+        const name = attrs[i].name
+        const prefix = name[0]
+        if (
+          prefix === '.' ||
+          (prefix === ':' && isMarker(attrs[i].value)) ||
+          prefix === '@'
+        ) {
+          const bindName = name.slice(1)
+          switch (prefix) {
+            case '.':
+              clip.parts.push(
+                new AttrPart(count, {
+                  node: cur,
+                  name: bindName
+                })
+              )
+              break
+            case ':':
+              if (cur instanceof UpdatableElement) {
+                clip.parts.push(
+                  new PropPart(count, {
+                    node: cur,
+                    name: bindName
+                  })
+                )
+              } else {
+                throw NotUpdatableELementError(cur.localName)
+              }
+              break
+            case '@':
+              clip.parts.push(
+                new EventPart(count, {
+                  node: cur,
+                  name: bindName
+                })
+              )
+              break
+          }
+          // console.log(cur)
+          count++
+        }
+      }
+    } else if (cur instanceof Comment) {
+      if (cur.data === `{{${markerIndex}}}`) {
+        const tail = new Comment(cur.data)
+        insertAfter(cur.parentNode!, tail, cur)
+        clip.parts.push(
+          new NodePart(
+            count,
+            {
+              startNode: cur,
+              endNode: tail
+            },
+            'node'
+          )
+        )
+        count++
+        walker.nextNode()
+      }
+    }
   }
 }

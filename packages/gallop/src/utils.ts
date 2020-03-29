@@ -1,62 +1,27 @@
 import { isMarker } from './is'
 
-export const createTreeWalker = (node: Node) =>
-  document.createTreeWalker(node, 133, null, false)
-
-export interface OBJ extends Object {
-  [name: string]: unknown
-}
-
 export type Primitive =
   | null
   | undefined
   | boolean
   | number
   | string
-  | Symbol
+  | symbol
   | bigint
 
-const getTailSpaceLength = (str: string) => {
-  let res = str.match(/(\S){1}\s*$/)
-  if (!res) {
-    return 0
-  }
-  let len = res![0].length
-  return res![1].startsWith('>') ? 0 : len - 1
+export function createTreeWalker(root: Node) {
+  return document.createTreeWalker(root, 133)
 }
 
-const getHeadSpaceLength = (str: string) => {
-  let res = str.match(/^\s*(\S){1}/)
-  if (!res) {
-    return 0
-  }
-  let len = res![0].length
-  return res![1].endsWith('<') ? 0 : len - 1
+export function tryParseToNumber(val: Primitive) {
+  return isNaN(Number(val)) ? val : Number(val)
 }
 
-export const replaceSpaceToZwnj = (str: string) => {
-  let tlen = getTailSpaceLength(str)
-  let hlen = getHeadSpaceLength(str)
-  let tsps = ''
-  let hsps = ''
-  for (let index = 0; index < tlen; index++) {
-    tsps += ' '
-  }
-  for (let index = 0; index < hlen; index++) {
-    hsps += ' '
-  }
-  return (hsps && '&zwnj;') + hsps + str.trim() + tsps + (tsps && '&zwnj;')
+export function tryParseToString(val: unknown): string {
+  if (val === null || val === undefined) return ''
+  if (typeof val === 'string') return val
+  return JSON.stringify(val)
 }
-
-// export function getPropsFromFunction<T>(func: (t: T) => unknown) {
-//   let [funcHead] = digStringBlock(func.toString(), '(')
-//   let [propsStr, defaultStr] = digStringBlock(funcHead, '{', false)
-//   let [def] = digStringBlock(defaultStr, '{')
-//   return {
-//     propsNames: propsStr.split(',').map(p => p.trim()),
-//     defaultProp: def ? (eval(`(${def})`) as T) : undefined
-//   }
-// }
 
 export function digStringBlock(
   rawStr: string,
@@ -89,12 +54,11 @@ export function digStringBlock(
     return ['', rawStr]
   }
   let endIndex
-  let arr = [...rawStr]
   let stack = [0]
-  for (let i = startIndex + 1; i < arr.length; i++) {
-    if (arr[i] === head) {
+  for (let i = startIndex + 1; i < rawStr.length; i++) {
+    if (rawStr[i] === head) {
       stack.push(0)
-    } else if (arr[i] === tail) {
+    } else if (rawStr[i] === tail) {
       stack.pop()
     }
 
@@ -114,117 +78,28 @@ export function digStringBlock(
   throw new Error('syntax error')
 }
 
-const hasOwn = Object.hasOwnProperty
-const is = Object.is
-const keys = <T>(val: T) => Object.keys(val) as Array<keyof T>
+export function lastOf<T>(arr: T[]) {
+  return arr[arr.length - 1]
+}
 
-export const shallowEqual = (objA: unknown, objB: unknown) => {
-  if (is(objA, objB)) return true
-  if (
-    typeof objA !== 'object' ||
-    objA === null ||
-    typeof objB !== 'object' ||
-    objB === null
-  ) {
-    return false
-  }
-
-  const keysA = keys(objA)
-  const keysB = keys(objB)
-
-  if (keysA.length !== keysB.length) return false
-
-  for (let i = 0; i < keysA.length; i++) {
-    if (!hasOwn.call(objB, keysA[i]) || !is(objA[keysA[i]], objB[keysA[i]])) {
+export function isMatchedSymbol(front: string | undefined, back: string) {
+  switch (back) {
+    case ')':
+      return front === '('
+    case '}':
+      return front === '{'
+    case ']':
+      return front === '['
+    case '>':
+      return front === '<'
+    case '"':
+      return front === '"'
+    case "'":
+      return front === "'"
+    default:
       return false
-    }
   }
-
-  return true
 }
-
-export const twoArrayShallowEqual = (arrA: unknown[], arrB: unknown[]) => {
-  if (arrA.length !== arrB.length) {
-    return false
-  }
-  for (let i = 0; i < arrA.length; i++) {
-    if (!shallowEqual(arrA[i], arrB[i])) {
-      return false
-    }
-  }
-  return true
-}
-
-export const twoStrArrayCompare = (arrA: string[], arrB: string[]): boolean => {
-  if (arrA.length !== arrB.length) {
-    return false
-  }
-
-  return arrA.join('') === arrB.join('')
-}
-
-type Change =
-  | {
-      type: 'insert'
-      newIndex: number
-      after: unknown
-    }
-  | {
-      type: 'move'
-      oldIndex: number
-      after: unknown
-    }
-  | {
-      type: 'remove'
-      oldIndex: number
-    }
-
-export const keyListDiff = (pre: unknown[], next: unknown[]) => {
-  let res: Change[] = []
-  let lastIndex = 0
-  let lastPlacedNode: unknown = null
-
-  next.forEach((item, i) => {
-    let j = pre.indexOf(item)
-    if (j < 0) {
-      res.push({ type: 'insert', newIndex: i, after: lastPlacedNode })
-    } else {
-      if (i !== j && j < lastIndex) {
-        res.push({ type: 'move', oldIndex: j, after: lastPlacedNode })
-      }
-    }
-    lastPlacedNode = item
-    lastIndex = Math.max(i, j)
-  })
-
-  pre.forEach((item, i) => {
-    if (next.indexOf(item) < 0) {
-      res.push({ type: 'remove', oldIndex: i })
-    }
-  })
-
-  return res
-}
-
-export const dedup = (arr: unknown[]) => Array.from(new Set(arr))
-
-export const moveInArray = (list: unknown[], from: number, to: number) => {
-  let item = list.splice(from, 1)
-  list.splice(to, 0, item[0])
-}
-
-export const extractProp = (attr: NamedNodeMap) => {
-  let res = {} as OBJ
-  Array.from(attr)
-    .filter(a => /^:\s*/.test(a.name) && !isMarker(a.value))
-    .forEach(a => {
-      let { name, value } = a
-      res[name.slice(1)] = value
-    })
-  return res
-}
-
-export const lastOf = <T>(arr: Array<T>) => arr[arr.length - 1]
 
 export function getFuncArgNames(func: Function) {
   const [funcHead] = digStringBlock(func.toString(), undefined, false)
@@ -265,26 +140,47 @@ export function getFuncArgNames(func: Function) {
   return res
 }
 
-export function isMatchedSymbol(front: string | undefined, back: string) {
-  switch (back) {
-    case ')':
-      return front === '('
-    case '}':
-      return front === '{'
-    case ']':
-      return front === '['
-    case '>':
-      return front === '<'
-    case '"':
-      return front === '"'
-    case "'":
-      return front === "'"
-    default:
-      return false
-  }
+export function extractProps(attr: NamedNodeMap) {
+  return Array.from(attr)
+    .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
+    .reduce((acc, { name, value }) => {
+      Reflect.set(acc, name.slice(1), tryParseToNumber(value))
+      return acc
+    }, {} as any)
 }
-{
-  /* 
-export const requestIdleCallback =
-  'requestIdleCallback' in window ? window.requestIdleCallback : null */
+
+const is = Object.is
+function keys<T>(val: T) {
+  return Object.keys(val) as Array<keyof T>
+}
+
+export function shallowEqual(objA: unknown, objB: unknown) {
+  if (is(objA, objB)) return true
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
+    return false
+  }
+
+  const keysA = keys(objA)
+  const keysB = keys(objB)
+
+  if (keysA.length !== keysB.length) return false
+
+  for (let i = 0; i < keysA.length; i++) {
+    if (!(keysA[i] in objB) || !is(objA[keysA[i]], objB[keysA[i]])) {
+      return false
+    }
+  }
+  return true
+}
+
+export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
+  if (arrA.length !== arrB.length) {
+    return false
+  }
+  return arrA.join('') === arrB.join('')
 }

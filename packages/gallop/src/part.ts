@@ -1,156 +1,170 @@
-import { shallowEqual, twoStrArrayCompare, dedup, keyListDiff } from './utils'
-import { Clip, ShallowClip } from './clip'
+import { ShallowClip, Clip, createInstance, getVals, getShaHtml } from './clip'
 import { UpdatableElement } from './component'
-import { NotUpdatableError } from './error'
+import {
+  shallowEqual,
+  twoStrArrayCompare,
+  Primitive,
+  tryParseToString
+} from './utils'
 import { generateEventOptions } from './event'
-import { removeNodes, insertAfter, getNodesBetween } from './dom'
-import { html } from '.'
+import { removeNodes } from './dom'
+import { isPrimitive } from './is'
 
-export type AttrEventLocation = { node: Element; name: string }
-export type PropLocation = { node: UpdatableElement; name: string }
-export type TextLocation = { node: Comment | Text }
-export type clipLocation = { startNode: Comment; endNode: Comment }
+type AttrEventLocation = { node: Element; name: string }
+type PropLocation = { node: UpdatableElement; name: string }
+type NodeLocation = { startNode: Comment; endNode: Comment }
 
-export type EventInstance = (this: Document, e: Event) => unknown
+type PartLocation = AttrEventLocation | PropLocation | NodeLocation
+type NodePartType = 'clip' | 'clips' | 'text'
+type PartType = 'node' | 'attr' | 'event' | 'prop' | NodePartType
 
-export type PartLocation =
-  | AttrEventLocation
-  | PropLocation
-  | clipLocation
-  | TextLocation
-  | undefined
-
-export type PartType =
-  | 'attr'
-  | 'prop'
-  | 'clip'
-  | 'text'
-  | 'event'
-  | 'clips'
-  | 'no'
+const initValue = Symbol('')
 
 export abstract class Part {
   index: number
-  value: unknown
+  value: unknown = initValue
   location: PartLocation
+  type: PartType
 
-  setLocation(location: PartLocation) {
-    this.location = location
-  }
-
-  constructor(index: number) {
+  constructor(index: number, location: PartLocation, type: PartType) {
     this.index = index
+    this.location = location
+    this.type = type
   }
 
-  abstract init(): void
-  abstract clear(): void
-  abstract update(): void
-
-  setValue(val: unknown): void {
-    if (!this.checkEqual(val)) {
+  setValue(val: unknown) {
+    if (shallowEqual(this.value, val)) {
+      // console.log(`nothing changed`)
+      return
+    } else {
       this.value = val
-      this.update()
+      this.commit()
     }
   }
-
-  checkEqual(val: unknown) {
-    return shallowEqual(val, this.value)
-  }
+  abstract commit(): unknown
+  abstract clear(): void
 }
 
-export class PorpPart extends Part {
-  location: PropLocation
-  value: unknown
+export class NodePart extends Part {
+  clear(): void {
+    const { startNode, endNode } = this.location
+    const parent = startNode.parentNode!
+    removeNodes(parent, startNode.nextSibling, endNode)
+  }
 
-  constructor(index: number, val: unknown, location: PropLocation) {
-    super(index)
+  commit(): void {}
+
+  commitText(type: 'text', val: Primitive) {
+    this.clear()
+    this.location.startNode.parentNode!.insertBefore(
+      new Text(val?.toString()),
+      this.location.endNode
+    )
     this.value = val
-    this.location = location
   }
 
-  clear(): void {}
-
-  init(): void {
-    let { node } = this.location
-    if (!(node instanceof UpdatableElement)) {
-      throw NotUpdatableError
+  commitClip(type: 'clip', val: ShallowClip) {
+    if (type === this.type) {
+      if (val.do(getShaHtml) === this.shaHtmlCache) {
+        const nowClip = this.value as Clip
+        nowClip.tryUpdate(val.do(getVals))
+        return
+      }
     }
-    this.update()
+    const { startNode, endNode } = this.location
+    const parent = startNode.parentNode!
+    this.clear()
+    const clip = val.do(createInstance)
+    clip.tryUpdate(val.do(getVals))
+    parent.insertBefore(clip.dof, endNode)
+    this.value = clip
   }
 
-  update(): void {
-    let { name, node } = this.location
-    node.mergeProps(name, this.value)
+  commmitClips(type: 'clips', val: unknown[]) {
+    //TODO key diff
+    this.clear()
+    const batch = new DocumentFragment()
+    val.forEach((v) => {
+      if (v instanceof ShallowClip) {
+        const clip = v.do(createInstance)
+        clip.tryUpdate(v.do(getVals))
+        batch.append(clip.dof)
+      } else {
+        batch.append(tryParseToString(v))
+      }
+    })
+    this.location.startNode.parentNode!.append(batch)
+    this.value = [Symbol('clips')]
   }
+
+  setValue(val: unknown) {
+    let type: NodePartType
+    if (val instanceof ShallowClip) {
+      type = 'clip'
+      this.commitClip(type, val)
+    } else if (val instanceof Array) {
+      type = 'clips'
+      this.commmitClips(type, val)
+    } else if (isPrimitive(val)) {
+      type = 'text'
+      val !== this.value && this.commitText(type, val ?? '')
+    } else {
+      type = 'text'
+      val !== this.value && this.commitText(type, JSON.stringify(val))
+    }
+    this.type = type
+  }
+
+  value!: Primitive | Clip | unknown[]
+  location!: NodeLocation
+  typeChanged: boolean = true
+  shaHtmlCache?: string
 }
 
 export class AttrPart extends Part {
-  location: { node: Element; name: string }
-  value: string
-  styleCache?: string
-
-  constructor(
-    index: number,
-    val: string,
-    location: { node: Element; name: string }
-  ) {
-    super(index)
-    this.value = val
-    this.location = location
-  }
   clear(): void {
-    this.location.node.removeAttribute(this.location.name)
+    throw new Error('Method not implemented.')
   }
-  init(): void {
-    let { name, node } = this.location
-    if (name === 'style') {
-      this.styleCache = node.getAttribute('style') ?? ''
-    }
-    this.update()
-  }
-  update(): void {
-    let { name, node } = this.location
+  commit(): void {
+    const { node, name } = this.location
     let res: string
+    let val = this.value ?? ''
     if (name === 'style') {
-      res = `${this.styleCache ?? ''}${this.styleCache ? ';' : ''}${this.value}`
+      res = `${this.styleCache ?? ''}${this.styleCache ? ';' : ''}${val}`
     } else {
-      res = this.value
+      res = val
     }
     node.setAttribute(name, res)
   }
+
+  constructor(index: number, location: AttrEventLocation) {
+    super(index, location, 'attr')
+    const staticStyle = this.location.node.getAttribute('style')
+    if (staticStyle) {
+      this.styleCache = staticStyle
+    }
+  }
+
+  value!: string
+  location!: AttrEventLocation
+  styleCache?: string
 }
 
-export class TextPart extends Part {
-  update(): void {
-    let { node } = this.location
-    let next = new Text(this.value?.toString())
-    node.parentNode?.replaceChild(next, node)
-    this.location.node = next
-  }
-  clear(): void {
-    let { node } = this.location
-    node.parentNode?.replaceChild(new Text(), node)
-  }
-  init(): void {
-    this.update()
-  }
-  location: TextLocation
-  value: string | number
-
-  constructor(index: number, val: string, location: TextLocation) {
-    super(index)
-    this.location = location
-    this.value = val
-  }
-}
+type EventInstance = (this: Document, e: Event) => unknown
 
 export class EventPart extends Part {
-  update(): void {
-    this.clear()
+  clear(): void {
+    this.eventCache.forEach((val) => {
+      this.location.node.removeEventListener(this.eventName, val, this.options)
+    })
+    this.eventCache.clear()
+  }
 
-    let { node } = this.location
+  commit(): void {
+    this.clear()
+    const { node } = this.location
     if (this.value instanceof Array) {
-      this.value.forEach(v => {
+      this.value.forEach((v) => {
         let ev = this.tryGetFromCache(v)
         node.addEventListener(this.eventName, ev, this.options)
       })
@@ -162,27 +176,17 @@ export class EventPart extends Part {
       )
     }
   }
-  clear(): void {
-    this.eventCache.forEach(val => {
-      this.location.node.removeEventListener(this.eventName, val, this.options)
-    })
-    this.eventCache.clear()
-  }
-  init(): void {
-    this.update()
-  }
 
   setValue(val: EventInstance | EventInstance[]) {
-    let temp = []
+    let temp: string[]
     if (val instanceof Array) {
-      temp = val.map(v => v.toString())
+      temp = val.map((v) => v.toString())
     } else {
       temp = [val.toString()]
     }
-    if (twoStrArrayCompare(temp, Array.from(this.eventCache.keys()))) {
-      return
-    } else {
-      this.update()
+    if (!twoStrArrayCompare(temp, Array.from(this.eventCache.keys()))) {
+      this.value = val
+      this.commit()
     }
   }
 
@@ -193,169 +197,33 @@ export class EventPart extends Part {
     )
   }
 
-  location: AttrEventLocation
-  value: EventInstance | EventInstance[]
-  eventCache: Map<string, EventInstance> = new Map()
-  options: AddEventListenerOptions
-  eventName: keyof DocumentEventMap
-
-  constructor(
-    index: number,
-    val: EventInstance | EventInstance[],
-    location: AttrEventLocation
-  ) {
-    super(index)
-    this.location = location
+  constructor(index: number, location: AttrEventLocation) {
+    super(index, location, 'event')
     const { name } = this.location
     const [eventName, ...opts] = name.split('.')
     this.options = generateEventOptions(new Set(opts))
     this.eventName = eventName as keyof DocumentEventMap
-    this.value = val
   }
+
+  value!: EventInstance | EventInstance[]
+  location!: AttrEventLocation
+  eventName: keyof DocumentEventMap
+  eventCache: Map<string, EventInstance> = new Map()
+  options: AddEventListenerOptions
 }
 
-export class ClipPart extends Part {
-  update(): void {
-    this.value.update(this.shaValue._getVals())
-  }
+export class PropPart extends Part {
   clear(): void {
-    let { startNode, endNode } = this.location
-    removeNodes(startNode.parentNode!, startNode.nextSibling, endNode)
+    throw new Error('Method not implemented.')
   }
-  init(): void {
-    let { startNode, endNode } = this.location
-    let parent = startNode.parentNode!
-    this.value.init()
-    parent.insertBefore(this.value.dof, endNode)
+  commit(): void {
+    const { name, node } = this.location
+    node.mergeProps(name, this.value)
   }
 
-  setValue(val: ShallowClip) {
-    this.shaValue = val ? val : html``
-    if (this.shaValue._getShaHtml() === this.value.html) {
-      this.update()
-    } else {
-      this.value = this.shaValue._createInstance()
-      this.clear()
-      this.init()
-    }
-  }
-  location: clipLocation
-  value: Clip
-  shaValue: ShallowClip
-
-  constructor(index: number, val: ShallowClip, location: clipLocation) {
-    super(index)
-    this.location = location
-    this.shaValue = val
-    this.value = val._createInstance()
-  }
-}
-
-export class ClipsPart extends Part {
-  update(): void {
-    let { startNode, endNode } = this.location
-    let parent = startNode.parentNode!
-    let nodeCache = getNodesBetween(startNode, endNode)
-
-    let diffRes = keyListDiff(this.keys, this.newKeys)
-
-    let after: Node
-    diffRes.forEach(d => {
-      switch (d.type) {
-        case 'insert':
-          {
-            let clip = this.shaValues[d.newIndex]._createInstance()
-            clip.init()
-            let dof = clip.dof
-            let last = dof.lastChild ?? dof
-
-            if (!d.after) {
-              parent.insertBefore(dof, nodeCache[0])
-            } else {
-              insertAfter(parent, dof, after)
-            }
-            after = last
-          }
-          break
-        case 'remove':
-          // parent.removeChild(nodeCache[d.oldIndex])
-          break
-        case 'move':
-          {
-          }
-          break
-
-        default:
-          break
-      }
-    })
-  }
-  clear(): void {
-    let { startNode, endNode } = this.location
-    removeNodes(startNode.parentNode!, startNode.nextSibling, endNode)
+  constructor(index: number, location: PropLocation) {
+    super(index, location, 'prop')
   }
 
-  init(): void {
-    this.value.forEach(v => v.init())
-    let { startNode, endNode } = this.location
-    let parent = startNode.parentNode
-
-    this.keys = this.value.map(v => v.key)
-
-    let doc = document.createDocumentFragment()
-    this.value.forEach(v => {
-      doc.appendChild(v.dof)
-    })
-    parent?.insertBefore(doc, endNode)
-  }
-
-  setValue(vals: ShallowClip[]) {
-    this.shaValues = vals
-    // this.newKeys = vals.map(v => v.key)
-    let temp = dedup(this.newKeys)
-
-    if (temp?.[0] !== null) {
-      // if (temp.length !== this.newKeys.length) {
-      //   throw DuplicatedKeyError
-      // } else {
-      //   this.update()
-      // }
-
-      //TODO
-
-      this.clear()
-      this.resetValue()
-      this.init()
-    } else {
-      this.clear()
-      this.resetValue()
-      this.init()
-    }
-
-    this.keys = this.newKeys
-  }
-
-  resetValue() {
-    this.value = []
-    this.shaValues.forEach(s => {
-      let clip = s._createInstance()
-      this.value.push(clip)
-    })
-    this.value.forEach((v, index) => {
-      v.update(this.shaValues[index]._getVals())
-    })
-  }
-
-  location: clipLocation
-  value: Clip[] = []
-  shaValues: ShallowClip[]
-  keys: unknown[] = []
-  newKeys: unknown[] = []
-
-  constructor(index: number, val: ShallowClip[], location: clipLocation) {
-    super(index)
-    this.location = location
-    this.shaValues = val
-    this.resetValue()
-  }
+  location!: PropLocation
 }

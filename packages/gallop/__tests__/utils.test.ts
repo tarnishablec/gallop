@@ -1,13 +1,5 @@
-'use strict'
-
-import {
-  shallowEqual,
-  keyListDiff,
-  moveInArray,
-  extractProp,
-  getFuncArgNames
-} from '../src/utils'
-import { useState, html } from '../src'
+import { getFuncArgNames, extractProps, shallowEqual } from '../src/utils'
+import { html } from '../src/parse'
 
 describe('utils', () => {
   test('getFuncArgNames', () => {
@@ -18,19 +10,9 @@ describe('utils', () => {
     ) => `${_you.name}${b}${c[1]}`
 
     const builder = (
-      /*asdasddfgas""daq,asdas{}*/ name: string,
+      /*asdasddfgas""daq,asdas{}*/ name: /*asdasddfgas""daq,asdas{}*/ string,
       /*asdasddfgas""daq,asdas{}*/ age: number = 25
-    ) => {
-      let [state] = useState({ tick: 1 })
-
-      return html`
-        <h3>name is ${name}; age is ${age}</h3>
-        <div>${state.tick}</div>
-        <button @click="${() => (state.tick += 1)}">tick +1</button>
-        <hr />
-        <test-c :age="${state.tick}"></test-c>
-      `
-    }
+    ) => html` <h3>name is &zwnj;${name}; age is ${age}</h3> `
 
     expect(getFuncArgNames(func)).toEqual(['_you', 'b', 'c'])
     expect(getFuncArgNames(getFuncArgNames)).toEqual(['func'])
@@ -50,6 +32,25 @@ describe('utils', () => {
     expect(getFuncArgNames(builder)).toEqual(['name', 'age'])
   })
 
+  test('extractProp', () => {
+    const hobbies = ['sing', 'jump', 'rap', '🏀']
+    const clip = html`
+      <div :name="yihan" :age="66" :hobbies="${hobbies}">
+        hello
+      </div>
+    `
+    const div = document.createElement('div')
+    div.append(
+      document
+        .createRange()
+        .createContextualFragment(Reflect.get(clip, 'shaHtml'))
+    )
+    expect(extractProps((div.firstChild as Element).attributes)).toEqual({
+      name: 'yihan',
+      age: 66
+    })
+  })
+
   test('shallowEqual', () => {
     const testA = { a: 'this is a', b: () => console.log(1), c: null }
     const testB = { a: 'this is a', b: () => console.log(1), c: null }
@@ -59,45 +60,29 @@ describe('utils', () => {
     const testC = { a: 'this is a', b: func, c: null }
     const testD = { a: 'this is a ', b: func, c: null }
     const testE = { a: 'this is a', b: func, c: null }
+
+    class Test {
+      a: number
+      b: number
+      constructor(a: number, b: number) {
+        this.a = a
+        this.b = b
+      }
+    }
+    const tt = new Test(1, 2)
+
+    const testF = { a: tt }
+    const testG = { a: new Test(1, 2) }
+    const testH = { a: tt }
+
     expect(shallowEqual(testA, testB)).toBe(false)
     expect(shallowEqual(testC, testD)).toBe(false)
     expect(shallowEqual(testC, testE)).toBe(true)
-  })
-
-  test('diff result', () => {
-    const a = [9, 1, 2, 5, 4, 6, 8]
-    const b = [7, 3, 9, 8, 5, 0, 4]
-
-    let res = keyListDiff(a, b)
-    expect(res).toEqual([
-      { type: 'insert', newIndex: 0, after: null },
-      { type: 'insert', newIndex: 1, after: 7 },
-      { type: 'move', oldIndex: 0, after: 3 },
-      { type: 'move', oldIndex: 3, after: 8 },
-      { type: 'insert', newIndex: 5, after: 5 },
-      { type: 'move', oldIndex: 4, after: 0 },
-      { type: 'remove', oldIndex: 1 },
-      { type: 'remove', oldIndex: 2 },
-      { type: 'remove', oldIndex: 5 }
-    ])
-  })
-
-  test('move in array', () => {
-    let arr = [5, 2, 6, 8, 9, 7, 3, 10]
-    moveInArray(arr, 2, 3)
-    expect(arr).toEqual([5, 2, 8, 6, 9, 7, 3, 10])
-    moveInArray(arr, 6, 1)
-    expect(arr).toEqual([5, 3, 2, 8, 6, 9, 7, 10])
-    moveInArray(arr, 0, 4)
-    expect(arr).toEqual([3, 2, 8, 6, 5, 9, 7, 10])
-  })
-
-  test('extract prop', () => {
-    let div = document.createElement('div')
-    div.innerHTML = `<div :name="yihan"></div>`
-
-    expect(extractProp((div.firstChild as Element)?.attributes)).toEqual({
-      name: 'yihan'
-    })
+    expect(shallowEqual(testF, testG)).toBe(false)
+    expect(shallowEqual(testF, testH)).toBe(true)
+    expect(shallowEqual(tt, new Test(1, 2))).toBe(true)
+    expect(shallowEqual(undefined, undefined)).toBe(true)
+    expect(shallowEqual(null, null)).toBe(true)
+    expect(shallowEqual(func, () => console.log(1))).toBe(false)
   })
 })

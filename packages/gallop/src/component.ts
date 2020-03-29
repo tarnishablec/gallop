@@ -1,150 +1,167 @@
-import { ShallowClip, Clip } from './clip'
-import { OBJ, getFuncArgNames, extractProp } from './utils'
-import { ComponentNamingError, ComponentExistError } from './error'
+import { Clip, ShallowClip, createInstance, getVals } from './clip'
+import { getFuncArgNames, extractProps } from './utils'
+import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
-import { EffectRegistration, resolveEffect, Effect } from './hooks'
+import { Effect, resolveEffect } from './hooks'
 
-const updateQueue = new Set<Clip>()
+let currentHandle: UpdatableElement
+
+export const resolveCurrentHandle = () => currentHandle
+
+export const setCurrentHandle = (clip: UpdatableElement) =>
+  (currentHandle = clip)
+
+const updateQueue = new Set<UpdatableElement>()
 
 let dirty = false
 
-const requestUpdate = () => {
-  if (dirty === true) {
+function requestUpdate() {
+  if (dirty) {
     return
   }
   dirty = true
-
   requestAnimationFrame(() => {
-    updateQueue.forEach(c => {
-      let instance = c.elementInstance!
+    updateQueue.forEach((instance) => {
       setCurrentHandle(instance)
-      instance.unmountCallbacks = []
-      instance.updateCallbacks = []
-      instance.mountCallbacks = []
+      instance.resetEffects()
       instance.dispatchUpdate()
-
-      if (!instance.firstRender) {
-        instance.updateCallbacks.forEach(cb => resolveEffect(cb, instance))
-      }
-
-      instance.effectsRegs ? (instance.effectsRegs = []) : null
-      setCurrentHandle(undefined)
+      updateQueue.delete(instance)
     })
-    updateQueue.clear()
     dirty = false
+    updateQueue.clear()
   })
 }
 
-let currentHandleElement: UpdatableElement | undefined
-
-export const resolveCurrentHandle = () => currentHandleElement
-
-export const setCurrentHandle = (el: UpdatableElement | undefined) =>
-  (currentHandleElement = el)
-
-type Component = (this: UpdatableElement, ...props: any[]) => ShallowClip
-
-export const componentPool = new Set<string>()
+export type ComponentBuilder = (...props: any[]) => ShallowClip
 
 export abstract class UpdatableElement extends HTMLElement {
-  builder: Component
-  propNames: string[]
-  $props?: unknown[]
+  $props: unknown[] = []
   $state?: unknown
-  $refs?: Element[]
+  $root: ShadowRoot | UpdatableElement
+  $builder: ComponentBuilder
   $alive: boolean = false
-  clip!: Clip
 
-  effectHookOldVals?: unknown[][]
-  effectsRegs?: EffectRegistration[]
-  onceEffectIndexs?: number[]
+  $updateEffects?: Effect[]
+  $mountedEffects?: Effect[]
+  $disconnectedEffects?: (() => void)[]
 
-  firstRender: boolean = true
+  $effectsCount: number = 0
 
-  mountCallbacks: Effect[] = []
-  updateCallbacks: (() => void)[] = []
-  unmountCallbacks: Effect[] = []
+  $dependsCache?: unknown[][]
 
-  constructor(builder: Component, propNames: string[]) {
+  $clip?: Clip
+
+  private propNames: string[]
+
+  constructor(builder: ComponentBuilder, shadow: boolean, propNames: string[]) {
     super()
-    this.builder = builder
-    this.propNames = propNames.map(n => n.toLowerCase())
-    if (propNames.length) {
-      let p = new Array(this.propNames.length).fill(undefined)
-      const attr = this.attributes
-      let staticProps = extractProp(attr) //lower
+    this.$builder = builder
+    this.$root = shadow ? this.attachShadow({ mode: 'open' }) : this
+    this.propNames = propNames
+    if (this.propNames.length) {
+      const p = new Array(this.propNames.length).fill(undefined)
+      const staticProps = extractProps(this.attributes)
       for (const key in staticProps) {
-        let index = this.propNames.indexOf(key)
+        const index = this.propNames.indexOf(key)
         if (index >= 0) {
           p[index] = staticProps[key]
         }
       }
-      this.$props = createProxy(p, () => this.enupdateQueue())
+      this.$props = createProxy(p, () => this.enUpdateQueue())
     }
-    setCurrentHandle(this)
-    let shallow = this.builder.apply(this, this.$props ?? [])
-    this.clip = shallow._createInstance()
-    this.clip.elementInstance = this
-    this.attachShadow({ mode: 'open' }).appendChild(this.clip.dof)
+
+    this.enUpdateQueue()
+    // console.log(`${this.nodeName} constructed`)
   }
 
-  dispatchUpdate() {
-    this.clip.update(this.builder.apply(this, this.$props ?? [])._getVals())
-  }
-
-  enupdateQueue() {
-    updateQueue.add(this.clip)
+  enUpdateQueue() {
+    updateQueue.add(this)
     requestUpdate()
   }
 
-  connectedCallback() {
-    this.$alive = true
-    this.clip.contexts.forEach(c => {
-      c.watch(this.clip)
+  dispatchUpdate() {
+    const shaClip = this.$builder.apply(this, this.$props)
+    if (!this.$clip) {
+      this.mount(shaClip)
+      this.$alive = true
+    } else {
+      this.$clip!.tryUpdate(shaClip.do(getVals))
+    }
+    // console.log(`${this.nodeName} updated`)
+    this.$updateEffects?.forEach((effect) => {
+      resolveEffect(this, effect)
     })
-    this.mountCallbacks.forEach(cb => resolveEffect(cb, this))
-    setTimeout(() => {
-      this.firstRender = false
-    }, 0)
+  }
+
+  mount(shaClip: ShallowClip) {
+    const clip = shaClip.do(createInstance)
+    this.$clip = clip
+    this.$clip!.tryUpdate(shaClip.do(getVals))
+    this.$root.append(this.$clip.dof)
+
+    this.$clip.contexts?.forEach((context) => context.watch(this))
+    // console.log(`${this.tagName} mounted`)
+    this.$mountedEffects?.forEach((effect) => {
+      resolveEffect(this, effect)
+    })
+  }
+
+  mergeProps(name: string, val: unknown) {
+    const index = this.propNames?.indexOf(name)
+    if (index >= 0) {
+      this.$props[index] = val
+    }
+  }
+
+  connectedCallback() {
+    // console.log(`${this.nodeName} connected`)
   }
 
   disconnectedCallback() {
-    this.clip.contexts.forEach(c => {
-      c.unwatch(this.clip)
+    this.$clip?.contexts?.forEach((context) => context.unWatch(this))
+    // console.log(`${this.nodeName} disconnected`)
+    this.$disconnectedEffects?.forEach((effect) => {
+      effect.apply(this)
     })
-    this.unmountCallbacks.forEach(cb => cb())
   }
 
-  adoptedCallback() {}
-
-  mergeProps(name: string, val: unknown) {
-    let index = this.propNames.indexOf(name)
-    if (index >= 0) {
-      this.$props ? (this.$props[index] = val) : null
-    }
+  resetEffects() {
+    this.$updateEffects = []
+    this.$mountedEffects = []
+    this.$disconnectedEffects = []
+    this.$effectsCount = 0
   }
 }
 
-export function component<P extends OBJ>(name: string, builder: Component) {
-  if (!checkComponentName(name)) {
-    throw ComponentNamingError
+const componentPool = new Set<string>()
+
+export function component(
+  name: string,
+  builder: ComponentBuilder,
+  shadow: boolean = true,
+  option?: ElementDefinitionOptions
+) {
+  if (!verifyComponentName(name)) {
+    throw ComponentNamingError(name)
   }
+
   if (componentPool.has(name)) {
-    throw ComponentExistError
+    throw ComponentDuplicatedError(name)
   }
 
-  const propNames = getFuncArgNames(builder)
+  const propNames = getFuncArgNames(builder).map((name) => name.toLowerCase())
 
-  const Clazz = class extends UpdatableElement {
+  const clazz = class extends UpdatableElement {
     constructor() {
-      super(builder, propNames)
+      super(builder, shadow, propNames)
     }
   }
-  customElements.define(name, Clazz)
+
+  customElements.define(name, clazz, option)
   componentPool.add(name)
 }
 
-const checkComponentName = (name: string) => {
+function verifyComponentName(name: string) {
   const arr = name.split('-')
   return arr[arr.length - 1] && arr.length >= 2 && name.toLowerCase() === name
 }

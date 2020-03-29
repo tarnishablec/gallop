@@ -1,29 +1,24 @@
-export const removeNodes = (
+export function cleanDofStr(str: string) {
+  return str
+    .replace(/(^\s)|(\s$)/, '')
+    .replace(/>\s*/g, '>')
+    .replace(/\s*</g, '<')
+    .replace(/>(\s*?)</g, '><')
+    .trim()
+}
+
+export function insertAfter(container: Node, newChild: Node, afterChild: Node) {
+  return container.insertBefore(newChild, afterChild.nextSibling)
+}
+
+export function removeNodes(
   container: Node,
   start: Node | null,
   end: Node | null = null
-) => {
+) {
   while (start !== end) {
     const n = start!.nextSibling
     container.removeChild(start!)
     start = n
   }
-}
-
-export const insertAfter = (parent: Node, newNode: Node, after: Node) => {
-  parent.insertBefore(newNode, after.nextSibling)
-}
-
-export const getNodesBetween = (start: Node, end: Node) => {
-  if (!start.parentNode?.isSameNode(end.parentNode)) {
-    throw new Error('not same parent')
-  }
-
-  let res: Node[] = []
-  let n = start.nextSibling!
-  while (!n.isSameNode(end)) {
-    res.push(n)
-    n = n.nextSibling!
-  }
-  return res
 }

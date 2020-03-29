@@ -1,31 +1,31 @@
+import { UpdatableElement } from './component'
 import { createProxy } from './reactive'
-import { Clip } from './clip'
 
 export class Context<T extends object> {
   raw: T
   proxy: [T, Context<T>]
-  watchedInstances: Set<Clip> = new Set()
+  watchedInstances: Set<UpdatableElement> = new Set()
 
   constructor(raw: T) {
     this.raw = raw
-    this.proxy = [createProxy(raw, () => this.update()), this]
+    this.proxy = [createProxy(this.raw, () => this.update()), this]
   }
 
-  watch(clip: Clip) {
-    this.watchedInstances.add(clip)
+  watch(element: UpdatableElement) {
+    this.watchedInstances.add(element)
   }
 
-  unwatch(clip: Clip) {
-    this.watchedInstances.delete(clip)
+  unWatch(element: UpdatableElement) {
+    this.watchedInstances.delete(element)
   }
 
-  private update() {
-    this.watchedInstances.forEach(clip => {
-      let elementInstance = clip.elementInstance!
-      elementInstance.enupdateQueue()
+  update() {
+    this.watchedInstances.forEach((instance) => {
+      instance.enUpdateQueue()
     })
   }
 }
 
-export const createContext = <T extends object>(raw: T) =>
-  new Context(raw).proxy
+export function createContext<T extends object>(raw: T) {
+  return new Context(raw).proxy
+}
