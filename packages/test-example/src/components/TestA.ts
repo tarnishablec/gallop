@@ -1,10 +1,12 @@
 import { component, html } from '@gallop/gallop'
+import { data, context } from '../../App'
 
-component(
-  'test-a',
-  () => html`
-    <div>
-      <span>this is test-a</span>
-    </div>
-  `
-)
+export const TestA = () =>
+  component('test-a', (name: string = 'a') =>
+    html`
+      <div>
+        <div>this is test-${name}</div>
+        <div>${data.tick}</div>
+      </div>
+    `.useContext([context])
+  )

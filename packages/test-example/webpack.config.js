@@ -2,13 +2,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-// const TerserPlugin = require('terser-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const { DefinePlugin } = require('webpack')
 
 const ProdMode = process.env.NODE_ENV === 'production'
 
-console.log(__dirname)
+// console.log(__dirname)
 
 module.exports = {
   mode: 'development',
@@ -31,14 +31,21 @@ module.exports = {
       // '~': path.resolve(__dirname, 'src')
     }
   },
-  // optimization: {
-  //   minimize: true,
-  //   minimizer: [
-  //     new TerserPlugin({
-  //       test: /\.js(\?.*)?$/i
-  //     })
-  //   ]
-  // },
+  optimization: {
+    minimize: false, //TODO 🚫 Terser cause component props name can not be detected
+    //Feature request: https://github.com/terser/terser/issues/622
+    minimizer: [
+      new TerserPlugin({
+        test: /\.js(\?.*)?$/i,
+        terserOptions: {
+          keep_fnames: true,
+          compress: {
+            keep_fargs: true
+          }
+        }
+      })
+    ]
+  },
   module: {
     rules: [
       { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
@@ -89,7 +96,7 @@ module.exports = {
       }
     ]
   },
-  devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map',
+  devtool: ProdMode ? false : 'inline-source-map',
   // devtool: false,
   devServer: {
     contentBase: './dist',

@@ -3,7 +3,7 @@ import { getFuncArgNames, extractProps } from './utils'
 import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
 
-let currentHandle: UpdatableElement | undefined
+let currentHandle: UpdatableElement
 
 export const resolveCurrentHandle = () => currentHandle
 
@@ -21,6 +21,7 @@ function requestUpdate() {
   dirty = true
   requestAnimationFrame(() => {
     updateQueue.forEach((instance) => {
+      setCurrentHandle(instance)
       instance.dispatchUpdate()
       updateQueue.delete(instance)
     })

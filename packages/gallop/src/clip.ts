@@ -15,11 +15,15 @@ const range = document.createRange()
 const shallowDofCache = new Map<string, DocumentFragment>()
 
 export function createInstanceFromCache(this: ShallowClip) {
-  return new Clip(getShaDofFromCahce.apply(this), this.vals)
+  return new Clip(getShaDofFromCahce.apply(this), this.vals, this.contexts)
 }
 
 export function createInstance(this: ShallowClip) {
-  return new Clip(range.createContextualFragment(this.shaHtml), this.vals)
+  return new Clip(
+    range.createContextualFragment(this.shaHtml),
+    this.vals,
+    this.contexts
+  )
 }
 
 export function getVals(this: ShallowClip) {
@@ -49,8 +53,8 @@ const placeMarkerAndClean = (strs: TemplateStringsArray) =>
   cleanDofStr(strs.join(marker))
 
 export class ShallowClip extends DoAble<ShallowClip> {
-  protected shaHtml: string
-  protected vals: ReadonlyArray<unknown>
+  protected readonly shaHtml: string
+  protected readonly vals: ReadonlyArray<unknown>
   protected contexts?: Set<Context<object>>
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
@@ -70,8 +74,9 @@ export class ShallowClip extends DoAble<ShallowClip> {
 
 export class Clip {
   parts: Part[] = []
+  readonly initVals: ReadonlyArray<unknown>
+
   dof: DocumentFragment
-  initVals: ReadonlyArray<unknown>
 
   contexts?: Set<Context<object>>
 

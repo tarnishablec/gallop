@@ -1,15 +1,21 @@
-import { ShallowClip, createInstance, getVals, getShaHtml, Clip } from './clip'
+import { ShallowClip, Clip, createInstance, getVals, getShaHtml } from './clip'
 import { UpdatableElement } from './component'
-import { shallowEqual, twoStrArrayCompare } from './utils'
+import {
+  shallowEqual,
+  twoStrArrayCompare,
+  Primitive,
+  tryParseToString
+} from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
+import { isPrimitive } from './is'
 
 type AttrEventLocation = { node: Element; name: string }
 type PropLocation = { node: UpdatableElement; name: string }
 type NodeLocation = { startNode: Comment; endNode: Comment }
 
 type PartLocation = AttrEventLocation | PropLocation | NodeLocation
-type NodePartType = 'clip' | 'clips' | 'text' | 'no'
+type NodePartType = 'clip' | 'clips' | 'text'
 type PartType = 'node' | 'attr' | 'event' | 'prop' | NodePartType
 
 const initValue = Symbol('')
@@ -46,31 +52,70 @@ export class NodePart extends Part {
     removeNodes(parent, startNode.nextSibling, endNode)
   }
 
-  commit(): void {
-    if (this.type === 'text') {
-      this.commitText()
-    } else if (this.type === 'clip') {
-      this.commitClip()
-    } else if (this.type === 'clips') {
-      this.commmitClips()
-    } else {
-      this.commitOther()
-    }
+  commit(): void {}
+
+  commitText(type: 'text', val: Primitive) {
+    this.clear()
+    this.location.startNode.parentNode!.insertBefore(
+      new Text(val?.toString()),
+      this.location.endNode
+    )
+    this.value = val
   }
 
-  commitText() {}
+  commitClip(type: 'clip', val: ShallowClip) {
+    if (type === this.type) {
+      if (val.do(getShaHtml) === this.shaHtmlCache) {
+        const nowClip = this.value as Clip
+        nowClip.tryUpdate(val.do(getVals))
+        return
+      }
+    }
+    const { startNode, endNode } = this.location
+    const parent = startNode.parentNode!
+    this.clear()
+    const clip = val.do(createInstance)
+    clip.tryUpdate(val.do(getVals))
+    parent.insertBefore(clip.dof, endNode)
+    this.value = clip
+  }
 
-  commitClip() {}
+  commmitClips(type: 'clips', val: unknown[]) {
+    //TODO key diff
+    this.clear()
+    const batch = new DocumentFragment()
+    val.forEach((v) => {
+      if (v instanceof ShallowClip) {
+        const clip = v.do(createInstance)
+        clip.tryUpdate(v.do(getVals))
+        batch.append(clip.dof)
+      } else {
+        batch.append(tryParseToString(v))
+      }
+    })
+    this.location.startNode.parentNode!.append(batch)
+    this.value = [Symbol('clips')]
+  }
 
-  commmitClips() {}
+  setValue(val: unknown) {
+    let type: NodePartType
+    if (val instanceof ShallowClip) {
+      type = 'clip'
+      this.commitClip(type, val)
+    } else if (val instanceof Array) {
+      type = 'clips'
+      this.commmitClips(type, val)
+    } else if (isPrimitive(val)) {
+      type = 'text'
+      val !== this.value && this.commitText(type, val ?? '')
+    } else {
+      type = 'text'
+      val !== this.value && this.commitText(type, JSON.stringify(val))
+    }
+    this.type = type
+  }
 
-  commitOther() {}
-
-  resetClip() {}
-
-  setValue(val: string | ShallowClip | any[] | null) {}
-
-  value!: string | Clip | any[] | null
+  value!: Primitive | Clip | unknown[]
   location!: NodeLocation
   typeChanged: boolean = true
   shaHtmlCache?: string

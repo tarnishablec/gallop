@@ -1,7 +1,26 @@
 import { isMarker } from './is'
 
+export type Primitive =
+  | null
+  | undefined
+  | boolean
+  | number
+  | string
+  | symbol
+  | bigint
+
 export function createTreeWalker(root: Node) {
   return document.createTreeWalker(root, 133)
+}
+
+export function tryParseToNumber(val: Primitive) {
+  return isNaN(Number(val)) ? val : Number(val)
+}
+
+export function tryParseToString(val: unknown): string {
+  if (val === null || val === undefined) return ''
+  if (typeof val === 'string') return val
+  return JSON.stringify(val)
 }
 
 export function digStringBlock(
@@ -125,11 +144,7 @@ export function extractProps(attr: NamedNodeMap) {
   return Array.from(attr)
     .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
     .reduce((acc, { name, value }) => {
-      Reflect.set(
-        acc,
-        name.slice(1),
-        isNaN(Number(value)) ? value : Number(value)
-      )
+      Reflect.set(acc, name.slice(1), tryParseToNumber(value))
       return acc
     }, {} as any)
 }
