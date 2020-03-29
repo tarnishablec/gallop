@@ -1,16 +1,15 @@
-import { Clip, ShallowClip } from './clip'
+import { Clip, ShallowClip, createInstance, getVals } from './clip'
 import { getFuncArgNames, extractProps } from './utils'
 import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
 
-let currentHandle: UpdatableElement
+let currentHandle: UpdatableElement | undefined
 
 export const resolveCurrentHandle = () => currentHandle
 
 export const setCurrentHandle = (clip: UpdatableElement) =>
   (currentHandle = clip)
 
-// const mountQueue = new Set<UpdatableElement>()
 const updateQueue = new Set<UpdatableElement>()
 
 let dirty = false
@@ -23,6 +22,7 @@ function requestUpdate() {
   requestAnimationFrame(() => {
     updateQueue.forEach((instance) => {
       instance.dispatchUpdate()
+      updateQueue.delete(instance)
     })
     dirty = false
     updateQueue.clear()
@@ -36,6 +36,7 @@ export abstract class UpdatableElement extends HTMLElement {
   $state?: unknown
   $root: ShadowRoot | UpdatableElement
   $builder: ComponentBuilder
+  $alive: boolean = false
 
   $clip?: Clip
 
@@ -51,16 +52,15 @@ export abstract class UpdatableElement extends HTMLElement {
       const staticProps = extractProps(this.attributes)
       for (const key in staticProps) {
         const index = this.propNames.indexOf(key)
-        if (index > 0) {
+        if (index >= 0) {
           p[index] = staticProps[key]
         }
       }
       this.$props = createProxy(p, () => this.enUpdateQueue())
     }
-    this.$root.append(
-      this.$builder.apply(this, this.$props).createInstanceFromCache().dof //---
-    )
-    console.log('element constructed')
+
+    this.enUpdateQueue()
+    console.log(`${this.nodeName} constructed`)
   }
 
   enUpdateQueue() {
@@ -68,13 +68,30 @@ export abstract class UpdatableElement extends HTMLElement {
     requestUpdate()
   }
 
-  dispatchMount() {}
+  dispatchUpdate() {
+    const shaClip = this.$builder.apply(this, this.$props)
+    if (!this.$clip) {
+      this.mount(shaClip)
+    } else {
+      this.$clip!.tryUpdate(shaClip.do(getVals))
+    }
+    console.log(`${this.nodeName} updated`)
+  }
 
-  dispatchUpdate() {}
+  mount(shaClip: ShallowClip) {
+    const clip = shaClip.do(createInstance)
+    this.$clip = clip
+    this.$clip!.tryUpdate(shaClip.do(getVals))
+    this.$root.append(this.$clip.dof)
+
+    this.$clip.contexts?.forEach((context) => context.watch(this))
+    this.$alive = true
+    console.log(`${this.tagName} mounted`)
+  }
 
   mergeProps(name: string, val: unknown) {
     const index = this.propNames?.indexOf(name)
-    if (index && index > 0) {
+    if (index >= 0) {
       this.$props[index] = val
     }
   }

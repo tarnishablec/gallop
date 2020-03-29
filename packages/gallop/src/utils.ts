@@ -162,3 +162,10 @@ export function shallowEqual(objA: unknown, objB: unknown) {
   }
   return true
 }
+
+export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
+  if (arrA.length !== arrB.length) {
+    return false
+  }
+  return arrA.join('') === arrB.join('')
+}

@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const TerserPlugin = require('terser-webpack-plugin')
+// const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const { DefinePlugin } = require('webpack')
 
@@ -31,14 +31,14 @@ module.exports = {
       // '~': path.resolve(__dirname, 'src')
     }
   },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        test: /\.js(\?.*)?$/i
-      })
-    ]
-  },
+  // optimization: {
+  //   minimize: true,
+  //   minimizer: [
+  //     new TerserPlugin({
+  //       test: /\.js(\?.*)?$/i
+  //     })
+  //   ]
+  // },
   module: {
     rules: [
       { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },

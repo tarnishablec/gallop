@@ -1,10 +1,12 @@
-import { ShallowClip } from './clip'
+import { ShallowClip, createInstance, getVals } from './clip'
 
 export function render(
   shaClip: ShallowClip,
   container: Element | ShadowRoot = document.body,
   before: Node | null = container.firstChild
 ) {
-  const dof = shaClip.createInstance().dof
+  const clip = shaClip.do(createInstance)
+  clip.tryUpdate(shaClip.do(getVals))
+  const dof = clip.dof
   container.insertBefore(dof, before)
 }

@@ -10,3 +10,15 @@ export function cleanDofStr(str: string) {
 export function insertAfter(container: Node, newChild: Node, afterChild: Node) {
   return container.insertBefore(newChild, afterChild.nextSibling)
 }
+
+export function removeNodes(
+  container: Node,
+  start: Node | null,
+  end: Node | null = null
+) {
+  while (start !== end) {
+    const n = start!.nextSibling
+    container.removeChild(start!)
+    start = n
+  }
+}

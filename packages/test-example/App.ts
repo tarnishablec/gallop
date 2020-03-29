@@ -1,18 +1,18 @@
 import { html, component, render } from '@gallop/gallop'
 
-const test = (a: number = 1) => html`
-  <div .style="${a}">
+const test = (a: number) => html`
+  <div .style="${a}" style="color:red">
     ${a} haha ${a}
     <span>hello</span>
   </div>
   ${[1, 2, 3].map((a) => (a % 2 ? html` <div>${a}</div> ` : a))}
   <span>asdas</span>
-  <button @click="${() => alert(1)}">Click</button>
+  <button @click.once="${() => alert(1)}">Click</button>
 `
 
-component('test-test', test)
+component('test-test', test, false)
 
-render(html` <test-test></test-test> `)
+render(html` <test-test :a="2"></test-test> `)
 
 // function testTask() {
 //   window.requestIdleCallback(() => console.log('requestIdleCallback'))

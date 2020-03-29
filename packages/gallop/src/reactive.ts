@@ -37,6 +37,9 @@ export const createProxy = <T extends object>(
       if (prop === _isProxy) {
         return true
       }
+      if (prop === _hasChanged) {
+        return Reflect.get(target, _hasChanged) ?? false
+      }
       getSideEffect?.(target, prop, reciver)
       const res = Reflect.get(target, prop, reciver)
       return isObject(res) && !isFunction(res) && !isProxy(res)
