@@ -12,14 +12,27 @@ import { TestA } from './src/components/TestA'
 
 TestA()
 
+setTimeout(() => {
+  import('./src/components/TestB').then(({ TestB }) => {
+    // async component
+    TestB()
+  })
+}, 5050)
+
 export let [data, context] = createContext({ tick: 1 })
 
 component(
   'app-root',
   () => {
-    let [state] = useState({ tok: 1, color: 'red' })
+    let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
     useEffect(() => {
       console.log(`app-root effect mounted`)
+      const interval = setInterval(() => {
+        state.countdown--
+        if (state.countdown <= 0) {
+          clearInterval(interval)
+        }
+      }, 1000)
     }, [])
 
     useEffect(() => {
@@ -53,6 +66,9 @@ component(
       >
         change color
       </button>
+      <hr />
+      ${state.countdown ? html` <span>${state.countdown}</span> ` : null}
+      <test-b></test-b>
     `.useContext([context])
   },
   false
@@ -60,7 +76,7 @@ component(
 
 render(
   html`
-    <app-root :a="2"></app-root>
+    <app-root></app-root>
     <style>
       body {
         background: grey;
