@@ -11,17 +11,25 @@ still working...
         register component in functional way
 
 ```ts
-     import { createContext, useState, html } from '@gallop/gallop'
+     import { createContext, useState, useEffect, html, UpdatableElement } from '@gallop/gallop'
 
      export let [data,context] = createContext({initContext})
      component('name-name',
      (...props)=>{
-       let [state] = useState({initState})
-       return html`
-         <div>${state}</div>
-         <div>${props}</div>
-         <div>${data}</div>
-       `.useContext([someContext]))
+        let [state] = useState({initState})
+
+        useEffect((this:UpdatableElement)=>{
+            console.dir(this)   //access dom directly
+            return ()=>{
+                console.log(`disconnected callback`)
+            }
+        },[depends])
+
+        return html`
+            <div>${state}</div>
+            <div>${props}</div>
+            <div>${data}</div>
+        `.useContext([someContext]))
      }
 ```
 
@@ -38,6 +46,8 @@ still working...
         built-in state management solution by createContext()
 
         naturally support async component by import()
+
+        dont need useRef() because you can directly access dom in useEffect() by dom api
 
         for more detail, check packages/test-example
 //TODO
