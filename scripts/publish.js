@@ -3,6 +3,7 @@ const { run } = require('./utils')
 main()
 
 async function main() {
+  await run(`yarn run build`)
   await run(`git add .`)
   try {
     await run(`git commit`)
