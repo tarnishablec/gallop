@@ -14,8 +14,8 @@ export function isFunction(val: unknown): val is Function {
   return val instanceof Function
 }
 
-export function isProxy(val: object): boolean {
-  return Reflect.get(val, _isProxy) ?? false
+export function isProxy(val: unknown): val is object {
+  return (val instanceof Object && Reflect.get(val, _isProxy)) ?? false
 }
 
 export function isPrimitive(value: unknown): value is Primitive {

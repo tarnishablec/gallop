@@ -8,5 +8,6 @@ describe('is', () => {
     expect(isProxy(p)).toBe(true)
     expect(isProxy(p.a)).toBe(true)
     expect(isProxy(a)).toBe(false)
+    expect(isProxy(p.a.b)).toBe(false)
   })
 })

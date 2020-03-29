@@ -8,18 +8,22 @@ still working...
 
         use template literals to auto detect dynamic & static code
 
-        register web component in functional way
+        register component in functional way
 
-   ```ts
-        let [data,context] = createContext({initContext})
-        component('name-name',
-        ({props})=>{
-          let [state] = useState({initState})
-          return html`
-            <div>${state}</div>
-          `.useContext([someContext]))
-        }
-  ```
+```ts
+     import { createContext, useState, html } from '@gallop/gallop'
+
+     export let [data,context] = createContext({initContext})
+     component('name-name',
+     (...props)=>{
+       let [state] = useState({initState})
+       return html`
+         <div>${state}</div>
+         <div>${props}</div>
+         <div>${data}</div>
+       `.useContext([someContext]))
+     }
+```
 
         common feature in react
 
@@ -29,19 +33,22 @@ still working...
 
         auto minimize update
 
-        built-in state management solution
+        support web components and normal component
+
+        built-in state management solution by createContext()
 
         naturally support async component by import()
 
         for more detail, check packages/test-example
-
 //TODO
 
+<p>
+<pre>
         hooks                           useState()               ✔
                                         useContext()             ✔
                                         useEffect()              ✔
-                                        useRef()
-                                        useMemo()
+                                        <span style="TEXT-DECORATION: line-through">useRef()</span>
+                                        <span style="TEXT-DECORATION: line-through">useMemo()</span>
 
         context                                                  ✔
 
@@ -50,3 +57,7 @@ still working...
         dynamic scoped css by shadowdom
 
         scoped scss inject
+
+        router
+</pre>
+</p>

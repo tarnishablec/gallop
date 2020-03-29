@@ -34,7 +34,7 @@ export abstract class Part {
 
   setValue(val: unknown) {
     if (shallowEqual(this.value, val)) {
-      console.log(`nothing changed`)
+      // console.log(`nothing changed`)
       return
     } else {
       this.value = val

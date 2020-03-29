@@ -2,6 +2,7 @@ import { Clip, ShallowClip, createInstance, getVals } from './clip'
 import { getFuncArgNames, extractProps } from './utils'
 import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
+import { Effect, resolveEffect } from './hooks'
 
 let currentHandle: UpdatableElement
 
@@ -22,6 +23,7 @@ function requestUpdate() {
   requestAnimationFrame(() => {
     updateQueue.forEach((instance) => {
       setCurrentHandle(instance)
+      instance.resetEffects()
       instance.dispatchUpdate()
       updateQueue.delete(instance)
     })
@@ -38,6 +40,14 @@ export abstract class UpdatableElement extends HTMLElement {
   $root: ShadowRoot | UpdatableElement
   $builder: ComponentBuilder
   $alive: boolean = false
+
+  $updateEffects?: Effect[]
+  $mountedEffects?: Effect[]
+  $disconnectedEffects?: (() => void)[]
+
+  $effectsCount: number = 0
+
+  $dependsCache?: unknown[][]
 
   $clip?: Clip
 
@@ -61,7 +71,7 @@ export abstract class UpdatableElement extends HTMLElement {
     }
 
     this.enUpdateQueue()
-    console.log(`${this.nodeName} constructed`)
+    // console.log(`${this.nodeName} constructed`)
   }
 
   enUpdateQueue() {
@@ -73,10 +83,14 @@ export abstract class UpdatableElement extends HTMLElement {
     const shaClip = this.$builder.apply(this, this.$props)
     if (!this.$clip) {
       this.mount(shaClip)
+      this.$alive = true
     } else {
       this.$clip!.tryUpdate(shaClip.do(getVals))
     }
-    console.log(`${this.nodeName} updated`)
+    // console.log(`${this.nodeName} updated`)
+    this.$updateEffects?.forEach((effect) => {
+      resolveEffect(this, effect)
+    })
   }
 
   mount(shaClip: ShallowClip) {
@@ -86,8 +100,10 @@ export abstract class UpdatableElement extends HTMLElement {
     this.$root.append(this.$clip.dof)
 
     this.$clip.contexts?.forEach((context) => context.watch(this))
-    this.$alive = true
-    console.log(`${this.tagName} mounted`)
+    // console.log(`${this.tagName} mounted`)
+    this.$mountedEffects?.forEach((effect) => {
+      resolveEffect(this, effect)
+    })
   }
 
   mergeProps(name: string, val: unknown) {
@@ -98,11 +114,22 @@ export abstract class UpdatableElement extends HTMLElement {
   }
 
   connectedCallback() {
-    console.log(`${this.nodeName} connected`)
+    // console.log(`${this.nodeName} connected`)
   }
 
   disconnectedCallback() {
-    console.log(`${this.nodeName} disconnected`)
+    this.$clip?.contexts?.forEach((context) => context.unWatch(this))
+    // console.log(`${this.nodeName} disconnected`)
+    this.$disconnectedEffects?.forEach((effect) => {
+      effect.apply(this)
+    })
+  }
+
+  resetEffects() {
+    this.$updateEffects = []
+    this.$mountedEffects = []
+    this.$disconnectedEffects = []
+    this.$effectsCount = 0
   }
 }
 
