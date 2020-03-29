@@ -12,3 +12,6 @@ export const LockedProxyError = (target: object) =>
   new Error(
     `Can not set new property to locked object "${JSON.stringify(target)}".`
   )
+
+export const NotUpdatableELementError = (name: string) =>
+  new SyntaxError(`${name} element is not an UpdatableElement`)

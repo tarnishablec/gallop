@@ -79,10 +79,6 @@ export abstract class UpdatableElement extends HTMLElement {
     }
   }
 
-  requestUpdate() {}
-
-  requestMount() {}
-
   connectedCallback() {
     console.log(`${this.nodeName} connected`)
   }

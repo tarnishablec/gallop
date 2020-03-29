@@ -1,9 +1,11 @@
-import { marker } from './marker'
-import { Part } from './part'
+import { marker, markerIndex } from './marker'
+import { Part, AttrPart, PropPart, EventPart, NodePart } from './part'
 import { Context } from './context'
 import { createTreeWalker } from './utils'
 import { isMarker } from './is'
-import { cleanDofStr } from './dom'
+import { cleanDofStr, insertAfter } from './dom'
+import { UpdatableElement } from './component'
+import { NotUpdatableELementError } from './error'
 
 const range = document.createRange()
 // https://www.measurethat.net/Benchmarks/ShowResult/100437
@@ -65,6 +67,8 @@ export class Clip {
   constructor(dof: DocumentFragment, initVals: ReadonlyArray<unknown>) {
     this.dof = dof
     this.initVals = initVals
+
+    this.attachParts()
   }
 
   attachParts() {
@@ -91,7 +95,72 @@ export class Clip {
             prefix === '@'
           ) {
             const bindName = name.slice(1)
+            switch (prefix) {
+              case '.':
+                this.parts.push(
+                  new AttrPart(
+                    count,
+                    this.initVals[count],
+                    {
+                      node: cur,
+                      name: bindName
+                    },
+                    'attr'
+                  )
+                )
+                break
+              case ':':
+                if (cur instanceof UpdatableElement) {
+                  this.parts.push(
+                    new PropPart(
+                      count,
+                      this.initVals[count],
+                      {
+                        node: cur,
+                        name: bindName
+                      },
+                      'prop'
+                    )
+                  )
+                } else {
+                  throw NotUpdatableELementError(cur.localName)
+                }
+                break
+              case '@':
+                this.parts.push(
+                  new EventPart(
+                    count,
+                    this.initVals[count],
+                    {
+                      node: cur,
+                      name: bindName
+                    },
+                    'event'
+                  )
+                )
+                break
+            }
+            // console.log(cur)
+            count++
           }
+        }
+      } else if (cur instanceof Comment) {
+        if (cur.data === `{{${markerIndex}}}`) {
+          const tail = new Comment(`{{${markerIndex}}}`)
+          insertAfter(cur.parentNode!, tail, cur)
+          this.parts.push(
+            new NodePart(
+              count,
+              this.initVals[count],
+              {
+                startNode: cur,
+                endNode: tail
+              },
+              'node'
+            )
+          )
+          count++
+          walker.nextNode()
         }
       }
     }

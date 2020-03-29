@@ -77,5 +77,8 @@ describe('utils', () => {
     expect(shallowEqual(testF, testG)).toBe(false)
     expect(shallowEqual(testF, testH)).toBe(true)
     expect(shallowEqual(tt, new Test(1, 2))).toBe(true)
+    expect(shallowEqual(undefined, undefined)).toBe(true)
+    expect(shallowEqual(null, null)).toBe(true)
+    expect(shallowEqual(func, () => console.log(1))).toBe(false)
   })
 })

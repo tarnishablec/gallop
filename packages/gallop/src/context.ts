@@ -21,7 +21,7 @@ export class Context<T extends object> {
 
   update() {
     this.watchedInstances.forEach((instance) => {
-      instance.requestUpdate()
+      instance.enUpdateQueue()
     })
   }
 }

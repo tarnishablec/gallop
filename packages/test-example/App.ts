@@ -7,6 +7,7 @@ const test = (a: number = 1) => html`
   </div>
   ${[1, 2, 3].map((a) => (a % 2 ? html` <div>${a}</div> ` : a))}
   <span>asdas</span>
+  <button @click="${() => alert(1)}">Click</button>
 `
 
 component('test-test', test)

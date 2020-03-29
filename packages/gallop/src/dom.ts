@@ -6,3 +6,7 @@ export function cleanDofStr(str: string) {
     .replace(/>(\s*?)</g, '><')
     .trim()
 }
+
+export function insertAfter(container: Node, newChild: Node, afterChild: Node) {
+  return container.insertBefore(newChild, afterChild.nextSibling)
+}

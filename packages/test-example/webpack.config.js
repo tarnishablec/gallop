@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const { DefinePlugin } = require('webpack')
 
@@ -30,6 +30,14 @@ module.exports = {
     alias: {
       // '~': path.resolve(__dirname, 'src')
     }
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        test: /\.js(\?.*)?$/i
+      })
+    ]
   },
   module: {
     rules: [
@@ -123,9 +131,6 @@ module.exports = {
     ]),
     new MiniCssExtractPlugin({
       filename: 'css/[name].css'
-    }),
-    new UglifyJsPlugin({
-      test: /\.ts($|\?)/i
     })
   ]
 }
