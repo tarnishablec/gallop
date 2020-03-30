@@ -18,11 +18,12 @@ still working...
      (...props)=>{
         let [state] = useState({initState})
 
-        useEffect((this:UpdatableElement)=>{
-            console.dir(this)   //access dom directly
-            return ()=>{
-                console.log(`disconnected callback`)
-            }
+        useEffect( 
+            function (this:UpdatableElement){
+                console.dir(this)   //access dom directly
+                return ()=>{
+                    console.log(`disconnected callback`)
+                }
         },[depends])
 
         return html`
