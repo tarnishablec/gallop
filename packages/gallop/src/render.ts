@@ -7,6 +7,5 @@ export function render(
 ) {
   const clip = shaClip.do(createInstance)
   clip.tryUpdate(shaClip.do(getVals))
-  const dof = clip.dof
-  container.insertBefore(dof, before)
+  container.insertBefore(clip.dof, before)
 }

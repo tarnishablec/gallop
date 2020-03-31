@@ -8,8 +8,8 @@ let currentHandle: UpdatableElement
 
 export const resolveCurrentHandle = () => currentHandle
 
-export const setCurrentHandle = (clip: UpdatableElement) =>
-  (currentHandle = clip)
+export const setCurrentHandle = (element: UpdatableElement) =>
+  (currentHandle = element)
 
 const updateQueue = new Set<UpdatableElement>()
 
@@ -51,12 +51,18 @@ export abstract class UpdatableElement extends HTMLElement {
 
   $clip?: Clip
 
-  private propNames: string[]
+  protected propNames: string[] = []
 
   constructor(builder: ComponentBuilder, shadow: boolean, propNames: string[]) {
     super()
     this.$builder = builder
     this.$root = shadow ? this.attachShadow({ mode: 'open' }) : this
+    this.initProps(propNames)
+    this.enUpdateQueue()
+    // console.log(`${this.nodeName} constructed`)
+  }
+
+  initProps(propNames: string[]) {
     this.propNames = propNames
     if (this.propNames.length) {
       const p = new Array(this.propNames.length).fill(undefined)
@@ -69,9 +75,6 @@ export abstract class UpdatableElement extends HTMLElement {
       }
       this.$props = createProxy(p, () => this.enUpdateQueue())
     }
-
-    this.enUpdateQueue()
-    // console.log(`${this.nodeName} constructed`)
   }
 
   enUpdateQueue() {
@@ -139,6 +142,7 @@ const componentPool = new Set<string>()
 export function component(
   name: string,
   builder: ComponentBuilder,
+  propNameList?: string[],
   shadow: boolean = true,
   option?: ElementDefinitionOptions
 ) {
@@ -150,7 +154,8 @@ export function component(
     throw ComponentDuplicatedError(name)
   }
 
-  const propNames = getFuncArgNames(builder).map((name) => name.toLowerCase())
+  const propNames =
+    propNameList ?? getFuncArgNames(builder).map((name) => name.toLowerCase())
 
   const clazz = class extends UpdatableElement {
     constructor() {

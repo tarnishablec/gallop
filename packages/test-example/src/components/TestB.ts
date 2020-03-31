@@ -12,7 +12,7 @@ export const TestB = () => {
     () => {
       let [state] = useState({ text: '' })
       useEffect(function (this: UpdatableElement) {
-        console.log(this)
+        console.log(this.$root.querySelector('button'))
         console.log(`test-b mounted`)
       }, [])
       return html`
@@ -26,7 +26,6 @@ export const TestB = () => {
           />
           <div>now state.text is : &zwnj;${state.text}</div>
           <button
-            .value="${state.text}"
             @click="${function (this: UpdatableElement) {
               state.text = ''
               console.log(this)
@@ -44,6 +43,7 @@ export const TestB = () => {
         </div>
       `
     },
+    undefined,
     false
   )
 }

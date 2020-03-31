@@ -32,17 +32,18 @@ module.exports = {
     }
   },
   optimization: {
-    minimize: false, //TODO 🚫 Terser cause component props name can not be detected
-    //Feature request: https://github.com/terser/terser/issues/622
+    minimize: true,
+    /**
+     * TODO
+     * 🚫 terser cause component props name can not be auto detected
+     * Feature request: https://github.com/terser/terser/issues/622
+     * if you want to enable minimization
+     * ensure using propNameList argument in component(name,builder,[...propNames])
+     * to make gallop having ability to know you component's prop names
+     */
     minimizer: [
       new TerserPlugin({
-        test: /\.js(\?.*)?$/i,
-        terserOptions: {
-          keep_fnames: true,
-          compress: {
-            keep_fargs: true
-          }
-        }
+        test: /\.js(\?.*)?$/i
       })
     ]
   },

@@ -13,10 +13,12 @@ import { TestA } from './src/components/TestA'
 TestA()
 
 setTimeout(function (this: UpdatableElement) {
-  import('./src/components/TestB').then(({ TestB }) => {
-    // async component
-    TestB()
-  })
+  import(/* webpackChunkName: "test-b" */ './src/components/TestB').then(
+    ({ TestB }) => {
+      // async component
+      TestB()
+    }
+  )
 }, 5050)
 
 export let [data, context] = createContext({ tick: 1 })
