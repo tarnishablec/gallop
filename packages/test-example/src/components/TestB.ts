@@ -12,11 +12,19 @@ export const TestB = () => {
     function (this: UpdatableElement) {
       console.log(this)
 
-      let [state] = useState({ text: '' })
+      let [state] = useState({ text: '', tick: 0 })
       useEffect(() => {
         console.log(this.$root.querySelector('button'))
         console.log(`test-b mounted`)
+        console.log(state.tick)
+        for (let i = 0; i < 100; i++) {
+          state.tick += 1 //only trigger rerendering once
+        }
       }, [])
+
+      useEffect(() => {
+        console.log('changed')
+      }, [state.text])
       return html`
         <div>
           <input
@@ -26,6 +34,7 @@ export const TestB = () => {
               state.text = (e.target as HTMLInputElement).value
             }}"
           />
+          <div>tick value:${state.tick}</div>
           <div>now state.text is : &zwnj;${state.text}</div>
           <button
             @click="${() => {

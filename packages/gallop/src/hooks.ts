@@ -63,10 +63,12 @@ export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
 }
 
 export function resolveEffect(element: UpdatableElement, effect: Effect) {
-  const res = effect.apply(element)
-  res
-    ? (
-        element.$disconnectedEffects ?? (element.$disconnectedEffects = [])
-      ).push(res)
-    : null
+  setTimeout(() => {
+    const res = effect.apply(element)
+    res
+      ? (
+          element.$disconnectedEffects ?? (element.$disconnectedEffects = [])
+        ).push(res)
+      : null
+  }, 0)
 }

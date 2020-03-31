@@ -78,6 +78,9 @@ export abstract class UpdatableElement extends HTMLElement {
   }
 
   enUpdateQueue() {
+    if (updateQueue.has(this)) {
+      updateQueue.delete(this)
+    }
     updateQueue.add(this)
     requestUpdate()
   }
@@ -86,9 +89,8 @@ export abstract class UpdatableElement extends HTMLElement {
     const shaClip = this.$builder.apply(this, this.$props)
     if (!this.$clip) {
       this.mount(shaClip)
-    } else {
-      this.$clip.tryUpdate(shaClip.do(getVals))
     }
+    this.$clip!.tryUpdate(shaClip.do(getVals))
     // console.log(`${this.nodeName} updated`)
     this.$updateEffects?.forEach((effect) => {
       resolveEffect(this, effect)
@@ -98,9 +100,7 @@ export abstract class UpdatableElement extends HTMLElement {
   mount(shaClip: ShallowClip) {
     const clip = shaClip.do(createInstance)
     this.$clip = clip
-    this.$clip!.tryUpdate(shaClip.do(getVals))
     this.$root.append(this.$clip.dof)
-
     this.$clip.contexts?.forEach((context) => context.watch(this))
     // console.log(`${this.tagName} mounted`)
     this.$mountedEffects?.forEach((effect) => {
