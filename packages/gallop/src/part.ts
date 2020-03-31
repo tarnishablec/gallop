@@ -47,6 +47,7 @@ export abstract class Part {
 
 export class NodePart extends Part {
   clear(): void {
+    this.shaHtmlCache = undefined
     const { startNode, endNode } = this.location
     const parent = startNode.parentNode!
     removeNodes(parent, startNode.nextSibling, endNode)
@@ -65,10 +66,13 @@ export class NodePart extends Part {
 
   commitClip(type: 'clip', val: ShallowClip) {
     if (type === this.type) {
-      if (val.do(getShaHtml) === this.shaHtmlCache) {
+      const shaHtml = val.do(getShaHtml)
+      if (shaHtml === this.shaHtmlCache) {
         const nowClip = this.value as Clip
         nowClip.tryUpdate(val.do(getVals))
         return
+      } else {
+        this.shaHtmlCache = shaHtml
       }
     }
     const { startNode, endNode } = this.location

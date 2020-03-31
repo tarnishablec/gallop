@@ -20,7 +20,7 @@ export function createInstanceFromCache(this: ShallowClip) {
 
 export function createInstance(this: ShallowClip) {
   return new Clip(
-    range.createContextualFragment(this.shaHtml),
+    range.createContextualFragment(this.do(getShaHtml)),
     this.vals,
     this.contexts
   )
@@ -31,15 +31,17 @@ export function getVals(this: ShallowClip) {
 }
 
 export function getShaHtml(this: ShallowClip) {
-  return this.shaHtml
+  return placeMarkerAndClean(this.strs)
 }
 
 export function getShaDofFromCahce(this: ShallowClip) {
+  //for future optimization
+  const shaHtml = this.do(getShaHtml)
   const res = (
-    shallowDofCache.get(this.shaHtml) ??
+    shallowDofCache.get(shaHtml) ??
     shallowDofCache
-      .set(this.shaHtml, range.createContextualFragment(this.shaHtml))
-      .get(this.shaHtml)
+      .set(shaHtml, range.createContextualFragment(shaHtml))
+      .get(shaHtml)
   )?.cloneNode(true) as DocumentFragment
 
   window.requestIdleCallback?.(() => {
@@ -53,14 +55,14 @@ const placeMarkerAndClean = (strs: TemplateStringsArray) =>
   cleanDofStr(strs.join(marker))
 
 export class ShallowClip extends DoAble<ShallowClip> {
-  protected readonly shaHtml: string
+  protected readonly strs: TemplateStringsArray
   protected readonly vals: ReadonlyArray<unknown>
   protected contexts?: Set<Context<object>>
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     super()
     this.vals = vals
-    this.shaHtml = placeMarkerAndClean(strs)
+    this.strs = strs
   }
 
   useContext(contexts: Context<object>[]) {
