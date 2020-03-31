@@ -39,7 +39,7 @@ module.exports = {
      * Feature request: https://github.com/terser/terser/issues/622
      * if you want to enable minimization
      * ensure using propNameList argument in component(name,builder,[...propNames])
-     * to make gallop having ability to know you component's prop names
+     * to make gallop having ability to know your component's prop names
      */
     minimizer: [
       new TerserPlugin({

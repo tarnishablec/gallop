@@ -1,7 +1,11 @@
-type RouterData = {}
+import { pathToRegexp, match } from 'path-to-regexp'
+
+type RouterData = {
+  current: Route
+}
 
 export class Router {
-  private static instance: Router
+  protected static instance: Router
   static mode: 'hash' | 'history' = 'hash'
 
   private constructor() {}

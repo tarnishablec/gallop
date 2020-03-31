@@ -28,5 +28,9 @@
   "homepage": "",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@gallop/gallop": "^0.0.9-beta.1",
+    "path-to-regexp": "^6.1.0"
   }
 }
