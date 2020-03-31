@@ -12,23 +12,24 @@ import { TestA } from './src/components/TestA'
 
 TestA()
 
-setTimeout(() => {
+setTimeout(function (this: UpdatableElement) {
   import('./src/components/TestB').then(({ TestB }) => {
     // async component
     TestB()
   })
-}, 15050)
+}, 5050)
 
 export let [data, context] = createContext({ tick: 1 })
 
 component('app-root', () => {
-  let [state] = useState({ tok: 1, color: 'red', countdown: 15 })
+  let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
   useEffect(() => {
     console.log(`app-root effect mounted`)
     const interval = setInterval(() => {
-      state.countdown--
       if (state.countdown <= 0) {
         clearInterval(interval)
+      } else {
+        state.countdown--
       }
     }, 1000)
   }, [])
