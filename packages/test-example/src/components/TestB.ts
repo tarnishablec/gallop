@@ -9,9 +9,11 @@ import {
 export const TestB = () => {
   component(
     'test-b',
-    () => {
+    function (this: UpdatableElement) {
+      console.log(this)
+
       let [state] = useState({ text: '' })
-      useEffect(function (this: UpdatableElement) {
+      useEffect(() => {
         console.log(this.$root.querySelector('button'))
         console.log(`test-b mounted`)
       }, [])
@@ -26,7 +28,7 @@ export const TestB = () => {
           />
           <div>now state.text is : &zwnj;${state.text}</div>
           <button
-            @click="${function (this: UpdatableElement) {
+            @click="${() => {
               state.text = ''
               console.log(this)
               const span = this.$root.querySelector(

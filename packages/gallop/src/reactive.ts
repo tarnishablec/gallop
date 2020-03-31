@@ -1,5 +1,5 @@
 import { shallowEqual } from './utils'
-import { isFunction, isObject, isProxy } from './is'
+import { isProxy } from './is'
 import { LockedProxyError } from './error'
 
 export const _isProxy = Symbol('isProxy')
@@ -42,7 +42,9 @@ export const createProxy = <T extends object>(
       }
       getSideEffect?.(target, prop, reciver)
       const res = Reflect.get(target, prop, reciver)
-      return isObject(res) && !isFunction(res) && !isProxy(res)
+      return res instanceof Object &&
+        !(res instanceof Function) &&
+        !isProxy(res)
         ? createProxy(res, setSideEffect, getSideEffect, lock)
         : res
     }
