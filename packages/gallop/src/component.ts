@@ -83,9 +83,8 @@ export abstract class UpdatableElement extends HTMLElement {
     const shaClip = this.$builder.apply(this, this.$props)
     if (!this.$clip) {
       this.mount(shaClip)
-      this.$alive = true
     } else {
-      this.$clip!.tryUpdate(shaClip.do(getVals))
+      this.$clip.tryUpdate(shaClip.do(getVals))
     }
     // console.log(`${this.nodeName} updated`)
     this.$updateEffects?.forEach((effect) => {
@@ -114,6 +113,7 @@ export abstract class UpdatableElement extends HTMLElement {
   }
 
   connectedCallback() {
+    this.$alive = true
     // console.log(`${this.nodeName} connected`)
   }
 
@@ -123,6 +123,7 @@ export abstract class UpdatableElement extends HTMLElement {
     this.$disconnectedEffects?.forEach((effect) => {
       effect.apply(this)
     })
+    this.$alive = false
   }
 
   resetEffects() {
@@ -161,7 +162,7 @@ export function component(
   componentPool.add(name)
 }
 
-function verifyComponentName(name: string) {
+export function verifyComponentName(name: string) {
   const arr = name.split('-')
   return arr[arr.length - 1] && arr.length >= 2 && name.toLowerCase() === name
 }

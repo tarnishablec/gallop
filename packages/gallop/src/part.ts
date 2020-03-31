@@ -1,5 +1,5 @@
 import { ShallowClip, Clip, createInstance, getVals, getShaHtml } from './clip'
-import { UpdatableElement } from './component'
+import { UpdatableElement, resolveCurrentHandle } from './component'
 import {
   shallowEqual,
   twoStrArrayCompare,
@@ -134,6 +134,12 @@ export class AttrPart extends Part {
     } else {
       res = val
     }
+    if (name === 'value') {
+      if (Reflect.get(node, 'value')) {
+        Reflect.set(node, 'value', this.value)
+      }
+      return
+    }
     node.setAttribute(name, res)
   }
 
@@ -150,7 +156,7 @@ export class AttrPart extends Part {
   styleCache?: string
 }
 
-type EventInstance = (this: Document, e: Event) => unknown
+type EventInstance = (this: UpdatableElement | Document, e: Event) => unknown
 
 export class EventPart extends Part {
   clear(): void {
@@ -163,18 +169,10 @@ export class EventPart extends Part {
   commit(): void {
     this.clear()
     const { node } = this.location
-    if (this.value instanceof Array) {
-      this.value.forEach((v) => {
-        let ev = this.tryGetFromCache(v)
-        node.addEventListener(this.eventName, ev, this.options)
-      })
-    } else {
-      node.addEventListener(
-        this.eventName,
-        this.tryGetFromCache(this.value),
-        this.options
-      )
-    }
+    this.value.forEach((v) => {
+      let ev = this.tryGetFromCache(v)
+      node.addEventListener(this.eventName, ev, this.options)
+    })
   }
 
   setValue(val: EventInstance | EventInstance[]) {
@@ -185,7 +183,9 @@ export class EventPart extends Part {
       temp = [val.toString()]
     }
     if (!twoStrArrayCompare(temp, Array.from(this.eventCache.keys()))) {
-      this.value = val
+      this.value = (val instanceof Array ? val : [val]).map((e) =>
+        e.bind(resolveCurrentHandle())
+      )
       this.commit()
     }
   }
@@ -205,7 +205,7 @@ export class EventPart extends Part {
     this.eventName = eventName as keyof DocumentEventMap
   }
 
-  value!: EventInstance | EventInstance[]
+  value!: EventInstance[]
   location!: AttrEventLocation
   eventName: keyof DocumentEventMap
   eventCache: Map<string, EventInstance> = new Map()

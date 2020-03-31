@@ -37,7 +37,7 @@ still working...
         common feature in react
 
         : to bind props of component
-        . to bind attributes
+        . to bind attributes / value / style
         @ to bind events, support @click.once.capture.passive like vue
 
         auto minimize update

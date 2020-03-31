@@ -1,12 +1,49 @@
-import { component, html } from '@gallop/gallop'
+import {
+  component,
+  html,
+  useEffect,
+  useState,
+  UpdatableElement
+} from '@gallop/gallop'
 
-export const TestB = () =>
+export const TestB = () => {
   component(
     'test-b',
-    () =>
-      html`
+    () => {
+      let [state] = useState({ text: '' })
+      useEffect(function (this: UpdatableElement) {
+        console.log(this)
+        console.log(`test-b mounted`)
+      }, [])
+      return html`
         <div>
-          <div>this is test-b</div>
+          <input
+            class="state-text"
+            .value="${state.text}"
+            @input="${(e: Event) => {
+              state.text = (e.target as HTMLInputElement).value
+            }}"
+          />
+          <div>now state.text is : &zwnj;${state.text}</div>
+          <button
+            .value="${state.text}"
+            @click="${function (this: UpdatableElement) {
+              state.text = ''
+              console.log(this)
+              const span = this.$root.querySelector(
+                'span.test-b-span'
+              ) as HTMLSpanElement
+              span.textContent = 'cleaned'
+            }}"
+          >
+            clean state
+          </button>
+          <span class="test-b-span" style="display:block">
+            span gonna change!
+          </span>
         </div>
       `
+    },
+    false
   )
+}
