@@ -67,6 +67,6 @@ export function resolveEffect(element: UpdatableElement, effect: Effect) {
   res
     ? (
         element.$disconnectedEffects ?? (element.$disconnectedEffects = [])
-      )?.push(res)
+      ).push(res)
     : null
 }
