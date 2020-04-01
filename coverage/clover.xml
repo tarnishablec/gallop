@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1585733646699" clover="3.2.0">
-  <project timestamp="1585733646699" name="All files">
+<coverage generated="1585734896132" clover="3.2.0">
+  <project timestamp="1585734896132" name="All files">
     <metrics statements="465" coveredstatements="275" conditionals="277" coveredconditionals="124" methods="103" coveredmethods="51" elements="845" coveredelements="450" complexity="0" loc="465" ncloc="465" packages="1" files="16" classes="16"/>
     <file name="clip.ts" path="C:\Users\tarni\Desktop\Web_Projects\gallop\packages\gallop\src\clip.ts">
       <metrics statements="65" coveredstatements="48" conditionals="21" coveredconditionals="10" methods="11" coveredmethods="9"/>
@@ -16,7 +16,7 @@
       <line num="21" count="5" type="stmt"/>
       <line num="22" count="3" type="stmt"/>
       <line num="29" count="5" type="stmt"/>
-      <line num="30" count="3" type="stmt"/>
+      <line num="30" count="4" type="stmt"/>
       <line num="33" count="5" type="stmt"/>
       <line num="34" count="5" type="stmt"/>
       <line num="54" count="5" type="stmt"/>
@@ -173,7 +173,7 @@
     <file name="do.ts" path="C:\Users\tarni\Desktop\Web_Projects\gallop\packages\gallop\src\do.ts">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
       <line num="1" count="5" type="stmt"/>
-      <line num="3" count="11" type="stmt"/>
+      <line num="3" count="12" type="stmt"/>
     </file>
     <file name="dom.ts" path="C:\Users\tarni\Desktop\Web_Projects\gallop\packages\gallop\src\dom.ts">
       <metrics statements="9" coveredstatements="9" conditionals="9" coveredconditionals="8" methods="3" coveredmethods="3"/>

@@ -3,5 +3,4 @@ node_modules
 dist
 lerna-debug.log
 
-# Ignore test-related files
-/coverage/
+coverage

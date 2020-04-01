@@ -14,7 +14,7 @@ FN:103,attachParts
 FNF:11
 FNH:9
 FNDA:3,createInstance
-FNDA:3,getVals
+FNDA:4,getVals
 FNDA:5,getShaHtml
 FNDA:5,(anonymous_3)
 FNDA:5,(anonymous_4)
@@ -36,7 +36,7 @@ DA:11,5
 DA:21,5
 DA:22,3
 DA:29,5
-DA:30,3
+DA:30,4
 DA:33,5
 DA:34,5
 DA:54,5
@@ -350,9 +350,9 @@ SF:packages\gallop\src\do.ts
 FN:2,(anonymous_0)
 FNF:1
 FNH:1
-FNDA:11,(anonymous_0)
+FNDA:12,(anonymous_0)
 DA:1,5
-DA:3,11
+DA:3,12
 LF:2
 LH:2
 BRF:0
