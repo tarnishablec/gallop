@@ -121,4 +121,22 @@ describe('component', () => {
     const TestName = () => component('asda', () => html``)
     expect(TestName).toThrowError(/The provided name /)
   })
+
+  test('mix', () => {
+    component('test-dispatch', (num: number) => html`<div>dispatch${num}</div>`)
+    render(
+      html`
+        ${[1, 2, 3].map((n) =>
+          n % 2 ? html`<test-dispatch :num="${n}"></test-dispatch>` : 'hello'
+        )}
+      `
+    )
+
+    const coms = document.querySelectorAll('test-dispatch')
+    expect(coms.length).toBe(2)
+    setTimeout(() => {
+      expect(coms[0].shadowRoot?.firstChild?.textContent).toBe('dispatch1')
+      expect((document.body.childNodes[1] as Text).data).toBe('2')
+    }, 0)
+  })
 })

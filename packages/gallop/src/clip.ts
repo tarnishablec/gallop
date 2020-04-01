@@ -1,7 +1,6 @@
 import { marker, markerIndex } from './marker'
 import { Part, AttrPart, PropPart, EventPart, NodePart } from './part'
 import { Context } from './context'
-import { createTreeWalker } from './utils'
 import { isMarker } from './is'
 import { cleanDofStr, insertAfter } from './dom'
 import { UpdatableElement } from './component'
@@ -9,8 +8,6 @@ import { NotUpdatableELementError } from './error'
 import { DoAble } from './do'
 
 const range = document.createRange()
-// https://www.measurethat.net/Benchmarks/ShowResult/100437
-// createContextualFragment vs innerHTML
 
 // const shallowDofCache = new Map<string, DocumentFragment>()
 
@@ -18,11 +15,14 @@ const range = document.createRange()
 //   return new Clip(getShaDofFromCahce.apply(this), this.vals, this.contexts)
 // }
 
+/**
+ * https://www.measurethat.net/Benchmarks/ShowResult/100437
+ * createContextualFragment vs innerHTML
+ */
 export function createInstance(this: ShallowClip) {
   return new Clip(
     range.createContextualFragment(this.do(getShaHtml)),
-    this.vals,
-    this.contexts
+    this.vals.length
   )
 }
 
@@ -32,6 +32,10 @@ export function getVals(this: ShallowClip) {
 
 export function getShaHtml(this: ShallowClip) {
   return placeMarkerAndClean(this.strs)
+}
+
+export function getContexts(this: ShallowClip) {
+  return this.contexts
 }
 
 // export function getShaDofFromCahce(this: ShallowClip) {
@@ -75,23 +79,16 @@ export class ShallowClip extends DoAble<ShallowClip> {
 }
 
 export class Clip {
-  parts: Part[] = []
-  readonly initVals: ReadonlyArray<unknown>
+  parts: Part[]
+  partCount: number
 
   dof: DocumentFragment
+  // key?: unknown //TODO
 
-  contexts?: Set<Context<object>>
-
-  key?: unknown //TODO
-
-  constructor(
-    dof: DocumentFragment,
-    initVals: ReadonlyArray<unknown>,
-    contexts?: Set<Context<object>>
-  ) {
+  constructor(dof: DocumentFragment, partCount: number) {
     this.dof = dof
-    this.initVals = initVals
-    this.contexts = contexts
+    this.parts = new Array<Part>()
+    this.partCount = partCount
     attachParts(this)
   }
 
@@ -100,9 +97,9 @@ export class Clip {
   }
 }
 
-function attachParts(clip: Clip) {
-  const walker = createTreeWalker(clip.dof)
-  const length = clip.initVals.length
+export function attachParts(clip: Clip) {
+  const walker = document.createTreeWalker(clip.dof, 133)
+  const length = clip.partCount
   let count = 0
   while (count < length) {
     walker.nextNode()
