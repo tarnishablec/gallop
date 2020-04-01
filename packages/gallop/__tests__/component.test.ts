@@ -1,9 +1,7 @@
 import {
   verifyComponentName,
   component,
-  UpdatableElement,
-  resolveCurrentHandle,
-  setCurrentHandle
+  UpdatableElement
 } from '../src/component'
 import { html, createContext, useEffect, render, useState } from '../src'
 import { createInstance } from '../src/clip'
