@@ -1,7 +1,6 @@
 import { marker, markerIndex } from './marker'
 import { Part, AttrPart, PropPart, EventPart, NodePart } from './part'
 import { Context } from './context'
-import { createTreeWalker } from './utils'
 import { isMarker } from './is'
 import { cleanDofStr, insertAfter } from './dom'
 import { UpdatableElement } from './component'
@@ -99,7 +98,7 @@ export class Clip {
 }
 
 export function attachParts(clip: Clip) {
-  const walker = createTreeWalker(clip.dof)
+  const walker = document.createTreeWalker(clip.dof, 133)
   const length = clip.partCount
   let count = 0
   while (count < length) {

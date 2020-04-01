@@ -3,8 +3,7 @@ import {
   component,
   UpdatableElement,
   resolveCurrentHandle,
-  setCurrentHandle,
-  requestUpdate
+  setCurrentHandle
 } from '../src/component'
 import { html, createContext, useEffect, render, useState } from '../src'
 import { createInstance } from '../src/clip'
@@ -125,17 +124,21 @@ describe('component', () => {
     expect(TestName).toThrowError(/The provided name /)
   })
 
-  test('dispatchUpdate', () => {
-    component('test-dispatch', () => html`<div>dispatch</div>`)
+  test('mix', () => {
+    component('test-dispatch', (num: number) => html`<div>dispatch${num}</div>`)
     render(
       html`
-        <test-dispatch></test-dispatch>
-        <test-dispatch></test-dispatch>
+        ${[1, 2, 3].map((n) =>
+          n % 2 ? html`<test-dispatch :num="${n}"></test-dispatch>` : 'hello'
+        )}
       `
     )
-    const a = document.querySelectorAll('test-dispatch')[0] as UpdatableElement
-    // const b = document.querySelectorAll('test-dispatch')[1] as UpdatableElement
-    setCurrentHandle(a)
-    expect(resolveCurrentHandle()).toBe(a)
+
+    const coms = document.querySelectorAll('test-dispatch')
+    expect(coms.length).toBe(2)
+    setTimeout(() => {
+      expect(coms[0].shadowRoot?.firstChild?.textContent).toBe('dispatch1')
+      expect((document.body.childNodes[1] as Text).data).toBe('2')
+    }, 0)
   })
 })

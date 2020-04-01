@@ -1,4 +1,4 @@
-import { html, createContext, component, render } from '../src'
+import { html, createContext, component } from '../src'
 import { getVals, createInstance, getContexts, attachParts } from '../src/clip'
 
 component('test-test', (name: string) => html`<div>${name}</div>`, ['name'])

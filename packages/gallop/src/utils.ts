@@ -9,10 +9,6 @@ export type Primitive =
   | symbol
   | bigint
 
-export function createTreeWalker(root: Node) {
-  return document.createTreeWalker(root, 133)
-}
-
 export function tryParseToNumber(val: Primitive) {
   return isNaN(Number(val)) ? val : Number(val)
 }
