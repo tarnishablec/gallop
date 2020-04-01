@@ -1,4 +1,4 @@
-import { cleanDofStr } from '../src/dom'
+import { cleanDofStr, insertAfter, removeNodes } from '../src/dom'
 
 describe('dom', () => {
   test('range', () => {
@@ -24,10 +24,28 @@ describe('dom', () => {
     expect(dof.firstChild?.childNodes[3].nodeType).toBe(Node.COMMENT_NODE)
     expect((dof.firstChild?.childNodes[2] as Comment).data).toBe(`comment1`)
     expect((dof.firstChild?.childNodes[3] as Comment).data).toBe(`comment2`)
-    const comment1 = dof.firstChild?.childNodes[2] as Comment
-    const comment2 = dof.firstChild?.childNodes[3] as Comment
-    const range = document.createRange()
-    range.setStart(comment1, 0)
-    range.setEnd(comment2, 0)
+  })
+
+  test('insertAfter', () => {
+    const div = document.createElement('div')
+    insertAfter(div, new Text('hello'))
+    expect(div.firstChild instanceof Text).toBe(true)
+    const text = div.firstChild as Text
+    expect((div.firstChild as Text).data).toBe('hello')
+    insertAfter(div, new Text('world'), text)
+    expect((text.nextSibling as Text).data).toBe('world')
+  })
+
+  test('removeNodes', () => {
+    const div = document.createElement('div')
+    for (let i = 0; i < 20; i++) {
+      div.append(new Text(i.toString()))
+    }
+    expect(div.childNodes.length).toBe(20)
+    removeNodes(div, div.firstChild, div.childNodes[2])
+    expect(div.childNodes.length).toBe(18)
+    expect((div.firstChild as Text).data).toBe('2')
+    removeNodes(div, div.firstChild)
+    expect(div.childNodes.length).toBe(0)
   })
 })

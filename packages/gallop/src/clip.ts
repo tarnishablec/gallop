@@ -12,11 +12,11 @@ const range = document.createRange()
 // https://www.measurethat.net/Benchmarks/ShowResult/100437
 // createContextualFragment vs innerHTML
 
-const shallowDofCache = new Map<string, DocumentFragment>()
+// const shallowDofCache = new Map<string, DocumentFragment>()
 
-export function createInstanceFromCache(this: ShallowClip) {
-  return new Clip(getShaDofFromCahce.apply(this), this.vals, this.contexts)
-}
+// export function createInstanceFromCache(this: ShallowClip) {
+//   return new Clip(getShaDofFromCahce.apply(this), this.vals, this.contexts)
+// }
 
 export function createInstance(this: ShallowClip) {
   return new Clip(
@@ -34,22 +34,22 @@ export function getShaHtml(this: ShallowClip) {
   return placeMarkerAndClean(this.strs)
 }
 
-export function getShaDofFromCahce(this: ShallowClip) {
-  //for future optimization
-  const shaHtml = this.do(getShaHtml)
-  const res = (
-    shallowDofCache.get(shaHtml) ??
-    shallowDofCache
-      .set(shaHtml, range.createContextualFragment(shaHtml))
-      .get(shaHtml)
-  )?.cloneNode(true) as DocumentFragment
+// export function getShaDofFromCahce(this: ShallowClip) {
+//   //for future optimization
+//   const shaHtml = this.do(getShaHtml)
+//   const res = (
+//     shallowDofCache.get(shaHtml) ??
+//     shallowDofCache
+//       .set(shaHtml, range.createContextualFragment(shaHtml))
+//       .get(shaHtml)
+//   )?.cloneNode(true) as DocumentFragment
 
-  window.requestIdleCallback?.(() => {
-    //should or not?
-    shallowDofCache.clear()
-  })
-  return res
-}
+//   window.requestIdleCallback?.(() => {
+//     //should or not?
+//     shallowDofCache.clear()
+//   })
+//   return res
+// }
 
 const placeMarkerAndClean = (strs: TemplateStringsArray) =>
   cleanDofStr(strs.join(marker))

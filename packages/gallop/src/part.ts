@@ -181,13 +181,13 @@ export class EventPart extends Part {
 
   setValue(val: EventInstance | EventInstance[]) {
     let temp: string[]
-    if (val instanceof Array) {
+    if (Array.isArray(val)) {
       temp = val.map((v) => v.toString())
     } else {
       temp = [val.toString()]
     }
     if (!twoStrArrayCompare(temp, Array.from(this.eventCache.keys()))) {
-      this.value = (val instanceof Array ? val : [val]).map((e) =>
+      this.value = (Array.isArray(val) ? val : [val]).map((e) =>
         e.bind(resolveCurrentHandle())
       )
       this.commit()

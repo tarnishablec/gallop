@@ -1,5 +1,6 @@
 import { getFuncArgNames, extractProps, shallowEqual } from '../src/utils'
 import { html } from '../src/parse'
+import { getShaHtml } from '../src/clip'
 
 describe('utils', () => {
   test('getFuncArgNames', () => {
@@ -34,16 +35,14 @@ describe('utils', () => {
 
   test('extractProp', () => {
     const hobbies = ['sing', 'jump', 'rap', '🏀']
-    const clip = html`
+    const shaClip = html`
       <div :name="yihan" :age="66" :hobbies="${hobbies}">
         hello
       </div>
     `
     const div = document.createElement('div')
     div.append(
-      document
-        .createRange()
-        .createContextualFragment(Reflect.get(clip, 'shaHtml'))
+      document.createRange().createContextualFragment(shaClip.do(getShaHtml))
     )
     expect(extractProps((div.firstChild as Element).attributes)).toEqual({
       name: 'yihan',

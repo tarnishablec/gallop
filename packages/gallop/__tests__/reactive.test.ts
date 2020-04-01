@@ -28,5 +28,11 @@ describe('reactive', () => {
     p.a.b = 2
     expect(Reflect.get(p, _hasChanged)).toBe(false)
     expect(Reflect.get(p.a, _hasChanged)).toBe(true)
+
+    const b = { x: { y: '🏀' } }
+    let pb = createProxy(b, () => console.log('b changed'), undefined, true)
+    expect(() => Reflect.set(pb.x, 'z', 1)).toThrowError(
+      /Can not set new property to locked object/
+    )
   })
 })

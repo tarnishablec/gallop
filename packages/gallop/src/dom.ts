@@ -7,8 +7,12 @@ export function cleanDofStr(str: string) {
     .trim()
 }
 
-export function insertAfter(container: Node, newChild: Node, afterChild: Node) {
-  return container.insertBefore(newChild, afterChild.nextSibling)
+export function insertAfter(
+  container: Node,
+  newChild: Node,
+  afterChild?: Node
+) {
+  return container.insertBefore(newChild, afterChild?.nextSibling ?? null)
 }
 
 export function removeNodes(

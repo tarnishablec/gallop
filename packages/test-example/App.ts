@@ -12,7 +12,7 @@ import { TestA } from './src/components/TestA'
 
 TestA()
 
-setTimeout(function (this: UpdatableElement) {
+setTimeout(() => {
   import(/* webpackChunkName: "test-b" */ './src/components/TestB').then(
     ({ TestB }) => {
       // async component

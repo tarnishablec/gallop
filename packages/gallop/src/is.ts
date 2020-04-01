@@ -2,7 +2,7 @@ import { marker } from './marker'
 import { _isProxy } from './reactive'
 import type { Primitive } from './utils' //ts 3.8.3 import type
 
-export function isMarker(str: string) {
+export function isMarker(str: unknown) {
   return str === marker
 }
 
