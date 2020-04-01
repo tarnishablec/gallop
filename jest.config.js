@@ -8,9 +8,11 @@ module.exports = {
   testMatch: ['<rootDir>/packages/**/__tests__/**/*.+(test|spec).[jt]s?(x)'],
   collectCoverage: true,
   collectCoverageFrom: [
-    '**/*.{js,jsx,ts,tsx}',
+    '<rootDir>/packages/**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
     '!<rootDir>/packages/{test-example,router}/**',
+    '!<rootDir>/packages/*/dist/**',
+    '!<rootDir>/packages/*/index.js',
     '!**/node_modules/**',
     '!**/vendor/**'
   ]
