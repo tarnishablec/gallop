@@ -1,5 +1,5 @@
 import { ShallowClip, Clip, createInstance, getVals, getShaHtml } from './clip'
-import { UpdatableElement, resolveCurrentHandle } from './component'
+import { UpdatableElement } from './component'
 import {
   shallowEqual,
   twoStrArrayCompare,
@@ -160,7 +160,7 @@ export class AttrPart extends Part {
   styleCache?: string
 }
 
-type EventInstance = (this: UpdatableElement | Document, e: Event) => unknown
+type EventInstance = (e: Event) => unknown
 
 export class EventPart extends Part {
   clear(): void {
@@ -182,14 +182,12 @@ export class EventPart extends Part {
   setValue(val: EventInstance | EventInstance[]) {
     let temp: string[]
     if (Array.isArray(val)) {
-      temp = val.map((v) => v.toString())
+      temp = val.map((v) => v?.toString())
     } else {
       temp = [val.toString()]
     }
     if (!twoStrArrayCompare(temp, Array.from(this.eventCache.keys()))) {
-      this.value = (Array.isArray(val) ? val : [val]).map((e) =>
-        e.bind(resolveCurrentHandle())
-      )
+      this.value = Array.isArray(val) ? val : [val]
       this.commit()
     }
   }

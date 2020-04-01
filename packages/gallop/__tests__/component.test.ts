@@ -1,7 +1,10 @@
 import {
   verifyComponentName,
   component,
-  UpdatableElement
+  UpdatableElement,
+  resolveCurrentHandle,
+  setCurrentHandle,
+  requestUpdate
 } from '../src/component'
 import { html, createContext, useEffect, render, useState } from '../src'
 import { createInstance } from '../src/clip'
@@ -120,5 +123,19 @@ describe('component', () => {
 
     const TestName = () => component('asda', () => html``)
     expect(TestName).toThrowError(/The provided name /)
+  })
+
+  test('dispatchUpdate', () => {
+    component('test-dispatch', () => html`<div>dispatch</div>`)
+    render(
+      html`
+        <test-dispatch></test-dispatch>
+        <test-dispatch></test-dispatch>
+      `
+    )
+    const a = document.querySelectorAll('test-dispatch')[0] as UpdatableElement
+    // const b = document.querySelectorAll('test-dispatch')[1] as UpdatableElement
+    setCurrentHandle(a)
+    expect(resolveCurrentHandle()).toBe(a)
   })
 })

@@ -1,8 +1,9 @@
-import { Clip, ShallowClip, createInstance, getVals } from './clip'
+import { Clip, ShallowClip, createInstance, getVals, getContexts } from './clip'
 import { getFuncArgNames, extractProps } from './utils'
 import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
 import { Effect, resolveEffect } from './hooks'
+import { Context } from './context'
 
 let currentHandle: UpdatableElement
 
@@ -15,7 +16,7 @@ const updateQueue = new Set<UpdatableElement>()
 
 let dirty = false
 
-function requestUpdate() {
+export function requestUpdate() {
   if (dirty) {
     return
   }
@@ -50,6 +51,8 @@ export abstract class UpdatableElement extends HTMLElement {
   $dependsCache?: unknown[][]
 
   $clip?: Clip
+
+  $contexts?: Set<Context<Object>>
 
   protected propNames: string[] = []
 
@@ -101,7 +104,10 @@ export abstract class UpdatableElement extends HTMLElement {
     const clip = shaClip.do(createInstance)
     this.$clip = clip
     this.$root.append(this.$clip.dof)
-    this.$clip.contexts?.forEach((context) => context.watch(this))
+    shaClip.do(getContexts)?.forEach((context) => {
+      context.watch(this)
+      ;(this.$contexts ?? (this.$contexts = new Set())).add(context)
+    })
     // console.log(`${this.tagName} mounted`)
     this.$mountedEffects?.forEach((effect) => {
       resolveEffect(this, effect)
@@ -121,7 +127,7 @@ export abstract class UpdatableElement extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.$clip?.contexts?.forEach((context) => context.unWatch(this))
+    this.$contexts?.forEach((context) => context.unWatch(this))
     // console.log(`${this.nodeName} disconnected`)
     this.$disconnectedEffects?.forEach((effect) => {
       effect.apply(this)
