@@ -1,11 +1,10 @@
 # gallop
 
-still working on it...
-
         yarn add @gallop/gallop
 
-//Feature
+        https://unpkg.com/@gallop/gallop
 
+## Feature
         use template literals to auto detect dynamic & static code
 
         register reactive component in functional way
@@ -33,13 +32,16 @@ import {
   createContext,
   useState,
   useEffect,
+  render,
   html,
   UpdatableElement
 } from '@gallop/gallop'
 
-export let [data, context] = createContext({ initContext })
+export let [data, context] = createContext({ initContext }) //context can be exported to another component
 
-component('name-name', function (this: UpdatableElement, ...props: any) {
+export const PureComponent = (prop: string) => html`<div>pure ${prop}</div>` //pure component with no any lifecycle
+
+component('test-name', function (this: UpdatableElement, ...props: any[]) {
   let [state] = useState({ initState }) //dont need setX(), useState() return a proxy, and auto trigger rerender
   console.dir(this) //access dom directly by this
 
@@ -48,24 +50,38 @@ component('name-name', function (this: UpdatableElement, ...props: any) {
     return () => {
       console.log(`disconnected callback`)
     }
-  }, [depends]) //trigger effect when depends changed, completely same as react useEffect()
+  }, [state.a]) //trigger effect when depends changed, completely same as react useEffect()
 
   return html`
     <div>${state}</div>
     <div>${props}</div>
     <div>${data}</div>
+    ${[1, 2, 3].map((n) =>
+      n % 2 ? html`<div>${n}</div>` : PureComponent('purename') /*use pure component by just simply calling function*/
+    )}                    
+    <slot>
+      default slot context
+    </slot>
     <button
       @click="${(e: Event) => {
-        console.log(this)          /*you can still access this by arrow function in event*/
+        console.log(
+          this
+        ) /*you can still access this by arrow function in event*/
       }}"
     >
       click
     </button>
-  `.useContext([someContext]) //you need to hook Context to this component by useContext(), different from react useContext()
+  `.useContext([context]) //you need to hook Context to this component by useContext(), different from react useContext()
 })
+
+render(html`
+  <test-name>
+    slot content
+  </test-name>
+`)
 ```
 
-//TODO
+## TODO
 
         hooks                           useState()               ✅
                                         useContext()             ✅
