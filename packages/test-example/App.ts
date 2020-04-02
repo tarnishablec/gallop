@@ -23,7 +23,7 @@ setTimeout(() => {
 
 export let [data, context] = createContext({ tick: 1 })
 
-component('app-root', () => {
+component('app-root', function (this: UpdatableElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
   useEffect(() => {
     console.log(`app-root effect mounted`)
@@ -44,13 +44,10 @@ component('app-root', () => {
     console.log(`app-root color state updated`)
   }, [state.color])
 
-  useEffect(
-    function (this: UpdatableElement) {
-      console.log(`app-root tok state updated`)
-      console.dir(this.$root)
-    },
-    [state.tok]
-  )
+  useEffect(() => {
+    console.log(`app-root tok state updated`)
+    console.dir(this.$root)
+  }, [state.tok])
 
   return html`
     <div>this is app-root</div>
@@ -73,6 +70,10 @@ component('app-root', () => {
     <slot>
       slot default content
     </slot>
+    <hr />
+    ${[1, 2, 3].map((n) =>
+      n % 2 ? html` <button @click="${() => console.log(n)}">${n}</button> ` : 2
+    )}
   `.useContext([context])
 })
 

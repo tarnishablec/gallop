@@ -9,6 +9,7 @@
     "boot": "node ./scripts/bootstrap.js",
     "new": "node ./scripts/new.js",
     "build": "node ./scripts/build.js",
+    "clean": "node ./scripts/clean.js",
     "upgrade": "node ./scripts/upgrade.js",
     "publish": "node ./scripts/publish.js",
     "web": "yarn workspace @gallop/test-example start",

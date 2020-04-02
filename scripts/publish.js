@@ -9,4 +9,5 @@ async function main() {
     await run(`git commit`)
   } catch (error) {}
   await run(`lerna publish`)
+  await run('yarn run clean')
 }

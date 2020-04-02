@@ -3,9 +3,9 @@ const execa = require('execa')
 
 const excludes = ['test-example']
 
-const targets = argsTargets =>
+const resolveTargets = (argsTargets) =>
   (argsTargets.length === 0 ? fs.readdirSync('packages') : argsTargets).filter(
-    f => {
+    (f) => {
       if (excludes.includes(f)) {
         return false
       }
@@ -23,4 +23,4 @@ const targets = argsTargets =>
 const run = (command, ...opts) =>
   execa.command(command, { stdio: 'inherit', ...opts })
 
-module.exports = { excludes, targets, run }
+module.exports = { excludes, resolveTargets, run }

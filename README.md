@@ -1,4 +1,5 @@
-# gallop
+# gallop 
+[![Coverage Status](https://coveralls.io/repos/github/tarnishablec/gallop/badge.svg?branch=master)](https://coveralls.io/github/tarnishablec/gallop?branch=master)
 
         yarn add @gallop/gallop
 
@@ -9,7 +10,7 @@
 
         register reactive component in functional way
 
-        support <slot> by web components
+        support <slot> by web components, also named slot
 
         : to bind props of component
         . to bind attributes / value / style

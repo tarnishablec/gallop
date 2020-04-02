@@ -7,7 +7,7 @@ const args = require('minimist')(process.argv.slice(2))
 const formats = args.formats || args.f
 const devOnly = args.devOnly || args.d
 
-const targets = require('./utils').targets(args._)
+const targets = require('./utils').resolveTargets(args._)
 
 buildAll(targets)
 

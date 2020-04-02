@@ -127,7 +127,10 @@ export abstract class UpdatableElement extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.$contexts?.forEach((context) => context.unWatch(this))
+    this.$contexts?.forEach((context) => {
+      context.unWatch(this)
+    })
+    this.$contexts = new Set()
     // console.log(`${this.nodeName} disconnected`)
     this.$disconnectedEffects?.forEach((effect) => {
       effect.apply(this)

@@ -9,12 +9,6 @@ import { DoAble } from './do'
 
 const range = document.createRange()
 
-// const shallowDofCache = new Map<string, DocumentFragment>()
-
-// export function createInstanceFromCache(this: ShallowClip) {
-//   return new Clip(getShaDofFromCahce.apply(this), this.vals, this.contexts)
-// }
-
 /**
  * https://www.measurethat.net/Benchmarks/ShowResult/100437
  * createContextualFragment vs innerHTML
@@ -38,23 +32,6 @@ export function getContexts(this: ShallowClip) {
   return this.contexts
 }
 
-// export function getShaDofFromCahce(this: ShallowClip) {
-//   //for future optimization
-//   const shaHtml = this.do(getShaHtml)
-//   const res = (
-//     shallowDofCache.get(shaHtml) ??
-//     shallowDofCache
-//       .set(shaHtml, range.createContextualFragment(shaHtml))
-//       .get(shaHtml)
-//   )?.cloneNode(true) as DocumentFragment
-
-//   window.requestIdleCallback?.(() => {
-//     //should or not?
-//     shallowDofCache.clear()
-//   })
-//   return res
-// }
-
 const placeMarkerAndClean = (strs: TemplateStringsArray) =>
   cleanDofStr(strs.join(marker))
 
@@ -62,6 +39,7 @@ export class ShallowClip extends DoAble<ShallowClip> {
   protected readonly strs: TemplateStringsArray
   protected readonly vals: ReadonlyArray<unknown>
   protected contexts?: Set<Context<object>>
+  protected key?: unknown
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
     super()
@@ -83,7 +61,6 @@ export class Clip {
   partCount: number
 
   dof: DocumentFragment
-  // key?: unknown //TODO
 
   constructor(dof: DocumentFragment, partCount: number) {
     this.dof = dof

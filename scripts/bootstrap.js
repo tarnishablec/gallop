@@ -5,13 +5,13 @@ const { scope, projectName, auther, gitUrl } = require('./setting')
 
 const baseVersion = require('../lerna.json').version
 const packagesDir = path.resolve(__dirname, '../packages')
-const targets = require('./utils').targets(args._)
+const targets = require('./utils').resolveTargets(args._)
 const execa = require('execa')
 
 main()
 
 function main() {
-  targets.forEach(shortName => {
+  targets.forEach((shortName) => {
     const packageDir = path.join(packagesDir, shortName)
     if (!fse.statSync(packageDir).isDirectory()) {
       return
@@ -111,7 +111,7 @@ function initPkg(filePath, longName, shortName, args) {
     if (oldPkg.private) {
       return
     } else {
-      cacheFields.forEach(field => {
+      cacheFields.forEach((field) => {
         pkgCache[field] = oldPkg[field]
       })
     }

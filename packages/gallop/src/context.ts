@@ -6,15 +6,9 @@ export class Context<T extends object> {
   proxy: [T, Context<T>]
   watchedInstances: Set<UpdatableElement> = new Set()
 
-  static namespace?: string //for persistence
-
   constructor(raw: T) {
     this.raw = raw
     this.proxy = [createProxy(this.raw, () => this.update()), this]
-  }
-
-  static setNamespace(name: string) {
-    Context.namespace = name
   }
 
   watch(element: UpdatableElement) {

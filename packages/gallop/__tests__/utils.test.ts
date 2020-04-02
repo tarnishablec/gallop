@@ -1,4 +1,9 @@
-import { getFuncArgNames, extractProps, shallowEqual } from '../src/utils'
+import {
+  getFuncArgNames,
+  extractProps,
+  shallowEqual,
+  keyListDiff
+} from '../src/utils'
 import { html } from '../src/parse'
 import { getShaHtml } from '../src/clip'
 
@@ -36,7 +41,7 @@ describe('utils', () => {
   test('extractProp', () => {
     const hobbies = ['sing', 'jump', 'rap', '🏀']
     const shaClip = html`
-      <div :name="yihan" :age="66" :hobbies="${hobbies}">
+      <div :name="yihan" :age="66" :height="${111}" :hobbies="${hobbies}">
         hello
       </div>
     `
@@ -46,7 +51,7 @@ describe('utils', () => {
     )
     expect(extractProps((div.firstChild as Element).attributes)).toEqual({
       name: 'yihan',
-      age: 66
+      age: '66'
     })
   })
 
@@ -83,5 +88,25 @@ describe('utils', () => {
     expect(shallowEqual(undefined, undefined)).toBe(true)
     expect(shallowEqual(null, null)).toBe(true)
     expect(shallowEqual(func, () => console.log(1))).toBe(false)
+  })
+
+  test('diff result', () => {
+    const a = [9, 1, 2, 5, 4, 6, 8, 10]
+    const b = [7, 3, 9, 8, 5, 0, 4]
+
+    let res = keyListDiff(a, b)
+
+    expect(res).toEqual([
+      { type: 'insert', newIndex: 0, after: null },
+      { type: 'insert', newIndex: 1, after: 7 },
+      { type: 'move', oldIndex: 0, after: 3 },
+      { type: 'move', oldIndex: 3, after: 8 },
+      { type: 'insert', newIndex: 5, after: 5 },
+      { type: 'move', oldIndex: 4, after: 0 },
+      { type: 'remove', oldIndex: 1 },
+      { type: 'remove', oldIndex: 2 },
+      { type: 'remove', oldIndex: 5 },
+      { type: 'remove', oldIndex: 7 }
+    ])
   })
 })

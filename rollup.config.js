@@ -32,10 +32,6 @@ const formats = {
     file: resolve(`dist/${name}.global.js`),
     format: `iife`
   }
-  // browser: {
-  //   file: resolve(`dist/${name}.esm-browser.js`),
-  //   format: `es`,
-  // },
 }
 
 const aliasOptions = { resolve: ['.ts'], entries: {} }
@@ -57,7 +53,9 @@ const CONFIG = {
     }),
     json(),
     alias(aliasOptions),
-    cleanup()
+    cleanup({
+      comments: 'none'
+    })
   ]
 }
 

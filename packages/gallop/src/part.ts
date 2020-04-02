@@ -1,14 +1,8 @@
 import { ShallowClip, Clip, createInstance, getVals, getShaHtml } from './clip'
 import { UpdatableElement } from './component'
-import {
-  shallowEqual,
-  twoStrArrayCompare,
-  Primitive,
-  tryParseToString
-} from './utils'
+import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
-import { isPrimitive } from './is'
 
 type AttrEventLocation = { node: Element; name: string }
 type PropLocation = { node: UpdatableElement; name: string }
@@ -55,7 +49,7 @@ export class NodePart extends Part {
 
   commit(): void {}
 
-  commitText(type: 'text', val: Primitive) {
+  commitText(type: 'text', val: string) {
     this.clear()
     this.location.startNode.parentNode!.insertBefore(
       new Text(val?.toString()),
@@ -85,20 +79,27 @@ export class NodePart extends Part {
   }
 
   commmitClips(type: 'clips', val: unknown[]) {
-    //TODO key diff
+    //TODO key diff ?
     this.clear()
     const batch = new DocumentFragment()
+    let res = new Array<Clip | string>()
     val.forEach((v) => {
       if (v instanceof ShallowClip) {
         const clip = v.do(createInstance)
         clip.tryUpdate(v.do(getVals))
         batch.append(clip.dof)
+        res.push(clip)
       } else {
-        batch.append(tryParseToString(v))
+        const str = tryParseToString(v)
+        batch.append(str)
+        res.push(str)
       }
     })
-    this.location.startNode.parentNode!.append(batch)
-    this.value = [Symbol('clips')]
+    this.location.startNode.parentNode!.insertBefore(
+      batch,
+      this.location.endNode
+    )
+    this.value = res
   }
 
   setValue(val: unknown) {
@@ -106,29 +107,24 @@ export class NodePart extends Part {
     if (val instanceof ShallowClip) {
       type = 'clip'
       this.commitClip(type, val)
-    } else if (val instanceof Array) {
+    } else if (Array.isArray(val)) {
       type = 'clips'
       this.commmitClips(type, val)
-    } else if (isPrimitive(val)) {
-      type = 'text'
-      val !== this.value && this.commitText(type, val ?? '')
     } else {
       type = 'text'
-      val !== this.value && this.commitText(type, JSON.stringify(val))
+      val !== this.value && this.commitText(type, tryParseToString(val))
     }
     this.type = type
   }
 
-  value!: Primitive | Clip | unknown[]
+  value!: (Clip | string)[] | string | Clip
   location!: NodeLocation
-  typeChanged: boolean = true
   shaHtmlCache?: string
+  keyCache?: unknown[]
 }
 
 export class AttrPart extends Part {
-  clear(): void {
-    throw new Error('Method not implemented.')
-  }
+  clear(): void {}
   commit(): void {
     const { node, name } = this.location
     let res: string

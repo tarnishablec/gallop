@@ -1,21 +1,10 @@
 import { isMarker } from './is'
 
-export type Primitive =
-  | null
-  | undefined
-  | boolean
-  | number
-  | string
-  | symbol
-  | bigint
-
-export function tryParseToNumber(val: Primitive) {
-  return isNaN(Number(val)) ? val : Number(val)
-}
-
 export function tryParseToString(val: unknown): string {
   if (val === null || val === undefined) return ''
   if (typeof val === 'string') return val
+  if (typeof val === 'function') return val.toString()
+  if (typeof val === 'symbol') return tryParseToString(val.description)
   return JSON.stringify(val)
 }
 
@@ -140,7 +129,7 @@ export function extractProps(attr: NamedNodeMap) {
   return Array.from(attr)
     .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
     .reduce((acc, { name, value }) => {
-      Reflect.set(acc, name.slice(1), tryParseToNumber(value))
+      Reflect.set(acc, name.slice(1), value)
       return acc
     }, {} as any)
 }
@@ -179,4 +168,47 @@ export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
     return false
   }
   return arrA.join('') === arrB.join('')
+}
+
+type Change =
+  | {
+      type: 'insert'
+      newIndex: number
+      after: unknown
+    }
+  | {
+      type: 'move'
+      oldIndex: number
+      after: unknown
+    }
+  | {
+      type: 'remove'
+      oldIndex: number
+    }
+
+export const keyListDiff = (pre: unknown[], next: unknown[]) => {
+  let res: Change[] = []
+  let lastIndex = 0
+  let lastPlacedNode: unknown = null
+
+  next.forEach((item, i) => {
+    let j = pre.indexOf(item)
+    if (j < 0) {
+      res.push({ type: 'insert', newIndex: i, after: lastPlacedNode })
+    } else {
+      if (i !== j && j < lastIndex) {
+        res.push({ type: 'move', oldIndex: j, after: lastPlacedNode })
+      }
+    }
+    lastPlacedNode = item
+    lastIndex = Math.max(i, j)
+  })
+
+  pre.forEach((item, i) => {
+    if (next.indexOf(item) < 0) {
+      res.push({ type: 'remove', oldIndex: i })
+    }
+  })
+
+  return res
 }

@@ -1,4 +1,4 @@
-const { run, targets } = require('./utils')
+const { run, resolveTargets } = require('./utils')
 const { scope } = require('./setting')
 const args = require('minimist')(process.argv.slice(2))
 
@@ -7,7 +7,7 @@ main()
 async function main() {
   const cache = [...args._]
   await createPackages(args._)
-  await run(`yarn run boot ${targets(cache).join(' ')} --init --force`)
+  await run(`yarn run boot ${resolveTargets(cache).join(' ')} --init --force`)
 }
 
 async function createPackages(names) {
