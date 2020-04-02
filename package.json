@@ -14,7 +14,7 @@
     "publish": "node ./scripts/publish.js",
     "web": "yarn workspace @gallop/test-example start",
     "test": "jest",
-    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
+    "coveralls": "jest --coverage && coveralls < coverage/lcov.info"
   },
   "license": "MIT",
   "husky": {
