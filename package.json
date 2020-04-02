@@ -13,7 +13,8 @@
     "upgrade": "node ./scripts/upgrade.js",
     "publish": "node ./scripts/publish.js",
     "web": "yarn workspace @gallop/test-example start",
-    "test": "jest"
+    "test": "jest",
+    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "license": "MIT",
   "husky": {
@@ -43,6 +44,7 @@
     "@typescript-eslint/parser": "^2.26.0",
     "@wessberg/rollup-plugin-ts": "^1.2.23",
     "chalk": "^3.0.0",
+    "coveralls": "^3.0.11",
     "electron": "^8.2.0",
     "eslint": "^6.8.0",
     "execa": "^4.0.0",
