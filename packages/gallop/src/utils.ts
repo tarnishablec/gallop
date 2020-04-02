@@ -41,10 +41,10 @@ export function digStringBlock(
   let endIndex
   let stack = [0]
   for (let i = startIndex + 1; i < rawStr.length; i++) {
-    if (rawStr[i] === head) {
-      stack.push(0)
-    } else if (rawStr[i] === tail) {
+    if (rawStr[i] === tail) {
       stack.pop()
+    } else if (rawStr[i] === head) {
+      stack.push(0)
     }
 
     if (stack.length === 0) {

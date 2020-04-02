@@ -2,7 +2,8 @@ import {
   getFuncArgNames,
   extractProps,
   shallowEqual,
-  keyListDiff
+  keyListDiff,
+  digStringBlock
 } from '../src/utils'
 import { html } from '../src/parse'
 import { getShaHtml } from '../src/clip'
@@ -108,5 +109,27 @@ describe('utils', () => {
       { type: 'remove', oldIndex: 5 },
       { type: 'remove', oldIndex: 7 }
     ])
+  })
+
+  test('digStringBlock', () => {
+    expect(digStringBlock('asdad[eeeeeee]asdasdaa', '[')[0]).toBe('[eeeeeee]')
+    expect(digStringBlock('asdad[eeeeeee]asdasdaa', '[', false)[0]).toBe(
+      'eeeeeee'
+    )
+    expect(digStringBlock('asdad{eeeeeee}asdasdaa', '{', false)[0]).toBe(
+      'eeeeeee'
+    )
+    expect(digStringBlock('asdad{eeeeeee}asdasdaa', '{')[0]).toBe('{eeeeeee}')
+    expect(digStringBlock('asdad<eeeeeee>asdasdaa', '<', false)[0]).toBe(
+      'eeeeeee'
+    )
+    expect(digStringBlock('asdad<eeeeeee>asdasdaa', '<')[0]).toBe('<eeeeeee>')
+    expect(digStringBlock('asdad(eeeeeee)asdasdaa', '(')[0]).toBe('(eeeeeee)')
+    expect(digStringBlock('asdad(eeeeeee)asdasdaa', '(', false)[0]).toBe(
+      'eeeeeee'
+    )
+    expect(
+      () => digStringBlock('asdad"eeeee<ee""asdasdaa', '<', false)[0]
+    ).toThrowError()
   })
 })
