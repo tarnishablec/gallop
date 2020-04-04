@@ -8,7 +8,7 @@ import { NotUpdatableELementError } from './error'
 import { DoAble } from './do'
 import { StyleClip } from './style'
 
-const range = document.createRange()
+export const range = document.createRange()
 
 /**
  * https://www.measurethat.net/Benchmarks/ShowResult/100437
@@ -26,15 +26,12 @@ export function getVals(this: ShallowClip) {
 }
 
 export function getShaHtml(this: ShallowClip) {
-  return placeMarkerAndClean(this.strs)
+  return cleanDofStr(this.strs.join(marker))
 }
 
 export function getContexts(this: ShallowClip) {
   return this.contexts
 }
-
-const placeMarkerAndClean = (strs: TemplateStringsArray) =>
-  cleanDofStr(strs.join(marker))
 
 export class ShallowClip extends DoAble<ShallowClip> {
   protected readonly strs: TemplateStringsArray
