@@ -161,5 +161,3 @@ export function attachParts(clip: Clip) {
     }
   }
 }
-
-function attachToElement(element: Element) {}
