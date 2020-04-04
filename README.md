@@ -124,7 +124,8 @@ render(html`
 - router ⌛
 
 - vscode syntax highlighting and intelliSense plugin  
-  (for now, I recommend you to use `lit-html` plugin in vscode extension market)
+  ( for now, I recommend you to use `lit-html` plugin in vscode extension market <br>
+  & configure file association for `.ts` to `typescript react` )
 
 - dynamic scoped css by shadowdom
 
