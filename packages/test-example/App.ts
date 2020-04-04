@@ -74,7 +74,7 @@ component('app-root', function (this: UpdatableElement) {
       slot default content
     </slot>
     <hr />
-    <dyna-mic :is="test-a" :color="${'orange'}">
+    <dyna-mic :is="${data.tick % 2 ? 'test-a' : 'test-b'}" :color="${'orange'}">
       <div slot="aslot">
         a - slot${data.tick}
       </div>

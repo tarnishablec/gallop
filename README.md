@@ -9,9 +9,9 @@
 
 ## Features
 
-- use template literals to auto detect dynamic & static code
+- use `template literals` to auto detect dynamic & static code
 
-- register reactive component in functional way
+- register `reactive` component in functional way
 
 - support `<slot>` by web components, also `named slot`
 
@@ -19,11 +19,11 @@
   `.` to bind attributes / value / style / class  
   `@` to bind events, support `@click.once.capture.passive` like vue
 
-- auto minimize update
+- auto `minimize` update
 
-- support web components and pure component
+- support `web components` and `pure component`
 
-- built-in state management solution by `createContext()`
+- built-in `state management` solution by `createContext()`
 
 - naturally support async component by `import()`
 
@@ -41,7 +41,7 @@
 
 - you are extremely `welcomed` if you want to help me to make `gallop` better
 
-## simple use case
+## Simple use case
 
 ```typescript
 import {

@@ -3,11 +3,18 @@ import { createProxy, _hasChanged } from './reactive'
 import { isProxy } from './is'
 import { shallowEqual } from './utils'
 
-export function useState<T extends object>(initState: T): [T] {
+export function useState<T extends object>(
+  initState: T,
+  reactive: boolean = true
+): [T] {
   const current = resolveCurrentHandle()
   return current.$state
     ? ([current.$state] as [T])
-    : [(current.$state = createProxy(initState, () => current.enUpdateQueue()))]
+    : [
+        (current.$state = reactive
+          ? createProxy(initState, () => current.enUpdateQueue())
+          : initState)
+      ]
 }
 
 export type Effect = (
