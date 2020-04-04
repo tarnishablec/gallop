@@ -79,6 +79,8 @@ component('test-name', function (
     </slot>
     <button
       @click="${(e: Event) => {
+        state.a += 1
+        data.b += 2
         console.log(
           this
         ) /*you can still access this by arrow function in event*/
