@@ -134,6 +134,14 @@ export class AttrPart extends Part {
     } else {
       res = val
     }
+    if (name === 'class') {
+      let classes = this.value.split(' ').filter(Boolean)
+      if (!twoStrArrayCompare(classes, this.classCache ?? [])) {
+        node.classList.remove(...(this.classCache ?? []))
+        node.classList.add(...classes)
+        this.classCache = classes
+      }
+    }
     if (name === 'value') {
       if (Reflect.get(node, 'value')) {
         Reflect.set(node, 'value', this.value)
@@ -145,7 +153,8 @@ export class AttrPart extends Part {
 
   constructor(index: number, location: AttrEventLocation) {
     super(index, location, 'attr')
-    const staticStyle = this.location.node.getAttribute('style')
+    const { node } = this.location
+    const staticStyle = node.getAttribute('style')
     if (staticStyle) {
       this.styleCache = staticStyle
     }
@@ -154,6 +163,7 @@ export class AttrPart extends Part {
   value!: string
   location!: AttrEventLocation
   styleCache?: string
+  classCache?: string[]
 }
 
 type EventInstance = (e: Event) => unknown
