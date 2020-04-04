@@ -34,12 +34,12 @@ export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
     if (!current.$updateEffects) {
       current.$updateEffects = []
     }
-    current.$updateEffects.push(effect)
+    current.$updateEffects.push({ e: effect, index: count })
   } else if (depends.length === 0) {
     if (!current.$mountedEffects) {
       current.$mountedEffects = []
     }
-    current.$mountedEffects.push(effect)
+    current.$mountedEffects.push({ e: effect, index: count })
   } else {
     let shouldTrigger = false
     for (let i = 0; i < depends.length; i++) {
@@ -65,20 +65,23 @@ export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
     if (shouldTrigger) {
       const updateEffects =
         current.$updateEffects ?? (current.$updateEffects = [])
-      updateEffects.push(effect)
+      updateEffects.push({ e: effect, index: count })
     }
   }
 
   current.$effectsCount++
 }
 
-export function resolveEffect(element: UpdatableElement, effect: Effect) {
+export function resolveEffect(
+  element: UpdatableElement,
+  effect: { e: Effect; index: number }
+) {
   setTimeout(() => {
-    const res = effect.apply(element)
+    const res = effect.e.apply(element)
     res
-      ? (
-          element.$disconnectedEffects ?? (element.$disconnectedEffects = [])
-        ).push(res)
+      ? ((element.$disconnectedEffects ?? (element.$disconnectedEffects = []))[
+          effect.index
+        ] = res)
       : null
   }, 0)
 }

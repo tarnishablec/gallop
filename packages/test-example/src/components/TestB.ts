@@ -10,20 +10,22 @@ export const TestB = () => {
   component(
     'test-b',
     function (this: UpdatableElement) {
-      console.log(this)
-
       let [state] = useState({ text: '', tick: 0 })
       useEffect(() => {
-        console.log(this.$root.querySelector('button'))
         console.log(`test-b mounted`)
-        console.log(state.tick)
         for (let i = 0; i < 100; i++) {
           state.tick += 1 //only trigger rerendering once
+        }
+        return () => {
+          console.log(`b disconnected`)
         }
       }, [])
 
       useEffect(() => {
         console.log('changed')
+        return () => {
+          console.log('bbbbbbbb nnnn')
+        }
       }, [state.text])
       return html`
         <div>
@@ -39,7 +41,6 @@ export const TestB = () => {
           <button
             @click="${() => {
               state.text = ''
-              console.log(this)
               const span = this.$root.querySelector(
                 'span.test-b-span'
               ) as HTMLSpanElement

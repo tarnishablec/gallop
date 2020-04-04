@@ -42,8 +42,8 @@ export abstract class UpdatableElement extends HTMLElement {
   $builder: Component
   $alive: boolean = false
 
-  $updateEffects?: Effect[]
-  $mountedEffects?: Effect[]
+  $updateEffects?: { e: Effect; index: number }[]
+  $mountedEffects?: { e: Effect; index: number }[]
   $disconnectedEffects?: (() => void)[]
 
   $brobs: Map<string, unknown> = new Map()
@@ -144,7 +144,6 @@ export abstract class UpdatableElement extends HTMLElement {
   resetEffects() {
     this.$updateEffects = []
     this.$mountedEffects = []
-    this.$disconnectedEffects = []
     this.$effectsCount = 0
   }
 }

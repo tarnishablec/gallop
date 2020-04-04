@@ -9,12 +9,12 @@ import {
 import { resolveCurrentHandle, UpdatableElement } from '../src/component'
 
 describe('hooks', () => {
-  test('useState', () => {
+  test('useState', (done: Function) => {
     expect(() => useState({ a: 1 })).toThrowError(/Cannot read property/)
     let temp: { a: number }
     component('test-state', () => {
       let [state] = useState({ a: 1 })
-      expect(resolveCurrentHandle().$state).toBe(state)
+      expect(resolveCurrentHandle().$state?.[0]).toBe(state)
       temp = state
       return html` <div>${state.a}</div>`
     })
@@ -22,9 +22,13 @@ describe('hooks', () => {
     render(html` <test-state></test-state> `)
     setTimeout(() => {
       expect(
-        (document.querySelector('test-state') as UpdatableElement).$state
+        (document.querySelector('test-state') as UpdatableElement).$state?.[0]
       ).toBe(temp)
     }, 0)
+
+    setTimeout(() => {
+      done()
+    }, 100)
   })
 
   test('mount', (done: Function) => {
@@ -39,61 +43,14 @@ describe('hooks', () => {
       useEffect(() => {
         testres += 1
         expect(testres).toBe(2)
-        done()
       }, [])
       return html` <div>${state.children[0]}</div>
         <div>${name}</div>`
     })
     render(html` <test-a></test-a> `)
-  })
-
-  test('disconnect', (done: Function) => {
-    let testDis = 1
-    let [data, context] = createContext({ tok: 2 })
-
-    let cache: UpdatableElement
-    component('test-b', function (this: UpdatableElement) {
-      let [state] = useState({ tik: 1, children: [2, 3, 4] })
-
-      useEffect(() => {
-        return () => {
-          testDis += 2
-        }
-      }, [])
-
-      return html`
-        <div>${state.children[0]}</div>
-        <div>${data.tok}</div>
-        <button @click="${() => (state.tik += 1)}"></button>
-        <button @click="${() => (data.tok += 100)}"></button>
-        <test-a :name="good"></test-a>
-        <test-a :name="${'good'}"></test-a>
-        <test-a :name="${2}"></test-a>
-      `.useContext([context])
-    })
-
-    render(html` <test-b></test-b> `)
     setTimeout(() => {
-      const instance = document.querySelector('test-b') as UpdatableElement
-      instance.shadowRoot
-        ?.querySelectorAll('button')[1]
-        .dispatchEvent(new Event('click'))
-      cache = document.body.removeChild(instance)
-    }, 500)
-
-    setTimeout(() => {
-      expect(data.tok).toBe(102)
-    }, 600)
-
-    setTimeout(() => {
-      try {
-        expect(testDis).toBe(3)
-        expect(cache.$contexts?.size).toBe(0)
-        done()
-      } catch (error) {
-        done(error)
-      }
-    }, 1000)
+      done()
+    }, 100)
   })
 
   test('update', (done: Function) => {
@@ -144,15 +101,12 @@ describe('hooks', () => {
       }, 500)
     })
 
-    new Promise(() => {
-      setTimeout(() => {
-        try {
-          expect(testUpdate).toBe(3)
-          done()
-        } catch (error) {
-          done(error)
-        }
-      }, 1000)
-    })
+    setTimeout(() => {
+      expect(testUpdate).toBe(5)
+    }, 600)
+
+    setTimeout(() => {
+      done()
+    }, 1000)
   })
 })
