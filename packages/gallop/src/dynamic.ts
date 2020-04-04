@@ -26,7 +26,7 @@ export const DynamicComponent = () =>
             el.mergeProps(key, val)
           })
         }
-      })
+      }, [])
 
       return html``
     },

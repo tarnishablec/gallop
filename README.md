@@ -29,13 +29,17 @@
 
 - DONT need `useRef()` because you can directly access dom by `this`
 
-- support `HOC` of pure component
+- support `HOC` for pure component
 
-- support `dynamic component` of complex component by built-in component `<dyna-mic></dyna-mic>`
+- support `dynamic component` for complex component by built-in component `<dyna-mic></dyna-mic>`
 
 - `dynamic component` also magically support `named slot`
 
 - for more detail, check packages/test-example
+
+- this framework is purely driven by personal interest
+
+- you are extremely `welcomed` if you want to help me to make `gallop` better
 
 ## simple use case
 
@@ -54,7 +58,7 @@ export let [data, context] = createContext({ b: 2 }) //context can be exported t
 export const PureComponent = (prop: string) => html`<div>pure ${prop}</div>` //pure component with no any lifecycle
 
 component('test-name', function (
-  this: UpdatableElement,
+  this: UpdatableElement, //this parameter: https://www.typescriptlang.org/docs/handbook/functions.html
   name: string,
   age: number = 1
 ) {
@@ -119,7 +123,8 @@ render(html`
 
 - router ⌛
 
-- vscode syntax highlighting and intelliSense plugin
+- vscode syntax highlighting and intelliSense plugin  
+  (for now, I recommend you to use `lit-html` plugin in vscode extension market)
 
 - dynamic scoped css by shadowdom
 
