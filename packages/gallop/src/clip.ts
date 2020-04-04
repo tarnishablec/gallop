@@ -6,6 +6,7 @@ import { cleanDofStr, insertAfter } from './dom'
 import { UpdatableElement } from './component'
 import { NotUpdatableELementError } from './error'
 import { DoAble } from './do'
+import { StyleClip } from './style'
 
 const range = document.createRange()
 
@@ -39,6 +40,7 @@ export class ShallowClip extends DoAble<ShallowClip> {
   protected readonly strs: TemplateStringsArray
   protected readonly vals: ReadonlyArray<unknown>
   protected contexts?: Set<Context<object>>
+  protected style?: StyleClip
   protected key?: unknown
 
   constructor(strs: TemplateStringsArray, vals: unknown[]) {
@@ -52,6 +54,16 @@ export class ShallowClip extends DoAble<ShallowClip> {
       this.contexts = new Set()
     }
     contexts.forEach((c) => this.contexts!.add(c))
+    return this
+  }
+
+  useStyle(style: StyleClip) {
+    this.style = style
+    return this
+  }
+
+  useKey(key: unknown) {
+    this.key = key
     return this
   }
 }

@@ -11,7 +11,6 @@ export function useState<T extends object>(initState: T): [T] {
 }
 
 export type Effect = (
-  this: UpdatableElement,
   ...args: any[]
 ) => void | ((this: UpdatableElement, ...args: any[]) => void)
 
