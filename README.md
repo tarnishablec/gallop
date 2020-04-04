@@ -12,27 +12,27 @@
 
 - register reactive component in functional way
 
-- support ```<slot>``` by web components, also named slot
+- support `<slot>` by web components, also named slot
 
-- ```:``` to bind props of component<br>
-  ```.``` to bind attributes / value / style<br>
-  ```@``` to bind events, support ```@click.once.capture.passive``` like vue
+- `:` to bind props of component  
+  `.` to bind attributes / value / style  
+  `@` to bind events, support `@click.once.capture.passive` like vue
 
 - auto minimize update
 
 - support web components and pure component
 
-- built-in state management solution by ```createContext()```
+- built-in state management solution by `createContext()`
 
-- naturally support async component by ```import()```
+- naturally support async component by `import()`
 
-- DONT need ```useRef()``` because you can directly access dom by ```this```
+- DONT need `useRef()` because you can directly access dom by `this`
 
 - for more detail, check packages/test-example or email me
 
 ## simple use case
 
-```ts
+```typescript
 import {
   createContext,
   useState,
@@ -42,12 +42,16 @@ import {
   UpdatableElement
 } from '@gallop/gallop'
 
-export let [data, context] = createContext({ initContext }) //context can be exported to another component
+export let [data, context] = createContext({ b: 2 }) //context can be exported to another component
 
 export const PureComponent = (prop: string) => html`<div>pure ${prop}</div>` //pure component with no any lifecycle
 
-component('test-name', function (this: UpdatableElement, ...props: any[]) {
-  let [state] = useState({ initState }) //dont need setX(), useState() return a proxy, and auto trigger rerender
+component('test-name', function (
+  this: UpdatableElement,
+  name: string,
+  age: number = 1
+) {
+  let [state] = useState({ a: 1 }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
   console.dir(this) //access dom directly by this
 
   useEffect(() => {
@@ -58,9 +62,10 @@ component('test-name', function (this: UpdatableElement, ...props: any[]) {
   }, [state.a]) //trigger effect when depends changed, completely same as react useEffect()
 
   return html`
-    <div>${state}</div>
-    <div>${props}</div>
-    <div>${data}</div>
+    <div>${state.a}</div>
+    <div>${name}</div>
+    <div>${data.b}</div>
+    <div>${age}</div>
     ${[1, 2, 3].map(
       (n) =>
         n % 2
@@ -85,7 +90,7 @@ component('test-name', function (this: UpdatableElement, ...props: any[]) {
 })
 
 render(html`
-  <test-name :props="${someprop}">
+  <test-name :name="haha" :age="${2}">
     slot content
   </test-name>
 `)
@@ -96,10 +101,12 @@ render(html`
 - hooks  
   | | |
   |-|-|
-  |useState() | ✅
-  |useContext() | ✅
-  |useEffect() | ✅
-  |useMemo() | ❓
+  |useState() | ✅ |
+  |useContext() | ✅ |
+  |useEffect() | ✅ |
+  |useMemo() | ❓ |
+  |useStyle()| ❌ |
+  |useKey()| ❌ |
 
 - router ⌛
 
