@@ -33,13 +33,13 @@ export function requestUpdate() {
   })
 }
 
-export type ComponentBuilder = (...props: any[]) => ShallowClip
+export type Component = (...props: any[]) => ShallowClip
 
 export abstract class UpdatableElement extends HTMLElement {
   $props: unknown[] = []
   $state?: unknown
   $root: ShadowRoot | UpdatableElement
-  $builder: ComponentBuilder
+  $builder: Component
   $alive: boolean = false
 
   $updateEffects?: Effect[]
@@ -58,7 +58,7 @@ export abstract class UpdatableElement extends HTMLElement {
 
   protected propNames: string[] = []
 
-  constructor(builder: ComponentBuilder, shadow: boolean, propNames: string[]) {
+  constructor(builder: Component, shadow: boolean, propNames: string[]) {
     super()
     this.$builder = builder
     this.$root = shadow ? this.attachShadow({ mode: 'open' }) : this
@@ -153,7 +153,7 @@ const componentPool = new Set<string>()
 
 export function component(
   name: string,
-  builder: ComponentBuilder,
+  builder: Component,
   propNameList?: string[],
   shadow: boolean = true,
   option?: ElementDefinitionOptions

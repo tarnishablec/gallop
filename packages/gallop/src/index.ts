@@ -5,3 +5,4 @@ export { createContext, Context } from './context'
 export { useState, useEffect } from './hooks'
 
 export { DynamicComponent } from './dynamic'
+export type { Component } from './component'
