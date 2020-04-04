@@ -141,6 +141,7 @@ export class AttrPart extends Part {
         node.classList.add(...classes)
         this.classCache = classes
       }
+      return
     }
     if (name === 'value') {
       if (Reflect.get(node, 'value')) {
