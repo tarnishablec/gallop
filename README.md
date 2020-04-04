@@ -1,6 +1,6 @@
 # gallop
 
-[![Coverage Status](https://coveralls.io/repos/github/tarnishablec/gallop/badge.svg?branch=master)](https://coveralls.io/github/tarnishablec/gallop?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/tarnishablec/gallop/badge.svg?branch=master)](https://coveralls.io/github/tarnishablec/gallop?branch=master) [![Join the chat at https://gitter.im/gallopweb/community](https://badges.gitter.im/gallopweb/community.svg)](https://gitter.im/gallopweb/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
         yarn add @gallop/gallop
 
