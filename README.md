@@ -13,7 +13,7 @@
 
 - register reactive component in functional way
 
-- support `<slot>` by web components, also named slot
+- support `<slot>` by web components, also `named slot`
 
 - `:` to bind props of component  
   `.` to bind attributes / value / style / class  
@@ -28,6 +28,12 @@
 - naturally support async component by `import()`
 
 - DONT need `useRef()` because you can directly access dom by `this`
+
+- support `HOC` of pure component
+
+- support `dynamic component` of complex component by built-in component `<dyna-mic></dyna-mic>`
+
+- `dynamic component` also magically support `named slot`
 
 - for more detail, check packages/test-example
 
