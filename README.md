@@ -37,7 +37,7 @@
 
 - for more detail, check packages/test-example
 
-- this framework is purely driven by personal interest
+- this framework is purely driven by `personal interest`
 
 - you are extremely `welcomed` if you want to help me to make `gallop` better
 
