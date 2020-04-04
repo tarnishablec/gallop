@@ -2,7 +2,7 @@
  * jest runner has been replaced from jsdom to jest-electron-runner
  * https://github.com/facebook-atom/jest-electron-runner
  * so there is no need for polyfill of web-components apis
- * this file makes not sense and just be kept for reference
+ * this file makes no sense and just be kept for reference
  */
 
 global.Range = function Range() {}

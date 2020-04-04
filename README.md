@@ -1,32 +1,36 @@
-# gallop 
+# gallop
+
 [![Coverage Status](https://coveralls.io/repos/github/tarnishablec/gallop/badge.svg?branch=master)](https://coveralls.io/github/tarnishablec/gallop?branch=master)
 
         yarn add @gallop/gallop
 
         https://unpkg.com/@gallop/gallop
 
-## Feature
-        use template literals to auto detect dynamic & static code
+## Features
 
-        register reactive component in functional way
+- use template literals to auto detect dynamic & static code
 
-        support <slot> by web components, also named slot
+- register reactive component in functional way
 
-        : to bind props of component
-        . to bind attributes / value / style
-        @ to bind events, support @click.once.capture.passive like vue
+- support ```<slot>``` by web components, also named slot
 
-        auto minimize update
+- ```:``` to bind props of component<br>
+  ```.``` to bind attributes / value / style<br>
+  ```@``` to bind events, support ```@click.once.capture.passive``` like vue
 
-        support web components and normal component
+- auto minimize update
 
-        built-in state management solution by createContext()
+- support web components and pure component
 
-        naturally support async component by import()
+- built-in state management solution by ```createContext()```
 
-        dont need useRef() because you can directly access dom by 'this'
+- naturally support async component by ```import()```
 
-        for more detail, check packages/test-example or email me
+- DONT need ```useRef()``` because you can directly access dom by ```this```
+
+- for more detail, check packages/test-example or email me
+
+## simple use case
 
 ```ts
 import {
@@ -57,9 +61,14 @@ component('test-name', function (this: UpdatableElement, ...props: any[]) {
     <div>${state}</div>
     <div>${props}</div>
     <div>${data}</div>
-    ${[1, 2, 3].map((n) =>
-      n % 2 ? html`<div>${n}</div>` : PureComponent('purename') /*use pure component by just simply calling function*/
-    )}                    
+    ${[1, 2, 3].map(
+      (n) =>
+        n % 2
+          ? html`<div>${n}</div>`
+          : PureComponent(
+              'purename'
+            ) /*use pure component by just simply calling function*/
+    )}
     <slot>
       default slot context
     </slot>
@@ -76,7 +85,7 @@ component('test-name', function (this: UpdatableElement, ...props: any[]) {
 })
 
 render(html`
-  <test-name>
+  <test-name :props="${someprop}">
     slot content
   </test-name>
 `)
@@ -84,17 +93,20 @@ render(html`
 
 ## TODO
 
-        hooks                           useState()               ✅
-                                        useContext()             ✅
-                                        useEffect()              ✅
-                                        useMemo()                ❓
+- hooks  
+  | | |
+  |-|-|
+  |useState() | ✅
+  |useContext() | ✅
+  |useEffect() | ✅
+  |useMemo() | ❓
 
-        context                                                  ✅
+- dynamic scoped css by shadowdom
 
-        async update queue                                       ✅
+- scoped scss inject
 
-        dynamic scoped css by shadowdom
+- router ⌛
 
-        scoped scss inject
+- ui library ([zeit-design](https://zeit-style.now.sh/))
 
-        router                                                   DOING
+- time travel
