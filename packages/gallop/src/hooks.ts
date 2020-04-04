@@ -8,13 +8,17 @@ export function useState<T extends object>(
   reactive: boolean = true
 ): [T] {
   const current = resolveCurrentHandle()
-  return current.$state
-    ? ([current.$state] as [T])
-    : [
-        (current.$state = reactive
-          ? createProxy(initState, () => current.enUpdateQueue())
-          : initState)
+  if (!current.$state) {
+    current.$state = [undefined, undefined]
+  }
+  return (reactive
+    ? [
+        current.$state[0] ??
+          (current.$state[0] = createProxy(initState, () =>
+            current.enUpdateQueue()
+          ))
       ]
+    : [current.$state[1] ?? (current.$state[1] = initState)]) as [T]
 }
 
 export type Effect = (

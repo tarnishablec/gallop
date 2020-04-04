@@ -37,7 +37,7 @@ export type Component = (...props: any[]) => ShallowClip
 
 export abstract class UpdatableElement extends HTMLElement {
   $props: unknown[] = []
-  $state?: unknown
+  $state?: [unknown, unknown]
   $root: ShadowRoot | UpdatableElement
   $builder: Component
   $alive: boolean = false
