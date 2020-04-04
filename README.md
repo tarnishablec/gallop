@@ -3,9 +3,13 @@
 [![Coverage Status](https://coveralls.io/repos/github/tarnishablec/gallop/badge.svg?branch=master)](https://coveralls.io/github/tarnishablec/gallop?branch=master)&nbsp;&nbsp;
 [![Gitter](https://badges.gitter.im/gallopweb/community.svg)](https://gitter.im/gallopweb/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-        yarn add @gallop/gallop
+    yarn add @gallop/gallop
 
-        https://unpkg.com/@gallop/gallop
+    https://unpkg.com/@gallop/gallop
+    
+    this framework is purely driven by personal interest
+
+    you are extremely welcomed if you can help me to make gallop better
 
 ## Features
 
@@ -36,10 +40,6 @@
 - `dynamic component` also magically support `named slot`
 
 - for more detail, check packages/test-example
-
-- this framework is purely driven by `personal interest`
-
-- you are extremely `welcomed` if you want to help me to make `gallop` better
 
 ## Simple use case
 
