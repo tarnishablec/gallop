@@ -5,12 +5,14 @@ import {
   createContext,
   useState,
   useEffect,
-  UpdatableElement
+  UpdatableElement,
+  DynamicComponent
 } from '@gallop/gallop'
 
 import { TestA } from './src/components/TestA'
 
 TestA()
+DynamicComponent()
 
 setTimeout(() => {
   import(/* webpackChunkName: "test-b" */ './src/components/TestB').then(
@@ -58,6 +60,7 @@ component('app-root', function (this: UpdatableElement) {
     <div>State: &zwnj;${state.tok}</div>
     <hr />
     <test-a :color="${state.color}"></test-a>
+    <hr />
     <button
       @click="${() => (state.color = state.color === 'red' ? 'green' : 'red')}"
     >
@@ -70,6 +73,12 @@ component('app-root', function (this: UpdatableElement) {
     <slot>
       slot default content
     </slot>
+    <hr />
+    <dyna-mic :is="test-a" :color="${'orange'}">
+      <div slot="aslot">
+        a - slot${data.tick}
+      </div>
+    </dyna-mic>
     <hr />
     ${[1, 2, 3].map((n) =>
       n % 2 ? html` <button @click="${() => console.log(n)}">${n}</button> ` : 2

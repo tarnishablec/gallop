@@ -46,6 +46,8 @@ export abstract class UpdatableElement extends HTMLElement {
   $mountedEffects?: Effect[]
   $disconnectedEffects?: (() => void)[]
 
+  $brobs: Map<string, unknown> = new Map()
+
   $effectsCount: number = 0
 
   $dependsCache?: unknown[][]
@@ -74,6 +76,8 @@ export abstract class UpdatableElement extends HTMLElement {
         const index = this.propNames.indexOf(key)
         if (index >= 0) {
           p[index] = staticProps[key]
+        } else {
+          this.$brobs.set(key, staticProps[key])
         }
       }
       this.$props = createProxy(p, () => this.enUpdateQueue())
@@ -81,9 +85,6 @@ export abstract class UpdatableElement extends HTMLElement {
   }
 
   enUpdateQueue() {
-    if (updateQueue.has(this)) {
-      updateQueue.delete(this)
-    }
     updateQueue.add(this)
     requestUpdate()
   }
@@ -118,6 +119,8 @@ export abstract class UpdatableElement extends HTMLElement {
     const index = this.propNames?.indexOf(name)
     if (index >= 0) {
       this.$props[index] = val
+    } else {
+      this.$brobs.set(name, val)
     }
   }
 

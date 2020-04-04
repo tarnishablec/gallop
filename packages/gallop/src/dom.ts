@@ -17,12 +17,14 @@ export function insertAfter(
 
 export function removeNodes(
   container: Node,
-  start: Node | null,
+  start: Node | null = container.firstChild,
   end: Node | null = null
 ) {
+  const removed = new DocumentFragment()
   while (start !== end) {
     const n = start!.nextSibling
-    container.removeChild(start!)
+    removed.append(container.removeChild(start!))
     start = n
   }
+  return removed
 }
