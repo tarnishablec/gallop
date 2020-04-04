@@ -16,7 +16,7 @@
 - support `<slot>` by web components, also named slot
 
 - `:` to bind props of component  
-  `.` to bind attributes / value / style / class
+  `.` to bind attributes / value / style / class  
   `@` to bind events, support `@click.once.capture.passive` like vue
 
 - auto minimize update
