@@ -1,6 +1,7 @@
 # gallop
 
-[![Coverage Status](https://coveralls.io/repos/github/tarnishablec/gallop/badge.svg?branch=master)](https://coveralls.io/github/tarnishablec/gallop?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/tarnishablec/gallop/badge.svg?branch=master)](https://coveralls.io/github/tarnishablec/gallop?branch=master)&nbsp;&nbsp;
+[![Gitter](https://badges.gitter.im/gallopweb/community.svg)](https://gitter.im/gallopweb/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
         yarn add @gallop/gallop
 
@@ -15,7 +16,7 @@
 - support `<slot>` by web components, also named slot
 
 - `:` to bind props of component  
-  `.` to bind attributes / value / style  
+  `.` to bind attributes / value / style / class
   `@` to bind events, support `@click.once.capture.passive` like vue
 
 - auto minimize update
@@ -28,7 +29,7 @@
 
 - DONT need `useRef()` because you can directly access dom by `this`
 
-- for more detail, check packages/test-example or email me
+- for more detail, check packages/test-example
 
 ## simple use case
 
