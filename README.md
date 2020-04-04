@@ -101,11 +101,13 @@ render(html`
   |useEffect() | ✅
   |useMemo() | ❓
 
+- router ⌛
+
+- vscode syntax highlighting and intelliSense plugin
+
 - dynamic scoped css by shadowdom
 
 - scoped scss inject
-
-- router ⌛
 
 - ui library ([zeit-design](https://zeit-style.now.sh/))
 
