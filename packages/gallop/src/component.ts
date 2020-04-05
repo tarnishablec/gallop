@@ -2,7 +2,7 @@ import { Clip, ShallowClip, createInstance, getVals, getContexts } from './clip'
 import { getFuncArgNames, extractProps } from './utils'
 import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
-import { Effect, resolveEffect } from './hooks'
+import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
 
 let currentHandle: UpdatableElement
@@ -34,6 +34,7 @@ export function requestUpdate() {
 }
 
 export type Component = (...props: any[]) => ShallowClip
+export type EffectInfo = { e: Effect; index: number }
 
 export abstract class UpdatableElement extends HTMLElement {
   $props: unknown[] = []
@@ -42,8 +43,8 @@ export abstract class UpdatableElement extends HTMLElement {
   $builder: Component
   $alive: boolean = false
 
-  $updateEffects?: { e: Effect; index: number }[]
-  $mountedEffects?: { e: Effect; index: number }[]
+  $updateEffects?: EffectInfo[]
+  $mountedEffects?: EffectInfo[]
   $disconnectedEffects?: (() => void)[]
 
   $brobs: Map<string, unknown> = new Map()
@@ -96,9 +97,7 @@ export abstract class UpdatableElement extends HTMLElement {
     }
     this.$clip!.tryUpdate(shaClip.do(getVals))
     // console.log(`${this.nodeName} updated`)
-    this.$updateEffects?.forEach((effect) => {
-      resolveEffect(this, effect)
-    })
+    resolveEffects(this, this.$updateEffects)
   }
 
   mount(shaClip: ShallowClip) {
@@ -110,9 +109,7 @@ export abstract class UpdatableElement extends HTMLElement {
       ;(this.$contexts ?? (this.$contexts = new Set())).add(context)
     })
     // console.log(`${this.tagName} mounted`)
-    this.$mountedEffects?.forEach((effect) => {
-      resolveEffect(this, effect)
-    })
+    resolveEffects(this, this.$mountedEffects)
   }
 
   mergeProps(name: string, val: unknown) {

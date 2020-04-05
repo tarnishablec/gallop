@@ -72,16 +72,17 @@ export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
   current.$effectsCount++
 }
 
-export function resolveEffect(
+export function resolveEffects(
   element: UpdatableElement,
-  effect: { e: Effect; index: number }
+  effects?: { e: Effect; index: number }[]
 ) {
   setTimeout(() => {
-    const res = effect.e.apply(element)
-    res
-      ? ((element.$disconnectedEffects ?? (element.$disconnectedEffects = []))[
-          effect.index
-        ] = res)
-      : null
+    effects?.forEach(({ e, index }) => {
+      const res = e()
+      res
+        ? ((element.$disconnectedEffects ??
+            (element.$disconnectedEffects = []))[index] = res)
+        : null
+    })
   }, 0)
 }

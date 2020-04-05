@@ -1,11 +1,4 @@
-import {
-  useState,
-  component,
-  html,
-  render,
-  useEffect,
-  createContext
-} from '../src'
+import { useState, component, html, render, useEffect } from '../src'
 import { resolveCurrentHandle, UpdatableElement } from '../src/component'
 
 describe('hooks', () => {
