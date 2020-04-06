@@ -5,7 +5,6 @@ import { createProxy } from './reactive'
 import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
 import { ParamsOf } from './do'
-import { html } from '.'
 
 let currentHandle: UpdatableElement
 
@@ -184,8 +183,11 @@ export function component<F extends Component>(
 
   return (...args: ParamsOf<F>) => {
     console.log(name)
-    const tag = `<${name}></${name}>`
-    return html` ${tag} `
+    const element = document.createElement(name) as UpdatableElement
+    element.mergeProps(args)
+    const dof = new DocumentFragment()
+    dof.append(element)
+    return dof
   }
 }
 

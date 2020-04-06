@@ -2,7 +2,7 @@ import { component, html } from '@gallop/gallop/src'
 
 export const TestC = component(
   'test-c',
-  (name: string, age: number) =>
-    html`<div>${name}</div>
-      <div>${age}</div>`
+  (name: string) =>
+    html`<div>this is test-c</div>
+      <div><div>${name}</div></div>`
 )

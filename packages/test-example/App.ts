@@ -5,25 +5,20 @@ import {
   createContext,
   useState,
   useEffect,
-  UpdatableElement,
-  DynamicComponent
+  UpdatableElement
 } from '@gallop/gallop'
 
-import { TestA } from './src/components/TestA'
-
-TestA()
-DynamicComponent()
+import './src/components/TestA'
+import { TestC } from './src/components/TestC'
 
 setTimeout(() => {
-  import(/* webpackChunkName: "test-b" */ './src/components/TestB').then(
-    ({ TestB }) => {
-      // async component
-      TestB()
-    }
-  )
+  import(/* webpackChunkName: "test-b" */ './src/components/TestB')
 }, 5050)
 
 export let [data, context] = createContext({ tick: 1 })
+
+const dof = new DocumentFragment()
+dof.append('this is dof part test')
 
 component('app-root', function (this: UpdatableElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
@@ -59,7 +54,7 @@ component('app-root', function (this: UpdatableElement) {
     <button @click="${() => state.tok++}">state tok +1</button>
     <div>State: &zwnj;${state.tok}</div>
     <hr />
-    <test-a :color="${state.color}"></test-a>
+    ${TestC('hello test-c')}
     <hr />
     <button
       @click="${() => (state.color = state.color === 'red' ? 'green' : 'red')}"
@@ -83,6 +78,9 @@ component('app-root', function (this: UpdatableElement) {
     ${[1, 2, 3].map((n) =>
       n % 2 ? html` <button @click="${() => console.log(n)}">${n}</button> ` : 2
     )}
+    <hr />
+    ${dof}
+    <hr />
   `.useContext([context])
 })
 

@@ -9,7 +9,7 @@ type PropLocation = { node: UpdatableElement; name: string }
 type NodeLocation = { startNode: Comment; endNode: Comment }
 
 type PartLocation = AttrEventLocation | PropLocation | NodeLocation
-type NodePartType = 'clip' | 'clips' | 'text'
+type NodePartType = 'clip' | 'clips' | 'text' | 'element'
 type PartType = 'node' | 'attr' | 'event' | 'prop' | NodePartType
 
 const initValue = Symbol('')
@@ -102,9 +102,20 @@ export class NodePart extends Part {
     this.value = res
   }
 
+  commitDof(type: 'element', val: DocumentFragment) {
+    if (this.type !== type) {
+      const { endNode } = this.location
+      const parent = endNode.parentNode!
+      parent.insertBefore(val, endNode)
+    }
+  }
+
   setValue(val: unknown) {
     let type: NodePartType
-    if (val instanceof ShallowClip) {
+    if (val instanceof DocumentFragment) {
+      type = 'element'
+      this.commitDof(type, val)
+    } else if (val instanceof ShallowClip) {
       type = 'clip'
       this.commitClip(type, val)
     } else if (Array.isArray(val)) {
@@ -227,13 +238,10 @@ export class PropPart extends Part {
   }
   commit(): void {
     const { name, node } = this.location
-    if (name !== '$prop') {
+    if (name !== '$props') {
       node.mergeProp(name, this.value)
     } else {
-      const args = this.value as Array<unknown>
-      args.forEach((arg, index) => {
-        node.$props[index] = arg
-      })
+      node.mergeProps(this.value as unknown[])
     }
   }
 
