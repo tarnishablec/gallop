@@ -38,7 +38,7 @@ export const DynamicComponent = () =>
 
         if (el instanceof UpdatableElement) {
           this.$brobs.forEach((val, key) => {
-            el.mergeProps(key, val)
+            el.mergeProp(key, val)
           })
         }
       }, [is])

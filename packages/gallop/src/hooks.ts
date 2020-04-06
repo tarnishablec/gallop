@@ -78,7 +78,7 @@ export function resolveEffects(
 ) {
   setTimeout(() => {
     effects?.forEach(({ e, index }) => {
-      const res = e()
+      const res = e.apply(element)
       res
         ? ((element.$disconnectedEffects ??
             (element.$disconnectedEffects = []))[index] = res)

@@ -227,7 +227,14 @@ export class PropPart extends Part {
   }
   commit(): void {
     const { name, node } = this.location
-    node.mergeProps(name, this.value)
+    if (name !== '$prop') {
+      node.mergeProp(name, this.value)
+    } else {
+      const args = this.value as Array<unknown>
+      args.forEach((arg, index) => {
+        node.$props[index] = arg
+      })
+    }
   }
 
   constructor(index: number, location: PropLocation) {

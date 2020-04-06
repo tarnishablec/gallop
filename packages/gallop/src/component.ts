@@ -4,6 +4,8 @@ import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
 import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
+import { ParamsOf } from './do'
+import { html } from '.'
 
 let currentHandle: UpdatableElement
 
@@ -112,13 +114,19 @@ export abstract class UpdatableElement extends HTMLElement {
     resolveEffects(this, this.$mountedEffects)
   }
 
-  mergeProps(name: string, val: unknown) {
+  mergeProp(name: string, val: unknown) {
     const index = this.propNames?.indexOf(name)
     if (index >= 0) {
       this.$props[index] = val
     } else {
       this.$brobs.set(name, val)
     }
+  }
+
+  mergeProps(props: unknown[]) {
+    props.forEach((prop, index) => {
+      this.$props[index] = prop
+    })
   }
 
   connectedCallback() {
@@ -132,7 +140,7 @@ export abstract class UpdatableElement extends HTMLElement {
     })
     this.$contexts = new Set()
     // console.log(`${this.nodeName} disconnected`)
-    this.$disconnectedEffects?.forEach((effect) => {
+    this.$disconnectedEffects?.filter(Boolean).forEach((effect) => {
       effect.apply(this)
     })
     this.$alive = false
@@ -147,9 +155,9 @@ export abstract class UpdatableElement extends HTMLElement {
 
 const componentPool = new Set<string>()
 
-export function component(
+export function component<F extends Component>(
   name: string,
-  builder: Component,
+  builder: F,
   propNameList?: string[],
   shadow: boolean = true,
   option?: ElementDefinitionOptions
@@ -173,6 +181,12 @@ export function component(
 
   customElements.define(name, clazz, option)
   componentPool.add(name)
+
+  return (...args: ParamsOf<F>) => {
+    console.log(name)
+    const tag = `<${name}></${name}>`
+    return html` ${tag} `
+  }
 }
 
 export function verifyComponentName(name: string) {

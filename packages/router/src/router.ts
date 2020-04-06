@@ -6,7 +6,7 @@ type RouterData = {
 
 export class Router {
   protected static instance: Router
-  static mode: 'hash' | 'history' = 'hash'
+  mode: 'hash' | 'history' = 'hash'
 
   private constructor() {}
 
@@ -14,9 +14,9 @@ export class Router {
     return Router.instance ?? (Router.instance = new Router())
   }
 
-  static push() {}
+  push() {}
 
-  static replace() {}
+  replace() {}
 }
 
 export class Route {}

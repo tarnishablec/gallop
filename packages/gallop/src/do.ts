@@ -4,10 +4,14 @@ export abstract class DoAble<T> {
   }
 }
 
-type ParamsOf<T extends Function> = T extends (...args: infer P) => unknown
+export type ParamsOf<T extends Function> = T extends (
+  ...args: infer P
+) => unknown
   ? P
   : never
 
-type ReturnOf<T extends Function> = T extends (...args: ParamsOf<T>) => infer R
+export type ReturnOf<T extends Function> = T extends (
+  ...args: ParamsOf<T>
+) => infer R
   ? R
   : never
