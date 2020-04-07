@@ -35,6 +35,7 @@ export function requestUpdate() {
 }
 
 export type Component = (...props: any[]) => ShallowClip
+export type Complex = (...props: any[]) => VirtualElement
 export type EffectInfo = { e: Effect; index: number }
 
 export abstract class UpdatableElement extends HTMLElement {
@@ -181,17 +182,15 @@ export function component<F extends Component>(
   customElements.define(name, clazz, option)
   componentPool.add(name)
 
-  return (...args: ParamsOf<F>) => {
-    // console.log(name)
-    const element = document.createElement(name) as UpdatableElement
-    element.mergeProps(args)
-    const dof = new DocumentFragment()
-    dof.append(element)
-    return dof
-  }
+  return (...props: ParamsOf<F>) => new VirtualElement(name, props)
 }
 
 export function verifyComponentName(name: string) {
   const arr = name.split('-')
   return arr[arr.length - 1] && arr.length >= 2 && name.toLowerCase() === name
+}
+
+export class VirtualElement {
+  el?: UpdatableElement
+  constructor(public tag: string, public props: unknown[]) {}
 }

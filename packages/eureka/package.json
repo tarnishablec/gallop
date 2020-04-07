@@ -1,16 +1,16 @@
 {
-  "name": "@gallop/router",
+  "name": "@gallop/eureka",
   "version": "0.2.0-alpha.0",
-  "description": "router",
+  "description": "eureka",
   "main": "src/index.ts",
-  "module": "dist/router.esm.js",
+  "module": "dist/eureka.esm.js",
   "files": [
     "index.js",
     "dist",
     "src"
   ],
-  "unpkg": "dist/router.global.js",
-  "types": "dist/router.d.ts",
+  "unpkg": "dist/eureka.global.js",
+  "types": "dist/eureka.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/tarnishablec/gallop.git"
@@ -28,9 +28,5 @@
   "homepage": "",
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "@gallop/gallop": "^0.2.0-alpha.0",
-    "path-to-regexp": "^6.1.0"
   }
 }
