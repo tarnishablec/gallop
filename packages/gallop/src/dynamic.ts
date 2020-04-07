@@ -27,7 +27,6 @@ export const DynamicComponent = component(
     }, [is])
 
     useEffect(() => {
-      console.log('trrr')
       const instance = state.instance
       if (instance instanceof UpdatableElement) {
         for (const key in this.$brobs) {
