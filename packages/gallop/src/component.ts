@@ -4,7 +4,7 @@ import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
 import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
-import { ParamsOf } from './do'
+import { ParamsOf, DoAble } from './do'
 
 let currentHandle: UpdatableElement
 
@@ -49,7 +49,7 @@ export abstract class UpdatableElement extends HTMLElement {
   $mountedEffects?: EffectInfo[]
   $disconnectedEffects?: (() => void)[]
 
-  $brobs: Map<string, unknown> = new Map()
+  $brobs: any = createProxy({}, () => this.enUpdateQueue())
 
   $effectsCount: number = 0
 
@@ -80,7 +80,7 @@ export abstract class UpdatableElement extends HTMLElement {
         if (index >= 0) {
           p[index] = staticProps[key]
         } else {
-          this.$brobs.set(key, staticProps[key])
+          Reflect.set(this.$brobs, key, staticProps[key])
         }
       }
       this.$props = createProxy(p, () => this.enUpdateQueue())
@@ -119,7 +119,7 @@ export abstract class UpdatableElement extends HTMLElement {
     if (index >= 0) {
       this.$props[index] = val
     } else {
-      this.$brobs.set(name, val)
+      Reflect.set(this.$brobs, name, val)
     }
   }
 
@@ -190,7 +190,16 @@ export function verifyComponentName(name: string) {
   return arr[arr.length - 1] && arr.length >= 2 && name.toLowerCase() === name
 }
 
-export class VirtualElement {
+export class VirtualElement extends DoAble<VirtualElement> {
   el?: UpdatableElement
-  constructor(public tag: string, public props: unknown[]) {}
+  key?: unknown;
+  [key: string]: unknown
+  constructor(public tag: string, public props: unknown[]) {
+    super()
+  }
+
+  useKey(key: unknown) {
+    this.key = key
+    return this
+  }
 }

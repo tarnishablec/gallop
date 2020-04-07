@@ -1,8 +1,12 @@
 export { html } from './parse'
 export { render } from './render'
-export { component, UpdatableElement } from './component'
+export { component, UpdatableElement, VirtualElement } from './component'
 export { createContext, Context } from './context'
 export { useState, useEffect } from './hooks'
-
+export { DoAble } from './do'
 export { DynamicComponent } from './dynamic'
+export { isProxy, isMarker } from './is'
+
 export type { Component, Complex } from './component'
+export type { ReturnOf, ParamsOf } from './do'
+export type { Effect } from './hooks'
