@@ -10,6 +10,7 @@ import {
 
 import './src/components/TestA'
 import { TestC } from './src/components/TestC'
+import { TestD } from './src/components/TestD'
 
 setTimeout(() => {
   import(/* webpackChunkName: "test-b" */ './src/components/TestB')
@@ -82,6 +83,8 @@ component('app-root', function (this: UpdatableElement) {
     <button @click="${() => data.list.push(data.list.length - 1)}">
       add into list
     </button>
+    <hr />
+    ${TestD(TestC, state.countdown)}
     <hr />
   `.useContext([context])
 })
