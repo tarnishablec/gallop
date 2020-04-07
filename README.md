@@ -33,7 +33,7 @@
 
 - DONT need `useRef()` because you can directly access dom by `this`
 
-- support `HOC` for pure component
+- support `HOC`
 
 - support `dynamic component` for complex component by built-in component `<dyna-mic></dyna-mic>`
 
