@@ -50,6 +50,12 @@ export class NodePart extends Part {
   commit(): void {}
 
   commitText(type: 'text', val: string) {
+    if (this.type === type) {
+      if (val === this.value) {
+        return
+      }
+    }
+
     this.clear()
     this.location.startNode.parentNode!.insertBefore(
       new Text(val?.toString()),
