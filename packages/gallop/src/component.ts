@@ -182,7 +182,7 @@ export function component<F extends Component>(
   componentPool.add(name)
 
   return (...args: ParamsOf<F>) => {
-    console.log(name)
+    // console.log(name)
     const element = document.createElement(name) as UpdatableElement
     element.mergeProps(args)
     const dof = new DocumentFragment()
