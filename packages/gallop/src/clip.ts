@@ -32,18 +32,21 @@ export function getContexts(this: ShallowClip) {
   return this.contexts
 }
 
+export function getKey(this: ShallowClip) {
+  return this.key
+}
+
 export class ShallowClip extends DoAble<ShallowClip> {
-  protected readonly strs: TemplateStringsArray
-  protected readonly vals: ReadonlyArray<unknown>
   protected contexts?: Set<Context<object>>
   protected key?: unknown;
 
   [key: string]: unknown
 
-  constructor(strs: TemplateStringsArray, vals: unknown[]) {
+  constructor(
+    protected readonly strs: TemplateStringsArray,
+    protected readonly vals: ReadonlyArray<unknown>
+  ) {
     super()
-    this.vals = vals
-    this.strs = strs
   }
 
   useContext(contexts: Context<object>[]) {

@@ -10,15 +10,13 @@ import {
 
 import './src/components/TestA'
 import { TestC } from './src/components/TestC'
+import { TestD } from './src/components/TestD'
 
 setTimeout(() => {
   import(/* webpackChunkName: "test-b" */ './src/components/TestB')
 }, 5050)
 
-export let [data, context] = createContext({ tick: 1 })
-
-const dof = new DocumentFragment()
-dof.append('this is dof part test')
+export let [data, context] = createContext({ tick: 1, list: [1, 2, 3] })
 
 component('app-root', function (this: UpdatableElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
@@ -54,7 +52,7 @@ component('app-root', function (this: UpdatableElement) {
     <button @click="${() => state.tok++}">state tok +1</button>
     <div>State: &zwnj;${state.tok}</div>
     <hr />
-    ${TestC('hello test-c')}
+    ${TestC(state.countdown.toString())}
     <hr />
     <button
       @click="${() => (state.color = state.color === 'red' ? 'green' : 'red')}"
@@ -75,11 +73,18 @@ component('app-root', function (this: UpdatableElement) {
       </div>
     </dyna-mic>
     <hr />
-    ${[1, 2, 3].map((n) =>
-      n % 2 ? html` <button @click="${() => console.log(n)}">${n}</button> ` : 2
-    )}
+    <div>
+      ${data.list.map((n) =>
+        n % 2
+          ? html` <button @click="${() => console.log(n)}">${n}</button> `
+          : 2
+      )}
+    </div>
+    <button @click="${() => data.list.push(data.list.length - 1)}">
+      add into list
+    </button>
     <hr />
-    ${dof}
+    ${TestD(TestC, state.countdown)}
     <hr />
   `.useContext([context])
 })

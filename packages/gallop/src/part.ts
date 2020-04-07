@@ -1,5 +1,5 @@
 import { ShallowClip, Clip, createInstance, getVals, getShaHtml } from './clip'
-import { UpdatableElement } from './component'
+import { UpdatableElement, VirtualElement } from './component'
 import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
@@ -80,15 +80,17 @@ export class NodePart extends Part {
 
   commmitClips(type: 'clips', val: unknown[]) {
     //TODO key diff ?
+
     this.clear()
     const batch = new DocumentFragment()
-    let res = new Array<Clip | string>()
+    let res = new Array<Clip | string | VirtualElement>()
     val.forEach((v) => {
       if (v instanceof ShallowClip) {
         const clip = v.do(createInstance)
         clip.tryUpdate(v.do(getVals))
         batch.append(clip.dof)
         res.push(clip)
+      } else if (v instanceof VirtualElement) {
       } else {
         const str = tryParseToString(v)
         batch.append(str)
@@ -102,19 +104,29 @@ export class NodePart extends Part {
     this.value = res
   }
 
-  commitDof(type: 'element', val: DocumentFragment) {
-    if (this.type !== type) {
-      const { endNode } = this.location
-      const parent = endNode.parentNode!
-      parent.insertBefore(val, endNode)
+  commitElement(type: 'element', val: VirtualElement) {
+    if (this.type === type) {
+      const current = this.value as VirtualElement
+      if (val.tag === current.tag) {
+        current.el!.mergeProps(val.props)
+        return
+      }
     }
+    this.clear()
+    const { endNode } = this.location
+    const parent = endNode.parentNode!
+    const el = document.createElement(val.tag) as UpdatableElement
+    el.mergeProps(val.props)
+    parent.insertBefore(el, endNode)
+    this.value = val
+    this.value.el = el
   }
 
   setValue(val: unknown) {
     let type: NodePartType
-    if (val instanceof DocumentFragment) {
+    if (val instanceof VirtualElement) {
       type = 'element'
-      this.commitDof(type, val)
+      this.commitElement(type, val)
     } else if (val instanceof ShallowClip) {
       type = 'clip'
       this.commitClip(type, val)
@@ -128,7 +140,7 @@ export class NodePart extends Part {
     this.type = type
   }
 
-  value!: (Clip | string)[] | string | Clip
+  value!: (Clip | string | VirtualElement)[] | string | Clip | VirtualElement
   location!: NodeLocation
   shaHtmlCache?: string
   keyCache?: unknown[]
