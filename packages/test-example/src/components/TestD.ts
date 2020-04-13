@@ -1,4 +1,4 @@
-import { component, html, Complex } from '@gallop/gallop/src'
+import { component, html, Complex } from '@gallop/gallop'
 
 export const TestD = component(
   'test-d',

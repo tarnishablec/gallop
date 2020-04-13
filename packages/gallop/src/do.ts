@@ -1,4 +1,6 @@
 export abstract class DoAble<T> {
+  [key: string]: unknown
+
   do<F extends Function>(this: T, func: F, ...args: ParamsOf<F>): ReturnOf<F> {
     return func.call(this, ...args)
   }

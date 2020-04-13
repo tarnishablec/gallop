@@ -192,8 +192,7 @@ export function verifyComponentName(name: string) {
 
 export class VirtualElement extends DoAble<VirtualElement> {
   el?: UpdatableElement
-  key?: unknown;
-  [key: string]: unknown
+  key?: unknown
   constructor(public tag: string, public props: unknown[]) {
     super()
   }

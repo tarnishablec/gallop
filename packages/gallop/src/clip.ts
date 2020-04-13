@@ -38,9 +38,7 @@ export function getKey(this: ShallowClip) {
 
 export class ShallowClip extends DoAble<ShallowClip> {
   protected contexts?: Set<Context<object>>
-  protected key?: unknown;
-
-  [key: string]: unknown
+  protected key?: unknown
 
   constructor(
     protected readonly strs: TemplateStringsArray,

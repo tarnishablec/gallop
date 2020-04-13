@@ -1,9 +1,4 @@
-import {
-  component,
-  html,
-  useEffect,
-  UpdatableElement
-} from '@gallop/gallop/src'
+import { component, html, useEffect, UpdatableElement } from '@gallop/gallop'
 
 export const TestC = component('test-c', function (
   this: UpdatableElement,
