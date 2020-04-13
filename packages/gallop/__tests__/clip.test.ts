@@ -1,9 +1,10 @@
-import { html, createContext, component, useContext } from '../src'
-import { getVals, createInstance, getContexts, attachParts } from '../src/clip'
+import { html, createContext, component } from '../src'
+import { getVals, createInstance, attachParts } from '../src/clip'
 
 component('test-test', (name: string) => html`<div>${name}</div>`, ['name'])
 
 const a = 1
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const [data, context] = createContext({ a: 1 })
 describe('clip', () => {
   const click = () => alert(1)

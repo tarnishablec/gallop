@@ -1,4 +1,4 @@
-import { Clip, ShallowClip, createInstance, getVals, getContexts } from './clip'
+import { Clip, ShallowClip, createInstance, getVals } from './clip'
 import { getFuncArgNames, extractProps } from './utils'
 import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'

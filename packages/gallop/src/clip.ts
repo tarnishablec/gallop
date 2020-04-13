@@ -28,10 +28,6 @@ export function getShaHtml(this: ShallowClip) {
   return cleanDofStr(this.strs.join(marker))
 }
 
-export function getContexts(this: ShallowClip) {
-  return this.contexts
-}
-
 export function getKey(this: ShallowClip) {
   return this.key
 }
