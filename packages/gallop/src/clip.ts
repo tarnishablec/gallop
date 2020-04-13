@@ -47,14 +47,6 @@ export class ShallowClip extends DoAble<ShallowClip> {
     super()
   }
 
-  useContext(contexts: Context<object>[]) {
-    if (!this.contexts) {
-      this.contexts = new Set()
-    }
-    contexts.forEach((c) => this.contexts!.add(c))
-    return this
-  }
-
   useKey(key: unknown) {
     this.key = key
     return this

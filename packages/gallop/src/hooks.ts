@@ -2,6 +2,7 @@ import { resolveCurrentHandle, UpdatableElement } from './component'
 import { createProxy, _hasChanged } from './reactive'
 import { isProxy } from './is'
 import { shallowEqual } from './utils'
+import { Context } from './context'
 
 export function useState<T extends object>(
   initState: T,
@@ -85,4 +86,15 @@ export function resolveEffects(
         : null
     })
   }, 0)
+}
+
+export function useContext(contexts: Context<object>[]) {
+  const current = resolveCurrentHandle()
+  if (!current.$contexts) {
+    const elementContexts = (current.$contexts = new Set())
+    contexts.forEach((context) => {
+      context.watch(current)
+      elementContexts.add(context)
+    })
+  }
 }

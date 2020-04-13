@@ -3,7 +3,14 @@ import {
   component,
   UpdatableElement
 } from '../src/component'
-import { html, createContext, useEffect, render, useState } from '../src'
+import {
+  html,
+  createContext,
+  useEffect,
+  render,
+  useState,
+  useContext
+} from '../src'
 import { createInstance } from '../src/clip'
 import { isMarker } from '../src/is'
 
@@ -34,6 +41,8 @@ describe('component', () => {
       ) {
         let [state] = useState({ tok: 100 })
 
+        useContext([context])
+
         useEffect(() => {
           a++
           expect(this.localName).toBe('test-example')
@@ -58,7 +67,7 @@ describe('component', () => {
               }}"
             ></button>
           </div>
-        `.useContext([context])
+        `
 
         expect(
           isMarker(

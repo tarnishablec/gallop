@@ -48,6 +48,7 @@ import {
   createContext,
   useState,
   useEffect,
+  useContext,
   render,
   html,
   UpdatableElement
@@ -64,6 +65,8 @@ component('test-name', function (
 ) {
   let [state] = useState({ a: 1 }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
   console.dir(this) //access dom directly by this
+
+  useContext([context]) //you need to hook Context to this component by useContext()
 
   useEffect(() => {
     console.dir(this) //this context can be pass by arrow function
@@ -99,7 +102,7 @@ component('test-name', function (
     >
       click
     </button>
-  `.useContext([context]) //you need to hook Context to this component by useContext(), different from react useContext()
+  `
 })
 
 render(html`

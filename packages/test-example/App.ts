@@ -5,7 +5,8 @@ import {
   createContext,
   useState,
   useEffect,
-  UpdatableElement
+  UpdatableElement,
+  useContext
 } from '@gallop/gallop'
 
 import './src/components/TestA'
@@ -20,6 +21,9 @@ export let [data, context] = createContext({ tick: 1, list: [1, 2, 3] })
 
 component('app-root', function (this: UpdatableElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
+
+  useContext([context])
+
   useEffect(() => {
     console.log(`app-root effect mounted`)
     const interval = setInterval(() => {
@@ -89,7 +93,7 @@ component('app-root', function (this: UpdatableElement) {
     <hr />
     ${TestD(TestC, state.countdown)}
     <hr />
-  `.useContext([context])
+  `
 })
 
 render(

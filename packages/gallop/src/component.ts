@@ -106,10 +106,6 @@ export abstract class UpdatableElement extends HTMLElement {
     const clip = shaClip.do(createInstance)
     this.$clip = clip
     this.$root.append(this.$clip.dof)
-    shaClip.do(getContexts)?.forEach((context) => {
-      context.watch(this)
-      ;(this.$contexts ?? (this.$contexts = new Set())).add(context)
-    })
     // console.log(`${this.tagName} mounted`)
     resolveEffects(this, this.$mountedEffects)
   }
@@ -130,7 +126,6 @@ export abstract class UpdatableElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this.$alive = true
     // console.log(`${this.nodeName} connected`)
   }
 
