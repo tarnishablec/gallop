@@ -5,6 +5,8 @@ import { LockedProxyError } from './error'
 export const _isProxy = Symbol('isProxy')
 export const _hasChanged = Symbol('hasChanged')
 
+const rawProxyMap = new WeakMap<object, object>()
+
 export const createProxy = <T extends object>(
   raw: T,
   setSideEffect?: (
@@ -42,10 +44,20 @@ export const createProxy = <T extends object>(
       }
       getSideEffect?.(target, prop, reciver)
       const res = Reflect.get(target, prop, reciver)
-      return res instanceof Object &&
+      if (
+        res instanceof Object &&
         !(res instanceof Function) &&
         !isProxy(res)
-        ? createProxy(res, setSideEffect, getSideEffect, lock)
-        : res
+      ) {
+        if (!rawProxyMap.has(res)) {
+          const temp = createProxy(res, setSideEffect, getSideEffect, lock)
+          rawProxyMap.set(res, temp)
+          return temp
+        } else {
+          return rawProxyMap.get(res)
+        }
+      } else {
+        return res
+      }
     }
   })

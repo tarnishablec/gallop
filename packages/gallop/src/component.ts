@@ -126,6 +126,7 @@ export abstract class UpdatableElement extends HTMLElement {
   }
 
   connectedCallback() {
+    this.$alive = true
     // console.log(`${this.nodeName} connected`)
   }
 
