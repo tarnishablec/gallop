@@ -13,6 +13,9 @@ import './src/components/TestA'
 import { TestC } from './src/components/TestC'
 import { TestD } from './src/components/TestD'
 
+import css from './src/styles/test.css'
+console.log(css)
+
 setTimeout(() => {
   import(/* webpackChunkName: "test-b" */ './src/components/TestB')
 }, 5050)

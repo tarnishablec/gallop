@@ -1,6 +1,6 @@
 {
   "name": "@gallop/eureka",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "eureka",
   "main": "src/index.ts",
   "module": "dist/eureka.esm.js",
@@ -16,7 +16,8 @@
     "url": "https://github.com/tarnishablec/gallop.git"
   },
   "keywords": [
-    "gallop"
+    "gallop",
+    "webcomponents"
   ],
   "directories": {
     "src": "src",

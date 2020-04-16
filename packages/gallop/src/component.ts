@@ -149,7 +149,7 @@ export abstract class UpdatableElement extends HTMLElement {
   }
 }
 
-const componentPool = new Set<string>()
+export const componentPool = new Set<string>()
 
 export function component<F extends Component>(
   name: string,
@@ -188,13 +188,7 @@ export function verifyComponentName(name: string) {
 
 export class VirtualElement extends DoAble<VirtualElement> {
   el?: UpdatableElement
-  key?: unknown
   constructor(public tag: string, public props: unknown[]) {
     super()
-  }
-
-  useKey(key: unknown) {
-    this.key = key
-    return this
   }
 }

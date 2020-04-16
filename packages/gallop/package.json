@@ -16,7 +16,8 @@
     "url": "https://github.com/tarnishablec/gallop.git"
   },
   "keywords": [
-    "gallop"
+    "gallop",
+    "webcomponents"
   ],
   "directories": {
     "src": "src",

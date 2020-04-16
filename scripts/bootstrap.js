@@ -131,7 +131,7 @@ function initPkg(filePath, longName, shortName, args) {
         type: 'git',
         url: gitUrl
       },
-      keywords: [`${projectName}`],
+      keywords: [`${projectName}`, 'webcomponents'],
       directories: {
         src: 'src',
         test: '__tests__'

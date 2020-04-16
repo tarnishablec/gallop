@@ -35,4 +35,12 @@ describe('reactive', () => {
       /Can not set new property to locked object/
     )
   })
+  test('createProxy of nested object', () => {
+    const a = { a: { b: 1 } }
+    const p = createProxy(a)
+    const aa = p.a
+    const aaa = p.a
+    expect(aa).toBe(aaa)
+    expect(isProxy(aa)).toBe(true)
+  })
 })

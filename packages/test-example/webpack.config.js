@@ -49,11 +49,12 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
+      { test: /\.(j|t)sx?$/, use: 'ts-loader', exclude: /node_modules/ },
       {
         test: /\.((s[ac])|c)ss$/,
         use: [
-          ProdMode ? MiniCssExtractPlugin.loader : 'style-loader',
+          'to-string-loader',
+          // ProdMode ? MiniCssExtractPlugin.loader : 'style-loader',
           'css-loader',
           {
             loader: 'postcss-loader',

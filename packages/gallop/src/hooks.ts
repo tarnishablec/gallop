@@ -98,3 +98,8 @@ export function useContext(contexts: Context<object>[]) {
     })
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function useStyle(content: string) {
+  //TODO
+}
