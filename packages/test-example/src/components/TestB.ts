@@ -55,5 +55,5 @@ export const TestB = component(
     `
   },
   undefined,
-  false
+  { shadow: false }
 )

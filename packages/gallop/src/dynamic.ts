@@ -38,5 +38,7 @@ export const DynamicComponent = component(
     return html``
   },
   ['is'],
-  false
+  {
+    shadow: false
+  }
 )

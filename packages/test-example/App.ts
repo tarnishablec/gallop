@@ -12,6 +12,7 @@ import {
 import './src/components/TestA'
 import { TestC } from './src/components/TestC'
 import { TestD } from './src/components/TestD'
+import './src/components/TestE'
 
 import css from './src/styles/test.css'
 console.log(css)
@@ -20,7 +21,11 @@ setTimeout(() => {
   import(/* webpackChunkName: "test-b" */ './src/components/TestB')
 }, 5050)
 
-export let [data, context] = createContext({ tick: 1, list: [1, 2, 3] })
+export let [data, context] = createContext({
+  tick: 1,
+  list: [1, 2, 3],
+  hide: true
+})
 
 component('app-root', function (this: UpdatableElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
@@ -95,6 +100,9 @@ component('app-root', function (this: UpdatableElement) {
     </button>
     <hr />
     ${TestD(TestC, state.countdown)}
+    <hr />
+    <button @click="${() => (data.hide = !data.hide)}">change e</button>
+    <test-e :hide="${data.hide}"></test-e>
     <hr />
   `
 })

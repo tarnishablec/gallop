@@ -1,4 +1,4 @@
-import { ShallowClip, Clip, createInstance, getVals, getShaHtml } from './clip'
+import { HTMLClip, Clip, createInstance, getVals, getShaHtml } from './clip'
 import { UpdatableElement, VirtualElement } from './component'
 import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
@@ -64,7 +64,7 @@ export class NodePart extends Part {
     this.value = val
   }
 
-  commitClip(type: 'clip', val: ShallowClip) {
+  commitClip(type: 'clip', val: HTMLClip) {
     if (type === this.type) {
       const shaHtml = val.do(getShaHtml)
       if (shaHtml === this.shaHtmlCache) {
@@ -91,7 +91,7 @@ export class NodePart extends Part {
     const batch = new DocumentFragment()
     let res = new Array<Clip | string | VirtualElement>()
     val.forEach((v) => {
-      if (v instanceof ShallowClip) {
+      if (v instanceof HTMLClip) {
         const clip = v.do(createInstance)
         clip.tryUpdate(v.do(getVals))
         batch.append(clip.dof)
@@ -133,7 +133,7 @@ export class NodePart extends Part {
     if (val instanceof VirtualElement) {
       type = 'element'
       this.commitElement(type, val)
-    } else if (val instanceof ShallowClip) {
+    } else if (val instanceof HTMLClip) {
       type = 'clip'
       this.commitClip(type, val)
     } else if (Array.isArray(val)) {
