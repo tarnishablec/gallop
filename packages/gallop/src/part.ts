@@ -3,6 +3,7 @@ import { UpdatableElement, VirtualElement } from './component'
 import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
+import { isDirective } from './directive'
 
 type AttrEventLocation = { node: Element; name: string }
 type PropLocation = { node: UpdatableElement; name: string }
@@ -130,18 +131,26 @@ export class NodePart extends Part {
 
   setValue(val: unknown) {
     let type: NodePartType
-    if (val instanceof VirtualElement) {
+
+    let pendingVal = val
+
+    while (isDirective(pendingVal)) {
+      pendingVal = pendingVal(this)
+    }
+
+    if (pendingVal instanceof VirtualElement) {
       type = 'element'
-      this.commitElement(type, val)
-    } else if (val instanceof HTMLClip) {
+      this.commitElement(type, pendingVal)
+    } else if (pendingVal instanceof HTMLClip) {
       type = 'clip'
-      this.commitClip(type, val)
-    } else if (Array.isArray(val)) {
+      this.commitClip(type, pendingVal)
+    } else if (Array.isArray(pendingVal)) {
       type = 'clips'
-      this.commmitClips(type, val)
+      this.commmitClips(type, pendingVal)
     } else {
       type = 'text'
-      val !== this.value && this.commitText(type, tryParseToString(val))
+      pendingVal !== this.value &&
+        this.commitText(type, tryParseToString(pendingVal))
     }
     this.type = type
   }

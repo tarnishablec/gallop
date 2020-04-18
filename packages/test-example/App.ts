@@ -6,7 +6,8 @@ import {
   useState,
   useEffect,
   UpdatableElement,
-  useContext
+  useContext,
+  repeat
 } from '@gallop/gallop'
 
 import './src/components/TestA'
