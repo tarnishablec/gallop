@@ -90,13 +90,20 @@ component('app-root', function (this: UpdatableElement) {
     </dyna-mic>
     <hr />
     <div>
-      ${data.list.map((n) =>
-        n % 2
-          ? html` <button @click="${() => console.log(n)}">${n}</button> `
-          : 2
+      ${repeat(
+        data.list,
+        (item) => item,
+        (item, index) =>
+          index % 2
+            ? html`
+                <button @click="${() => console.log(item)}">${item}</button>
+              `
+            : item
       )}
     </div>
-    <button @click="${() => data.list.push(data.list.length - 1)}">
+    <button
+      @click="${() => data.list.push(data.list[data.list.length - 1] + 1)}"
+    >
       add into list
     </button>
     <hr />

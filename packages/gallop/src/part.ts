@@ -3,7 +3,7 @@ import { UpdatableElement, VirtualElement } from './component'
 import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
-import { isDirective } from './directive'
+import { isDirective, directives } from './directive'
 
 type AttrEventLocation = { node: Element; name: string }
 type PropLocation = { node: UpdatableElement; name: string }
@@ -133,9 +133,17 @@ export class NodePart extends Part {
     let type: NodePartType
 
     let pendingVal = val
+    let isOverrided = false
 
     while (isDirective(pendingVal)) {
+      if (directives.get(pendingVal)) {
+        isOverrided = true
+      }
       pendingVal = pendingVal(this)
+    }
+
+    if (isOverrided) {
+      return
     }
 
     if (pendingVal instanceof VirtualElement) {
@@ -157,8 +165,8 @@ export class NodePart extends Part {
 
   value!: (Clip | string | VirtualElement)[] | string | Clip | VirtualElement
   location!: NodeLocation
-  shaHtmlCache?: string
-  keyCache?: unknown[]
+  shaHtmlCache?: string;
+  [key: string]: unknown //for directives
 }
 
 export class AttrPart extends Part {

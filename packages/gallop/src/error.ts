@@ -15,3 +15,6 @@ export const LockedProxyError = (target: object) =>
 
 export const NotUpdatableELementError = (name: string) =>
   new SyntaxError(`${name} element is not an UpdatableElement`)
+
+export const DirectiveCanNotUseError = (name: string) =>
+  new SyntaxError(`${name} directive can only be used in NodePart`)

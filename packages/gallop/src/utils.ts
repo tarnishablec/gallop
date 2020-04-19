@@ -1,5 +1,14 @@
 import { isMarker } from './is'
 
+export type Primitive =
+  | null
+  | undefined
+  | boolean
+  | number
+  | string
+  | symbol
+  | bigint
+
 export function tryParseToString(val: unknown): string {
   if (val === null || val === undefined) return ''
   if (typeof val === 'string') return val

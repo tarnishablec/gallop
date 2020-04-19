@@ -109,6 +109,7 @@ export abstract class UpdatableElement extends HTMLElement {
       this.mount(shaClip)
     } else if (this.$unstable) {
       if (this.$shaCache !== shaClip.do(getShaHtml)) {
+        removeNodes(this.$root)
         this.initClip(shaClip)
       }
     }
@@ -123,7 +124,6 @@ export abstract class UpdatableElement extends HTMLElement {
       this.$shaCache = shaClip.do(getShaHtml)
     }
     this.$clip = clip
-    removeNodes(this.$root)
     this.$root.append(this.$clip!.dof)
   }
 
