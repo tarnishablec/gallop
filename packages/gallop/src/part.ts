@@ -53,7 +53,7 @@ export class NodePart extends Part {
   commitText(type: 'text', val: string) {
     if (this.type === type) {
       if (val === this.value) {
-        return
+        return val
       }
     }
 
@@ -62,7 +62,7 @@ export class NodePart extends Part {
       new Text(val?.toString()),
       this.location.endNode
     )
-    this.value = val
+    return val
   }
 
   commitClip(type: 'clip', val: HTMLClip) {
@@ -71,7 +71,7 @@ export class NodePart extends Part {
       if (shaHtml === this.shaHtmlCache) {
         const nowClip = this.value as Clip
         nowClip.tryUpdate(val.do(getVals))
-        return
+        return nowClip
       } else {
         this.shaHtmlCache = shaHtml
       }
@@ -82,12 +82,10 @@ export class NodePart extends Part {
     const clip = val.do(createInstance)
     clip.tryUpdate(val.do(getVals))
     parent.insertBefore(clip.dof, endNode)
-    this.value = clip
+    return clip
   }
 
   commmitClips(type: 'clips', val: unknown[]) {
-    //TODO key diff ?
-
     this.clear()
     const batch = new DocumentFragment()
     let res = new Array<Clip | string | VirtualElement>()
@@ -108,25 +106,23 @@ export class NodePart extends Part {
       batch,
       this.location.endNode
     )
-    this.value = res
+    return res
   }
 
   commitElement(type: 'element', val: VirtualElement) {
     if (this.type === type) {
       const current = this.value as VirtualElement
       if (val.tag === current.tag) {
-        current.el!.mergeProps(val.props)
-        return
+        current.el?.mergeProps(val.props)
+        return val
       }
     }
     this.clear()
     const { endNode } = this.location
     const parent = endNode.parentNode!
-    const el = document.createElement(val.tag) as UpdatableElement
-    el.mergeProps(val.props)
-    parent.insertBefore(el, endNode)
-    this.value = val
-    this.value.el = el
+    const instance = val.createInstance()
+    parent.insertBefore(instance, endNode)
+    return val
   }
 
   setValue(val: unknown) {
@@ -148,17 +144,17 @@ export class NodePart extends Part {
 
     if (pendingVal instanceof VirtualElement) {
       type = 'element'
-      this.commitElement(type, pendingVal)
+      this.value = this.commitElement(type, pendingVal)
     } else if (pendingVal instanceof HTMLClip) {
       type = 'clip'
-      this.commitClip(type, pendingVal)
+      this.value = this.commitClip(type, pendingVal)
     } else if (Array.isArray(pendingVal)) {
       type = 'clips'
-      this.commmitClips(type, pendingVal)
+      this.value = this.commmitClips(type, pendingVal)
     } else {
       type = 'text'
       pendingVal !== this.value &&
-        this.commitText(type, tryParseToString(pendingVal))
+        (this.value = this.commitText(type, tryParseToString(pendingVal)))
     }
     this.type = type
   }

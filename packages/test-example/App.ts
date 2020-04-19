@@ -92,7 +92,7 @@ component('app-root', function (this: UpdatableElement) {
     <div>
       ${repeat(
         data.list,
-        (item) => item,
+        (item) => `key${item}`,
         (item, index) =>
           index % 2
             ? html`
@@ -130,15 +130,19 @@ render(
 )
 
 // function testTask() {
-//   window.requestIdleCallback(() => console.log('requestIdleCallback'))
-//   setTimeout(() => console.log('setTimeout'), 0)
-//   Promise.resolve(
-//     setTimeout(() => {
-//       console.log('promise')
-//     }, 0)
-//   )
+// window.requestIdleCallback(() => console.log('requestIdleCallback'))
+// Promise.resolve(
+//   setTimeout(() => {
+//     console.log('promise')
+//   }, 0)
+// )
+// requestAnimationFrame(()=>console.log('raf'))
+// requestAnimationFrame(() =>
 //   requestAnimationFrame(() => console.log('requestAnimationFrame'))
-//   console.log('normal')
+// )
+// console.log(Promise.resolve(1))
+// setTimeout(() => console.log('setTimeout'), 0)
+// console.log('normal')
 // }
 
 // testTask()

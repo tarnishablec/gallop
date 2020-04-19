@@ -4,7 +4,7 @@ import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
 import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
-import { ParamsOf, DoAble } from './do'
+import { DoAble } from './do'
 import { removeNodes } from './dom'
 
 let currentHandle: UpdatableElement
@@ -207,7 +207,7 @@ export function component<F extends Component>(
   customElements.define(name, clazz, option.definitionOptions)
   componentPool.add(name)
 
-  return (...props: ParamsOf<F>) => new VirtualElement(name, props)
+  return (...props: Parameters<F>) => new VirtualElement(name, props)
 }
 
 export function verifyComponentName(name: string) {
@@ -219,5 +219,11 @@ export class VirtualElement extends DoAble<VirtualElement> {
   el?: UpdatableElement
   constructor(public tag: string, public props: unknown[]) {
     super()
+  }
+
+  createInstance() {
+    this.el = document.createElement(this.tag) as UpdatableElement
+    this.el.mergeProps(this.props)
+    return this.el
   }
 }

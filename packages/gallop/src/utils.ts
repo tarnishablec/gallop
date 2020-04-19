@@ -1,19 +1,17 @@
 import { isMarker } from './is'
 
-export type Primitive =
-  | null
-  | undefined
-  | boolean
-  | number
-  | string
-  | symbol
-  | bigint
+export type Primitive = null | undefined | boolean | number | string | symbol
 
 export function tryParseToString(val: unknown): string {
-  if (val === null || val === undefined) return ''
-  if (typeof val === 'string') return val
-  if (typeof val === 'function') return val.toString()
-  if (typeof val === 'symbol') return tryParseToString(val.description)
+  if (
+    val === undefined ||
+    typeof val === 'string' ||
+    typeof val === 'function' ||
+    typeof val === 'symbol' ||
+    typeof val === 'number'
+  )
+    return String(val)
+  if (val === null) return ''
   return JSON.stringify(val)
 }
 
