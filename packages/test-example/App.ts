@@ -24,11 +24,11 @@ setTimeout(() => {
 
 export let [data, context] = createContext({
   tick: 1,
-  list: [1, 2, 3],
+  list: [11, 22, 33],
   hide: true
 })
 
-component('app-root', function (this: UpdatableElement) {
+component('app-root', function(this: UpdatableElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
 
   useContext([context])
@@ -73,7 +73,11 @@ component('app-root', function (this: UpdatableElement) {
       change color
     </button>
     <hr />
-    ${state.countdown ? html` <span>${state.countdown}</span> ` : null}
+    ${state.countdown
+      ? html`
+          <span>${state.countdown}</span>
+        `
+      : null}
     <test-b></test-b>
     <hr />
     <slot>
@@ -90,19 +94,53 @@ component('app-root', function (this: UpdatableElement) {
     </dyna-mic>
     <hr />
     <div>
+      ${data.list.map(val =>
+        [...val.toString()].map(
+          v =>
+            html`
+              <button>${v}</button>
+            `
+        )
+      )}
+    </div>
+    <hr />
+    <div>
+      ${data.list.map(val =>
+        [...val.toString()].map((v, index) =>
+          index % 2 ? TestC(v.toString()) : { a: { b: index } }
+        )
+      )}
+    </div>
+    <hr />
+    <div>
       ${repeat(
         data.list,
-        (item) => `key${item}`,
-        (item, index) =>
+        item => item, //key
+        (
+          item,
+          index //item
+        ) =>
           index % 2
             ? html`
-                <button @click="${() => console.log(item)}">${item}</button>
+                <div>
+                  <button>${item.toString()[0]}</button
+                  ><button>${item.toString()[1]}</button>
+                </div>
               `
             : item
       )}
     </div>
+    <hr />
     <button
-      @click="${() => data.list.push(data.list[data.list.length - 1] + 1)}"
+      @click="${() => {
+        data.list.unshift(data.list.pop()!)
+      }}"
+    >
+      circle move
+    </button>
+    <hr />
+    <button
+      @click="${() => data.list.push(data.list[data.list.length - 1] + 11)}"
     >
       add into list
     </button>

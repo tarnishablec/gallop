@@ -10,7 +10,7 @@ export function cleanDofStr(str: string) {
 export function insertAfter(
   container: Node,
   newChild: Node,
-  afterChild?: Node
+  afterChild?: Node | null
 ) {
   return container.insertBefore(newChild, afterChild?.nextSibling ?? null)
 }

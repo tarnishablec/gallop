@@ -1,4 +1,5 @@
 import { isMarker } from './is'
+import { DiffKeyType } from './directives/repeat'
 
 export type Primitive = null | undefined | boolean | number | string | symbol
 
@@ -134,7 +135,7 @@ export function getFuncArgNames(func: Function) {
 
 export function extractProps(attr: NamedNodeMap) {
   return Array.from(attr)
-    .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
+    .filter(a => /^:\S+/.test(a.name) && !isMarker(a.value))
     .reduce((acc, { name, value }) => {
       Reflect.set(acc, name.slice(1), value)
       return acc
@@ -181,41 +182,18 @@ type Change =
   | {
       type: 'insert'
       newIndex: number
-      after: unknown
+      after: DiffKeyType | null
     }
   | {
       type: 'move'
       oldIndex: number
-      after: unknown
+      after: DiffKeyType | null
     }
   | {
       type: 'remove'
       oldIndex: number
     }
 
-export const keyListDiff = (pre: unknown[], next: unknown[]) => {
-  let res: Change[] = []
-  let lastIndex = 0
-  let lastPlacedNode: unknown = null
-
-  next.forEach((item, i) => {
-    let j = pre.indexOf(item)
-    if (j < 0) {
-      res.push({ type: 'insert', newIndex: i, after: lastPlacedNode })
-    } else {
-      if (i !== j && j < lastIndex) {
-        res.push({ type: 'move', oldIndex: j, after: lastPlacedNode })
-      }
-    }
-    lastPlacedNode = item
-    lastIndex = Math.max(i, j)
-  })
-
-  pre.forEach((item, i) => {
-    if (next.indexOf(item) < 0) {
-      res.push({ type: 'remove', oldIndex: i })
-    }
-  })
-
-  return res
+export const keyListDiff = (oldList: DiffKeyType[], newList: DiffKeyType[]) => {
+  return []
 }

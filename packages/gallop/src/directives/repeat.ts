@@ -1,27 +1,38 @@
 import { directive, DirectiveFn, checkIsNodePart } from '../directive'
 import { Part, NodePart } from '../part'
-import { Primitive, keyListDiff } from '../utils'
+import { Primitive, keyListDiff, tryParseToString } from '../utils'
 import { DuplicatedKeyError } from '../error'
 import { HTMLClip, createInstance, getVals } from '../clip'
 import { VirtualElement } from '../component'
 
-type KeyType = Exclude<Primitive, null | undefined | boolean>
+export type DiffKeyType = Exclude<Primitive, null | undefined | boolean>
 
-const PartKeyCache = new WeakMap<NodePart, Primitive[]>()
+const partKeyCache = new WeakMap<NodePart, DiffKeyType[]>()
+const partKeyRangeCache = new WeakMap<
+  NodePart,
+  Map<DiffKeyType, { start: Node | null; end: Node | null }>
+>()
 
-export const repeat = directive(function <T>(
+export const repeat = directive(function<T>(
   items: Iterable<T>,
-  keyFn: (item: T, index: number) => KeyType,
+  keyFn: (item: T, index: number) => DiffKeyType,
   mapFn: (item: T, index: number) => unknown
 ): DirectiveFn {
   return (part: Part) => {
-    checkIsNodePart(part)
+    if (!checkIsNodePart(part)) {
+      return
+    }
 
-    const newKeys: Primitive[] = []
-    const newValues: unknown[] = []
-    const keyRangeMap = new Map<KeyType, Range>()
+    const { startNode } = part.location
+    const parent = startNode.parentNode!
 
-    const oldKeys = PartKeyCache.get(part as NodePart) ?? []
+    const newKeys: DiffKeyType[] = []
+    const newVals: unknown[] = []
+    const keyRangeMap =
+      partKeyRangeCache.get(part) ??
+      partKeyRangeCache.set(part, new Map()).get(part)!
+
+    const oldKeys = partKeyCache.get(part) ?? []
 
     let index = 0
     for (const item of items) {
@@ -32,7 +43,7 @@ export const repeat = directive(function <T>(
         newKeys.push(newKey)
       }
 
-      newValues.push(mapFn(item, index))
+      newVals.push(mapFn(item, index))
       index++
     }
 
@@ -40,37 +51,30 @@ export const repeat = directive(function <T>(
 
     console.log(diffRes)
     console.log(newKeys)
-    console.log(newValues)
+    console.log(newVals)
 
-    diffRes.forEach((change) => {
-      switch (change.type) {
-        case 'insert':
-          if (!change.after) {
-          } else {
-            const val = newValues[change.newIndex]
-          }
-          break
-        case 'move':
-          break
-        case 'remove':
-          break
-      }
-    })
+    diffRes.forEach(change => {})
 
-    PartKeyCache.set(part as NodePart, newKeys)
-    return newValues
+    partKeyCache.set(part, newKeys)
+    return newVals
   }
 },
 true)
 
-function handleEntry(val: unknown) {
-  if (val instanceof HTMLClip) {
+export function handleEntry(val: unknown): DocumentFragment {
+  let dof = new DocumentFragment()
+  if (Array.isArray(val)) {
+    val.forEach(v => {
+      dof.append(handleEntry(v))
+    })
+  } else if (val instanceof HTMLClip) {
     const clip = val.do(createInstance)
     clip.tryUpdate(val.do(getVals))
-    return clip.dof
+    dof.append(clip.dof)
   } else if (val instanceof VirtualElement) {
-    return val.createInstance()
+    dof.append(val.createInstance())
   } else {
-    //TODO
+    dof.append(tryParseToString(val))
   }
+  return dof
 }

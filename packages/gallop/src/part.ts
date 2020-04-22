@@ -4,6 +4,7 @@ import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
 import { isDirective, directives } from './directive'
+import { handleEntry } from './directives/repeat'
 
 type AttrEventLocation = { node: Element; name: string }
 type PropLocation = { node: UpdatableElement; name: string }
@@ -88,25 +89,13 @@ export class NodePart extends Part {
   commmitClips(type: 'clips', val: unknown[]) {
     this.clear()
     const batch = new DocumentFragment()
-    let res = new Array<Clip | string | VirtualElement>()
-    val.forEach((v) => {
-      if (v instanceof HTMLClip) {
-        const clip = v.do(createInstance)
-        clip.tryUpdate(v.do(getVals))
-        batch.append(clip.dof)
-        res.push(clip)
-      } else if (v instanceof VirtualElement) {
-      } else {
-        const str = tryParseToString(v)
-        batch.append(str)
-        res.push(str)
-      }
+    val.forEach(v => {
+      batch.append(handleEntry(v))
     })
     this.location.startNode.parentNode!.insertBefore(
       batch,
       this.location.endNode
     )
-    return res
   }
 
   commitElement(type: 'element', val: VirtualElement) {
@@ -150,7 +139,7 @@ export class NodePart extends Part {
       this.value = this.commitClip(type, pendingVal)
     } else if (Array.isArray(pendingVal)) {
       type = 'clips'
-      this.value = this.commmitClips(type, pendingVal)
+      this.commmitClips(type, pendingVal)
     } else {
       type = 'text'
       pendingVal !== this.value &&
@@ -159,7 +148,11 @@ export class NodePart extends Part {
     this.type = type
   }
 
-  value!: (Clip | string | VirtualElement)[] | string | Clip | VirtualElement
+  value!:
+    | (Clip | string | VirtualElement | unknown[])[]
+    | string
+    | Clip
+    | VirtualElement
   location!: NodeLocation
   shaHtmlCache?: string;
   [key: string]: unknown //for directives
@@ -213,7 +206,7 @@ type EventInstance = (e: Event) => unknown
 
 export class EventPart extends Part {
   clear(): void {
-    this.eventCache.forEach((val) => {
+    this.eventCache.forEach(val => {
       this.location.node.removeEventListener(this.eventName, val, this.options)
     })
     this.eventCache.clear()
@@ -222,7 +215,7 @@ export class EventPart extends Part {
   commit(): void {
     this.clear()
     const { node } = this.location
-    this.value.forEach((v) => {
+    this.value.forEach(v => {
       let ev = this.tryGetFromCache(v)
       node.addEventListener(this.eventName, ev, this.options)
     })
@@ -231,7 +224,7 @@ export class EventPart extends Part {
   setValue(val: EventInstance | EventInstance[]) {
     let temp: string[]
     if (Array.isArray(val)) {
-      temp = val.map((v) => v?.toString())
+      temp = val.map(v => v?.toString())
     } else {
       temp = [val.toString()]
     }

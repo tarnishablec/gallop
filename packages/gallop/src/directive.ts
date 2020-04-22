@@ -20,8 +20,9 @@ export function directive<F extends (...args: any[]) => DirectiveFn>(
   }) as F
 }
 
-export function checkIsNodePart(part: Part) {
+export function checkIsNodePart(part: Part): part is NodePart {
   if (!(part instanceof NodePart)) {
     throw DirectiveCanNotUseError(part.type)
   }
+  return true
 }
