@@ -1,6 +1,6 @@
 {
   "name": "@gallop/test-example",
-  "version": "0.3.3-alpha.0",
+  "version": "0.3.4-alpha.1",
   "description": "test-example",
   "main": "./App.ts",
   "files": [
@@ -49,7 +49,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@gallop/gallop": "^0.3.3-alpha.0",
-    "lodash": "^4.17.15"
-  }
+    "@gallop/gallop": "^0.3.4-alpha.1"
+  },
+  "gitHead": "63bffbe0c3c6bdc12cb8e9734d9e1e631a61f44c"
 }

@@ -167,6 +167,12 @@ render(
   `
 )
 
+const script = document.createElement('script')
+script.type = 'module'
+script.src = `https://unpkg.com/@gallop/gallop@0.3.3-alpha.0/dist/gallop.global.js`
+
+document.body.append(script)
+
 // function testTask() {
 // window.requestIdleCallback(() => console.log('requestIdleCallback'))
 // Promise.resolve(
