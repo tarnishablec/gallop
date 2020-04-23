@@ -9,7 +9,7 @@
     "dist",
     "src"
   ],
-  "unpkg": "dist/gallop.global.js",
+  "unpkg": "dist/gallop.esm.js",
   "types": "dist/gallop.d.ts",
   "repository": {
     "type": "git",
