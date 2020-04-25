@@ -10,6 +10,9 @@ import {
   repeat
 } from '@gallop/gallop'
 
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
+
 import './src/components/TestA'
 import { TestC } from './src/components/TestC'
 import { TestD } from './src/components/TestD'
@@ -104,7 +107,15 @@ component('app-root', function (this: UpdatableElement) {
     </div>
     <hr />
     <div>
-      ${''}
+      ${repeat(
+        data.list,
+        (item) => item,
+        (item) =>
+          [...item.toString()].map(
+            (v) =>
+              html` <button @click="${() => console.log(item)}">${v}</button> `
+          )
+      )}
     </div>
     <hr />
     <button

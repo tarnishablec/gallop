@@ -7,5 +7,6 @@ export function html(strs: TemplateStringsArray, ...vals: unknown[]) {
 interface StyleTagger {}
 
 export const style = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css: (strs: TemplateStringsArray, ...vals: unknown[]) => strs.join('')
 }

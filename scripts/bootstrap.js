@@ -100,7 +100,8 @@ function initPkg(filePath, longName, shortName, args) {
     'devDependencies',
     'peerDependencies',
     'dependencies',
-    'private'
+    'private',
+    'buildOptions'
   ]
 
   let pkgCache = {}
@@ -122,11 +123,11 @@ function initPkg(filePath, longName, shortName, args) {
       name: longName,
       version: baseVersion,
       description: shortName,
-      main: 'src/index.ts',
-      module: `dist/${shortName}.esm.js`,
+      main: `dist/index.global.js`,
+      module: `dist`,
       files: [`index.js`, 'dist', 'src'],
-      unpkg: `dist/${shortName}.global.js`,
-      types: `dist/${shortName}.d.ts`,
+      unpkg: `dist/index.js`,
+      types: `dist/index.d.ts`,
       repository: {
         type: 'git',
         url: gitUrl

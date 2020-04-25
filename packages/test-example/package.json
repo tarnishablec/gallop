@@ -50,7 +50,8 @@
   },
   "dependencies": {
     "@gallop/gallop": "^0.3.4-alpha.1",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "rxjs": "^6.5.5"
   },
   "gitHead": "63bffbe0c3c6bdc12cb8e9734d9e1e631a61f44c"
 }

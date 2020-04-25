@@ -59,7 +59,7 @@ export const repeat = directive(function <T>(
     return newVals
   }
 },
-true)
+false)
 
 export function handleEntry(val: unknown) {
   const dof = new DocumentFragment()
@@ -95,19 +95,5 @@ type Change =
     }
 
 function listKeyDiff(oldList: DiffKeyType[], newList: DiffKeyType[]): Change[] {
-  const res: Change[] = []
-  let lastOldIndex: undefined | number = undefined
-  let lastNewIndex: undefined | number = undefined
-  let lastNewKey: DiffKeyType | null = null
-  let buffer: Change[] = []
-
-  newList.forEach((item, i) => {
-    const j = oldList.indexOf(item)
-    if (j < 0) {
-      buffer.push({ type: 'insert', after: lastNewKey })
-    } else {
-    }
-  })
-
   return []
 }

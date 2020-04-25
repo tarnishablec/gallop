@@ -2,15 +2,15 @@
   "name": "@gallop/gallop",
   "version": "0.3.4-alpha.1",
   "description": "gallop",
-  "main": "src/index.ts",
-  "module": "dist/gallop.esm.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist",
   "files": [
     "index.js",
     "dist",
     "src"
   ],
-  "unpkg": "dist/gallop.esm.js",
-  "types": "dist/gallop.d.ts",
+  "unpkg": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/tarnishablec/gallop.git"
@@ -29,6 +29,5 @@
   "homepage": "",
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "63bffbe0c3c6bdc12cb8e9734d9e1e631a61f44c"
+  }
 }
