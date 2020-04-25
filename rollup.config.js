@@ -3,7 +3,7 @@ import path from 'path'
 import typescript from '@wessberg/rollup-plugin-ts'
 import json from '@rollup/plugin-json'
 import alias from '@rollup/plugin-alias'
-import cleanup from 'rollup-plugin-cleanup'
+import { terser } from 'rollup-plugin-terser'
 const { scope } = require('./scripts/setting')
 
 if (!process.env.TARGET) {
@@ -16,21 +16,18 @@ const name = path.basename(packageDir)
 
 const resolve = (p) => path.resolve(packageDir, p)
 
-const pkg = require(resolve(`package.json`))
-const packageOptions = pkg.buildOptions || {}
+// const pkg = require(resolve(`package.json`))
 
 const formats = {
   esm: {
-    file: resolve(`dist/${name}.esm.js`),
-    format: `es`
-  },
-  cjs: {
-    file: resolve(`dist/${name}.cjs.js`),
-    format: `cjs`
+    file: resolve(`dist/index.js`),
+    format: `es`,
+    plugins: [terser()]
   },
   global: {
-    file: resolve(`dist/${name}.global.js`),
-    format: `iife`
+    file: resolve(`dist/index.global.js`),
+    format: `umd`,
+    plugins: [terser()]
   }
 }
 
@@ -44,27 +41,31 @@ fs.readdirSync(packagesDir).forEach((dir) => {
   }
 })
 
-const CONFIG = {
-  input: resolve(`src/index.ts`),
-  output: [],
+const staticOptions = {
   plugins: [
     typescript({
       tsconfig: path.resolve(__dirname, 'tsconfig.json')
     }),
     json(),
-    alias(aliasOptions),
-    cleanup({
-      comments: 'none'
-    })
+    alias(aliasOptions)
   ]
 }
 
-const defaultFormats = ['esm', 'cjs', 'global']
+const CONFIG = [
+  {
+    input: resolve(`src/index.ts`),
+    output: [],
+    ...staticOptions
+  }
+]
+
+const defaultFormats = ['esm', 'global']
 const inlineFormats = process.env.FORMATS && process.env.FORMATS.split(',')
-const packageFormats = inlineFormats || packageOptions.formats || defaultFormats
+const packageFormats = inlineFormats || defaultFormats
 
 packageFormats.forEach((format) => {
-  CONFIG.output.push(
+  console.log(formats[format])
+  CONFIG[0].output.push(
     Object.assign(formats[format], { name: name, extend: true })
   )
 })

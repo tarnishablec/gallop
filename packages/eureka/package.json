@@ -1,16 +1,16 @@
 {
   "name": "@gallop/eureka",
-  "version": "0.3.3-alpha.0",
+  "version": "0.3.4-alpha.1",
   "description": "eureka",
-  "main": "src/index.ts",
-  "module": "dist/eureka.esm.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist",
   "files": [
     "index.js",
     "dist",
     "src"
   ],
-  "unpkg": "dist/eureka.global.js",
-  "types": "dist/eureka.d.ts",
+  "unpkg": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/tarnishablec/gallop.git"

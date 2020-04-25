@@ -1,7 +1,7 @@
-import { ShallowClip, createInstance, getVals } from './clip'
+import { HTMLClip, createInstance, getVals } from './clip'
 
 export function render(
-  shaClip: ShallowClip,
+  shaClip: HTMLClip,
   container: Element | ShadowRoot = document.body,
   before: Node | null = container.firstChild
 ) {

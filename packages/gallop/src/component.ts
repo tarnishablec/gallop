@@ -1,10 +1,11 @@
-import { Clip, ShallowClip, createInstance, getVals } from './clip'
+import { Clip, HTMLClip, createInstance, getVals, getShaHtml } from './clip'
 import { getFuncArgNames, extractProps } from './utils'
 import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
 import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
-import { ParamsOf, DoAble } from './do'
+import { DoAble } from './do'
+import { removeNodes } from './dom'
 
 let currentHandle: UpdatableElement
 
@@ -34,7 +35,7 @@ export function requestUpdate() {
   })
 }
 
-export type Component = (...props: any[]) => ShallowClip
+export type Component = (...props: any[]) => HTMLClip
 export type Complex = (...props: any[]) => VirtualElement
 export type EffectInfo = { e: Effect; index: number }
 
@@ -57,12 +58,22 @@ export abstract class UpdatableElement extends HTMLElement {
 
   $clip?: Clip
 
+  $unstable: boolean
+
+  $shaCache?: string
+
   $contexts?: Set<Context<Object>>
 
   protected propNames: string[] = []
 
-  constructor(builder: Component, shadow: boolean, propNames: string[]) {
+  constructor(
+    builder: Component,
+    shadow: boolean,
+    propNames: string[],
+    unstable: boolean
+  ) {
     super()
+    this.$unstable = unstable
     this.$builder = builder
     this.$root = shadow ? this.attachShadow({ mode: 'open' }) : this
     this.initProps(propNames)
@@ -96,16 +107,28 @@ export abstract class UpdatableElement extends HTMLElement {
     const shaClip = this.$builder.apply(this, this.$props)
     if (!this.$clip) {
       this.mount(shaClip)
+    } else if (this.$unstable) {
+      if (this.$shaCache !== shaClip.do(getShaHtml)) {
+        removeNodes(this.$root)
+        this.initClip(shaClip)
+      }
     }
     this.$clip!.tryUpdate(shaClip.do(getVals))
     // console.log(`${this.nodeName} updated`)
     resolveEffects(this, this.$updateEffects)
   }
 
-  mount(shaClip: ShallowClip) {
+  initClip(shaClip: HTMLClip) {
     const clip = shaClip.do(createInstance)
+    if (this.$unstable) {
+      this.$shaCache = shaClip.do(getShaHtml)
+    }
     this.$clip = clip
-    this.$root.append(this.$clip.dof)
+    this.$root.append(this.$clip!.dof)
+  }
+
+  mount(shaClip: HTMLClip) {
+    this.initClip(shaClip)
     // console.log(`${this.tagName} mounted`)
     resolveEffects(this, this.$mountedEffects)
   }
@@ -155,8 +178,14 @@ export function component<F extends Component>(
   name: string,
   builder: F,
   propNameList?: string[],
-  shadow: boolean = true,
-  option?: ElementDefinitionOptions
+  option: {
+    unstable?: boolean
+    shadow?: boolean
+    definitionOptions?: ElementDefinitionOptions
+  } = {
+    shadow: true,
+    unstable: false
+  }
 ) {
   if (!verifyComponentName(name)) {
     throw ComponentNamingError(name)
@@ -171,14 +200,14 @@ export function component<F extends Component>(
 
   const clazz = class extends UpdatableElement {
     constructor() {
-      super(builder, shadow, propNames)
+      super(builder, option.shadow ?? true, propNames, option.unstable ?? false)
     }
   }
 
-  customElements.define(name, clazz, option)
+  customElements.define(name, clazz, option.definitionOptions)
   componentPool.add(name)
 
-  return (...props: ParamsOf<F>) => new VirtualElement(name, props)
+  return (...props: Parameters<F>) => new VirtualElement(name, props)
 }
 
 export function verifyComponentName(name: string) {
@@ -186,9 +215,15 @@ export function verifyComponentName(name: string) {
   return arr[arr.length - 1] && arr.length >= 2 && name.toLowerCase() === name
 }
 
-export class VirtualElement extends DoAble<VirtualElement> {
+export class VirtualElement extends DoAble(Object) {
   el?: UpdatableElement
   constructor(public tag: string, public props: unknown[]) {
     super()
+  }
+
+  createInstance() {
+    this.el = document.createElement(this.tag) as UpdatableElement
+    this.el.mergeProps(this.props)
+    return this.el
   }
 }

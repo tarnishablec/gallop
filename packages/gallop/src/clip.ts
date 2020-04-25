@@ -13,26 +13,21 @@ export const range = document.createRange()
  * https://www.measurethat.net/Benchmarks/ShowResult/100437
  * createContextualFragment vs innerHTML
  */
-export function createInstance(this: ShallowClip) {
+export function createInstance(this: HTMLClip) {
   return new Clip(
     range.createContextualFragment(this.do(getShaHtml)),
     this.vals.length
   )
 }
 
-export function getVals(this: ShallowClip) {
+export function getVals(this: HTMLClip) {
   return this.vals
 }
 
-export function getShaHtml(this: ShallowClip) {
+export function getShaHtml(this: HTMLClip) {
   return cleanDofStr(this.strs.join(marker))
 }
-
-export function getKey(this: ShallowClip) {
-  return this.key
-}
-
-export class ShallowClip extends DoAble<ShallowClip> {
+export class HTMLClip extends DoAble(Object) {
   protected contexts?: Set<Context<object>>
   protected key?: unknown
 
@@ -42,13 +37,7 @@ export class ShallowClip extends DoAble<ShallowClip> {
   ) {
     super()
   }
-
-  useKey(key: unknown) {
-    this.key = key
-    return this
-  }
 }
-
 export class Clip {
   parts: Part[]
   partCount: number

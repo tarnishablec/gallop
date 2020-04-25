@@ -1,10 +1,21 @@
 import { isMarker } from './is'
 
+export type Primitive = null | undefined | boolean | number | string | symbol
+
+export type Clazz<T = {}> = {
+  new (...args: any[]): T
+}
+
 export function tryParseToString(val: unknown): string {
-  if (val === null || val === undefined) return ''
-  if (typeof val === 'string') return val
-  if (typeof val === 'function') return val.toString()
-  if (typeof val === 'symbol') return tryParseToString(val.description)
+  if (
+    val === undefined ||
+    typeof val === 'string' ||
+    typeof val === 'function' ||
+    typeof val === 'symbol' ||
+    typeof val === 'number'
+  )
+    return String(val)
+  if (val === null) return ''
   return JSON.stringify(val)
 }
 
@@ -168,47 +179,4 @@ export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
     return false
   }
   return arrA.join('') === arrB.join('')
-}
-
-type Change =
-  | {
-      type: 'insert'
-      newIndex: number
-      after: unknown
-    }
-  | {
-      type: 'move'
-      oldIndex: number
-      after: unknown
-    }
-  | {
-      type: 'remove'
-      oldIndex: number
-    }
-
-export const keyListDiff = (pre: unknown[], next: unknown[]) => {
-  let res: Change[] = []
-  let lastIndex = 0
-  let lastPlacedNode: unknown = null
-
-  next.forEach((item, i) => {
-    let j = pre.indexOf(item)
-    if (j < 0) {
-      res.push({ type: 'insert', newIndex: i, after: lastPlacedNode })
-    } else {
-      if (i !== j && j < lastIndex) {
-        res.push({ type: 'move', oldIndex: j, after: lastPlacedNode })
-      }
-    }
-    lastPlacedNode = item
-    lastIndex = Math.max(i, j)
-  })
-
-  pre.forEach((item, i) => {
-    if (next.indexOf(item) < 0) {
-      res.push({ type: 'remove', oldIndex: i })
-    }
-  })
-
-  return res
 }

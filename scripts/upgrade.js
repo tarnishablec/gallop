@@ -1,6 +1,14 @@
 const execa = require('execa')
+const target = require('minimist')(process.argv.slice(2))._
+const { scope } = require('../scripts/setting')
 
-const pkg = require('../package.json')
+if (Array.isArray(target) && target.length > 1) {
+  throw new Error('can only upgrade at most one package')
+}
+
+const pkg = target
+  ? require(`../packages/${target}/package.json`)
+  : require('../package.json')
 
 const options = {
   devDependencies: {
@@ -29,12 +37,21 @@ console.log(depFields)
 
 function upgrade() {
   for (const dep in depFields) {
-    execa.commandSync(
-      `yarn add ${depFields[dep].data} ${depFields[dep].tag} -W`,
-      {
-        stdio: 'inherit'
-      }
-    )
+    if (target === []) {
+      execa.commandSync(
+        `yarn add ${depFields[dep].data} ${depFields[dep].tag} -W`,
+        {
+          stdio: 'inherit'
+        }
+      )
+    } else {
+      execa.commandSync(
+        `yarn workspace @${scope}/${target} add ${depFields[dep].data} ${depFields[dep].tag}`,
+        {
+          stdio: 'inherit'
+        }
+      )
+    }
   }
 }
 

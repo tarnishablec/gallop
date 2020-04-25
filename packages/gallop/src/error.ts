@@ -1,3 +1,5 @@
+import { Primitive } from './utils'
+
 export const ComponentNamingError = (name: string) =>
   new SyntaxError(
     `The provided name "${name}" is not a valid custom element name.`
@@ -15,3 +17,9 @@ export const LockedProxyError = (target: object) =>
 
 export const NotUpdatableELementError = (name: string) =>
   new SyntaxError(`${name} element is not an UpdatableElement`)
+
+export const DirectiveCanNotUseError = (name: string) =>
+  new SyntaxError(`${name} directive can only be used in NodePart`)
+
+export const DuplicatedKeyError = (key: Primitive) =>
+  new Error(`key ${String(key)} is Duplicated`)

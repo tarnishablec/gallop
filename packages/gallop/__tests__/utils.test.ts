@@ -2,7 +2,6 @@ import {
   getFuncArgNames,
   extractProps,
   shallowEqual,
-  keyListDiff,
   digStringBlock
 } from '../src/utils'
 import { html } from '../src/parse'
@@ -19,7 +18,10 @@ describe('utils', () => {
     const builder = (
       /*asdasddfgas""daq,asdas{}*/ name: /*asdasddfgas""daq,asdas{}*/ string,
       /*asdasddfgas""daq,asdas{}*/ age: number = 25
-    ) => html` <h3>name is &zwnj;${name}; age is ${age}</h3> `
+    ) =>
+      html`
+        <h3>name is &zwnj;${name}; age is ${age}</h3>
+      `
 
     expect(getFuncArgNames(func)).toEqual(['_you', 'b', 'c'])
     expect(getFuncArgNames(getFuncArgNames)).toEqual(['func'])
@@ -91,25 +93,7 @@ describe('utils', () => {
     expect(shallowEqual(func, () => console.log(1))).toBe(false)
   })
 
-  test('diff result', () => {
-    const a = [9, 1, 2, 5, 4, 6, 8, 10]
-    const b = [7, 3, 9, 8, 5, 0, 4]
-
-    let res = keyListDiff(a, b)
-
-    expect(res).toEqual([
-      { type: 'insert', newIndex: 0, after: null },
-      { type: 'insert', newIndex: 1, after: 7 },
-      { type: 'move', oldIndex: 0, after: 3 },
-      { type: 'move', oldIndex: 3, after: 8 },
-      { type: 'insert', newIndex: 5, after: 5 },
-      { type: 'move', oldIndex: 4, after: 0 },
-      { type: 'remove', oldIndex: 1 },
-      { type: 'remove', oldIndex: 2 },
-      { type: 'remove', oldIndex: 5 },
-      { type: 'remove', oldIndex: 7 }
-    ])
-  })
+  test('diff result', () => {})
 
   test('digStringBlock', () => {
     expect(digStringBlock('asdad[eeeeeee]asdasdaa', '[')[0]).toBe('[eeeeeee]')

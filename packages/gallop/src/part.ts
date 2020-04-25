@@ -1,8 +1,10 @@
-import { ShallowClip, Clip, createInstance, getVals, getShaHtml } from './clip'
+import { HTMLClip, Clip, createInstance, getVals, getShaHtml } from './clip'
 import { UpdatableElement, VirtualElement } from './component'
 import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
+import { isDirective, directives } from './directive'
+import { handleEntry } from './directives/repeat'
 
 type AttrEventLocation = { node: Element; name: string }
 type PropLocation = { node: UpdatableElement; name: string }
@@ -52,7 +54,7 @@ export class NodePart extends Part {
   commitText(type: 'text', val: string) {
     if (this.type === type) {
       if (val === this.value) {
-        return
+        return val
       }
     }
 
@@ -61,16 +63,16 @@ export class NodePart extends Part {
       new Text(val?.toString()),
       this.location.endNode
     )
-    this.value = val
+    return val
   }
 
-  commitClip(type: 'clip', val: ShallowClip) {
+  commitClip(type: 'clip', val: HTMLClip) {
     if (type === this.type) {
       const shaHtml = val.do(getShaHtml)
       if (shaHtml === this.shaHtmlCache) {
         const nowClip = this.value as Clip
         nowClip.tryUpdate(val.do(getVals))
-        return
+        return nowClip
       } else {
         this.shaHtmlCache = shaHtml
       }
@@ -81,75 +83,79 @@ export class NodePart extends Part {
     const clip = val.do(createInstance)
     clip.tryUpdate(val.do(getVals))
     parent.insertBefore(clip.dof, endNode)
-    this.value = clip
+    return clip
   }
 
   commmitClips(type: 'clips', val: unknown[]) {
-    //TODO key diff ?
-
     this.clear()
     const batch = new DocumentFragment()
-    let res = new Array<Clip | string | VirtualElement>()
-    val.forEach((v) => {
-      if (v instanceof ShallowClip) {
-        const clip = v.do(createInstance)
-        clip.tryUpdate(v.do(getVals))
-        batch.append(clip.dof)
-        res.push(clip)
-      } else if (v instanceof VirtualElement) {
-      } else {
-        const str = tryParseToString(v)
-        batch.append(str)
-        res.push(str)
-      }
+    val.forEach(v => {
+      batch.append(handleEntry(v))
     })
     this.location.startNode.parentNode!.insertBefore(
       batch,
       this.location.endNode
     )
-    this.value = res
   }
 
   commitElement(type: 'element', val: VirtualElement) {
     if (this.type === type) {
       const current = this.value as VirtualElement
       if (val.tag === current.tag) {
-        current.el!.mergeProps(val.props)
-        return
+        current.el?.mergeProps(val.props)
+        return val
       }
     }
     this.clear()
     const { endNode } = this.location
     const parent = endNode.parentNode!
-    const el = document.createElement(val.tag) as UpdatableElement
-    el.mergeProps(val.props)
-    parent.insertBefore(el, endNode)
-    this.value = val
-    this.value.el = el
+    const instance = val.createInstance()
+    parent.insertBefore(instance, endNode)
+    return val
   }
 
   setValue(val: unknown) {
     let type: NodePartType
-    if (val instanceof VirtualElement) {
+
+    let pendingVal = val
+    let isOverrided = false
+
+    while (isDirective(pendingVal)) {
+      if (directives.get(pendingVal)) {
+        isOverrided = true
+      }
+      pendingVal = pendingVal(this)
+    }
+
+    if (isOverrided) {
+      return
+    }
+
+    if (pendingVal instanceof VirtualElement) {
       type = 'element'
-      this.commitElement(type, val)
-    } else if (val instanceof ShallowClip) {
+      this.value = this.commitElement(type, pendingVal)
+    } else if (pendingVal instanceof HTMLClip) {
       type = 'clip'
-      this.commitClip(type, val)
-    } else if (Array.isArray(val)) {
+      this.value = this.commitClip(type, pendingVal)
+    } else if (Array.isArray(pendingVal)) {
       type = 'clips'
-      this.commmitClips(type, val)
+      this.commmitClips(type, pendingVal)
     } else {
       type = 'text'
-      val !== this.value && this.commitText(type, tryParseToString(val))
+      pendingVal !== this.value &&
+        (this.value = this.commitText(type, tryParseToString(pendingVal)))
     }
     this.type = type
   }
 
-  value!: (Clip | string | VirtualElement)[] | string | Clip | VirtualElement
+  value!:
+    | (Clip | string | VirtualElement | unknown[])[]
+    | string
+    | Clip
+    | VirtualElement
   location!: NodeLocation
-  shaHtmlCache?: string
-  keyCache?: unknown[]
+  shaHtmlCache?: string;
+  [key: string]: unknown //for directives
 }
 
 export class AttrPart extends Part {
@@ -200,7 +206,7 @@ type EventInstance = (e: Event) => unknown
 
 export class EventPart extends Part {
   clear(): void {
-    this.eventCache.forEach((val) => {
+    this.eventCache.forEach(val => {
       this.location.node.removeEventListener(this.eventName, val, this.options)
     })
     this.eventCache.clear()
@@ -209,7 +215,7 @@ export class EventPart extends Part {
   commit(): void {
     this.clear()
     const { node } = this.location
-    this.value.forEach((v) => {
+    this.value.forEach(v => {
       let ev = this.tryGetFromCache(v)
       node.addEventListener(this.eventName, ev, this.options)
     })
@@ -218,7 +224,7 @@ export class EventPart extends Part {
   setValue(val: EventInstance | EventInstance[]) {
     let temp: string[]
     if (Array.isArray(val)) {
-      temp = val.map((v) => v?.toString())
+      temp = val.map(v => v?.toString())
     } else {
       temp = [val.toString()]
     }
