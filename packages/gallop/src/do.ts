@@ -1,11 +1,12 @@
-export abstract class DoAble<T> {
-  [key: string]: unknown
+import { Clazz } from './utils'
 
-  do<F extends (...args: any) => any>(
-    this: T,
-    func: F,
-    ...args: Parameters<F>
-  ): ReturnType<F> {
-    return func.call(this, ...args)
+export function DoAble<T extends Clazz>(BaseClazz: T) {
+  return class extends BaseClazz {
+    do<F extends (...args: any) => any>(
+      func: F,
+      ...args: Parameters<F>
+    ): ReturnType<F> {
+      return func.call(this, ...args)
+    }
   }
 }

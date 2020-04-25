@@ -27,8 +27,7 @@ export function getVals(this: HTMLClip) {
 export function getShaHtml(this: HTMLClip) {
   return cleanDofStr(this.strs.join(marker))
 }
-
-export class HTMLClip extends DoAble<HTMLClip> {
+export class HTMLClip extends DoAble(Object) {
   protected contexts?: Set<Context<object>>
   protected key?: unknown
 
@@ -39,7 +38,6 @@ export class HTMLClip extends DoAble<HTMLClip> {
     super()
   }
 }
-
 export class Clip {
   parts: Part[]
   partCount: number

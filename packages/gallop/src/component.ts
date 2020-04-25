@@ -215,7 +215,7 @@ export function verifyComponentName(name: string) {
   return arr[arr.length - 1] && arr.length >= 2 && name.toLowerCase() === name
 }
 
-export class VirtualElement extends DoAble<VirtualElement> {
+export class VirtualElement extends DoAble(Object) {
   el?: UpdatableElement
   constructor(public tag: string, public props: unknown[]) {
     super()

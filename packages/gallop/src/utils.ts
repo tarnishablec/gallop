@@ -1,7 +1,10 @@
 import { isMarker } from './is'
-import { DiffKeyType } from './directives/repeat'
 
 export type Primitive = null | undefined | boolean | number | string | symbol
+
+export type Clazz<T = {}> = {
+  new (...args: any[]): T
+}
 
 export function tryParseToString(val: unknown): string {
   if (
@@ -135,7 +138,7 @@ export function getFuncArgNames(func: Function) {
 
 export function extractProps(attr: NamedNodeMap) {
   return Array.from(attr)
-    .filter(a => /^:\S+/.test(a.name) && !isMarker(a.value))
+    .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
     .reduce((acc, { name, value }) => {
       Reflect.set(acc, name.slice(1), value)
       return acc
@@ -176,24 +179,4 @@ export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
     return false
   }
   return arrA.join('') === arrB.join('')
-}
-
-type Change =
-  | {
-      type: 'insert'
-      newIndex: number
-      after: DiffKeyType | null
-    }
-  | {
-      type: 'move'
-      oldIndex: number
-      after: DiffKeyType | null
-    }
-  | {
-      type: 'remove'
-      oldIndex: number
-    }
-
-export const keyListDiff = (oldList: DiffKeyType[], newList: DiffKeyType[]) => {
-  return []
 }

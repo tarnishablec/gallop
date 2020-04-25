@@ -28,7 +28,7 @@ export let [data, context] = createContext({
   hide: true
 })
 
-component('app-root', function(this: UpdatableElement) {
+component('app-root', function (this: UpdatableElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
 
   useContext([context])
@@ -73,11 +73,7 @@ component('app-root', function(this: UpdatableElement) {
       change color
     </button>
     <hr />
-    ${state.countdown
-      ? html`
-          <span>${state.countdown}</span>
-        `
-      : null}
+    ${state.countdown ? html` <span>${state.countdown}</span> ` : null}
     <test-b></test-b>
     <hr />
     <slot>
@@ -94,18 +90,13 @@ component('app-root', function(this: UpdatableElement) {
     </dyna-mic>
     <hr />
     <div>
-      ${data.list.map(val =>
-        [...val.toString()].map(
-          v =>
-            html`
-              <button>${v}</button>
-            `
-        )
+      ${data.list.map((val) =>
+        [...val.toString()].map((v) => html` <button>${v}</button> `)
       )}
     </div>
     <hr />
     <div>
-      ${data.list.map(val =>
+      ${data.list.map((val) =>
         [...val.toString()].map((v, index) =>
           index % 2 ? TestC(v.toString()) : { a: { b: index } }
         )
@@ -115,7 +106,7 @@ component('app-root', function(this: UpdatableElement) {
     <div>
       ${repeat(
         data.list,
-        item => item, //key
+        (item) => item, //key
         (
           item,
           index //item
@@ -166,12 +157,6 @@ render(
     </style>
   `
 )
-
-const script = document.createElement('script')
-script.type = 'module'
-script.src = `https://unpkg.com/@gallop/gallop@0.3.3-alpha.0/dist/gallop.global.js`
-
-document.body.append(script)
 
 // function testTask() {
 // window.requestIdleCallback(() => console.log('requestIdleCallback'))
