@@ -20,9 +20,8 @@ const resolve = (p) => path.resolve(packageDir, p)
 
 const formats = {
   esm: {
-    file: resolve(`dist/index.js`),
-    format: `es`,
-    plugins: [terser()]
+    file: resolve(`dist/index.esm.js`),
+    format: `es`
   },
   global: {
     file: resolve(`dist/index.global.js`),
@@ -41,21 +40,17 @@ fs.readdirSync(packagesDir).forEach((dir) => {
   }
 })
 
-const staticOptions = {
-  plugins: [
-    typescript({
-      tsconfig: path.resolve(__dirname, 'tsconfig.json')
-    }),
-    json(),
-    alias(aliasOptions)
-  ]
-}
-
 const CONFIG = [
   {
     input: resolve(`src/index.ts`),
     output: [],
-    ...staticOptions
+    plugins: [
+      typescript({
+        tsconfig: path.resolve(__dirname, 'tsconfig.json')
+      }),
+      json(),
+      alias(aliasOptions)
+    ]
   }
 ]
 

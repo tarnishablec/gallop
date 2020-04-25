@@ -52,9 +52,12 @@ buildAll(targets)
 async function cleanDts(target) {
   const distDir = path.resolve(`packages/${target}/dist`)
   fse.ensureDir(distDir).then(() => {
-    fse.remove(`${distDir}/index.global.d.ts`).then(() => {
-      console.log(chalk.blueBright('d.ts file generated'))
-    })
+    fse.remove(`${distDir}/index.global.d.ts`)
+    fse
+      .rename(`${distDir}/index.esm.d.ts`, `${distDir}/index.d.ts`)
+      .then(() => {
+        console.log(chalk.blueBright('d.ts file generated'))
+      })
   })
 }
 

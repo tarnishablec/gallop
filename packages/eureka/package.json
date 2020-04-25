@@ -2,8 +2,8 @@
   "name": "@gallop/eureka",
   "version": "0.3.5-alpha.0",
   "description": "eureka",
-  "main": "dist/index.global.js",
-  "module": "dist",
+  "main": "src/index.ts",
+  "module": "dist/index.esm.js",
   "files": [
     "index.js",
     "dist",
