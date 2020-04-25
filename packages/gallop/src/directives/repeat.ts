@@ -61,8 +61,8 @@ export const repeat = directive(function <T>(
 },
 true)
 
-export function handleEntry(val: unknown): DocumentFragment {
-  let dof = new DocumentFragment()
+export function handleEntry(val: unknown) {
+  const dof = new DocumentFragment()
   if (Array.isArray(val)) {
     val.forEach((v) => {
       dof.append(handleEntry(v))

@@ -955,11 +955,6 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@gallop/gallop@^0.3.3-alpha.0":
-  version "0.3.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@gallop/gallop/-/gallop-0.3.3-alpha.0.tgz#4a7bdcbd37be63fa447f68faa23601ae962a044f"
-  integrity sha512-FS6Sq5mNuz5SRJ0abewWI1dae9763rfDA0gmm1ldeq27n0ljrnGMRU2VyNbTQX47NPSVDbiYZvWiSP0neXSyhg==
-
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.0.0"
   resolved "https://registry.npm.taobao.org/@istanbuljs/load-nyc-config/download/@istanbuljs/load-nyc-config-1.0.0.tgz#10602de5570baea82f8afbfa2630b24e7a8cfe5b"

@@ -104,22 +104,7 @@ component('app-root', function (this: UpdatableElement) {
     </div>
     <hr />
     <div>
-      ${repeat(
-        data.list,
-        (item) => item, //key
-        (
-          item,
-          index //item
-        ) =>
-          index % 2
-            ? html`
-                <div>
-                  <button>${item.toString()[0]}</button
-                  ><button>${item.toString()[1]}</button>
-                </div>
-              `
-            : item
-      )}
+      ${''}
     </div>
     <hr />
     <button
