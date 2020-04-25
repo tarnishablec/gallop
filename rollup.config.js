@@ -4,6 +4,7 @@ import typescript from '@wessberg/rollup-plugin-ts'
 import json from '@rollup/plugin-json'
 import alias from '@rollup/plugin-alias'
 import { terser } from 'rollup-plugin-terser'
+import cleanup from 'rollup-plugin-cleanup'
 const { scope } = require('./scripts/setting')
 
 if (!process.env.TARGET) {
@@ -45,6 +46,9 @@ const CONFIG = [
     input: resolve(`src/index.ts`),
     output: [],
     plugins: [
+      cleanup({
+        extensions: ['ts', 'tsx', 'js', 'jsx']
+      }),
       typescript({
         tsconfig: path.resolve(__dirname, 'tsconfig.json')
       }),
