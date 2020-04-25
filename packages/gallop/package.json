@@ -2,7 +2,7 @@
   "name": "@gallop/gallop",
   "version": "0.3.5-alpha.0",
   "description": "gallop",
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.global.js",
   "module": "dist",
   "files": [
     "index.js",

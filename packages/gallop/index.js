@@ -1,3 +1,3 @@
 'use strict'
 
-module.exports = require('./dist/gallop.cjs.js')
+module.exports = require('./dist/index.global.js')

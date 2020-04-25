@@ -76,7 +76,7 @@ function initIndexJs(filePath, name, args) {
       filePath,
       `'use strict'
 
-module.exports = require('./dist/${name}.cjs.js')
+module.exports = require('./dist/${name}.global.js')
       `.trim() + '\n'
       //       `
       // 'use strict'
@@ -124,7 +124,7 @@ function initPkg(filePath, longName, shortName, args) {
       version: baseVersion,
       description: shortName,
       main: `dist/index.global.js`,
-      module: `dist`,
+      module: `dist/index.js`,
       files: [`index.js`, 'dist', 'src'],
       unpkg: `dist/index.js`,
       types: `dist/index.d.ts`,
