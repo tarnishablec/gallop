@@ -1,6 +1,6 @@
 {
   "name": "@gallop/gallop",
-  "version": "0.3.4-alpha.1",
+  "version": "0.3.5-alpha.0",
   "description": "gallop",
   "main": "dist/index.cjs.js",
   "module": "dist",
