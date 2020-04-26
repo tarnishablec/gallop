@@ -1,9 +1,7 @@
 import { directive, DirectiveFn, checkIsNodePart } from '../directive'
 import { Part, NodePart } from '../part'
-import { Primitive, tryParseToString } from '../utils'
+import { Primitive } from '../utils'
 import { DuplicatedKeyError } from '../error'
-import { HTMLClip, createInstance, getVals } from '../clip'
-import { VirtualElement } from '../component'
 
 export type DiffKeyType = Exclude<Primitive, null | undefined | boolean>
 
@@ -13,7 +11,7 @@ const partKeyRangeCache = new WeakMap<
   Map<DiffKeyType, { start: Node | null; end: Node | null }>
 >()
 
-export const repeat = directive(function <T>(
+export const repeat = directive(function<T>(
   items: Iterable<T>,
   keyFn: (item: T, index: number) => DiffKeyType,
   mapFn: (item: T, index: number) => unknown
@@ -53,31 +51,13 @@ export const repeat = directive(function <T>(
     console.log(newKeys)
     console.log(newVals)
 
-    diffRes.forEach((change) => {})
+    diffRes.forEach(change => {})
 
     partKeyCache.set(part, newKeys)
     return newVals
   }
 },
 false)
-
-export function handleEntry(val: unknown) {
-  const dof = new DocumentFragment()
-  if (Array.isArray(val)) {
-    val.forEach((v) => {
-      dof.append(handleEntry(v))
-    })
-  } else if (val instanceof HTMLClip) {
-    const clip = val.do(createInstance)
-    clip.tryUpdate(val.do(getVals))
-    dof.append(clip.dof)
-  } else if (val instanceof VirtualElement) {
-    dof.append(val.createInstance())
-  } else {
-    dof.append(tryParseToString(val))
-  }
-  return dof
-}
 
 type Change =
   | {
@@ -95,5 +75,13 @@ type Change =
     }
 
 function listKeyDiff(oldList: DiffKeyType[], newList: DiffKeyType[]): Change[] {
+  const buffer: Change[] = []
+  let nextKey: DiffKeyType
+
+  newList.forEach((n, i) => {
+    const j = oldList.indexOf(n)
+    nextKey = newList[i + 1]
+    const nextj = oldList.indexOf(nextKey)
+  })
   return []
 }

@@ -53,8 +53,8 @@ module.exports = {
       {
         test: /\.((s[ac])|c)ss$/,
         use: [
-          'to-string-loader',
-          // ProdMode ? MiniCssExtractPlugin.loader : 'style-loader',
+          // 'to-string-loader',
+          ProdMode ? MiniCssExtractPlugin.loader : 'style-loader',
           'css-loader',
           {
             loader: 'postcss-loader',

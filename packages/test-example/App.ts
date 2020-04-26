@@ -10,16 +10,16 @@ import {
   repeat
 } from '@gallop/gallop'
 
-import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { diff } from '@egjs/list-differ'
+
+console.log(diff([1, 2, 3, 4, 5, 6], [5, 6, 2, 1, 3, 5, 7]))
 
 import './src/components/TestA'
 import { TestC } from './src/components/TestC'
 import { TestD } from './src/components/TestD'
 import './src/components/TestE'
 
-import css from './src/styles/test.css'
-console.log(css)
+import './src/styles/index.scss'
 
 setTimeout(() => {
   import(/* webpackChunkName: "test-b" */ './src/components/TestB')
@@ -31,7 +31,7 @@ export let [data, context] = createContext({
   hide: true
 })
 
-component('app-root', function (this: UpdatableElement) {
+component('app-root', function(this: UpdatableElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
 
   useContext([context])
@@ -71,12 +71,17 @@ component('app-root', function (this: UpdatableElement) {
     ${TestC(state.countdown.toString())}
     <hr />
     <button
+      part="changecolorbutton"
       @click="${() => (state.color = state.color === 'red' ? 'green' : 'red')}"
     >
       change color
     </button>
     <hr />
-    ${state.countdown ? html` <span>${state.countdown}</span> ` : null}
+    ${state.countdown
+      ? html`
+          <span>${state.countdown}</span>
+        `
+      : null}
     <test-b></test-b>
     <hr />
     <slot>
@@ -93,13 +98,18 @@ component('app-root', function (this: UpdatableElement) {
     </dyna-mic>
     <hr />
     <div>
-      ${data.list.map((val) =>
-        [...val.toString()].map((v) => html` <button>${v}</button> `)
+      ${data.list.map(val =>
+        [...val.toString()].map(
+          v =>
+            html`
+              <button>${v}</button>
+            `
+        )
       )}
     </div>
     <hr />
     <div>
-      ${data.list.map((val) =>
+      ${data.list.map(val =>
         [...val.toString()].map((v, index) =>
           index % 2 ? TestC(v.toString()) : { a: { b: index } }
         )
@@ -109,11 +119,13 @@ component('app-root', function (this: UpdatableElement) {
     <div>
       ${repeat(
         data.list,
-        (item) => item,
-        (item) =>
+        item => item,
+        item =>
           [...item.toString()].map(
-            (v) =>
-              html` <button @click="${() => console.log(item)}">${v}</button> `
+            v =>
+              html`
+                <button @click="${() => console.log(item)}">${v}</button>
+              `
           )
       )}
     </div>

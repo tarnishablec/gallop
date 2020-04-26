@@ -1,10 +1,14 @@
 import { HTMLClip, Clip, createInstance, getVals, getShaHtml } from './clip'
 import { UpdatableElement, VirtualElement } from './component'
-import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
+import {
+  shallowEqual,
+  twoStrArrayCompare,
+  tryParseToString,
+  handleEntry
+} from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
 import { isDirective, directives } from './directive'
-import { handleEntry } from './directives/repeat'
 
 type AttrEventLocation = { node: Element; name: string }
 type PropLocation = { node: UpdatableElement; name: string }

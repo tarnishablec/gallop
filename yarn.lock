@@ -865,6 +865,11 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@egjs/list-differ@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/@egjs/list-differ/download/@egjs/list-differ-1.0.0.tgz#2277aff52e3e4bd9318d5c30ffc3ba3b6216f05e"
+  integrity sha1-Inev9S4+S9kxjVww/8O6O2IW8F4=
+
 "@electron/get@^1.0.1":
   version "1.10.0"
   resolved "https://registry.npm.taobao.org/@electron/get/download/@electron/get-1.10.0.tgz#258fdda22bbd5a247e0b663ba9c525dedc1bdfff"

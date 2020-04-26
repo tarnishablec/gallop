@@ -2,3 +2,7 @@ body {
   box-sizing: border-box;
   margin: 0;
 }
+
+app-root::part(changecolorbutton) {
+  background-color: rgb(166, 199, 89);
+}

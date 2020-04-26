@@ -1,4 +1,6 @@
 import { isMarker } from './is'
+import { VirtualElement } from './component'
+import { HTMLClip, createInstance, getVals } from './clip'
 
 export type Primitive = null | undefined | boolean | number | string | symbol
 
@@ -138,7 +140,7 @@ export function getFuncArgNames(func: Function) {
 
 export function extractProps(attr: NamedNodeMap) {
   return Array.from(attr)
-    .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
+    .filter(a => /^:\S+/.test(a.name) && !isMarker(a.value))
     .reduce((acc, { name, value }) => {
       Reflect.set(acc, name.slice(1), value)
       return acc
@@ -179,4 +181,22 @@ export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
     return false
   }
   return arrA.join('') === arrB.join('')
+}
+
+export function handleEntry(val: unknown) {
+  const dof = new DocumentFragment()
+  if (Array.isArray(val)) {
+    val.forEach(v => {
+      dof.append(handleEntry(v))
+    })
+  } else if (val instanceof HTMLClip) {
+    const clip = val.do(createInstance)
+    clip.tryUpdate(val.do(getVals))
+    dof.append(clip.dof)
+  } else if (val instanceof VirtualElement) {
+    dof.append(val.createInstance())
+  } else {
+    dof.append(tryParseToString(val))
+  }
+  return dof
 }

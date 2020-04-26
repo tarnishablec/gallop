@@ -11,7 +11,7 @@ const execa = require('execa')
 main()
 
 function main() {
-  targets.forEach((shortName) => {
+  targets.forEach(shortName => {
     const packageDir = path.join(packagesDir, shortName)
     if (!fse.statSync(packageDir).isDirectory()) {
       return
@@ -101,7 +101,8 @@ function initPkg(filePath, longName, shortName, args) {
     'peerDependencies',
     'dependencies',
     'private',
-    'buildOptions'
+    'buildOptions',
+    'gitHead'
   ]
 
   let pkgCache = {}
@@ -112,7 +113,7 @@ function initPkg(filePath, longName, shortName, args) {
     if (oldPkg.private) {
       return
     } else {
-      cacheFields.forEach((field) => {
+      cacheFields.forEach(field => {
         pkgCache[field] = oldPkg[field]
       })
     }
