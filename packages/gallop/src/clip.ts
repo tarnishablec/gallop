@@ -1,6 +1,5 @@
 import { marker, markerIndex } from './marker'
 import { Part, AttrPart, PropPart, EventPart, NodePart } from './part'
-import { Context } from './context'
 import { isMarker } from './is'
 import { cleanDofStr, insertAfter } from './dom'
 import { UpdatableElement } from './component'
@@ -28,9 +27,6 @@ export function getShaHtml(this: HTMLClip) {
   return cleanDofStr(this.strs.join(marker))
 }
 export class HTMLClip extends DoAble(Object) {
-  protected contexts?: Set<Context<object>>
-  protected key?: unknown
-
   constructor(
     protected readonly strs: TemplateStringsArray,
     protected readonly vals: ReadonlyArray<unknown>
@@ -40,11 +36,7 @@ export class HTMLClip extends DoAble(Object) {
 }
 export class Clip {
   parts: Part[]
-  partCount: number
-
-  dof: DocumentFragment
-
-  constructor(dof: DocumentFragment, partCount: number) {
+  constructor(public dof: DocumentFragment, public partCount: number) {
     this.dof = dof
     this.parts = new Array<Part>()
     this.partCount = partCount
@@ -58,9 +50,9 @@ export class Clip {
 
 export function attachParts(clip: Clip) {
   const walker = document.createTreeWalker(clip.dof, 133)
-  const length = clip.partCount
+  const size = clip.partCount
   let count = 0
-  while (count < length) {
+  while (count < size) {
     walker.nextNode()
     const cur = walker.currentNode
 

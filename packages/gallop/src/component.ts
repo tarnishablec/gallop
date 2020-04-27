@@ -1,6 +1,5 @@
 import { Clip, HTMLClip, createInstance, getVals, getShaHtml } from './clip'
 import { getFuncArgNames, extractProps } from './utils'
-import { ComponentNamingError, ComponentDuplicatedError } from './error'
 import { createProxy } from './reactive'
 import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
@@ -188,14 +187,6 @@ export function component<F extends Component>(
     unstable: false
   }
 ) {
-  if (!verifyComponentName(name)) {
-    throw ComponentNamingError(name)
-  }
-
-  if (componentPool.has(name)) {
-    throw ComponentDuplicatedError(name)
-  }
-
   const propNames =
     propNameList ?? getFuncArgNames(builder).map((name) => name.toLowerCase())
 
@@ -209,11 +200,6 @@ export function component<F extends Component>(
   componentPool.add(name)
 
   return (...props: Parameters<F>) => new VirtualElement(name, props)
-}
-
-export function verifyComponentName(name: string) {
-  const arr = name.split('-')
-  return arr[arr.length - 1] && arr.length >= 2 && name.toLowerCase() === name
 }
 
 export class VirtualElement extends DoAble(Object) {
