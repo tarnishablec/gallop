@@ -6,7 +6,7 @@
     yarn add @gallop/gallop
 
     https://unpkg.com/@gallop/gallop
-    
+
     this framework is purely driven by personal interest
 
     you are extremely welcomed if you can help me to make gallop better
@@ -68,6 +68,10 @@ component('test-name', function (
 
   useContext([context]) //you need to hook Context to this component by useContext()
 
+  const [button] = useCache({button: this.$root.querySelector('button')})  //will not trigger rerender, and only execute once
+
+  console.log(button) //return button dom element
+
   useEffect(() => {
     console.dir(this) //this context can be pass by arrow function
     return () => {
@@ -120,19 +124,13 @@ render(html`
   |useState() | ✅ |
   |useContext() | ✅ |
   |useEffect() | ✅ |
-  |useMemo() | ❓ |
-  |useStyle()| ❌ |
-  |useKey()| ❌ |
+  |useCache()| ✅ |
 
 - router ⌛
 
 - vscode syntax highlighting and intelliSense plugin  
   ( for now, I recommend you to use `lit-html` plugin in vscode extension market <br>
   & configure file association for `.ts` to `typescript react` )
-
-- dynamic scoped css by shadowdom
-
-- scoped scss inject
 
 - ui library ([zeit-design](https://zeit-style.now.sh/))
 

@@ -4,22 +4,12 @@ import { isProxy } from './is'
 import { shallowEqual } from './utils'
 import { Context } from './context'
 
-export function useState<T extends object>(
-  initState: T,
-  reactive: boolean = true
-): [T] {
+export function useState<T extends object>(initState: T): [T] {
   const current = resolveCurrentHandle()
-  if (!current.$state) {
-    current.$state = [undefined, undefined]
-  }
-  return (reactive
-    ? [
-        current.$state[0] ??
-          (current.$state[0] = createProxy(initState, () =>
-            current.enUpdateQueue()
-          ))
-      ]
-    : [current.$state[1] ?? (current.$state[1] = initState)]) as [T]
+  return (
+    (current.$state as [T]) ??
+    (current.$state = [createProxy(initState, () => current.enUpdateQueue())])
+  )
 }
 
 export type Effect = (
@@ -99,7 +89,7 @@ export function useContext(contexts: Context<object>[]) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function useStyle(content: string) {
-  //TODO
+export function useCache<T extends Object>(initVal: T) {
+  const current = resolveCurrentHandle()
+  return (current.$cache as [T]) ?? (current.$cache = [initVal])
 }

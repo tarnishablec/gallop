@@ -4,7 +4,7 @@ import { HTMLClip, createInstance, getVals } from './clip'
 
 export type Primitive = null | undefined | boolean | number | string | symbol
 
-export type Clazz<T = {}> = {
+export type Clazz<T = Object> = {
   new (...args: any[]): T
 }
 
@@ -140,7 +140,7 @@ export function getFuncArgNames(func: Function) {
 
 export function extractProps(attr: NamedNodeMap) {
   return Array.from(attr)
-    .filter(a => /^:\S+/.test(a.name) && !isMarker(a.value))
+    .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
     .reduce((acc, { name, value }) => {
       Reflect.set(acc, name.slice(1), value)
       return acc
@@ -186,7 +186,7 @@ export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
 export function handleEntry(val: unknown) {
   const dof = new DocumentFragment()
   if (Array.isArray(val)) {
-    val.forEach(v => {
+    val.forEach((v) => {
       dof.append(handleEntry(v))
     })
   } else if (val instanceof HTMLClip) {

@@ -41,7 +41,7 @@ export type EffectInfo = { e: Effect; index: number }
 
 export abstract class UpdatableElement extends HTMLElement {
   $props: unknown[] = []
-  $state?: [unknown, unknown]
+  $state?: [unknown]
   $root: ShadowRoot | UpdatableElement
   $builder: Component
   $alive: boolean = false
@@ -51,6 +51,7 @@ export abstract class UpdatableElement extends HTMLElement {
   $disconnectedEffects?: (() => void)[]
 
   $brobs: any = createProxy({}, () => this.enUpdateQueue())
+  $cache?: [unknown]
 
   $effectsCount: number = 0
 

@@ -17,6 +17,7 @@ console.log(diff([1, 2, 3, 4, 5, 6], [5, 6, 2, 1, 3, 5, 7]))
 import './src/components/TestA'
 import { TestC } from './src/components/TestC'
 import { TestD } from './src/components/TestD'
+import './src/components/TestF'
 import './src/components/TestE'
 
 import './src/styles/index.scss'
@@ -31,7 +32,7 @@ export let [data, context] = createContext({
   hide: true
 })
 
-component('app-root', function(this: UpdatableElement) {
+component('app-root', function (this: UpdatableElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
 
   useContext([context])
@@ -77,11 +78,7 @@ component('app-root', function(this: UpdatableElement) {
       change color
     </button>
     <hr />
-    ${state.countdown
-      ? html`
-          <span>${state.countdown}</span>
-        `
-      : null}
+    ${state.countdown ? html` <span>${state.countdown}</span> ` : null}
     <test-b></test-b>
     <hr />
     <slot>
@@ -98,18 +95,13 @@ component('app-root', function(this: UpdatableElement) {
     </dyna-mic>
     <hr />
     <div>
-      ${data.list.map(val =>
-        [...val.toString()].map(
-          v =>
-            html`
-              <button>${v}</button>
-            `
-        )
+      ${data.list.map((val) =>
+        [...val.toString()].map((v) => html` <button>${v}</button> `)
       )}
     </div>
     <hr />
     <div>
-      ${data.list.map(val =>
+      ${data.list.map((val) =>
         [...val.toString()].map((v, index) =>
           index % 2 ? TestC(v.toString()) : { a: { b: index } }
         )
@@ -119,13 +111,11 @@ component('app-root', function(this: UpdatableElement) {
     <div>
       ${repeat(
         data.list,
-        item => item,
-        item =>
+        (item) => item,
+        (item) =>
           [...item.toString()].map(
-            v =>
-              html`
-                <button @click="${() => console.log(item)}">${v}</button>
-              `
+            (v) =>
+              html` <button @click="${() => console.log(item)}">${v}</button> `
           )
       )}
     </div>
@@ -148,6 +138,8 @@ component('app-root', function(this: UpdatableElement) {
     <hr />
     <button @click="${() => (data.hide = !data.hide)}">change e</button>
     <test-e :hide="${data.hide}"></test-e>
+    <hr />
+    <test-f :clip="${html` <div>${data.list}</div> `}"></test-f>
     <hr />
   `
 })
