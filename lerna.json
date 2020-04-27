@@ -4,7 +4,7 @@
   "packages": [
     "packages/*"
   ],
-  "version": "0.3.5-alpha.2",
+  "version": "0.3.6-alpha.0",
   "command": {
     "publish": {
       "registry": "https://registry.npmjs.org/"
