@@ -11,7 +11,7 @@ const partKeyRangeCache = new WeakMap<
   Map<DiffKeyType, { start: Node | null; end: Node | null }>
 >()
 
-export const repeat = directive(function<T>(
+export const repeat = directive(function <T>(
   items: Iterable<T>,
   keyFn: (item: T, index: number) => DiffKeyType,
   mapFn: (item: T, index: number) => unknown
@@ -51,7 +51,7 @@ export const repeat = directive(function<T>(
     console.log(newKeys)
     console.log(newVals)
 
-    diffRes.forEach(change => {})
+    diffRes.forEach((change) => {})
 
     partKeyCache.set(part, newKeys)
     return newVals
@@ -75,13 +75,8 @@ type Change =
     }
 
 function listKeyDiff(oldList: DiffKeyType[], newList: DiffKeyType[]): Change[] {
-  const buffer: Change[] = []
-  let nextKey: DiffKeyType
+  const keyNeedMoved: DiffKeyType[] = []
 
-  newList.forEach((n, i) => {
-    const j = oldList.indexOf(n)
-    nextKey = newList[i + 1]
-    const nextj = oldList.indexOf(nextKey)
-  })
+  newList.forEach((n, i) => {})
   return []
 }

@@ -1,8 +1,4 @@
-import {
-  verifyComponentName,
-  component,
-  UpdatableElement
-} from '../src/component'
+import { component, UpdatableElement } from '../src/component'
 import {
   html,
   createContext,
@@ -15,14 +11,6 @@ import { createInstance } from '../src/clip'
 import { isMarker } from '../src/is'
 
 describe('component', () => {
-  test('verifyComponentName', () => {
-    expect(verifyComponentName('asdasd')).toBe(false)
-    expect(verifyComponentName('asdasd-0a')).toBe(true)
-    expect(verifyComponentName('Adasd-asd')).toBe(false)
-    expect(verifyComponentName('1')).toBe(false)
-    expect(verifyComponentName('asd-sda-asdasd')).toBe(true)
-  })
-
   test('register component', () => {
     let [data, context] = createContext({ tik: 0 })
 

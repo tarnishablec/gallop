@@ -68,9 +68,9 @@ component('test-name', function (
 
   useContext([context]) //you need to hook Context to this component by useContext()
 
-  const [button] = useCache({button: this.$root.querySelector('button')})  //will not trigger rerender, and only execute once
+  const [cache] = useCache({button: this.$root.querySelector('button')})  //will not trigger rerender, and only execute once
 
-  console.log(button) //return button dom element
+  console.log(cache.button) //return button dom element
 
   useEffect(() => {
     console.dir(this) //this context can be pass by arrow function
