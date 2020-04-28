@@ -45,7 +45,7 @@ export const repeat = directive(function <T>(
     }
 
     const diffRes = listKeyDiff([...oldKeys], newKeys)
-    console.log(diffRes)
+    // console.log(diffRes)
 
     const getAfterNode = (after: DiffKeyType | null) =>
       after !== null ? keyRangeMap.get(after)!.end : part.location.startNode
