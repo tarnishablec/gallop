@@ -1,4 +1,4 @@
-import { component, UpdatableElement } from '../src/component'
+import { component, ReactiveElement } from '../src/component'
 import {
   html,
   createContext,
@@ -21,7 +21,7 @@ describe('component', () => {
     component(
       'test-example',
       function (
-        this: UpdatableElement,
+        this: ReactiveElement,
         name: string = 'yihan',
         age: number,
         hobbies: string[],
@@ -86,7 +86,7 @@ describe('component', () => {
 
     const instance = document.body.querySelector('test-example')!
 
-    expect(instance instanceof UpdatableElement).toBe(true)
+    expect(instance instanceof ReactiveElement).toBe(true)
     expect(instance.parentNode).toBe(document.body)
 
     setTimeout(() => {

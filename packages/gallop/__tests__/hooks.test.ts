@@ -1,5 +1,5 @@
 import { useState, component, html, render, useEffect } from '../src'
-import { resolveCurrentHandle, UpdatableElement } from '../src/component'
+import { resolveCurrentHandle, ReactiveElement } from '../src/component'
 
 describe('hooks', () => {
   test('useState', (done: Function) => {
@@ -15,7 +15,7 @@ describe('hooks', () => {
     render(html` <test-state></test-state> `)
     setTimeout(() => {
       expect(
-        (document.querySelector('test-state') as UpdatableElement).$state?.[0]
+        (document.querySelector('test-state') as ReactiveElement).$state?.[0]
       ).toBe(temp)
     }, 0)
 
@@ -28,7 +28,7 @@ describe('hooks', () => {
     let testres = 1
 
     component('test-a', function (
-      this: UpdatableElement,
+      this: ReactiveElement,
       name: string = 'yihan'
     ) {
       let [state] = useState({ tik: 1, children: [2, 3, 4] })
@@ -52,7 +52,7 @@ describe('hooks', () => {
     const Pure1 = (a: string) => html`<div>pure${a}</div>`
     const Pure2 = () => html`<span>pure</span>`
 
-    component('test-c', function (this: UpdatableElement) {
+    component('test-c', function (this: ReactiveElement) {
       let [state] = useState({ tik: 1, children: [2, 3, 4] })
 
       useEffect(() => {

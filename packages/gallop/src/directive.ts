@@ -1,7 +1,7 @@
 import { Part, NodePart } from './part'
 import { DirectiveCanNotUseError } from './error'
 
-export const directives = new WeakMap<object, boolean>()
+export const directives = new WeakMap<Function, boolean>()
 
 export type DirectiveFn = (part: Part) => unknown
 

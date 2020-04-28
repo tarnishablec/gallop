@@ -1,7 +1,7 @@
-import { component, html, useEffect, UpdatableElement } from '@gallop/gallop'
+import { component, html, useEffect, ReactiveElement } from '@gallop/gallop'
 
 export const TestC = component('test-c', function (
-  this: UpdatableElement,
+  this: ReactiveElement,
   name: string
 ) {
   useEffect(() => {

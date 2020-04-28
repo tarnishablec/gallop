@@ -1,4 +1,4 @@
-import { resolveCurrentHandle, UpdatableElement } from './component'
+import { resolveCurrentHandle, ReactiveElement } from './component'
 import { createProxy, _hasChanged } from './reactive'
 import { isProxy } from './is'
 import { shallowEqual } from './utils'
@@ -14,7 +14,7 @@ export function useState<T extends object>(initState: T): [T] {
 
 export type Effect = (
   ...args: any[]
-) => void | ((this: UpdatableElement, ...args: any[]) => void)
+) => void | ((this: ReactiveElement, ...args: any[]) => void)
 
 export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
   const current = resolveCurrentHandle()
@@ -64,7 +64,7 @@ export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
 }
 
 export function resolveEffects(
-  element: UpdatableElement,
+  element: ReactiveElement,
   effects?: { e: Effect; index: number }[]
 ) {
   setTimeout(() => {

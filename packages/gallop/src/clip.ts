@@ -2,8 +2,8 @@ import { marker, markerIndex } from './marker'
 import { Part, AttrPart, PropPart, EventPart, NodePart } from './part'
 import { isMarker } from './is'
 import { cleanDofStr, insertAfter } from './dom'
-import { UpdatableElement } from './component'
-import { NotUpdatableELementError } from './error'
+import { ReactiveElement } from './component'
+import { NotReactiveELementError } from './error'
 import { DoAble } from './do'
 
 export const range = document.createRange()
@@ -82,7 +82,7 @@ export function attachParts(clip: Clip) {
               )
               break
             case ':':
-              if (cur instanceof UpdatableElement) {
+              if (cur instanceof ReactiveElement) {
                 clip.parts.push(
                   new PropPart(count, {
                     node: cur,
@@ -90,7 +90,7 @@ export function attachParts(clip: Clip) {
                   })
                 )
               } else {
-                throw NotUpdatableELementError(cur.localName)
+                throw NotReactiveELementError(cur.localName)
               }
               break
             case '@':

@@ -1,22 +1,25 @@
 import { HTMLClip, Clip, createInstance, getVals, getShaHtml } from './clip'
-import { UpdatableElement, VirtualElement } from './component'
+import { ReactiveElement, VirtualElement } from './component'
 import {
   shallowEqual,
   twoStrArrayCompare,
   tryParseToString,
-  handleEntry
+  handleArrEntry,
+  extractDof
 } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
 import { isDirective, directives } from './directive'
 
 type AttrEventLocation = { node: Element; name: string }
-type PropLocation = { node: UpdatableElement; name: string }
+type PropLocation = { node: ReactiveElement; name: string }
 type NodeLocation = { startNode: Comment; endNode: Comment }
 
 type PartLocation = AttrEventLocation | PropLocation | NodeLocation
-type NodePartType = 'clip' | 'clips' | 'text' | 'element'
+type NodePartType = 'clip' | 'clips' | 'text' | 'element' | 'dirctive'
 type PartType = 'node' | 'attr' | 'event' | 'prop' | NodePartType
+
+export type NodeValueType = Clip | string | ReactiveElement | NodeValueType[]
 
 const initValue = Symbol('')
 
@@ -93,21 +96,23 @@ export class NodePart extends Part {
   commmitClips(type: 'clips', val: unknown[]) {
     this.clear()
     const batch = new DocumentFragment()
-    val.forEach(v => {
-      batch.append(handleEntry(v))
+    const vs = handleArrEntry(val)
+    vs.forEach((v) => {
+      batch.append(extractDof(v))
     })
     this.location.startNode.parentNode!.insertBefore(
       batch,
       this.location.endNode
     )
+    return vs
   }
 
   commitElement(type: 'element', val: VirtualElement) {
     if (this.type === type) {
-      const current = this.value as VirtualElement
-      if (val.tag === current.tag) {
-        current.el?.mergeProps(val.props)
-        return val
+      const current = this.value as ReactiveElement
+      if (val.tag === current.localName) {
+        current?.mergeProps(val.props)
+        return current
       }
     }
     this.clear()
@@ -115,7 +120,7 @@ export class NodePart extends Part {
     const parent = endNode.parentNode!
     const instance = val.createInstance()
     parent.insertBefore(instance, endNode)
-    return val
+    return instance
   }
 
   setValue(val: unknown) {
@@ -132,6 +137,7 @@ export class NodePart extends Part {
     }
 
     if (isOverrided) {
+      this.type = 'dirctive'
       return
     }
 
@@ -152,11 +158,7 @@ export class NodePart extends Part {
     this.type = type
   }
 
-  value!:
-    | (Clip | string | VirtualElement | unknown[])[]
-    | string
-    | Clip
-    | VirtualElement
+  value!: NodeValueType
   location!: NodeLocation
   shaHtmlCache?: string;
   [key: string]: unknown //for directives
@@ -210,7 +212,7 @@ type EventInstance = (e: Event) => unknown
 
 export class EventPart extends Part {
   clear(): void {
-    this.eventCache.forEach(val => {
+    this.eventCache.forEach((val) => {
       this.location.node.removeEventListener(this.eventName, val, this.options)
     })
     this.eventCache.clear()
@@ -219,7 +221,7 @@ export class EventPart extends Part {
   commit(): void {
     this.clear()
     const { node } = this.location
-    this.value.forEach(v => {
+    this.value.forEach((v) => {
       let ev = this.tryGetFromCache(v)
       node.addEventListener(this.eventName, ev, this.options)
     })
@@ -228,7 +230,7 @@ export class EventPart extends Part {
   setValue(val: EventInstance | EventInstance[]) {
     let temp: string[]
     if (Array.isArray(val)) {
-      temp = val.map(v => v?.toString())
+      temp = val.map((v) => v?.toString())
     } else {
       temp = [val.toString()]
     }

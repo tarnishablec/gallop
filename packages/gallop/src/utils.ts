@@ -1,6 +1,7 @@
 import { isMarker } from './is'
-import { VirtualElement } from './component'
-import { HTMLClip, createInstance, getVals } from './clip'
+import { VirtualElement, ReactiveElement } from './component'
+import { HTMLClip, createInstance, Clip, getVals } from './clip'
+import { NodeValueType } from './part'
 
 export type Primitive = null | undefined | boolean | number | string | symbol
 
@@ -183,20 +184,40 @@ export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
   return arrA.join('') === arrB.join('')
 }
 
-export function handleEntry(val: unknown) {
-  const dof = new DocumentFragment()
+export function handleEntry(val: unknown): NodeValueType {
   if (Array.isArray(val)) {
-    val.forEach((v) => {
-      dof.append(handleEntry(v))
-    })
+    return handleArrEntry(val)
   } else if (val instanceof HTMLClip) {
     const clip = val.do(createInstance)
     clip.tryUpdate(val.do(getVals))
-    dof.append(clip.dof)
+    return clip
   } else if (val instanceof VirtualElement) {
-    dof.append(val.createInstance())
+    return val.createInstance()
   } else {
-    dof.append(tryParseToString(val))
+    return tryParseToString(val)
+  }
+}
+
+export function handleArrEntry(vals: unknown[]) {
+  const res: NodeValueType[] = []
+  vals.forEach((v) => {
+    res.push(handleEntry(v))
+  })
+  return res
+}
+
+export function extractDof(val: NodeValueType) {
+  const dof = new DocumentFragment()
+  if (Array.isArray(val)) {
+    val.forEach((v) => {
+      dof.append(extractDof(v))
+    })
+  } else if (val instanceof ReactiveElement) {
+    dof.append(val)
+  } else if (val instanceof Clip) {
+    dof.append(val.dof)
+  } else {
+    dof.append(val)
   }
   return dof
 }

@@ -5,14 +5,15 @@ import {
   createContext,
   useState,
   useEffect,
-  UpdatableElement,
+  ReactiveElement,
   useContext,
-  repeat
+  repeat,
+  listKeyDiff
 } from '@gallop/gallop'
 
-import { diff } from '@egjs/list-differ'
+// import { diff } from '@egjs/list-differ'
 
-console.log(diff([1, 2, 3, 4, 5, 6], [5, 6, 2, 1, 3, 5, 7]))
+// console.log(diff([1, 2, 3, 4, 5, 6], [5, 6, 2, 1, 3, 5, 7]))
 
 import './src/components/TestA'
 import { TestC } from './src/components/TestC'
@@ -32,7 +33,7 @@ export let [data, context] = createContext({
   hide: true
 })
 
-component('app-root', function (this: UpdatableElement) {
+component('app-root', function (this: ReactiveElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
 
   useContext([context])
@@ -95,28 +96,17 @@ component('app-root', function (this: UpdatableElement) {
     </dyna-mic>
     <hr />
     <div>
-      ${data.list.map((val) =>
-        [...val.toString()].map((v) => html` <button>${v}</button> `)
-      )}
-    </div>
-    <hr />
-    <div>
-      ${data.list.map((val) =>
-        [...val.toString()].map((v, index) =>
-          index % 2 ? TestC(v.toString()) : { a: { b: index } }
-        )
-      )}
-    </div>
-    <hr />
-    <div>
       ${repeat(
-        data.list,
-        (item) => item,
-        (item) =>
-          [...item.toString()].map(
-            (v) =>
-              html` <button @click="${() => console.log(item)}">${v}</button> `
-          )
+        data.list, //list need to be render
+        (item) => item, //key diff callback to generate key
+        (
+          item //actually render
+        ) =>
+          html`
+            <button @click="${() => console.log(item)}">
+              ${item}
+            </button>
+          `
       )}
     </div>
     <hr />
@@ -132,6 +122,9 @@ component('app-root', function (this: UpdatableElement) {
       @click="${() => data.list.push(data.list[data.list.length - 1] + 11)}"
     >
       add into list
+    </button>
+    <button @click="${() => data.list.shift()}">
+      remove first
     </button>
     <hr />
     ${TestD(TestC, state.countdown)}

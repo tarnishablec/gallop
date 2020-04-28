@@ -5,8 +5,8 @@ export const LockedProxyError = (target: object) =>
     `Can not set new property to locked object "${JSON.stringify(target)}".`
   )
 
-export const NotUpdatableELementError = (name: string) =>
-  new SyntaxError(`${name} element is not an UpdatableElement`)
+export const NotReactiveELementError = (name: string) =>
+  new SyntaxError(`${name} element is not an Reactive Element`)
 
 export const DirectiveCanNotUseError = (name: string) =>
   new SyntaxError(`${name} directive can only be used in NodePart`)

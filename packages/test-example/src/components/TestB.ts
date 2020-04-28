@@ -3,12 +3,12 @@ import {
   html,
   useEffect,
   useState,
-  UpdatableElement
+  ReactiveElement
 } from '@gallop/gallop'
 
 export const TestB = component(
   'test-b',
-  function (this: UpdatableElement) {
+  function (this: ReactiveElement) {
     let [state] = useState({ text: '', tick: 0 })
     useEffect(() => {
       console.log(`test-b mounted`)

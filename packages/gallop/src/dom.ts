@@ -12,9 +12,15 @@ export function insertAfter(
   newChild: Node,
   afterChild?: Node | null
 ) {
-  return container.insertBefore(newChild, afterChild?.nextSibling ?? null)
+  return container.insertBefore(
+    newChild,
+    afterChild ? afterChild.nextSibling ?? null : container.firstChild
+  )
 }
 
+/**
+ * [)
+ */
 export function removeNodes(
   container: Node,
   start: Node | null = container.firstChild,

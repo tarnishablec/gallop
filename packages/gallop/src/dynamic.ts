@@ -1,11 +1,11 @@
-import { component, UpdatableElement } from './component'
+import { component, ReactiveElement } from './component'
 import { html } from '.'
 import { useEffect, useCache } from './hooks'
 import { removeNodes } from './dom'
 
 export const DynamicComponent = component(
   'dyna-mic',
-  function (this: UpdatableElement, is: string) {
+  function (this: ReactiveElement, is: string) {
     let [state] = useCache({
       first: true,
       inner: undefined,
@@ -29,7 +29,7 @@ export const DynamicComponent = component(
 
     useEffect(() => {
       const instance = state.instance
-      if (instance instanceof UpdatableElement) {
+      if (instance instanceof ReactiveElement) {
         for (const key in this.$brobs) {
           const element = this.$brobs[key]
           instance.mergeProp(key, element)

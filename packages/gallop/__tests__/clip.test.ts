@@ -30,5 +30,5 @@ describe('clip', () => {
 
   expect(() => {
     attachParts(html`<div :name="${1}">1</div>`.do(createInstance))
-  }).toThrowError(/div element is not an UpdatableElement/)
+  }).toThrowError(/div element is not an Reactive Element/)
 })

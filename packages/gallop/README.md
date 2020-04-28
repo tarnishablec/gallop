@@ -13,6 +13,8 @@
 
 ## Features
 
+- gallop is absolutely `Non-intrusive` so that you can use it in any framework like vue or react
+
 - use `template literals` to auto detect dynamic & static code
 
 - register `reactive` component in functional way
@@ -39,6 +41,8 @@
 
 - `dynamic component` also magically support `named slot`
 
+- ⚡⚡ enable `key diffing` in list rendering by `repeat()` directive
+
 - for more detail, check packages/test-example
 
 ## Simple use case
@@ -51,7 +55,7 @@ import {
   useContext,
   render,
   html,
-  UpdatableElement
+  ReactiveElement
 } from '@gallop/gallop'
 
 export let [data, context] = createContext({ b: 2 }) //context can be exported to another component
@@ -59,7 +63,7 @@ export let [data, context] = createContext({ b: 2 }) //context can be exported t
 export const PureComponent = (prop: string) => html`<div>pure ${prop}</div>` //pure component with no any lifecycle
 
 component('test-name', function (
-  this: UpdatableElement, //this parameter: https://www.typescriptlang.org/docs/handbook/functions.html
+  this: ReactiveElement, //this parameter: https://www.typescriptlang.org/docs/handbook/functions.html
   name: string,
   age: number = 1
 ) {
@@ -68,7 +72,7 @@ component('test-name', function (
 
   useContext([context]) //you need to hook Context to this component by useContext()
 
-  const [cache] = useCache({button: this.$root.querySelector('button')})  //will not trigger rerender, and only execute once
+  const [cache] = useCache({ button: this.$root.querySelector('button') }) //will not trigger rerender, and only execute once
 
   console.log(cache.button) //return button dom element
 
@@ -84,13 +88,17 @@ component('test-name', function (
     <div>${name}</div>
     <div>${data.b}</div>
     <div>${age}</div>
-    ${[1, 2, 3].map(
-      (n) =>
-        n % 2
-          ? html`<div>${n}</div>`
-          : PureComponent(
-              'purename'
-            ) /*use pure component by just simply calling function*/
+    ${repeat(
+      [1, 2, 3], //list need to be render
+      (item) => item, //key diff callback to generate key
+      (
+        item //actually render
+      ) =>
+        html`
+          <button @click="${() => console.log(item)}">
+            ${item}
+          </button>
+        `
     )}
     <slot>
       default slot context

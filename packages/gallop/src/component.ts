@@ -6,14 +6,14 @@ import { Context } from './context'
 import { DoAble } from './do'
 import { removeNodes } from './dom'
 
-let currentHandle: UpdatableElement
+let currentHandle: ReactiveElement
 
 export const resolveCurrentHandle = () => currentHandle
 
-export const setCurrentHandle = (element: UpdatableElement) =>
+export const setCurrentHandle = (element: ReactiveElement) =>
   (currentHandle = element)
 
-const updateQueue = new Set<UpdatableElement>()
+const updateQueue = new Set<ReactiveElement>()
 
 let dirty = false
 
@@ -38,10 +38,10 @@ export type Component = (...props: any[]) => HTMLClip
 export type Complex = (...props: any[]) => VirtualElement
 export type EffectInfo = { e: Effect; index: number }
 
-export abstract class UpdatableElement extends HTMLElement {
+export abstract class ReactiveElement extends HTMLElement {
   $props: unknown[] = []
   $state?: [unknown]
-  $root: ShadowRoot | UpdatableElement
+  $root: ShadowRoot | ReactiveElement
   $builder: Component
   $alive: boolean = false
 
@@ -190,7 +190,7 @@ export function component<F extends Component>(
   const propNames =
     propNameList ?? getFuncArgNames(builder).map((name) => name.toLowerCase())
 
-  const clazz = class extends UpdatableElement {
+  const clazz = class extends ReactiveElement {
     constructor() {
       super(builder, option.shadow ?? true, propNames, option.unstable ?? false)
     }
@@ -203,13 +203,13 @@ export function component<F extends Component>(
 }
 
 export class VirtualElement extends DoAble(Object) {
-  el?: UpdatableElement
+  el?: ReactiveElement
   constructor(public tag: string, public props: unknown[]) {
     super()
   }
 
   createInstance() {
-    this.el = document.createElement(this.tag) as UpdatableElement
+    this.el = document.createElement(this.tag) as ReactiveElement
     this.el.mergeProps(this.props)
     return this.el
   }

@@ -2,7 +2,7 @@ export { html } from './parse'
 export { render } from './render'
 export {
   component,
-  UpdatableElement,
+  ReactiveElement,
   VirtualElement,
   resolveCurrentHandle,
   setCurrentHandle,
@@ -27,3 +27,5 @@ export {
 export type { Component, Complex } from './component'
 export type { Effect } from './hooks'
 export type { DirectiveFn } from './directive'
+
+export { listKeyDiff } from './directives/repeat'
