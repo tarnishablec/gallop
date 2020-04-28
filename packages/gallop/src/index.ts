@@ -27,5 +27,3 @@ export {
 export type { Component, Complex } from './component'
 export type { Effect } from './hooks'
 export type { DirectiveFn } from './directive'
-
-export { listKeyDiff } from './directives/repeat'

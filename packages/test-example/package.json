@@ -49,7 +49,6 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@egjs/list-differ": "^1.0.0",
     "@gallop/gallop": "^0.4.0",
     "lodash": "^4.17.15",
     "rxjs": "^6.5.5"

@@ -7,8 +7,7 @@ import {
   useEffect,
   ReactiveElement,
   useContext,
-  repeat,
-  listKeyDiff
+  repeat
 } from '@gallop/gallop'
 
 // import { diff } from '@egjs/list-differ'
