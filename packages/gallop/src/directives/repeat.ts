@@ -59,6 +59,7 @@ export const repeat = directive(function <T>(
       .forEach((key) => {
         const { start, end, val } = keyRangeMap.get(key)!
         const [v, isInit] = tryUpdateEntry(val, newVals[newKeys.indexOf(key)])
+        keyRangeMap.set(key, { start, end, val: v })
         if (isInit) {
           parent.insertBefore(extractDof(v), start)
           removeNodes(parent, start, end!.nextSibling)
