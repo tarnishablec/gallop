@@ -1,4 +1,4 @@
-import { Clip, HTMLClip, createInstance, getVals, getShaHtml } from './clip'
+import { Clip, HTMLClip, createClip, getVals, getShaHtml } from './clip'
 import { getFuncArgNames, extractProps } from './utils'
 import { createProxy } from './reactive'
 import { Effect, resolveEffects } from './hooks'
@@ -120,7 +120,7 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 
   initClip(shaClip: HTMLClip) {
-    const clip = shaClip.do(createInstance)
+    const clip = shaClip.do(createClip)
     if (this.$unstable) {
       this.$shaCache = shaClip.do(getShaHtml)
     }

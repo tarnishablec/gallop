@@ -8,8 +8,8 @@ export const LockedProxyError = (target: object) =>
 export const NotReactiveELementError = (name: string) =>
   new SyntaxError(`${name} element is not an Reactive Element`)
 
-export const DirectiveCanNotUseError = (name: string) =>
-  new SyntaxError(`${name} directive can only be used in NodePart`)
+export const DirectivePartTypeError = (name: string) =>
+  new SyntaxError(`${name} directive type error`)
 
 export const DuplicatedKeyError = (key: Primitive) =>
   new Error(`key ${String(key)} is Duplicated`)

@@ -1,5 +1,4 @@
-import { Part, NodePart } from './part'
-import { DirectiveCanNotUseError } from './error'
+import { Part } from './part'
 
 export const directives = new WeakMap<Function, boolean>()
 
@@ -20,9 +19,14 @@ export function directive<F extends (...args: any[]) => DirectiveFn>(
   }) as F
 }
 
-export function checkIsNodePart(part: Part): part is NodePart {
-  if (!(part instanceof NodePart)) {
-    throw DirectiveCanNotUseError(part.type)
+export function checkDirective(val: unknown, part: Part) {
+  let pendingVal = val
+  let isOverrided = false
+  while (isDirective(pendingVal)) {
+    if (directives.get(pendingVal)) {
+      isOverrided = true
+    }
+    pendingVal = pendingVal(part)
   }
-  return true
+  return [pendingVal, isOverrided]
 }

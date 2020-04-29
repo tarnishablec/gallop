@@ -1,5 +1,5 @@
 import { html, createContext, component } from '../src'
-import { getVals, createInstance, attachParts } from '../src/clip'
+import { getVals, createClip, attachParts } from '../src/clip'
 
 component('test-test', (name: string) => html`<div>${name}</div>`, ['name'])
 
@@ -17,7 +17,7 @@ describe('clip', () => {
   `
 
   test('ShallowClip', () => {
-    const clip = shaClip.do(createInstance)
+    const clip = shaClip.do(createClip)
     expect(shaClip.do(getVals)).toEqual([1, 1, click, 1, 'color:red'])
     expect(clip.dof.firstChild?.childNodes[1].nodeType).toEqual(
       Node.COMMENT_NODE
@@ -29,6 +29,6 @@ describe('clip', () => {
   })
 
   expect(() => {
-    attachParts(html`<div :name="${1}">1</div>`.do(createInstance))
+    attachParts(html`<div :name="${1}">1</div>`.do(createClip))
   }).toThrowError(/div element is not an Reactive Element/)
 })

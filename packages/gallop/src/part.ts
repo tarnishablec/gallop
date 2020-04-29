@@ -1,9 +1,10 @@
-import { Clip, HTMLClip, createInstance, getVals, getShaHtml } from './clip'
+import { Clip, HTMLClip, createClip, getVals, getShaHtml } from './clip'
 import { ReactiveElement, VirtualElement } from './component'
 import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
-import { isDirective, directives } from './directive'
+import { checkDirective } from './directive'
+import { DirectivePartTypeError } from './error'
 
 type AttrEventLocation = { node: Element; name: string }
 type PropLocation = { node: ReactiveElement; name: string }
@@ -30,11 +31,16 @@ export abstract class Part {
   }
 
   setValue(val: unknown) {
-    if (shallowEqual(this.value, val)) {
+    const [pendingVal, isOverrided] = checkDirective(val, this)
+    if (isOverrided) {
+      return
+    }
+
+    if (shallowEqual(this.value, pendingVal)) {
       // console.log(`nothing changed`)
       return
     } else {
-      this.value = val
+      this.value = pendingVal
       this.commit()
     }
   }
@@ -53,20 +59,11 @@ export class NodePart extends Part {
   commit(): void {}
 
   setValue(val: unknown) {
-    let pendingVal = val
-    let isOverrided = false
-
-    while (isDirective(pendingVal)) {
-      if (directives.get(pendingVal)) {
-        isOverrided = true
-      }
-      pendingVal = pendingVal(this)
-    }
-
+    const [pendingVal, isOverrided] = checkDirective(val, this)
     if (isOverrided) {
-      this.type = 'dirctive'
       return
     }
+
     const [newVal, isInit] = tryUpdateEntry(this.value, pendingVal)
     this.value = newVal
     if (isInit) {
@@ -76,21 +73,6 @@ export class NodePart extends Part {
       const parent = endNode.parentNode!
       parent.insertBefore(dof, endNode)
     }
-    // if (pendingVal instanceof VirtualElement) {
-    //   type = 'element'
-    //   this.value = this.commitElement(type, pendingVal)
-    // } else if (pendingVal instanceof HTMLClip) {
-    //   type = 'clip'
-    //   this.value = this.commitClip(type, pendingVal)
-    // } else if (Array.isArray(pendingVal)) {
-    //   type = 'clips'
-    //   this.commmitClips(type, pendingVal)
-    // } else {
-    //   type = 'text'
-    //   pendingVal !== this.value &&
-    //     (this.value = this.commitText(type, tryParseToString(pendingVal)))
-    // }
-    // this.type = type
   }
 
   value!: NodeValueType
@@ -163,14 +145,25 @@ export class EventPart extends Part {
   }
 
   setValue(val: EventInstance | EventInstance[]) {
+    const [pendingVal, isOverrided] = checkDirective(val, this)
+    if (isOverrided) {
+      return
+    }
+
+    if (!(pendingVal instanceof Function)) {
+      throw DirectivePartTypeError(this.type)
+    }
+
     let temp: string[]
-    if (Array.isArray(val)) {
-      temp = val.map((v) => v?.toString())
+    if (Array.isArray(pendingVal)) {
+      temp = pendingVal.map((v) => v?.toString())
     } else {
-      temp = [val.toString()]
+      temp = [pendingVal.toString()]
     }
     if (!twoStrArrayCompare(temp, Array.from(this.eventCache.keys()))) {
-      this.value = Array.isArray(val) ? val : [val]
+      this.value = (Array.isArray(pendingVal)
+        ? pendingVal
+        : [pendingVal]) as EventInstance[]
       this.commit()
     }
   }
@@ -231,7 +224,7 @@ export function initEntry(val: unknown): NodeValueType {
     })
     return res
   } else if (val instanceof HTMLClip) {
-    const clip = val.do(createInstance)
+    const clip = val.do(createClip)
     clip.tryUpdate(val.do(getVals))
     return clip
   } else if (val instanceof VirtualElement) {

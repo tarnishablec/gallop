@@ -17,12 +17,7 @@ export { isProxy, isMarker } from './is'
 export { HTMLClip, getShaHtml, getVals } from './clip'
 
 export { repeat } from './directives'
-export {
-  directive,
-  directives,
-  checkIsNodePart,
-  isDirective
-} from './directive'
+export { directive, directives, isDirective } from './directive'
 
 export type { Component, Complex } from './component'
 export type { Effect } from './hooks'

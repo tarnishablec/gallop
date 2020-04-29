@@ -1,4 +1,4 @@
-import { directive, DirectiveFn, checkIsNodePart } from '../directive'
+import { directive, DirectiveFn } from '../directive'
 import {
   Part,
   NodePart,
@@ -8,7 +8,7 @@ import {
   tryUpdateEntry
 } from '../part'
 import { Primitive } from '../utils'
-import { DuplicatedKeyError } from '../error'
+import { DuplicatedKeyError, DirectivePartTypeError } from '../error'
 import { insertAfter, removeNodes } from '../dom'
 
 export type DiffKey = Exclude<Primitive, null | undefined | boolean>
@@ -25,8 +25,8 @@ export const repeat = directive(function <T>(
   mapFn: (item: T, index: number) => unknown
 ): DirectiveFn {
   return (part: Part) => {
-    if (!checkIsNodePart(part)) {
-      return
+    if (!(part instanceof NodePart)) {
+      throw DirectivePartTypeError(part.type)
     }
 
     const { startNode } = part.location

@@ -7,7 +7,7 @@ import {
   useState,
   useContext
 } from '../src'
-import { createInstance } from '../src/clip'
+import { createClip } from '../src/clip'
 import { isMarker } from '../src/is'
 
 describe('component', () => {
@@ -60,7 +60,7 @@ describe('component', () => {
         expect(
           isMarker(
             sha
-              .do(createInstance)
+              .do(createClip)
               .dof.querySelector('#root')
               ?.getAttribute('.class')
           )
@@ -68,10 +68,7 @@ describe('component', () => {
 
         expect(
           isMarker(
-            sha
-              .do(createInstance)
-              .dof.querySelector('#root')
-              ?.getAttribute('style')
+            sha.do(createClip).dof.querySelector('#root')?.getAttribute('style')
           )
         ).toBe(false)
 

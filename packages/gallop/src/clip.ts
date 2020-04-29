@@ -12,7 +12,7 @@ export const range = document.createRange()
  * https://www.measurethat.net/Benchmarks/ShowResult/100437
  * createContextualFragment vs innerHTML
  */
-export function createInstance(this: HTMLClip) {
+export function createClip(this: HTMLClip) {
   const shaHtml = this.do(getShaHtml)
   return new Clip(
     range.createContextualFragment(shaHtml),

@@ -11,10 +11,6 @@ import {
   useCache
 } from '@gallop/gallop'
 
-// import { diff } from '@egjs/list-differ'
-
-// console.log(diff([1, 2, 3, 4, 5, 6], [5, 6, 2, 1, 3, 5, 7]))
-
 import './src/components/TestA'
 import { TestC } from './src/components/TestC'
 import { TestD } from './src/components/TestD'
@@ -124,7 +120,17 @@ component('app-root', function (this: ReactiveElement) {
     <button @click="${() => (data.hide = !data.hide)}">change e</button>
     <test-e :hide="${data.hide}"></test-e>
     <hr />
-    <test-f :clip="${html` <div>${data.list}</div> `}"></test-f>
+    <test-f
+      :clip="${html`
+        <div>
+          ${repeat(
+            data.list,
+            (e) => e,
+            (e) => e
+          )}
+        </div>
+      `}"
+    ></test-f>
     <hr />
   `
 })
@@ -143,20 +149,21 @@ render(
   `
 )
 
-// function testTask() {
-// window.requestIdleCallback(() => console.log('requestIdleCallback'))
-// Promise.resolve(
-//   setTimeout(() => {
-//     console.log('promise')
-//   }, 0)
-// )
-// requestAnimationFrame(()=>console.log('raf'))
-// requestAnimationFrame(() =>
-//   requestAnimationFrame(() => console.log('requestAnimationFrame'))
-// )
-// console.log(Promise.resolve(1))
-// setTimeout(() => console.log('setTimeout'), 0)
-// console.log('normal')
-// }
+function testTask() {
+  window.requestIdleCallback(() => console.log('requestIdleCallback'))
+  Promise.resolve(
+    setTimeout(() => {
+      console.log('promise')
+    }, 0)
+  )
+  requestAnimationFrame(() => console.log('raf'))
+  requestAnimationFrame(() => {
+    console.log('requestAnimationFrame')
+    requestAnimationFrame(() => console.log('requestAnimationFrameFrame'))
+  })
+  console.log(Promise.resolve(1))
+  setTimeout(() => console.log('setTimeout'), 0)
+  console.log('normal')
+}
 
-// testTask()
+testTask()
