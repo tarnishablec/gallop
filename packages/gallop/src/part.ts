@@ -1,12 +1,6 @@
-import { HTMLClip, Clip, createInstance, getVals, getShaHtml } from './clip'
+import { Clip, HTMLClip, createInstance, getVals, getShaHtml } from './clip'
 import { ReactiveElement, VirtualElement } from './component'
-import {
-  shallowEqual,
-  twoStrArrayCompare,
-  tryParseToString,
-  handleArrEntry,
-  extractDof
-} from './utils'
+import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
 import { isDirective, directives } from './directive'
@@ -58,74 +52,7 @@ export class NodePart extends Part {
 
   commit(): void {}
 
-  commitText(type: 'text', val: string) {
-    if (this.type === type) {
-      if (val === this.value) {
-        return val
-      }
-    }
-
-    this.clear()
-    this.location.startNode.parentNode!.insertBefore(
-      new Text(val?.toString()),
-      this.location.endNode
-    )
-    return val
-  }
-
-  commitClip(type: 'clip', val: HTMLClip) {
-    if (type === this.type) {
-      const shaHtml = val.do(getShaHtml)
-      if (shaHtml === this.shaHtmlCache) {
-        const nowClip = this.value as Clip
-        nowClip.tryUpdate(val.do(getVals))
-        return nowClip
-      } else {
-        this.shaHtmlCache = shaHtml
-      }
-    }
-    const { startNode, endNode } = this.location
-    const parent = startNode.parentNode!
-    this.clear()
-    const clip = val.do(createInstance)
-    clip.tryUpdate(val.do(getVals))
-    parent.insertBefore(clip.dof, endNode)
-    return clip
-  }
-
-  commmitClips(type: 'clips', val: unknown[]) {
-    this.clear()
-    const batch = new DocumentFragment()
-    const vs = handleArrEntry(val)
-    vs.forEach((v) => {
-      batch.append(extractDof(v))
-    })
-    this.location.startNode.parentNode!.insertBefore(
-      batch,
-      this.location.endNode
-    )
-    return vs
-  }
-
-  commitElement(type: 'element', val: VirtualElement) {
-    if (this.type === type) {
-      const current = this.value as ReactiveElement
-      if (val.tag === current.localName) {
-        current?.mergeProps(val.props)
-        return current
-      }
-    }
-    this.clear()
-    const { endNode } = this.location
-    const parent = endNode.parentNode!
-    const instance = val.createInstance()
-    parent.insertBefore(instance, endNode)
-    return instance
-  }
-
   setValue(val: unknown) {
-    let type: NodePartType
-
     let pendingVal = val
     let isOverrided = false
 
@@ -140,22 +67,30 @@ export class NodePart extends Part {
       this.type = 'dirctive'
       return
     }
-
-    if (pendingVal instanceof VirtualElement) {
-      type = 'element'
-      this.value = this.commitElement(type, pendingVal)
-    } else if (pendingVal instanceof HTMLClip) {
-      type = 'clip'
-      this.value = this.commitClip(type, pendingVal)
-    } else if (Array.isArray(pendingVal)) {
-      type = 'clips'
-      this.commmitClips(type, pendingVal)
-    } else {
-      type = 'text'
-      pendingVal !== this.value &&
-        (this.value = this.commitText(type, tryParseToString(pendingVal)))
+    const [newVal, isInit] = tryUpdateEntry(this.value, pendingVal)
+    this.value = newVal
+    if (isInit) {
+      this.clear()
+      const dof = extractDof(newVal)
+      const { endNode } = this.location
+      const parent = endNode.parentNode!
+      parent.insertBefore(dof, endNode)
     }
-    this.type = type
+    // if (pendingVal instanceof VirtualElement) {
+    //   type = 'element'
+    //   this.value = this.commitElement(type, pendingVal)
+    // } else if (pendingVal instanceof HTMLClip) {
+    //   type = 'clip'
+    //   this.value = this.commitClip(type, pendingVal)
+    // } else if (Array.isArray(pendingVal)) {
+    //   type = 'clips'
+    //   this.commmitClips(type, pendingVal)
+    // } else {
+    //   type = 'text'
+    //   pendingVal !== this.value &&
+    //     (this.value = this.commitText(type, tryParseToString(pendingVal)))
+    // }
+    // this.type = type
   }
 
   value!: NodeValueType
@@ -280,4 +215,72 @@ export class PropPart extends Part {
   }
 
   location!: PropLocation
+}
+
+////////////////
+
+export function initEntry(val: VirtualElement): ReactiveElement
+export function initEntry(val: HTMLClip): Clip
+export function initEntry(val: unknown[]): NodeValueType[]
+export function initEntry(val: unknown): NodeValueType
+export function initEntry(val: unknown): NodeValueType {
+  if (Array.isArray(val)) {
+    const res: NodeValueType[] = []
+    val.forEach((v) => {
+      res.push(initEntry(v))
+    })
+    return res
+  } else if (val instanceof HTMLClip) {
+    const clip = val.do(createInstance)
+    clip.tryUpdate(val.do(getVals))
+    return clip
+  } else if (val instanceof VirtualElement) {
+    return val.createInstance()
+  } else {
+    return tryParseToString(val)
+  }
+}
+
+export function tryUpdateEntry(
+  pre: NodeValueType,
+  val: unknown
+): [NodeValueType, boolean] {
+  if (pre instanceof Clip && val instanceof HTMLClip) {
+    if (val.do(getShaHtml) === pre.shaHtml) {
+      return [pre.tryUpdate(val.do(getVals)), false]
+    }
+  } else if (pre instanceof ReactiveElement && val instanceof VirtualElement) {
+    if (pre.localName === val.tag) {
+      return [pre.mergeProps(val.props), false]
+    }
+  } else if (Array.isArray(val)) {
+    return [initEntry(val), true]
+  } else if (
+    typeof pre === 'string' &&
+    !(val instanceof VirtualElement || val instanceof HTMLClip)
+  ) {
+    const str = tryParseToString(val)
+    if (pre === str) {
+      return [pre, false]
+    } else {
+      return [str, true]
+    }
+  }
+  return [initEntry(val), true]
+}
+
+export function extractDof(val: NodeValueType) {
+  const dof = new DocumentFragment()
+  if (Array.isArray(val)) {
+    val.forEach((v) => {
+      dof.append(extractDof(v))
+    })
+  } else if (val instanceof ReactiveElement) {
+    dof.append(val)
+  } else if (val instanceof Clip) {
+    dof.append(val.dof)
+  } else {
+    dof.append(val)
+  }
+  return dof
 }

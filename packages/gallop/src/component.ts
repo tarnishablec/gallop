@@ -35,6 +35,7 @@ export function requestUpdate() {
 }
 
 export type Component = (...props: any[]) => HTMLClip
+export type AsyncComponent = (...props: any[]) => Promise<HTMLClip>
 export type Complex = (...props: any[]) => VirtualElement
 export type EffectInfo = { e: Effect; index: number }
 
@@ -146,6 +147,7 @@ export abstract class ReactiveElement extends HTMLElement {
     props.forEach((prop, index) => {
       this.$props[index] = prop
     })
+    return this
   }
 
   connectedCallback() {

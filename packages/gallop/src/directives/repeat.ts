@@ -1,20 +1,27 @@
 import { directive, DirectiveFn, checkIsNodePart } from '../directive'
-import { Part, NodePart } from '../part'
-import { Primitive, handleEntry, extractDof } from '../utils'
+import {
+  Part,
+  NodePart,
+  extractDof,
+  initEntry,
+  NodeValueType,
+  tryUpdateEntry
+} from '../part'
+import { Primitive } from '../utils'
 import { DuplicatedKeyError } from '../error'
 import { insertAfter, removeNodes } from '../dom'
 
-export type DiffKeyType = Exclude<Primitive, null | undefined | boolean>
+export type DiffKey = Exclude<Primitive, null | undefined | boolean>
 
-const partKeyCache = new WeakMap<NodePart, DiffKeyType[]>()
+const partKeyCache = new WeakMap<NodePart, DiffKey[]>()
 const partKeyRangeCache = new WeakMap<
   NodePart,
-  Map<DiffKeyType, { start: Node | null; end: Node | null }>
+  Map<DiffKey, { start: Node | null; end: Node | null; val: NodeValueType }>
 >()
 
 export const repeat = directive(function <T>(
   items: Iterable<T>,
-  keyFn: (item: T, index: number) => DiffKeyType,
+  keyFn: (item: T, index: number) => DiffKey,
   mapFn: (item: T, index: number) => unknown
 ): DirectiveFn {
   return (part: Part) => {
@@ -25,7 +32,7 @@ export const repeat = directive(function <T>(
     const { startNode } = part.location
     const parent = startNode.parentNode!
 
-    const newKeys: DiffKeyType[] = []
+    const newKeys: DiffKey[] = []
     const newVals: unknown[] = []
     const keyRangeMap =
       partKeyRangeCache.get(part) ??
@@ -36,7 +43,7 @@ export const repeat = directive(function <T>(
     let index = 0
     for (const item of items) {
       const newKey = keyFn(item, index)
-      if (~newKeys.indexOf(newKey)) {
+      if (newKeys.includes(newKey)) {
         throw DuplicatedKeyError(newKey)
       }
       newKeys.push(newKey)
@@ -47,7 +54,18 @@ export const repeat = directive(function <T>(
     const diffRes = listKeyDiff([...oldKeys], newKeys)
     // console.log(diffRes)
 
-    const getAfterNode = (after: DiffKeyType | null) =>
+    oldKeys
+      .filter((k) => !diffRes.map((v) => v.key).includes(k))
+      .forEach((key) => {
+        const { start, end, val } = keyRangeMap.get(key)!
+        const [v, isInit] = tryUpdateEntry(val, newVals[newKeys.indexOf(key)])
+        if (isInit) {
+          parent.insertBefore(extractDof(v), start)
+          removeNodes(parent, start, end!.nextSibling)
+        }
+      })
+
+    const getAfterNode = (after: DiffKey | null) =>
       after !== null ? keyRangeMap.get(after)!.end : part.location.startNode
 
     diffRes.forEach((change) => {
@@ -55,37 +73,60 @@ export const repeat = directive(function <T>(
         case 'insert':
           {
             const { key, after } = change
-            const dof = extractDof(handleEntry(newVals[newKeys.indexOf(key)]))
-            keyRangeMap.set(key, { start: dof.firstChild, end: dof.lastChild })
+            const val = initEntry(newVals[newKeys.indexOf(key)])
+            const dof = extractDof(val)
+            keyRangeMap.set(key, {
+              start: dof.firstChild,
+              end: dof.lastChild,
+              val
+            })
             insertAfter(parent, dof, getAfterNode(after))
           }
           break
         case 'movea':
-          {
-            const { key, after } = change
-            const { start, end } = keyRangeMap.get(key)!
-            const nodes = removeNodes(parent, start, end?.nextSibling)
-            insertAfter(parent, nodes, getAfterNode(after))
-          }
-          break
         case 'moveb':
           {
-            const { key, before } = change
-            const { start, end } = keyRangeMap.get(key)!
-            const nodes = removeNodes(parent, start, end?.nextSibling)
-            parent.insertBefore(
-              nodes,
-              before !== null
-                ? keyRangeMap.get(before)!.start!
-                : part.location.endNode!
+            const { key } = change
+            const { start, end, val } = keyRangeMap.get(key)!
+            const [v, isInit] = tryUpdateEntry(
+              val,
+              newVals[newKeys.indexOf(key)]
             )
+            let nodes: DocumentFragment = removeNodes(
+              parent,
+              start,
+              end!.nextSibling
+            )
+            if (isInit) {
+              nodes = extractDof(v)
+            }
+            keyRangeMap.set(key, {
+              start: nodes.firstChild,
+              end: nodes.lastChild,
+              val: v
+            })
+            if (change.type === 'moveb') {
+              const before = change.before
+              parent.insertBefore(
+                isInit ? extractDof(v) : nodes,
+                before !== null
+                  ? keyRangeMap.get(before)!.start!
+                  : part.location.endNode!
+              )
+            } else {
+              insertAfter(
+                parent,
+                isInit ? extractDof(v) : nodes,
+                getAfterNode(change.after)
+              )
+            }
           }
           break
         case 'remove':
           {
             const { key } = change
             const { start, end } = keyRangeMap.get(key)!
-            removeNodes(parent, start, end?.nextSibling)
+            removeNodes(parent, start, end!.nextSibling)
           }
           break
       }
@@ -100,33 +141,33 @@ true)
 type Change =
   | {
       type: 'insert'
-      key: DiffKeyType
-      after: DiffKeyType | null
+      key: DiffKey
+      after: DiffKey | null
     }
   | {
       type: 'movea'
-      key: DiffKeyType
-      after: DiffKeyType | null
+      key: DiffKey
+      after: DiffKey | null
     }
   | {
       type: 'moveb'
-      key: DiffKeyType
-      before: DiffKeyType | null
+      key: DiffKey
+      before: DiffKey | null
     }
   | {
       type: 'remove'
-      key: DiffKeyType
+      key: DiffKey
     }
 
 const nulltag = Symbol('null')
 
-export function listKeyDiff(oldList: DiffKeyType[], newList: DiffKeyType[]) {
+export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
   let oldhead = 0
   let newhead = 0
   let oldtail = oldList.length - 1
   let newtail = newList.length - 1
-  let lasthead: DiffKeyType | null = null
-  let lasttail: DiffKeyType | null = null
+  let lasthead: DiffKey | null = null
+  let lasttail: DiffKey | null = null
   const res: Change[] = []
 
   while (oldhead < oldtail && newhead < newtail) {
@@ -163,7 +204,7 @@ export function listKeyDiff(oldList: DiffKeyType[], newList: DiffKeyType[]) {
       lasthead = newList[newhead]
       newhead++
 
-      if (!~newList.indexOf(oldList[oldtail])) {
+      if (!newList.includes(oldList[oldtail])) {
         res.push({ type: 'remove', key: oldList[oldtail] })
         oldtail--
       }
@@ -171,7 +212,7 @@ export function listKeyDiff(oldList: DiffKeyType[], newList: DiffKeyType[]) {
   }
   if (newhead < newtail) {
     for (; newhead <= newtail; newhead++) {
-      if (!~oldList.indexOf(newList[newhead])) {
+      if (!oldList.includes(newList[newhead])) {
         res.push({ type: 'insert', key: newList[newhead], after: lasthead })
       }
       lasthead = newList[newhead]
@@ -180,7 +221,7 @@ export function listKeyDiff(oldList: DiffKeyType[], newList: DiffKeyType[]) {
   if (oldhead < oldtail) {
     for (; oldhead <= oldtail; oldhead++) {
       if (oldList[oldhead] !== nulltag) {
-        if (!~newList.indexOf(oldList[oldhead])) {
+        if (!newList.includes(oldList[oldhead])) {
           res.push({ type: 'remove', key: oldList[oldhead] })
         }
       }

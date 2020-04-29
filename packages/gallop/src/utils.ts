@@ -1,7 +1,4 @@
 import { isMarker } from './is'
-import { VirtualElement, ReactiveElement } from './component'
-import { HTMLClip, createInstance, Clip, getVals } from './clip'
-import { NodeValueType } from './part'
 
 export type Primitive = null | undefined | boolean | number | string | symbol
 
@@ -182,42 +179,4 @@ export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
     return false
   }
   return arrA.join('') === arrB.join('')
-}
-
-export function handleEntry(val: unknown): NodeValueType {
-  if (Array.isArray(val)) {
-    return handleArrEntry(val)
-  } else if (val instanceof HTMLClip) {
-    const clip = val.do(createInstance)
-    clip.tryUpdate(val.do(getVals))
-    return clip
-  } else if (val instanceof VirtualElement) {
-    return val.createInstance()
-  } else {
-    return tryParseToString(val)
-  }
-}
-
-export function handleArrEntry(vals: unknown[]) {
-  const res: NodeValueType[] = []
-  vals.forEach((v) => {
-    res.push(handleEntry(v))
-  })
-  return res
-}
-
-export function extractDof(val: NodeValueType) {
-  const dof = new DocumentFragment()
-  if (Array.isArray(val)) {
-    val.forEach((v) => {
-      dof.append(extractDof(v))
-    })
-  } else if (val instanceof ReactiveElement) {
-    dof.append(val)
-  } else if (val instanceof Clip) {
-    dof.append(val.dof)
-  } else {
-    dof.append(val)
-  }
-  return dof
 }

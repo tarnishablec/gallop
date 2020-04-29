@@ -13,8 +13,10 @@ export const range = document.createRange()
  * createContextualFragment vs innerHTML
  */
 export function createInstance(this: HTMLClip) {
+  const shaHtml = this.do(getShaHtml)
   return new Clip(
-    range.createContextualFragment(this.do(getShaHtml)),
+    range.createContextualFragment(shaHtml),
+    shaHtml,
     this.vals.length
   )
 }
@@ -36,7 +38,11 @@ export class HTMLClip extends DoAble(Object) {
 }
 export class Clip {
   parts: Part[]
-  constructor(public dof: DocumentFragment, public partCount: number) {
+  constructor(
+    public dof: DocumentFragment,
+    public shaHtml: string,
+    public partCount: number
+  ) {
     this.dof = dof
     this.parts = new Array<Part>()
     this.partCount = partCount
@@ -45,6 +51,7 @@ export class Clip {
 
   tryUpdate(vals: ReadonlyArray<unknown>) {
     this.parts.forEach((part, index) => part.setValue(vals[index]))
+    return this
   }
 }
 

@@ -9,7 +9,7 @@ export {
   componentPool
 } from './component'
 export { createContext, Context } from './context'
-export { useState, useEffect, useContext } from './hooks'
+export { useState, useEffect, useContext, useCache } from './hooks'
 export { DoAble } from './do'
 export { DynamicComponent } from './dynamic'
 export { isProxy, isMarker } from './is'

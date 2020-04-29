@@ -7,7 +7,8 @@ import {
   useEffect,
   ReactiveElement,
   useContext,
-  repeat
+  repeat,
+  useCache
 } from '@gallop/gallop'
 
 // import { diff } from '@egjs/list-differ'
@@ -22,29 +23,24 @@ import './src/components/TestE'
 
 import './src/styles/index.scss'
 
-setTimeout(() => {
-  import(/* webpackChunkName: "test-b" */ './src/components/TestB')
-}, 5050)
-
 export let [data, context] = createContext({
   tick: 1,
-  list: [11, 22, 33],
+  list: new Array(10).fill(void 0).map((v, i) => i),
   hide: true
 })
 
 component('app-root', function (this: ReactiveElement) {
-  let [state] = useState({ tok: 1, color: 'red', countdown: 5 })
+  let [state] = useState({ tok: 1, color: 'red', countdown: 0 })
 
   useContext([context])
 
+  let [cache] = useCache({ button: this.$root.querySelector('test-e') })
+
   useEffect(() => {
     console.log(`app-root effect mounted`)
-    const interval = setInterval(() => {
-      if (state.countdown <= 0) {
-        clearInterval(interval)
-      } else {
-        state.countdown--
-      }
+    console.log(cache.button)
+    setInterval(() => {
+      state.countdown++
     }, 1000)
   }, [])
 
@@ -78,9 +74,6 @@ component('app-root', function (this: ReactiveElement) {
       change color
     </button>
     <hr />
-    ${state.countdown ? html` <span>${state.countdown}</span> ` : null}
-    <test-b></test-b>
-    <hr />
     <slot>
       slot default content
     </slot>
@@ -103,7 +96,7 @@ component('app-root', function (this: ReactiveElement) {
         ) =>
           html`
             <button @click="${() => console.log(item)}">
-              ${item}
+              ${item + `a${state.countdown}`}
             </button>
           `
       )}
