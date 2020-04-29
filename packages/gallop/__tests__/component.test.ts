@@ -116,7 +116,7 @@ describe('component', () => {
     }, 0)
 
     const TestName = () => component('asda', () => html``)
-    expect(TestName).toThrowError(/The provided name /)
+    expect(TestName).toThrowError()
   })
 
   test('mix', () => {
