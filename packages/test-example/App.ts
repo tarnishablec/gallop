@@ -34,11 +34,11 @@ component('app-root', function (this: ReactiveElement) {
 
   useContext([context])
 
-  let [cache] = useCache({ button: this.$root.querySelector('test-e') })
+  let [cache] = useCache({ val: 1 })
 
   useEffect(() => {
     console.log(`app-root effect mounted`)
-    console.log(cache.button)
+    console.log(cache.val)
     setInterval(() => {
       state.countdown++
     }, 1000)

@@ -72,12 +72,12 @@ component('test-name', function (
 
   useContext([context]) //you need to hook Context to this component by useContext()
 
-  const [cache] = useCache({ button: this.$root.querySelector('button') }) //will not trigger rerender, and only execute once
-
-  console.log(cache.button) //return button dom element
+  const [cache] = useCache({ val: 1 }) //will not trigger rerender, and only execute once, ⚠⚠you can not use queryselector api in cache
 
   useEffect(() => {
     console.dir(this) //this context can be pass by arrow function
+    console.log(cache.val) //return 1
+
     return () => {
       console.log(`disconnected callback`)
     }
