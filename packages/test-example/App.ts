@@ -149,21 +149,21 @@ render(
   `
 )
 
-function testTask() {
-  window.requestIdleCallback(() => console.log('requestIdleCallback'))
-  Promise.resolve(
-    setTimeout(() => {
-      console.log('promise')
-    }, 0)
-  )
-  requestAnimationFrame(() => console.log('raf'))
-  requestAnimationFrame(() => {
-    console.log('requestAnimationFrame')
-    requestAnimationFrame(() => console.log('requestAnimationFrameFrame'))
-  })
-  console.log(Promise.resolve(1))
-  setTimeout(() => console.log('setTimeout'), 0)
-  console.log('normal')
-}
+// function testTask() {
+//   window.requestIdleCallback(() => console.log('requestIdleCallback'))
+//   Promise.resolve(
+//     setTimeout(() => {
+//       console.log('promise')
+//     }, 0)
+//   )
+//   requestAnimationFrame(() => console.log('raf'))
+//   requestAnimationFrame(() => {
+//     console.log('requestAnimationFrame')
+//     requestAnimationFrame(() => console.log('requestAnimationFrameFrame'))
+//   })
+//   console.log(Promise.resolve(1))
+//   setTimeout(() => console.log('setTimeout'), 0)
+//   console.log('normal')
+// }
 
-testTask()
+// testTask()

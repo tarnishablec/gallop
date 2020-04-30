@@ -1,6 +1,13 @@
 import { isMarker } from './is'
 
-export type Primitive = null | undefined | boolean | number | string | symbol
+export type Primitive =
+  | null
+  | undefined
+  | boolean
+  | number
+  | string
+  | symbol
+  | BigInt
 
 export type Clazz<T = Object> = {
   new (...args: any[]): T
