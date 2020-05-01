@@ -11,7 +11,7 @@ const execa = require('execa')
 main()
 
 function main() {
-  targets.forEach(shortName => {
+  targets.forEach((shortName) => {
     const packageDir = path.join(packagesDir, shortName)
     if (!fse.statSync(packageDir).isDirectory()) {
       return
@@ -113,7 +113,7 @@ function initPkg(filePath, longName, shortName, args) {
     if (oldPkg.private) {
       return
     } else {
-      cacheFields.forEach(field => {
+      cacheFields.forEach((field) => {
         pkgCache[field] = oldPkg[field]
       })
     }
@@ -127,7 +127,7 @@ function initPkg(filePath, longName, shortName, args) {
       main: `src/index.ts`,
       module: `dist/index.esm.js`,
       files: [`index.js`, 'dist', 'src'],
-      unpkg: `dist/index.global.js`,
+      unpkg: `dist/index.umd.js`,
       types: `dist/index.d.ts`,
       repository: {
         type: 'git',

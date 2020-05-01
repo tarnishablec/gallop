@@ -24,8 +24,8 @@ const formats = {
     file: resolve(`dist/index.esm.js`),
     format: `es`
   },
-  global: {
-    file: resolve(`dist/index.global.js`),
+  umd: {
+    file: resolve(`dist/index.umd.js`),
     format: `umd`,
     plugins: [terser()]
   }
@@ -58,7 +58,7 @@ const CONFIG = [
   }
 ]
 
-const defaultFormats = ['esm', 'global']
+const defaultFormats = ['esm', 'umd']
 const inlineFormats = process.env.FORMATS && process.env.FORMATS.split(',')
 const packageFormats = inlineFormats || defaultFormats
 
