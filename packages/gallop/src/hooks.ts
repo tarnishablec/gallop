@@ -1,7 +1,7 @@
 import { resolveCurrentHandle, ReactiveElement } from './component'
 import { createProxy, _hasChanged } from './reactive'
 import { isProxy } from './is'
-import { shallowEqual } from './utils'
+import { shallowEqual, Key } from './utils'
 import { Context } from './context'
 import { Memo } from './memo'
 
@@ -110,7 +110,7 @@ export function useMemo<T extends () => any>(calc: T): [ReturnType<T>] {
     const mm = current.$memos.get(count)!
     current.$memosCount++
     for (const [obj, key] of mm.watchList) {
-      if (Reflect.get(obj, _hasChanged) === key) {
+      if ((Reflect.get(obj, _hasChanged) as Set<Key>)?.has(key)) {
         shouldRecalc = true
         break
       }

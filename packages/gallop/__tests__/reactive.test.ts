@@ -2,7 +2,7 @@ import { createProxy, _hasChanged } from '../src/reactive'
 import { isProxy } from '../src/is'
 
 describe('reactive', () => {
-  test('hasChange', () => {
+  test('proxy', () => {
     const a = { a: { b: 1 } }
     let p = createProxy(a)
     expect(isProxy(p)).toBe(true)

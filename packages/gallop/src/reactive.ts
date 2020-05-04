@@ -1,4 +1,4 @@
-import { shallowEqual } from './utils'
+import { shallowEqual, Key } from './utils'
 import { isProxy } from './is'
 import { LockedProxyError } from './error'
 import { resolveCurrentMemo } from './memo'
@@ -6,21 +6,21 @@ import { resolveCurrentMemo } from './memo'
 export const _isProxy = Symbol('isProxy')
 export const _hasChanged = Symbol('hasChanged')
 
+const changedSet = new Set<object>()
+export const resetChangedSet = () =>
+  changedSet.forEach((c) => Reflect.set(c, _hasChanged, undefined))
+
 const rawProxyMap = new WeakMap<object, object>()
 
 export const createProxy = <T extends object>(
   raw: T,
   setSideEffect?: (
     target: T,
-    prop: string | number | symbol,
+    prop: Key,
     val: unknown,
     receiver: unknown
   ) => void,
-  getSideEffect?: (
-    target: T,
-    prop: string | number | symbol,
-    receiver: unknown
-  ) => void,
+  getSideEffect?: (target: T, prop: Key, receiver: unknown) => void,
   lock: boolean = false
 ): T =>
   new Proxy(raw, {
@@ -31,7 +31,11 @@ export const createProxy = <T extends object>(
         }
       }
       let hasChanged = !shallowEqual(Reflect.get(target, prop), val)
-      Reflect.set(target, _hasChanged, hasChanged ? prop : undefined, receiver)
+      if (hasChanged) {
+        const hc = Reflect.get(target, _hasChanged) ?? new Set()
+        Reflect.set(target, _hasChanged, hc.add(prop), receiver)
+        changedSet.add(target)
+      }
       let res = Reflect.set(target, prop, val, receiver)
       hasChanged && setSideEffect?.(target, prop, val, receiver)
       return res
@@ -41,9 +45,8 @@ export const createProxy = <T extends object>(
         return true
       }
       if (prop === _hasChanged) {
-        return Reflect.get(target, _hasChanged) ?? false
+        return Reflect.get(target, _hasChanged)
       }
-
       const memo = resolveCurrentMemo()
       memo && memo.watch(target, prop)
 

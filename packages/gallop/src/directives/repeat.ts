@@ -7,11 +7,11 @@ import {
   NodeValueType,
   tryUpdateEntry
 } from '../part'
-import { Primitive } from '../utils'
+import { Key } from '../utils'
 import { DuplicatedKeyError, DirectivePartTypeError } from '../error'
 import { insertAfter, removeNodes } from '../dom'
 
-export type DiffKey = Exclude<Primitive, null | undefined | boolean>
+export type DiffKey = Key
 
 const partKeyCache = new WeakMap<NodePart, DiffKey[]>()
 const partKeyRangeCache = new WeakMap<

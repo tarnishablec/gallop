@@ -27,7 +27,7 @@ export let [data, context] = createContext({
 })
 
 component('app-root', function (this: ReactiveElement) {
-  let [state] = useState({ tok: 1, color: 'red', countdown: 0 })
+  let [state] = useState({ tok: 1, color: 'red', countdown: 0, count: 0 })
 
   const [memo] = useMemo(() => {
     console.log('computed')
@@ -41,30 +41,25 @@ component('app-root', function (this: ReactiveElement) {
   useEffect(() => {
     console.log(`app-root effect mounted`)
     console.log(cache.val)
-    setInterval(() => {
-      state.countdown++
-    }, 1000)
+    // setInterval(() => {
+    //   state.countdown++
+    // }, 1000)
   }, [])
 
   useEffect(() => {
-    console.log(`app-root effect updated`)
-  })
+    console.log(state.count)
+  }, [state])
 
   useEffect(() => {
     console.log(`app-root color state updated`)
   }, [state.color])
-
-  useEffect(() => {
-    console.log(`app-root tok state updated`)
-    console.dir(this.$root)
-  }, [state.tok])
 
   return html`
     <div>this is app-root</div>
     <button @click="${() => data.tick++}">context tick +1</button>
     <div>Context: &zwnj;${data.tick}</div>
     <hr />
-    <button @click="${() => state.tok++}">state tok +1</button>
+    <button @click="${() => state.tok++ && state.count++}">state tok +1</button>
     <div>State: &zwnj;${state.tok}</div>
     <hr />
     ${TestC(state.countdown.toString())}
@@ -158,19 +153,19 @@ render(
 )
 
 // function testTask() {
-//   window.requestIdleCallback(() => console.log('requestIdleCallback'))
-//   Promise.resolve(
-//     setTimeout(() => {
-//       console.log('promise')
-//     }, 0)
-//   )
-//   requestAnimationFrame(() => console.log('raf'))
+//   window.requestIdleCallback(() => console.log('ric'))
 //   requestAnimationFrame(() => {
-//     console.log('requestAnimationFrame')
-//     requestAnimationFrame(() => console.log('requestAnimationFrameFrame'))
+//     console.log('raf')
+//     requestAnimationFrame(() => console.log('raf in raf'))
+//     setTimeout(() => {
+//       console.log('set in raf')
+//     }, 0)
 //   })
-//   console.log(Promise.resolve(1))
-//   setTimeout(() => console.log('setTimeout'), 0)
+//   setTimeout(() => {
+//     console.log('set')
+//     setTimeout(() => console.log(`set in set`), 0)
+//     requestAnimationFrame(() => console.log(`raf in set`))
+//   }, 0)
 //   console.log('normal')
 // }
 

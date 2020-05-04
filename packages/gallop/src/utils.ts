@@ -9,6 +9,8 @@ export type Primitive =
   | symbol
   | BigInt
 
+export type Key = Exclude<Primitive, null | undefined | boolean>
+
 export type Clazz<T = Object> = {
   new (...args: any[]): T
 }
