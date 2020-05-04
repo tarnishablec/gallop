@@ -7,8 +7,10 @@ export const _isProxy = Symbol('isProxy')
 export const _hasChanged = Symbol('hasChanged')
 
 const changedSet = new Set<object>()
-export const resetChangedSet = () =>
+export const resetChangedSet = () => {
   changedSet.forEach((c) => Reflect.set(c, _hasChanged, undefined))
+  changedSet.clear()
+}
 
 const rawProxyMap = new WeakMap<object, object>()
 
