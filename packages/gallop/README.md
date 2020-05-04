@@ -55,6 +55,8 @@ import {
   useState,
   useEffect,
   useContext,
+  useMemo,
+  useCache,
   render,
   html,
   ReactiveElement

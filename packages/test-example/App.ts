@@ -150,7 +150,7 @@ render(
     </app-root>
     <style>
       body {
-        background: ${'grey'};
+        background: grey;
         color: white;
       }
     </style>
