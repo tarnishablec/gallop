@@ -8,7 +8,8 @@ import {
   ReactiveElement,
   useContext,
   repeat,
-  useCache
+  useCache,
+  useMemo
 } from '@gallop/gallop'
 
 import './src/components/TestA'
@@ -27,6 +28,11 @@ export let [data, context] = createContext({
 
 component('app-root', function (this: ReactiveElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 0 })
+
+  const [memo] = useMemo(() => {
+    console.log('computed')
+    return state.tok * 2
+  })
 
   useContext([context])
 
@@ -132,17 +138,19 @@ component('app-root', function (this: ReactiveElement) {
       `}"
     ></test-f>
     <hr />
-  `
+    <div>${memo}</div>
+    <hr />
+  `.useStyle('a')
 })
 
 render(
   html`
-    <app-root>
+    <app-root :a :b="''">
       this is slot
     </app-root>
     <style>
       body {
-        background: grey;
+        background: ${'grey'};
         color: white;
       }
     </style>

@@ -3,7 +3,7 @@ import { Part, AttrPart, PropPart, EventPart, NodePart } from './part'
 import { isMarker } from './is'
 import { cleanDofStr, insertAfter } from './dom'
 import { ReactiveElement } from './component'
-import { NotReactiveELementError } from './error'
+import { NotReactiveELementError, StyleInTemplateError } from './error'
 import { DoAble } from './do'
 
 export const range = document.createRange()
@@ -35,6 +35,11 @@ export class HTMLClip extends DoAble(Object) {
   ) {
     super()
   }
+
+  useStyle(style: string) {
+    this._style = style
+    return this
+  }
 }
 export class Clip {
   parts: Part[]
@@ -65,6 +70,10 @@ export function attachParts(clip: Clip) {
 
     if (cur === null) {
       break
+    }
+
+    if (cur instanceof HTMLStyleElement) {
+      throw StyleInTemplateError(cur)
     }
 
     if (cur instanceof Element) {

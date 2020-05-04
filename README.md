@@ -19,6 +19,8 @@
 
 - register `reactive` component in functional way
 
+- `react-hooks-like` development experience, even `much` better 🌝
+
 - support `<slot>` by web components, also `named slot`
 
 - `:` to bind props of component  
@@ -70,6 +72,8 @@ component('test-name', function (
   let [state] = useState({ a: 1 }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
   console.dir(this) //access dom directly by this
 
+  const [memo] = useMemo(() => state.a * 2) //just like react useMemo(), but auto collect depends like `computed` in vue
+
   useContext([context]) //you need to hook Context to this component by useContext()
 
   const [cache] = useCache({ val: 1 }) //will not trigger rerender, and only execute once, ⚠⚠you can not use queryselector api in cache
@@ -103,6 +107,7 @@ component('test-name', function (
     <slot>
       default slot context
     </slot>
+    <div>${memo}</div>
     <button
       @click="${(e: Event) => {
         state.a += 1
@@ -114,7 +119,7 @@ component('test-name', function (
     >
       click
     </button>
-  `
+  `.useStyle(/TODO/)
 })
 
 render(html`
@@ -133,6 +138,8 @@ render(html`
   |useContext() | ✅ |
   |useEffect() | ✅ |
   |useCache()| ✅ |
+  |useMemo()| ✅ |
+  |useStyle()| ⌛ |
 
 - router ⌛
 

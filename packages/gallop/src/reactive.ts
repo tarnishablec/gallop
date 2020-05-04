@@ -1,6 +1,7 @@
 import { shallowEqual } from './utils'
 import { isProxy } from './is'
 import { LockedProxyError } from './error'
+import { resolveCurrentMemo } from './memo'
 
 export const _isProxy = Symbol('isProxy')
 export const _hasChanged = Symbol('hasChanged')
@@ -30,7 +31,7 @@ export const createProxy = <T extends object>(
         }
       }
       let hasChanged = !shallowEqual(Reflect.get(target, prop), val)
-      Reflect.set(target, _hasChanged, hasChanged, receiver)
+      Reflect.set(target, _hasChanged, hasChanged ? prop : undefined, receiver)
       let res = Reflect.set(target, prop, val, receiver)
       hasChanged && setSideEffect?.(target, prop, val, receiver)
       return res
@@ -42,6 +43,10 @@ export const createProxy = <T extends object>(
       if (prop === _hasChanged) {
         return Reflect.get(target, _hasChanged) ?? false
       }
+
+      const memo = resolveCurrentMemo()
+      memo && memo.watch(target, prop)
+
       getSideEffect?.(target, prop, reciver)
       const res = Reflect.get(target, prop, reciver)
       if (

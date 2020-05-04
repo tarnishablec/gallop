@@ -11,14 +11,14 @@ describe('reactive', () => {
 
     p.a.b = 2
     expect(Reflect.get(p, _hasChanged)).toBe(false)
-    expect(Reflect.get(p.a, _hasChanged)).toBe(true)
+    expect(Reflect.get(p.a, _hasChanged)).toBe('b')
 
     p.a.b = 2
     expect(Reflect.get(p, _hasChanged)).toBe(false)
     expect(Reflect.get(p.a, _hasChanged)).toBe(false)
 
     p.a = { b: 3 }
-    expect(Reflect.get(p, _hasChanged)).toBe(true)
+    expect(Reflect.get(p, _hasChanged)).toBe('a')
     expect(Reflect.get(p.a, _hasChanged)).toBe(false)
 
     p.a = { b: 3 }
@@ -27,7 +27,7 @@ describe('reactive', () => {
 
     p.a.b = 2
     expect(Reflect.get(p, _hasChanged)).toBe(false)
-    expect(Reflect.get(p.a, _hasChanged)).toBe(true)
+    expect(Reflect.get(p.a, _hasChanged)).toBe('b')
 
     const b = { x: { y: '🏀' } }
     let pb = createProxy(b, () => console.log('b changed'), undefined, true)

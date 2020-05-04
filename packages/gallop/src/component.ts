@@ -5,6 +5,7 @@ import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
 import { DoAble } from './do'
 import { removeNodes } from './dom'
+import { Memo } from './memo'
 
 let currentHandle: ReactiveElement
 
@@ -54,6 +55,7 @@ export abstract class ReactiveElement extends HTMLElement {
   $cache?: [unknown]
 
   $effectsCount: number = 0
+  $memosCount: number = 0
 
   $dependsCache?: unknown[][]
 
@@ -64,6 +66,7 @@ export abstract class ReactiveElement extends HTMLElement {
   $shaCache?: string
 
   $contexts?: Set<Context<Object>>
+  $memos?: Map<number, Memo>
 
   protected propNames: string[] = []
 
@@ -84,19 +87,19 @@ export abstract class ReactiveElement extends HTMLElement {
 
   initProps(propNames: string[]) {
     this.propNames = propNames
-    if (this.propNames.length) {
-      const p = new Array(this.propNames.length).fill(undefined)
-      const staticProps = extractProps(this.attributes)
-      for (const key in staticProps) {
-        const index = this.propNames.indexOf(key)
-        if (index >= 0) {
-          p[index] = staticProps[key]
-        } else {
-          Reflect.set(this.$brobs, key, staticProps[key])
-        }
+    const p = new Array(this.propNames.length).fill(undefined)
+    const staticProps = extractProps(this.attributes)
+    for (const key in staticProps) {
+      const index = this.propNames.indexOf(key)
+      if (index >= 0) {
+        p[index] = staticProps[key]
+      } else {
+        Reflect.set(this.$brobs, key, staticProps[key])
       }
-      this.$props = createProxy(p, () => this.enUpdateQueue())
     }
+    propNames.length
+      ? (this.$props = createProxy(p, () => this.enUpdateQueue()))
+      : undefined
   }
 
   enUpdateQueue() {
@@ -171,6 +174,7 @@ export abstract class ReactiveElement extends HTMLElement {
     this.$updateEffects = []
     this.$mountedEffects = []
     this.$effectsCount = 0
+    this.$memosCount = 0
   }
 }
 

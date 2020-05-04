@@ -3,6 +3,7 @@ import { createProxy, _hasChanged } from './reactive'
 import { isProxy } from './is'
 import { shallowEqual } from './utils'
 import { Context } from './context'
+import { Memo } from './memo'
 
 export function useState<T extends object>(initState: T): [T] {
   const current = resolveCurrentHandle()
@@ -36,7 +37,7 @@ export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
     for (let i = 0; i < depends.length; i++) {
       const dep = depends[i]
       if (isProxy(dep)) {
-        if (Reflect.get(dep, _hasChanged)) {
+        if (Reflect.get(dep, _hasChanged) !== undefined) {
           shouldTrigger = true
         }
       } else {
@@ -92,4 +93,28 @@ export function useContext(contexts: Context<object>[]) {
 export function useCache<T extends Object>(initVal: T) {
   const current = resolveCurrentHandle()
   return (current.$cache as [T]) ?? (current.$cache = [initVal])
+}
+
+export function useMemo<T extends () => any>(calc: T): [ReturnType<T>] {
+  const current = resolveCurrentHandle()
+  const count = current.$memosCount
+
+  if (!current.$memos) {
+    const elementMemos = (current.$memos = new Map())
+    const memo = new Memo(calc)
+    elementMemos.set(count, memo)
+    current.$memosCount++
+    return [memo.value] as ReturnType<T>
+  } else {
+    let shouldRecalc = false
+    const mm = current.$memos.get(count)!
+    current.$memosCount++
+    for (const [obj, key] of mm.watchList) {
+      if (Reflect.get(obj, _hasChanged) === key) {
+        shouldRecalc = true
+        break
+      }
+    }
+    return [shouldRecalc ? (mm.value = calc()) : mm.value]
+  }
 }

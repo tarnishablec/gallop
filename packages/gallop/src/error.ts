@@ -13,3 +13,8 @@ export const DirectivePartTypeError = (name: string) =>
 
 export const DuplicatedKeyError = (key: Primitive) =>
   new Error(`key ${String(key)} is Duplicated`)
+
+export const StyleInTemplateError = (el: HTMLStyleElement) =>
+  new SyntaxError(
+    `Can not put dynamic part inside ${el}, try using useStyle() instead.`
+  )

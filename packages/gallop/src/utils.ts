@@ -147,7 +147,15 @@ export function extractProps(attr: NamedNodeMap) {
   return Array.from(attr)
     .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
     .reduce((acc, { name, value }) => {
-      Reflect.set(acc, name.slice(1), value)
+      let v: string | boolean
+      if (value === '') {
+        v = true
+      } else if (value === "''") {
+        v = ''
+      } else {
+        v = value
+      }
+      Reflect.set(acc, name.slice(1), v)
       return acc
     }, {} as any)
 }
