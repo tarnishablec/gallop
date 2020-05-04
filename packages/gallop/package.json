@@ -9,7 +9,7 @@
     "dist",
     "src"
   ],
-  "unpkg": "dist/index.global.js",
+  "unpkg": "dist/index.umd.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
