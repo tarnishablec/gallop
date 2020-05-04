@@ -23,7 +23,8 @@ import './src/styles/index.scss'
 export let [data, context] = createContext({
   tick: 1,
   list: new Array(10).fill(void 0).map((v, i) => i),
-  hide: true
+  hide: true,
+  person: { age: 1, height: 180 }
 })
 
 component('app-root', function (this: ReactiveElement) {
