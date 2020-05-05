@@ -111,6 +111,10 @@ export function useMemo<T extends () => any>(calc: T): [ReturnType<T>] {
   } else {
     let shouldRecalc = false
     current.$memosCount++
+    if (Reflect.get(current.$props, _hasChanged)) {
+      //maybe not ok
+      shouldRecalc = true
+    }
     for (const [obj, key] of memo.watchList) {
       if ((Reflect.get(obj, _hasChanged) as Set<Key>)?.has(key)) {
         shouldRecalc = true

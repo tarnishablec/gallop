@@ -1,14 +1,30 @@
-import { component, html, useEffect, ReactiveElement } from '@gallop/gallop'
+import {
+  component,
+  html,
+  useEffect,
+  ReactiveElement,
+  useStyle,
+  css
+} from '@gallop/gallop'
 
 export const TestC = component('test-c', function (
   this: ReactiveElement,
-  name: string
+  count: number,
+  color: string
 ) {
+  useStyle(
+    () => css`
+      div {
+        background: ${color};
+      }
+    `
+  )
+
   useEffect(() => {
     console.log('test-c mounted')
     console.log(this)
   }, [])
 
   return html`<div>this is test-c</div>
-    <div>${name}</div>`
+    <div>${count}</div>`
 })

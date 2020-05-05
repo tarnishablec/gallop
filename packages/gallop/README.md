@@ -21,6 +21,16 @@
 
 - `react-hooks-like` development experience, even `much` better 🌝
 
+- hooks  
+  | | |
+  |-|-|
+  |useState() | ✅ |
+  |useContext() | ✅ |
+  |useEffect() | ✅ |
+  |useCache()| ✅ |
+  |useMemo()| ✅ |
+  |useStyle()| ✅ |
+
 - support `<slot>` by web components, also `named slot`
 
 - `:` to bind props of component  
@@ -132,16 +142,6 @@ render(html`
 ```
 
 ## TODO
-
-- hooks  
-  | | |
-  |-|-|
-  |useState() | ✅ |
-  |useContext() | ✅ |
-  |useEffect() | ✅ |
-  |useCache()| ✅ |
-  |useMemo()| ✅ |
-  |useStyle()| ⌛ |
 
 - router ⌛
 

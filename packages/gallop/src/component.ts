@@ -28,9 +28,9 @@ export function requestUpdate() {
       setCurrentHandle(instance)
       instance.resetEffects()
       instance.dispatchUpdate()
-      resetChangedSet()
       updateQueue.delete(instance)
     })
+    resetChangedSet()
     dirty = false
     updateQueue.clear()
   })

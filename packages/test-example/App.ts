@@ -60,13 +60,13 @@ component('app-root', function (this: ReactiveElement) {
     console.log(`app-root color state updated`)
   }, [state.color])
 
-  useStyle(
-    () => css`
+  useStyle(() => {
+    return css`
       div {
         background: ${state.color};
       }
     `
-  )
+  })
 
   return html`
     <div>this is app-root</div>
@@ -76,7 +76,7 @@ component('app-root', function (this: ReactiveElement) {
     <button @click="${() => state.tok++ && state.count++}">state tok +1</button>
     <div>State: &zwnj;${state.tok}</div>
     <hr />
-    ${TestC(state.countdown.toString())}
+    ${TestC(state.tok, state.color)}
     <hr />
     <button
       part="changecolorbutton"
@@ -146,7 +146,7 @@ component('app-root', function (this: ReactiveElement) {
     <hr />
     <div>${memo}</div>
     <hr />
-  `.useStyle('a')
+  `
 })
 
 render(

@@ -35,11 +35,6 @@ export class HTMLClip extends DoAble(Object) {
   ) {
     super()
   }
-
-  useStyle(style: string) {
-    this._style = style
-    return this
-  }
 }
 export class Clip {
   parts: Part[]

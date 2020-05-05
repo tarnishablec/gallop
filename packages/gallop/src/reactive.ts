@@ -33,12 +33,12 @@ export const createProxy = <T extends object>(
         }
       }
       let hasChanged = !shallowEqual(Reflect.get(target, prop), val)
+      let res = Reflect.set(target, prop, val, receiver)
       if (hasChanged) {
         const hc = Reflect.get(target, _hasChanged) ?? new Set()
         Reflect.set(target, _hasChanged, hc.add(prop), receiver)
         changedSet.add(target)
       }
-      let res = Reflect.set(target, prop, val, receiver)
       hasChanged && setSideEffect?.(target, prop, val, receiver)
       return res
     },

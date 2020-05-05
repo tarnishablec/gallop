@@ -1,6 +1,6 @@
 {
   "name": "@gallop/eureka",
-  "version": "0.8.0",
+  "version": "independent",
   "description": "eureka",
   "main": "src/index.ts",
   "module": "dist/index.esm.js",
