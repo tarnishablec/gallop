@@ -20,12 +20,15 @@ import './src/components/TestE'
 
 import './src/styles/index.scss'
 
-export let [data, context] = createContext({
-  tick: 1,
-  list: new Array(10).fill(void 0).map((v, i) => i),
-  hide: true,
-  person: { age: 1, height: 180 }
-})
+export let [data, context] = createContext(
+  {
+    tick: 1,
+    list: new Array(10).fill(void 0).map((v, i) => i),
+    hide: true,
+    person: { age: 1, height: 180 }
+  },
+  { updated: (v) => console.log(v.tick), created: (v) => console.log(v) }
+)
 
 component('app-root', function (this: ReactiveElement) {
   let [state] = useState({ tok: 1, color: 'red', countdown: 0, count: 0 })

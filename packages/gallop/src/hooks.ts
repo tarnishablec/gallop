@@ -79,7 +79,7 @@ export function resolveEffects(
   }, 0)
 }
 
-export function useContext(contexts: Context<object>[]) {
+export function useContext(contexts: Context<any>[]) {
   const current = resolveCurrentHandle()
   if (!current.$contexts) {
     const elementContexts = (current.$contexts = new Set())
