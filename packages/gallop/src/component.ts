@@ -37,7 +37,7 @@ export function requestUpdate() {
 }
 
 export type Component = (...props: any[]) => HTMLClip
-export type AsyncComponent = (...props: any[]) => Promise<HTMLClip>
+// export type AsyncComponent = (...props: any[]) => Promise<HTMLClip>
 export type Complex = (...props: any[]) => VirtualElement
 export type EffectInfo = { e: Effect; index: number }
 
@@ -67,7 +67,7 @@ export abstract class ReactiveElement extends HTMLElement {
   $shaCache?: string
 
   $contexts?: Set<Context<Object>>
-  $memos?: Map<number, Memo>
+  $memos?: Map<number, Memo<() => any>>
 
   protected propNames: string[] = []
 
@@ -160,16 +160,17 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this.$disconnectedEffects?.filter(Boolean).forEach((effect) => {
+      effect.apply(this)
+    })
+
     this.$contexts?.forEach((context) => context.unWatch(this))
     this.$memos?.forEach((m) => m.watchList.clear())
     this.$contexts = undefined
     this.$memos?.clear()
     this.$memos = undefined
-    // console.log(`${this.nodeName} disconnected`)
-    this.$disconnectedEffects?.filter(Boolean).forEach((effect) => {
-      effect.apply(this)
-    })
     this.$alive = false
+    // console.log(`${this.nodeName} disconnected`)
   }
 
   resetEffects() {

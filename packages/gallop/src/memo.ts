@@ -1,14 +1,14 @@
 import { Key } from './utils'
 
-let currentMemo: Memo | undefined = undefined
+let currentMemo: Memo<() => any> | undefined = undefined
 
 export const resolveCurrentMemo = () => currentMemo
 
-export class Memo {
+export class Memo<T extends () => any> {
   watchList: Set<[Object, Key]> = new Set()
-  value: unknown
+  value: ReturnType<T>
 
-  constructor(public calc: Function) {
+  constructor(public calc: T) {
     currentMemo = this
     this.value = calc()
     currentMemo = undefined

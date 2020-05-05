@@ -104,7 +104,7 @@ export function useMemo<T extends () => any>(calc: T): [ReturnType<T>] {
     const memo = new Memo(calc)
     elementMemos.set(count, memo)
     current.$memosCount++
-    return [memo.value] as ReturnType<T>
+    return [memo.value]
   } else {
     let shouldRecalc = false
     const mm = current.$memos.get(count)!

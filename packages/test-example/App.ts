@@ -32,12 +32,12 @@ component('app-root', function (this: ReactiveElement) {
 
   const [memo] = useMemo(() => {
     console.log('computed')
-    return state.tok * 2
+    return { res: state.tok * 2 }
   })
 
   useContext([context])
 
-  let [cache] = useCache({ val: 1 })
+  let [cache] = useCache({ val: 'val' })
 
   useEffect(() => {
     console.log(`app-root effect mounted`)
@@ -48,8 +48,8 @@ component('app-root', function (this: ReactiveElement) {
   }, [])
 
   useEffect(() => {
-    console.log(state.count)
-  }, [state])
+    console.log(memo)
+  }, [memo])
 
   useEffect(() => {
     console.log(`app-root color state updated`)
@@ -109,7 +109,8 @@ component('app-root', function (this: ReactiveElement) {
     </button>
     <hr />
     <button
-      @click="${() => data.list.push(data.list[data.list.length - 1] + 11)}"
+      @click="${() =>
+        data.list.push((data.list[data.list.length - 1] ?? -1) + 1)}"
     >
       add into list
     </button>
@@ -125,11 +126,7 @@ component('app-root', function (this: ReactiveElement) {
     <test-f
       :clip="${html`
         <div>
-          ${repeat(
-            data.list,
-            (e) => e,
-            (e) => e
-          )}
+          ${1}
         </div>
       `}"
     ></test-f>
@@ -158,9 +155,7 @@ render(
 //   requestAnimationFrame(() => {
 //     console.log('raf')
 //     requestAnimationFrame(() => console.log('raf in raf'))
-//     setTimeout(() => {
-//       console.log('set in raf')
-//     }, 0)
+//     setTimeout(() => console.log('set in raf'), 0)
 //   })
 //   setTimeout(() => {
 //     console.log('set')

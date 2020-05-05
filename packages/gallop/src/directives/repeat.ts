@@ -39,7 +39,6 @@ export const repeat = directive(function <T>(
       partKeyRangeCache.set(part, new Map()).get(part)!
 
     const oldKeys = partKeyCache.get(part) ?? []
-
     let index = 0
     for (const item of items) {
       const newKey = keyFn(item, index)
@@ -211,7 +210,7 @@ export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
       }
     }
   }
-  if (newhead < newtail) {
+  if (newhead < newtail || newhead > oldtail) {
     for (; newhead <= newtail; newhead++) {
       if (!oldList.includes(newList[newhead])) {
         res.push({ type: 'insert', key: newList[newhead], after: lasthead })
@@ -219,7 +218,7 @@ export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
       lasthead = newList[newhead]
     }
   }
-  if (oldhead < oldtail) {
+  if (oldhead < oldtail || oldhead > newtail) {
     for (; oldhead <= oldtail; oldhead++) {
       if (oldList[oldhead] !== nulltag) {
         if (!newList.includes(oldList[oldhead])) {

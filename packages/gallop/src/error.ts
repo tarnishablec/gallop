@@ -12,9 +12,9 @@ export const DirectivePartTypeError = (name: string) =>
   new SyntaxError(`${name} directive type error`)
 
 export const DuplicatedKeyError = (key: Primitive) =>
-  new Error(`key ${String(key)} is Duplicated`)
+  new Error(`Key ${String(key)} is Duplicated`)
 
 export const StyleInTemplateError = (el: HTMLStyleElement) =>
   new SyntaxError(
-    `Can not put dynamic part inside ${el}, try using useStyle() instead.`
+    `Can not put dynamic part inside or after ${el}, try using useStyle() instead.`
   )

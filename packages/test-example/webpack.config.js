@@ -104,7 +104,7 @@ module.exports = {
     contentBase: './dist',
     open: true,
     stats: 'errors-only',
-    compress: false,
+    compress: true,
     host: 'localhost',
     port: 8090
   },
@@ -117,7 +117,7 @@ module.exports = {
       inject: true,
       favicon: './public/favicon.ico',
       minify: {
-        // collapseWhitespace: true,
+        collapseWhitespace: ProdMode,
         removeComments: true
       },
       hash: true,
