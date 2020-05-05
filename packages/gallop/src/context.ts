@@ -1,9 +1,10 @@
 import { ReactiveElement } from './component'
 import { createProxy } from './reactive'
 
-type ContextOption<T extends object> = {
+export type ContextOption<T extends object> = {
   updated?: (v: T) => unknown
   created?: (v: T) => unknown
+  hooked?: (v: T, el: ReactiveElement) => unknown
   [key: string]: unknown
 }
 
@@ -19,6 +20,7 @@ export class Context<T extends object> {
 
   watch(element: ReactiveElement) {
     this.watchedInstances.add(element)
+    this.option?.hooked?.(this.proxy[0], element)
   }
 
   unWatch(element: ReactiveElement) {
