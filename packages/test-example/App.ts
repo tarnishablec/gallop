@@ -9,7 +9,9 @@ import {
   useContext,
   repeat,
   useCache,
-  useMemo
+  useMemo,
+  useStyle,
+  css
 } from '@gallop/gallop'
 
 import './src/components/TestA'
@@ -57,6 +59,14 @@ component('app-root', function (this: ReactiveElement) {
   useEffect(() => {
     console.log(`app-root color state updated`)
   }, [state.color])
+
+  useStyle(
+    () => css`
+      div {
+        background: ${state.color};
+      }
+    `
+  )
 
   return html`
     <div>this is app-root</div>

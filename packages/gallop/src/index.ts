@@ -1,4 +1,4 @@
-export { html } from './parse'
+export { html, css } from './parse'
 export { render } from './render'
 export {
   component,
@@ -9,7 +9,14 @@ export {
   componentPool
 } from './component'
 export { createContext, Context } from './context'
-export { useState, useEffect, useContext, useCache, useMemo } from './hooks'
+export {
+  useState,
+  useEffect,
+  useContext,
+  useCache,
+  useMemo,
+  useStyle
+} from './hooks'
 export { DoAble } from './do'
 export { DynamicComponent } from './dynamic'
 export { isProxy, isMarker } from './is'

@@ -100,21 +100,36 @@ export function useMemo<T extends () => any>(calc: T): [ReturnType<T>] {
   const count = current.$memosCount
 
   if (!current.$memos) {
-    const elementMemos = (current.$memos = new Map())
-    const memo = new Memo(calc)
-    elementMemos.set(count, memo)
+    current.$memos = new Map()
+  }
+  const memo = current.$memos.get(count)
+  if (!memo) {
+    const m = new Memo(calc)
+    current.$memos.set(count, m)
     current.$memosCount++
-    return [memo.value]
+    return [m.value]
   } else {
     let shouldRecalc = false
-    const mm = current.$memos.get(count)!
     current.$memosCount++
-    for (const [obj, key] of mm.watchList) {
+    for (const [obj, key] of memo.watchList) {
       if ((Reflect.get(obj, _hasChanged) as Set<Key>)?.has(key)) {
         shouldRecalc = true
         break
       }
     }
-    return [shouldRecalc ? (mm.value = calc()) : mm.value]
+    return [shouldRecalc ? (memo.value = calc()) : memo.value]
   }
+}
+
+export function useStyle(czz: () => string) {
+  const current = resolveCurrentHandle()
+  useMemo(() => {
+    let el = current.$root.querySelector('style.hook-style')
+    if (!el) {
+      el = document.createElement('style')
+      el.classList.add('hook-style')
+      current.$root.append(el)
+    }
+    el.innerHTML = czz()
+  })
 }

@@ -6,5 +6,7 @@ export function html(strs: TemplateStringsArray, ...vals: unknown[]) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function css(strs: TemplateStringsArray, ...vals: string[]) {
-  return undefined
+  return strs
+    .reduce((acc, cur, index) => `${acc}${cur}${vals[index] ?? ''}`, '')
+    .trim()
 }
