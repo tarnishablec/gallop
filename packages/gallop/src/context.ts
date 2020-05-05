@@ -2,9 +2,9 @@ import { ReactiveElement } from './component'
 import { createProxy } from './reactive'
 
 type ContextOption<T extends object> = {
-  name?: string
   updated?: (v: T) => unknown
   created?: (v: T) => unknown
+  [key: string]: unknown
 }
 
 export class Context<T extends object> {
