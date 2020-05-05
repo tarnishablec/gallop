@@ -58,7 +58,8 @@ export abstract class ReactiveElement extends HTMLElement {
   $effectsCount: number = 0
   $memosCount: number = 0
 
-  $dependsCache?: unknown[][]
+  $effectDepends?: unknown[][]
+  $memoDepends?: unknown[][]
 
   $clip?: Clip
 

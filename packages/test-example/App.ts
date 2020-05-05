@@ -115,7 +115,8 @@ component('app-root', function (this: ReactiveElement) {
     <hr />
     <button
       @click="${() => {
-        data.list.unshift(data.list.pop()!)
+        const { length } = data.list
+        data.list = [data.list[length - 1], ...data.list.slice(0, length - 1)]
       }}"
     >
       circle move

@@ -70,6 +70,7 @@ import {
   useStyle,
   render,
   html,
+  css,
   ReactiveElement
 } from '@gallop/gallop'
 
@@ -82,10 +83,18 @@ component('test-name', function (
   name: string,
   age: number = 1
 ) {
-  let [state] = useState({ a: 1 }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
+  let [state] = useState({ a: 1, color: 'red' }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
   console.dir(this) //access dom directly by this
 
   const [memo] = useMemo(() => state.a * 2) //just like react useMemo(), but auto collect depends like `computed` in vue
+
+  useStyle(() => {
+    return css`
+      div {
+        background: ${state.color};
+      }
+    `
+  })
 
   useContext([context]) //you need to hook Context to this component by useContext()
 

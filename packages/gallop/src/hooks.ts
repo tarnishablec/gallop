@@ -41,17 +41,12 @@ export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
           shouldTrigger = true
         }
       } else {
-        if (!current.$dependsCache) {
-          current.$dependsCache = []
-        }
-        if (!current.$dependsCache[count]) {
-          current.$dependsCache[count] = []
-        }
-
-        if (!shallowEqual(dep, current.$dependsCache[count][i])) {
+        current.$effectDepends || (current.$effectDepends = [])
+        current.$effectDepends[count] || (current.$effectDepends[count] = [])
+        if (!shallowEqual(dep, current.$effectDepends[count][i])) {
           shouldTrigger = true
         }
-        current.$dependsCache[count][i] = dep
+        current.$effectDepends[count][i] = dep
       }
     }
     if (shouldTrigger) {
@@ -95,37 +90,47 @@ export function useCache<T extends Object>(initVal: T) {
   return (current.$cache as [T]) ?? (current.$cache = [initVal])
 }
 
-export function useMemo<T extends () => any>(calc: T): [ReturnType<T>] {
+export function useMemo<T extends () => any>(
+  calc: T,
+  depends?: unknown[]
+): [ReturnType<T>] {
   const current = resolveCurrentHandle()
   const count = current.$memosCount
 
   if (!current.$memos) {
     current.$memos = new Map()
   }
-  const memo = current.$memos.get(count)
+  let memo = current.$memos.get(count)
   if (!memo) {
-    const m = new Memo(calc)
-    current.$memos.set(count, m)
+    depends && (current.$memoDepends || (current.$memoDepends = []))
+    memo = new Memo(calc)
+    current.$memos.set(count, memo)
+    depends && (current.$memoDepends![count] = depends)
     current.$memosCount++
-    return [m.value]
+    return [memo.value]
   } else {
     let shouldRecalc = false
-    current.$memosCount++
-    if (Reflect.get(current.$props, _hasChanged)) {
-      //maybe not ok
-      shouldRecalc = true
-    }
     for (const [obj, key] of memo.watchList) {
       if ((Reflect.get(obj, _hasChanged) as Set<Key>)?.has(key)) {
         shouldRecalc = true
         break
       }
     }
+    if (depends) {
+      for (let i = 0; i < depends.length; i++) {
+        current.$memoDepends![count] || (current.$memoDepends![count] = [])
+        if (!shallowEqual(current.$memoDepends![count][i], depends[i])) {
+          shouldRecalc = true
+        }
+        current.$memoDepends![count][i] = depends[i]
+      }
+    }
+    current.$memosCount++
     return [shouldRecalc ? (memo.value = calc()) : memo.value]
   }
 }
 
-export function useStyle(czz: () => string) {
+export function useStyle(czz: () => string, depends?: unknown[]) {
   const current = resolveCurrentHandle()
   useMemo(() => {
     let el = current.$root.querySelector('style.hook-style')
@@ -135,5 +140,5 @@ export function useStyle(czz: () => string) {
       current.$root.append(el)
     }
     el.innerHTML = czz()
-  })
+  }, depends)
 }

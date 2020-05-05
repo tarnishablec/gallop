@@ -17,7 +17,8 @@ export const TestC = component('test-c', function (
       div {
         background: ${color};
       }
-    `
+    `,
+    [color]
   )
 
   useEffect(() => {
