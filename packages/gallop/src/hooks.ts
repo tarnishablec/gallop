@@ -1,5 +1,5 @@
 import { resolveCurrentHandle, ReactiveElement } from './component'
-import { createProxy, _hasChanged } from './reactive'
+import { createProxy, _hasChanged, resetChangedSet } from './reactive'
 import { isProxy } from './is'
 import { shallowEqual, Key } from './utils'
 import { Context } from './context'
@@ -125,6 +125,7 @@ export function useMemo<T extends () => any>(
         current.$memoDepends![count][i] = depends[i]
       }
     }
+    resetChangedSet()
     current.$memosCount++
     return [shouldRecalc ? (memo.value = calc()) : memo.value]
   }
