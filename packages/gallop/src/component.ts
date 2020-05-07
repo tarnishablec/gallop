@@ -1,6 +1,6 @@
 import { Clip, HTMLClip, createClip, getVals, getShaHtml } from './clip'
 import { getFuncArgNames, extractProps } from './utils'
-import { createProxy } from './reactive'
+import { createProxy, resetChangedSet } from './reactive'
 import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
 import { DoAble } from './do'
@@ -30,6 +30,7 @@ export function requestUpdate() {
       instance.dispatchUpdate()
       updateQueue.delete(instance)
     })
+    resetChangedSet()
     dirty = false
     updateQueue.clear()
   })
