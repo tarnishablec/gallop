@@ -1,5 +1,5 @@
 import { resolveCurrentHandle, ReactiveElement } from './component'
-import { createProxy, _hasChanged } from './reactive'
+import { createProxy, _dirty } from './reactive'
 import { isProxy } from './is'
 import { shallowEqual, Key } from './utils'
 import { Context } from './context'
@@ -37,7 +37,7 @@ export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
     for (let i = 0; i < depends.length; i++) {
       const dep = depends[i]
       if (isProxy(dep)) {
-        if (Reflect.get(dep, _hasChanged) !== undefined) {
+        if (Reflect.get(dep, _dirty) !== undefined) {
           shouldTrigger = true
         }
       } else {
@@ -112,7 +112,7 @@ export function useMemo<T extends () => any>(
     // debugger
     let shouldRecalc = false
     for (const [obj, key] of memo.watchList) {
-      if ((Reflect.get(obj, _hasChanged) as Set<Key>)?.has(key)) {
+      if ((Reflect.get(obj, _dirty) as Set<Key>)?.has(key)) {
         shouldRecalc = true
         break
       }

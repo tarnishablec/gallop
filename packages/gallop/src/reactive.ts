@@ -4,11 +4,11 @@ import { LockedProxyError } from './error'
 import { resolveCurrentMemo } from './memo'
 
 export const _isProxy = Symbol('isProxy')
-export const _hasChanged = Symbol('hasChanged')
+export const _dirty = Symbol('dirty')
 
 const changedSet = new Set<object>()
 export const resetChangedSet = () => {
-  changedSet.forEach((c) => Reflect.set(c, _hasChanged, undefined))
+  changedSet.forEach((c) => Reflect.set(c, _dirty, undefined))
   changedSet.clear()
 }
 
@@ -35,8 +35,8 @@ export const createProxy = <T extends object>(
       let hasChanged = !shallowEqual(Reflect.get(target, prop), val)
       let res = Reflect.set(target, prop, val, receiver)
       if (hasChanged) {
-        const hc = Reflect.get(target, _hasChanged) ?? new Set()
-        Reflect.set(target, _hasChanged, hc.add(prop), receiver)
+        const hc = Reflect.get(target, _dirty) ?? new Set()
+        Reflect.set(target, _dirty, hc.add(prop), receiver)
         changedSet.add(target)
       }
       hasChanged && setSideEffect?.(target, prop, val, receiver)
@@ -46,8 +46,8 @@ export const createProxy = <T extends object>(
       if (prop === _isProxy) {
         return true
       }
-      if (prop === _hasChanged) {
-        return Reflect.get(target, _hasChanged)
+      if (prop === _dirty) {
+        return Reflect.get(target, _dirty)
       }
       const memo = resolveCurrentMemo()
       memo && memo.watch(target, prop)

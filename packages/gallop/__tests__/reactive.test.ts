@@ -1,4 +1,4 @@
-import { createProxy, _hasChanged } from '../src/reactive'
+import { createProxy, _dirty } from '../src/reactive'
 import { isProxy } from '../src/is'
 
 describe('reactive', () => {
@@ -10,24 +10,24 @@ describe('reactive', () => {
     expect(isProxy(a)).toBe(false)
 
     p.a.b = 2
-    expect(Reflect.get(p, _hasChanged)).toBe(undefined)
-    expect(Reflect.get(p.a, _hasChanged)).toEqual(new Set('b'))
+    expect(Reflect.get(p, _dirty)).toBe(undefined)
+    expect(Reflect.get(p.a, _dirty)).toEqual(new Set('b'))
 
     p.a.b = 2
-    expect(Reflect.get(p, _hasChanged)).toBe(undefined)
-    expect(Reflect.get(p.a, _hasChanged)).toEqual(new Set('b'))
+    expect(Reflect.get(p, _dirty)).toBe(undefined)
+    expect(Reflect.get(p.a, _dirty)).toEqual(new Set('b'))
 
     p.a = { b: 3 }
-    expect(Reflect.get(p, _hasChanged)).toEqual(new Set('a'))
-    expect(Reflect.get(p.a, _hasChanged)).toEqual(undefined)
+    expect(Reflect.get(p, _dirty)).toEqual(new Set('a'))
+    expect(Reflect.get(p.a, _dirty)).toEqual(undefined)
 
     p.a = { b: 3 }
-    expect(Reflect.get(p, _hasChanged)).toEqual(new Set('a'))
-    expect(Reflect.get(p.a, _hasChanged)).toEqual(undefined)
+    expect(Reflect.get(p, _dirty)).toEqual(new Set('a'))
+    expect(Reflect.get(p.a, _dirty)).toEqual(undefined)
 
     p.a.b = 2
-    expect(Reflect.get(p, _hasChanged)).toEqual(new Set('a'))
-    expect(Reflect.get(p.a, _hasChanged)).toEqual(new Set('b'))
+    expect(Reflect.get(p, _dirty)).toEqual(new Set('a'))
+    expect(Reflect.get(p.a, _dirty)).toEqual(new Set('b'))
 
     const b = { x: { y: '🏀' } }
     let pb = createProxy(b, () => console.log('b changed'), undefined, true)
