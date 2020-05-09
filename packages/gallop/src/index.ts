@@ -20,13 +20,32 @@ export {
 export { DoAble } from './do'
 export { DynamicComponent } from './dynamic'
 export { isProxy, isMarker } from './is'
+export {
+  Part,
+  NodePart,
+  AttrPart,
+  EventPart,
+  PropPart,
+  initEntry,
+  tryUpdateEntry,
+  extractDof
+} from './part'
 
 export { HTMLClip, getShaHtml, getVals } from './clip'
 
 export { repeat } from './directives'
 export { directive, directives, isDirective } from './directive'
 
+export {
+  LockedProxyError,
+  NotReactiveELementError,
+  DirectivePartTypeError,
+  DuplicatedKeyError,
+  StyleInTemplateError
+} from './error'
+
 export type { Component, Complex } from './component'
 export type { Effect } from './hooks'
 export type { DirectiveFn } from './directive'
 export type { ContextOption } from './context'
+export type { NodeValueType } from './part'
