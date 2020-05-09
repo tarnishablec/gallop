@@ -55,7 +55,7 @@
 
 - ⚡⚡ enable `key diffing` in list rendering by `repeat()` directive
 
-- for more detail, check packages/test-example
+- for more detail, check packages/sandbox
 
 ## Simple use case
 

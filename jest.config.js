@@ -10,7 +10,7 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/packages/**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
-    '!<rootDir>/packages/{test-example,eureka}/**',
+    '!<rootDir>/packages/{sandbox,eureka}/**',
     '!<rootDir>/packages/*/dist/**',
     '!<rootDir>/packages/*/index.js',
     '!**/node_modules/**',

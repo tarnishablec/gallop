@@ -19,7 +19,7 @@ describe('component', () => {
 
     const hobbies = ['sing', 'jump', 'rap', '🏀']
     component(
-      'test-example',
+      'sandbox',
       function (
         this: ReactiveElement,
         name: string = 'yihan',
@@ -33,12 +33,12 @@ describe('component', () => {
 
         useEffect(() => {
           a++
-          expect(this.localName).toBe('test-example')
+          expect(this.localName).toBe('sandbox')
           expect(this.$state).toEqual({ tok: 100 })
         }, [])
 
         let sha = html`
-          <div id="root" style="color:red" .class=${'test-example'}>
+          <div id="root" style="color:red" .class=${'sandbox'}>
             <div>${name}</div>
             <div>${age}</div>
             <div>${hobbies}</div>
@@ -77,11 +77,9 @@ describe('component', () => {
       ['name', 'age', 'hobbies', 'status']
     )
 
-    render(
-      html` <test-example :hobbies="${hobbies}" :age="24"></test-example> `
-    )
+    render(html` <sandbox :hobbies="${hobbies}" :age="24"></sandbox> `)
 
-    const instance = document.body.querySelector('test-example')!
+    const instance = document.body.querySelector('sandbox')!
 
     expect(instance instanceof ReactiveElement).toBe(true)
     expect(instance.parentNode).toBe(document.body)
