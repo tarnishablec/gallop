@@ -1,11 +1,11 @@
-# `@gallop/eureka`
+# `@gallop/router`
 
 > TODO: description
 
 ## Usage
 
 ```
-const eureka = require('@gallop/eureka');
+const router = require('@gallop/router');
 
 // TODO: DEMONSTRATE API
 ```

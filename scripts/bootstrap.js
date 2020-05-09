@@ -76,7 +76,7 @@ function initIndexJs(filePath, name, args) {
       filePath,
       `'use strict'
 
-module.exports = require('./dist/index.global.js')
+module.exports = require('./dist/index.umd.js')
       `.trim() + '\n'
       //       `
       // 'use strict'
