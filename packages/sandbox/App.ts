@@ -8,10 +8,8 @@ import {
   useState,
   useMemo
 } from '@gallop/gallop'
-// import { routerView } from '@gallop/router'
 
 import './src/styles/index.scss'
-// const start = new Date().getTime()
 
 component('test-a', (count: number) => {
   const [state] = useState({

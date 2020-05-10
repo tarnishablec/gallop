@@ -9,8 +9,6 @@ import {
 import { Router, Route } from '@gallop/router'
 import { match, parse, compile } from 'path-to-regexp'
 
-// const { option } = Router
-
 export const routerView = directive(
   (props?: unknown): DirectiveFn =>
     function (part: Part) {
