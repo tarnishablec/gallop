@@ -32,7 +32,7 @@ module.exports = {
     }
   },
   optimization: {
-    minimize: ProdMode,
+    minimize: false,
     /**
      * TODO
      * 🚫 terser cause component props name can not be auto detected
