@@ -91,7 +91,7 @@ export function useCache<T extends Object>(initVal: T) {
 export function useMemo<T extends () => any>(
   calc: T,
   depends?: unknown[]
-): [ReturnType<T>] {
+): [Readonly<ReturnType<T>>] {
   const current = resolveCurrentHandle()
   const count = current.$memosCount
 
