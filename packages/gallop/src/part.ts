@@ -11,7 +11,7 @@ type PropLocation = { node: ReactiveElement; name: string }
 type NodeLocation = { startNode: Comment; endNode: Comment }
 
 type PartLocation = AttrEventLocation | PropLocation | NodeLocation
-type NodePartType = 'clip' | 'clips' | 'text' | 'element' | 'dirctive'
+type NodePartType = 'clip' | 'clips' | 'text' | 'element'
 type PartType = 'node' | 'attr' | 'event' | 'prop' | NodePartType
 
 export type NodeValueType = Clip | string | ReactiveElement | NodeValueType[]
@@ -76,8 +76,8 @@ export class NodePart extends Part {
   }
 
   value!: NodeValueType
-  location!: NodeLocation
-  shaHtmlCache?: string;
+  location!: NodeLocation;
+  // shaHtmlCache?: string;
   [key: string]: unknown //for directives
 }
 
@@ -129,7 +129,7 @@ type EventInstance = (e: Event) => unknown
 
 export class EventPart extends Part {
   clear(): void {
-    this.eventCache.forEach((val) => {
+    this.eventCache.forEach(val => {
       this.location.node.removeEventListener(this.eventName, val, this.options)
     })
     this.eventCache.clear()
@@ -138,7 +138,7 @@ export class EventPart extends Part {
   commit(): void {
     this.clear()
     const { node } = this.location
-    this.value.forEach((v) => {
+    this.value.forEach(v => {
       let ev = this.tryGetFromCache(v)
       node.addEventListener(this.eventName, ev, this.options)
     })
@@ -156,7 +156,7 @@ export class EventPart extends Part {
 
     let temp: string[]
     if (Array.isArray(pendingVal)) {
-      temp = pendingVal.map((v) => v?.toString())
+      temp = pendingVal.map(v => v?.toString())
     } else {
       temp = [pendingVal.toString()]
     }
@@ -219,7 +219,7 @@ export function initEntry(val: unknown): NodeValueType
 export function initEntry(val: unknown): NodeValueType {
   if (Array.isArray(val)) {
     const res: NodeValueType[] = []
-    val.forEach((v) => {
+    val.forEach(v => {
       res.push(initEntry(v))
     })
     return res
@@ -265,7 +265,7 @@ export function tryUpdateEntry(
 export function extractDof(val: NodeValueType) {
   const dof = new DocumentFragment()
   if (Array.isArray(val)) {
-    val.forEach((v) => {
+    val.forEach(v => {
       dof.append(extractDof(v))
     })
   } else if (val instanceof ReactiveElement) {
