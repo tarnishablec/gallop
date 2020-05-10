@@ -1,18 +1,99 @@
-import { html, component, render, ReactiveElement } from '@gallop/gallop'
-import { routerView } from '@gallop/router'
+import {
+  html,
+  component,
+  render,
+  ReactiveElement,
+  repeat,
+  useEffect,
+  useState,
+  useMemo
+} from '@gallop/gallop'
+// import { routerView } from '@gallop/router'
 
 import './src/styles/index.scss'
+// const start = new Date().getTime()
 
-export default component('app-root', function(this: ReactiveElement) {
+component('test-a', (count: number) => {
+  const [state] = useState({
+    arr: new Array(count).fill(void 0).map((v, i) => i)
+  })
+
+  useMemo(() => (state.arr = new Array(count).fill(void 0).map((v, i) => i)), [
+    count
+  ])
+
+  // debugger
+  console.log('test-a')
+  useEffect(() => {
+    console.log('test-a mounted')
+  }, [])
+
+  const { arr } = state
+
   return html`
-    <div>this is app-root</div>
-    <div>${routerView()}</div>
+    <div>
+      this is test-a
+      <div>
+        <button
+          @click="${() => {
+            console.log('button clicked')
+            arr.unshift(arr.pop()!)
+          }}"
+        >
+          circle move
+        </button>
+      </div>
+      ${repeat(
+        arr,
+        (v) => v,
+        (v) => html` <test-b>${v}</test-b>`
+      )}
+    </div>
+  `
+})
+
+component('test-b', () => {
+  useEffect(() => {
+    console.log(`test-b mounted`)
+  }, [])
+  return html` <div>this is test-b <slot></slot></div> `
+})
+
+component('app-root', function (this: ReactiveElement) {
+  console.log('app-root')
+  let [state] = useState({ count: 500 })
+
+  useEffect(() => {
+    const input = this.$root.querySelector('input')
+    console.log(input)
+    input?.addEventListener('change', (e) => {
+      console.log(e.target)
+    })
+  }, [])
+
+  return html`
+    <div>
+      this is app-root
+      <input
+        .value="${state.count}"
+        @input="${(e: Event) => {
+          state.count = Number((e.target as HTMLInputElement).value)
+        }}"
+      />
+      ${state.count}
+      <test-a :count="${state.count}"></test-a>
+    </div>
+    <style>
+      input {
+        display: block;
+      }
+    </style>
   `
 })
 
 render(
   html`
-    <app-root :a :b="''">
+    <app-root>
       this is slot
     </app-root>
     <style>
@@ -25,16 +106,20 @@ render(
 )
 
 // function testTask() {
-//   window.requestIdleCallback(() => console.log('ric'))
+//   window.requestIdleCallback(() => {
+//     console.log('ric')
+//     // const end = new Date().getTime()
+//     // console.log(end - start)
+//   })
 //   requestAnimationFrame(() => {
 //     console.log('raf')
-//     requestAnimationFrame(() => console.log('raf in raf'))
-//     setTimeout(() => console.log('set in raf'), 0)
+//     requestAnimationFrame(() => console.log('raf | raf'))
+//     setTimeout(() => console.log('raf | set'), 0)
 //   })
 //   setTimeout(() => {
 //     console.log('set')
-//     setTimeout(() => console.log(`set in set`), 0)
-//     requestAnimationFrame(() => console.log(`raf in set`))
+//     setTimeout(() => console.log(`set | set`), 0)
+//     requestAnimationFrame(() => console.log(`set | raf`))
 //   }, 0)
 //   console.log('normal')
 // }

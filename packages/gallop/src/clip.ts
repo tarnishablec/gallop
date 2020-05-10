@@ -79,8 +79,8 @@ export function attachParts(clip: Clip) {
         const prefix = name[0]
         if (
           prefix === '.' ||
-          (prefix === ':' && isMarker(attrs[i].value)) ||
-          prefix === '@'
+          prefix === '@' ||
+          (prefix === ':' && isMarker(attrs[i].value))
         ) {
           const bindName = name.slice(1)
           switch (prefix) {

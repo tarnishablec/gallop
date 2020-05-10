@@ -102,9 +102,7 @@ export class AttrPart extends Part {
       return
     }
     if (name === 'value') {
-      if (Reflect.get(node, 'value')) {
-        Reflect.set(node, 'value', this.value)
-      }
+      Reflect.set(node, 'value', this.value)
       return
     }
     node.setAttribute(name, res)
@@ -129,7 +127,7 @@ type EventInstance = (e: Event) => unknown
 
 export class EventPart extends Part {
   clear(): void {
-    this.eventCache.forEach(val => {
+    this.eventCache.forEach((val) => {
       this.location.node.removeEventListener(this.eventName, val, this.options)
     })
     this.eventCache.clear()
@@ -138,7 +136,7 @@ export class EventPart extends Part {
   commit(): void {
     this.clear()
     const { node } = this.location
-    this.value.forEach(v => {
+    this.value.forEach((v) => {
       let ev = this.tryGetFromCache(v)
       node.addEventListener(this.eventName, ev, this.options)
     })
@@ -156,7 +154,7 @@ export class EventPart extends Part {
 
     let temp: string[]
     if (Array.isArray(pendingVal)) {
-      temp = pendingVal.map(v => v?.toString())
+      temp = pendingVal.map((v) => v?.toString())
     } else {
       temp = [pendingVal.toString()]
     }
@@ -219,7 +217,7 @@ export function initEntry(val: unknown): NodeValueType
 export function initEntry(val: unknown): NodeValueType {
   if (Array.isArray(val)) {
     const res: NodeValueType[] = []
-    val.forEach(v => {
+    val.forEach((v) => {
       res.push(initEntry(v))
     })
     return res
@@ -265,7 +263,7 @@ export function tryUpdateEntry(
 export function extractDof(val: NodeValueType) {
   const dof = new DocumentFragment()
   if (Array.isArray(val)) {
-    val.forEach(v => {
+    val.forEach((v) => {
       dof.append(extractDof(v))
     })
   } else if (val instanceof ReactiveElement) {
