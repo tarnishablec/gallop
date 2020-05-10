@@ -19,8 +19,8 @@ describe('component', () => {
 
     const hobbies = ['sing', 'jump', 'rap', '🏀']
     component(
-      'sandbox',
-      function (
+      'sandbox-a',
+      function(
         this: ReactiveElement,
         name: string = 'yihan',
         age: number,
@@ -68,7 +68,10 @@ describe('component', () => {
 
         expect(
           isMarker(
-            sha.do(createClip).dof.querySelector('#root')?.getAttribute('style')
+            sha
+              .do(createClip)
+              .dof.querySelector('#root')
+              ?.getAttribute('style')
           )
         ).toBe(false)
 
@@ -77,9 +80,13 @@ describe('component', () => {
       ['name', 'age', 'hobbies', 'status']
     )
 
-    render(html` <sandbox :hobbies="${hobbies}" :age="24"></sandbox> `)
+    render(
+      html`
+        <sandbox-a :hobbies="${hobbies}" :age="24"></sandbox-a>
+      `
+    )
 
-    const instance = document.body.querySelector('sandbox')!
+    const instance = document.body.querySelector('sandbox-a')!
 
     expect(instance instanceof ReactiveElement).toBe(true)
     expect(instance.parentNode).toBe(document.body)
@@ -115,11 +122,21 @@ describe('component', () => {
   })
 
   test('mix', () => {
-    component('test-dispatch', (num: number) => html`<div>dispatch${num}</div>`)
+    component(
+      'test-dispatch',
+      (num: number) =>
+        html`
+          <div>dispatch${num}</div>
+        `
+    )
     render(
       html`
-        ${[1, 2, 3].map((n) =>
-          n % 2 ? html`<test-dispatch :num="${n}"></test-dispatch>` : 'hello'
+        ${[1, 2, 3].map(n =>
+          n % 2
+            ? html`
+                <test-dispatch :num="${n}"></test-dispatch>
+              `
+            : 'hello'
         )}
       `
     )

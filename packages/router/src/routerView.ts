@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   directive,
   Part,
@@ -11,7 +12,7 @@ import { match, parse, compile } from 'path-to-regexp'
 
 export const routerView = directive(
   (props?: unknown): DirectiveFn =>
-    function (part: Part) {
+    function(part: Part) {
       if (!(part instanceof NodePart)) {
         throw DirectivePartTypeError(part.type)
       }
