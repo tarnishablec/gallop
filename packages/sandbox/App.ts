@@ -26,8 +26,6 @@ component('test-a', (count: number) => {
     console.log('test-a mounted')
   }, [])
 
-  const { arr } = state
-
   return html`
     <div>
       this is test-a
@@ -35,14 +33,14 @@ component('test-a', (count: number) => {
         <button
           @click="${() => {
             console.log('button clicked')
-            arr.unshift(arr.pop()!)
+            state.arr.unshift(state.arr.pop()!)
           }}"
         >
           circle move
         </button>
       </div>
       ${repeat(
-        arr,
+        state.arr,
         (v) => v,
         (v) => html` <test-b>${v}</test-b>`
       )}

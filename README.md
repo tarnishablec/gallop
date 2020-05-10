@@ -55,7 +55,7 @@
 
 - ⚡⚡ enable `key diffing` in list rendering by `repeat()` directive
 
-- for more detail, check packages/sandbox
+- for more detail, check packages/sandbox or [Sandbox](https://gallop-sandbox.now.sh/)
 
 ## Simple use case
 
