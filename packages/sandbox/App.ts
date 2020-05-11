@@ -11,42 +11,47 @@ import {
 
 import './src/styles/index.scss'
 
-component('test-a', (count: number) => {
-  const [state] = useState({
-    arr: new Array(count).fill(void 0).map((v, i) => i)
-  })
+component(
+  'test-a',
+  (count: number) => {
+    const [state] = useState({
+      arr: new Array(count).fill(void 0).map((v, i) => i)
+    })
 
-  useMemo(() => (state.arr = new Array(count).fill(void 0).map((v, i) => i)), [
-    count
-  ])
+    useMemo(
+      () => (state.arr = new Array(count).fill(void 0).map((v, i) => i)),
+      [count]
+    )
 
-  // debugger
-  console.log('test-a')
-  useEffect(() => {
-    console.log('test-a mounted')
-  }, [])
+    // debugger
+    console.log('test-a')
+    useEffect(() => {
+      console.log('test-a mounted')
+    }, [])
 
-  return html`
-    <div>
-      this is test-a
+    return html`
       <div>
-        <button
-          @click="${() => {
-            console.log('button clicked')
-            state.arr.unshift(state.arr.pop()!)
-          }}"
-        >
-          circle move
-        </button>
+        this is test-a
+        <div>
+          <button
+            @click="${() => {
+              console.log('button clicked')
+              state.arr.unshift(state.arr.pop()!)
+            }}"
+          >
+            circle move
+          </button>
+        </div>
+        ${repeat(
+          state.arr,
+          (v) => v,
+          (v) => html` <test-b>${v}</test-b>`
+        )}
       </div>
-      ${repeat(
-        state.arr,
-        (v) => v,
-        (v) => html` <test-b>${v}</test-b>`
-      )}
-    </div>
-  `
-})
+    `
+  },
+  { propList: ['count'] }
+)
 
 component('test-b', () => {
   useEffect(() => {

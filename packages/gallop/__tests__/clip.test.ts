@@ -1,7 +1,9 @@
 import { html, createContext, component } from '../src'
 import { getVals, createClip, attachParts } from '../src/clip'
 
-component('test-test', (name: string) => html`<div>${name}</div>`, ['name'])
+component('test-test', (name: string) => html`<div>${name}</div>`, {
+  propList: ['name']
+})
 
 const a = 1
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

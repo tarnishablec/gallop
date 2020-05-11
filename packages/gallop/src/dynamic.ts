@@ -38,8 +38,8 @@ export const DynamicComponent = component(
     })
     return html``
   },
-  ['is'],
   {
-    shadow: false
+    shadow: false,
+    propList: ['is']
   }
 )

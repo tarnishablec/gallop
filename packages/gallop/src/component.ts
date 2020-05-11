@@ -187,8 +187,8 @@ export const componentPool = new Set<string>()
 export function component<F extends Component>(
   name: string,
   builder: F,
-  propNameList?: string[],
   option: {
+    propList?: string[]
     unstable?: boolean
     shadow?: boolean
     definitionOptions?: ElementDefinitionOptions
@@ -197,8 +197,9 @@ export function component<F extends Component>(
     unstable: false
   }
 ) {
-  const propNames =
-    propNameList ?? getFuncArgNames(builder).map((name) => name.toLowerCase())
+  const propNames = (option?.propList ?? getFuncArgNames(builder)).map((name) =>
+    name.toLowerCase()
+  )
 
   const clazz = class extends ReactiveElement {
     constructor() {
