@@ -1,6 +1,6 @@
 {
   "name": "@gallop/gallop",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "description": "gallop",
   "main": "src/index.ts",
   "module": "dist/index.esm.js",
