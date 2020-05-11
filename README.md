@@ -141,7 +141,7 @@ component('test-name', function (
     >
       click
     </button>
-  `.useStyle(/TODO/)
+  `
 })
 
 render(html`
