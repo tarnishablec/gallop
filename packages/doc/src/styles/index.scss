@@ -1,0 +1,16 @@
+@import './variables.scss';
+
+:root {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+}
+
+app-root {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 180px auto;
+}

@@ -53,6 +53,8 @@ async function cleanDts(target) {
   const distDir = path.resolve(`packages/${target}/dist`)
   fse.ensureDir(distDir).then(() => {
     fse.remove(`${distDir}/index.umd.d.ts`)
+    fse.remove(`${distDir}/index.esm.min.d.ts`)
+    fse.remove(`${distDir}/index.umd.min.d.ts`)
     fse
       .rename(`${distDir}/index.esm.d.ts`, `${distDir}/index.d.ts`)
       .then(() => {

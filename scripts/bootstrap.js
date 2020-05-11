@@ -27,10 +27,8 @@ function main() {
 
     const longName = `@${scope}/${shortName}`
     const pkgPath = path.join(packageDir, 'package.json')
-    const nodeIndexPath = path.join(packageDir, 'index.js')
 
     initPkg(pkgPath, longName, shortName, args)
-    initIndexJs(nodeIndexPath, shortName, args)
   })
   execa.commandSync('lerna bootstrap', {
     stdio: 'inherit'
@@ -65,29 +63,6 @@ describe('test', () => {
 })`
     )
     fse.removeSync(path.resolve(filePath, `../${name}.test.js`))
-  }
-}
-
-function initIndexJs(filePath, name, args) {
-  const indexExists = fse.existsSync(filePath)
-
-  if (args.force || !indexExists) {
-    fse.writeFileSync(
-      filePath,
-      `'use strict'
-
-module.exports = require('./dist/index.umd.js')
-      `.trim() + '\n'
-      //       `
-      // 'use strict'
-
-      // if (process.env.NODE_ENV === 'production') {
-      //   module.exports = require('./dist/${name}.cjs.prod.js')
-      // } else {
-      //   module.exports = require('./dist/${name}.cjs.js')
-      // }
-      //       `.trim() + '\n',
-    )
   }
 }
 
@@ -127,7 +102,7 @@ function initPkg(filePath, longName, shortName, args) {
       main: `src/index.ts`,
       module: `dist/index.esm.js`,
       files: [`index.js`, 'dist', 'src'],
-      unpkg: `dist/index.umd.js`,
+      unpkg: `dist/index.esm.min.js`,
       types: `dist/index.d.ts`,
       repository: {
         type: 'git',

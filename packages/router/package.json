@@ -9,7 +9,7 @@
     "dist",
     "src"
   ],
-  "unpkg": "dist/index.umd.js",
+  "unpkg": "dist/index.esm.min.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
@@ -30,8 +30,10 @@
   "publishConfig": {
     "access": "public"
   },
+  "peerDependencies": {
+    "@gallop/gallop": "^0.8.10"
+  },
   "dependencies": {
-    "@gallop/gallop": "^0.8.10",
     "path-to-regexp": "^6.1.0"
   }
 }

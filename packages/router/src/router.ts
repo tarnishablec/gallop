@@ -16,22 +16,11 @@ export type Route = {
 }
 
 export class Router {
-  private constructor() {}
+  constructor(public option: RouterOption) {}
 
-  static option: RouterOption
-  private static inited: boolean = false
-  static init(option: RouterOption) {
-    if (Router.inited) {
-      return
-    }
-    Router.inited = true
-
-    Router.option = option
-  }
-
-  static push() {}
-  static replace() {}
-  static back() {}
-  static forward() {}
-  static go() {}
+  push() {}
+  replace() {}
+  back() {}
+  forward() {}
+  go() {}
 }

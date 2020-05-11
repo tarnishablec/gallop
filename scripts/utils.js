@@ -1,7 +1,7 @@
 const fs = require('fs')
 const execa = require('execa')
 
-const excludes = ['sandbox']
+const excludes = ['sandbox', 'doc']
 
 const resolveTargets = (argsTargets) =>
   (argsTargets.length === 0 ? fs.readdirSync('packages') : argsTargets).filter(

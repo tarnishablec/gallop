@@ -17,15 +17,28 @@ const name = path.basename(packageDir)
 
 const resolve = (p) => path.resolve(packageDir, p)
 
-// const pkg = require(resolve(`package.json`))
+const pkg = require(resolve(`package.json`))
+
+const peers = pkg.peerDependencies && Object.keys(pkg.peerDependencies)
+
+console.log(peers)
 
 const formats = {
   esm: {
     file: resolve(`dist/index.esm.js`),
     format: `es`
   },
+  esmmin: {
+    file: resolve(`dist/index.esm.min.js`),
+    format: `es`,
+    plugins: [terser()]
+  },
   umd: {
     file: resolve(`dist/index.umd.js`),
+    format: `umd`
+  },
+  umdmin: {
+    file: resolve(`dist/index.umd.min.js`),
     format: `umd`,
     plugins: [terser()]
   }
@@ -54,11 +67,12 @@ const CONFIG = [
       }),
       json(),
       alias(aliasOptions)
-    ]
+    ],
+    external: peers
   }
 ]
 
-const defaultFormats = ['esm', 'umd']
+const defaultFormats = ['esm', 'esmmin', 'umdmin', 'umd']
 const inlineFormats = process.env.FORMATS && process.env.FORMATS.split(',')
 const packageFormats = inlineFormats || defaultFormats
 
