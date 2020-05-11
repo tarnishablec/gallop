@@ -1,6 +1,6 @@
 {
   "name": "@gallop/sandbox",
-  "version": "0.8.9",
+  "version": "0.8.10",
   "description": "sandbox",
   "main": "./App.ts",
   "files": [
@@ -49,8 +49,8 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@gallop/gallop": "^0.8.9",
-    "@gallop/router": "^0.8.9",
+    "@gallop/gallop": "^0.8.10",
+    "@gallop/router": "^0.8.10",
     "lodash": "^4.17.15",
     "rxjs": "^6.5.5"
   },
