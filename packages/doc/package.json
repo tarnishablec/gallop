@@ -1,14 +1,29 @@
 {
   "name": "@gallop/doc",
   "version": "0.8.11",
-  "main": "./App.js",
+  "description": "doc",
+  "main": "./App.ts",
+  "files": [
+    "App.ts",
+    "src"
+  ],
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js",
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarnishablec/gallop.git"
+  },
+  "keywords": [
+    "gallop"
+  ],
+  "sideEffects": false,
+  "author": "tarnishablec <tarnishablec@outlook.com>",
   "license": "MIT",
-  "dependencies": {
-    "@gallop/gallop": "^0.8.11"
+  "homepage": "",
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "autoprefixer": "^9.7.6",
@@ -30,5 +45,6 @@
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0"
-  }
+  },
+  "gitHead": "208ab89d0d7fcf82d4e08e28a0fa290c0a9860c4"
 }
