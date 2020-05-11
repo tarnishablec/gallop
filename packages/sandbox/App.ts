@@ -10,6 +10,7 @@ import {
 } from '@gallop/gallop'
 
 import './src/styles/index.scss'
+import { MyCount } from './src/components/MyCount'
 
 component(
   'test-a',
@@ -62,7 +63,10 @@ component('test-b', () => {
 
 component('app-root', function (this: ReactiveElement) {
   console.log('app-root')
-  let [state] = useState({ count: 500 })
+  let [state] = useState<{ count: number; page: 'count' | 'main' }>({
+    count: 500,
+    page: 'count'
+  })
 
   useEffect(() => {
     const input = this.$root.querySelector('input')
@@ -74,19 +78,37 @@ component('app-root', function (this: ReactiveElement) {
 
   return html`
     <div>
-      this is app-root
-      <input
-        .value="${state.count}"
-        @input="${(e: Event) => {
-          state.count = Number((e.target as HTMLInputElement).value)
-        }}"
-      />
-      ${state.count}
-      <test-a :count="${state.count}"></test-a>
+      <div class="main-title">
+        <div>
+          change page
+        </div>
+        <div>
+          <button @click="${() => (state.page = 'count')}">count</button>
+          <button @click="${() => (state.page = 'main')}">main</button>
+        </div>
+      </div>
+      <hr />
+      ${state.page === 'count'
+        ? MyCount()
+        : html`
+            <input
+              .value="${state.count}"
+              @input="${(e: Event) => {
+                state.count = Number((e.target as HTMLInputElement).value)
+              }}"
+            />
+            ${state.count}
+            <test-a :count="${state.count}"></test-a>
+          `}
     </div>
     <style>
       input {
         display: block;
+      }
+
+      .main-title > div {
+        display: grid;
+        place-items: center;
       }
     </style>
   `
