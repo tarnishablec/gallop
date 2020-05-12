@@ -34,6 +34,8 @@
   | useMemo()    | ✅  |
   | useStyle()   | ✅  |
 
+- `directive function` design from `lit-html` give gallop super good extendiability
+
 - directives
 
   |           |     |
