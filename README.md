@@ -15,8 +15,6 @@
 
 - gallop is `Non-intrusive` so technically you can use it in any framework like vue or react
 
-- gallop is an implementation of `MVI (Model-View-Intent)` architecture 
-
 - gallop is inspired by many framworks like `lit-html,vue,react,cyclejs` 
 
 - use `template literals` to auto detect dynamic & static code
