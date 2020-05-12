@@ -17,6 +17,8 @@
 
 - gallop is a implementation of `MVI (Model-View-Intent)` architecture 
 
+- gallop is inspired by many framworks like `lit-html,vue,react,cyclejs` 
+
 - use `template literals` to auto detect dynamic & static code
 
 - register `reactive` component in functional way
