@@ -109,12 +109,6 @@ export function useMemo<T extends () => any>(
   } else {
     // debugger
     let shouldRecalc = false
-    for (const [obj, key] of memo.watchList) {
-      if (dirtyMap.get(obj)?.has(key)) {
-        shouldRecalc = true
-        break
-      }
-    }
     if (depends) {
       for (let i = 0; i < depends.length; i++) {
         current.$memoDepends![count] || (current.$memoDepends![count] = [])
@@ -122,6 +116,12 @@ export function useMemo<T extends () => any>(
           shouldRecalc = true
         }
         current.$memoDepends![count][i] = depends[i]
+      }
+    }
+    for (const [obj, key] of memo.watchList) {
+      if (dirtyMap.get(obj)?.has(key)) {
+        shouldRecalc = true
+        break
       }
     }
     if (shouldRecalc) {
