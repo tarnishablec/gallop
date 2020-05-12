@@ -107,8 +107,7 @@ module.exports = {
     open: true,
     stats: 'errors-only',
     compress: true,
-    host: 'localhost',
-    port: 8099
+    host: 'localhost'
   },
   plugins: [
     new CleanWebpackPlugin({
