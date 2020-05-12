@@ -35,10 +35,6 @@ const formats = {
   },
   umd: {
     file: resolve(`dist/index.umd.js`),
-    format: `umd`
-  },
-  umdmin: {
-    file: resolve(`dist/index.umd.min.js`),
     format: `umd`,
     plugins: [terser()]
   }
@@ -72,7 +68,7 @@ const CONFIG = [
   }
 ]
 
-const defaultFormats = ['esm', 'esmmin', 'umdmin', 'umd']
+const defaultFormats = ['esm', 'esmmin', 'umd']
 const inlineFormats = process.env.FORMATS && process.env.FORMATS.split(',')
 const packageFormats = inlineFormats || defaultFormats
 

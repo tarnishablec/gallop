@@ -1,6 +1,6 @@
 {
   "name": "@gallop/router",
-  "version": "0.8.12",
+  "version": "0.8.13",
   "description": "router",
   "main": "src/index.ts",
   "module": "dist/index.esm.js",
@@ -9,7 +9,8 @@
     "dist",
     "src"
   ],
-  "unpkg": "dist/index.esm.min.js",
+  "unpkg": "dist/index.umd.js",
+  "jsdelivr": "dist/index.umd.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",

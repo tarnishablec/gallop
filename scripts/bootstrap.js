@@ -102,7 +102,8 @@ function initPkg(filePath, longName, shortName, args) {
       main: `src/index.ts`,
       module: `dist/index.esm.js`,
       files: [`index.js`, 'dist', 'src'],
-      unpkg: `dist/index.esm.min.js`,
+      unpkg: `dist/index.umd.js`,
+      jsdelivr: `dist/index.umd.js`,
       types: `dist/index.d.ts`,
       repository: {
         type: 'git',

@@ -1,7 +1,0 @@
-{
-  "version": 2,
-  "routes": [
-    { "src": "/", "dest": "./packages/doc/dist/index.html" },
-    { "src": "/sandbox", "dest": "./packages/sandbox/dist/index.html" }
-  ]
-}
