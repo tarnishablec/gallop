@@ -19,6 +19,7 @@ module.exports = {
     filename: 'js/[name].js',
     path: path.resolve(__dirname, 'dist')
   },
+  externals: {},
   // watch: true,
   // watchOptions: {
   //   poll: 1000,

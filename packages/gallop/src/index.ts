@@ -18,7 +18,6 @@ export {
   useStyle
 } from './hooks'
 export { DoAble } from './do'
-export { DynamicComponent } from './dynamic'
 export { isProxy, isMarker } from './is'
 export {
   Part,
@@ -33,7 +32,7 @@ export {
 
 export { HTMLClip, getShaHtml, getVals } from './clip'
 
-export { repeat } from './directives'
+export { repeat, dynamic } from './directives'
 export { directive, directives, isDirective } from './directive'
 
 export {

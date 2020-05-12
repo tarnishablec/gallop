@@ -161,9 +161,7 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.$disconnectedEffects?.filter(Boolean).forEach((effect) => {
-      effect.apply(this)
-    })
+    this.$disconnectedEffects?.filter(Boolean).forEach((effect) => effect())
 
     this.$contexts?.forEach((context) => context.unWatch(this))
     this.$memos?.forEach((m) => m.watchList.clear())
@@ -182,7 +180,7 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 }
 
-export const componentPool = new Set<string>()
+export const componentPool = new Map<string, string[]>()
 
 export function component<F extends Component>(
   name: string,
@@ -208,20 +206,31 @@ export function component<F extends Component>(
   }
 
   customElements.define(name, clazz, option.definitionOptions)
-  componentPool.add(name)
+  componentPool.set(name, propNames)
 
   return (...props: Parameters<F>) => new VirtualElement(name, props)
 }
 
 export class VirtualElement extends DoAble(Object) {
   el?: ReactiveElement
-  constructor(public tag: string, public props: unknown[]) {
+  slotContent?: HTMLClip
+  constructor(public tag: string, public props?: unknown[]) {
     super()
   }
 
   createInstance() {
     this.el = document.createElement(this.tag) as ReactiveElement
-    this.el.mergeProps(this.props)
+    this.slotContent &&
+      this.el.append(
+        this.slotContent?.do(createClip).tryUpdate(this.slotContent.do(getVals))
+          .dof
+      )
+    this.props && this.el.mergeProps(this.props)
     return this.el
+  }
+
+  useSlot(content?: HTMLClip) {
+    content && (this.slotContent = content)
+    return this
   }
 }

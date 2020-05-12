@@ -242,7 +242,7 @@ export function tryUpdateEntry(
     }
   } else if (pre instanceof ReactiveElement && val instanceof VirtualElement) {
     if (pre.localName === val.tag) {
-      return [pre.mergeProps(val.props), false]
+      return [pre.mergeProps(val.props ?? []), false]
     }
   } else if (Array.isArray(val)) {
     return [initEntry(val), true]

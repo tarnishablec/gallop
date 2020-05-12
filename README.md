@@ -15,7 +15,7 @@
 
 - gallop is `Non-intrusive` so technically you can use it in any framework like vue or react
 
-- gallop is inspired by many framworks like `lit-html,vue,react,cyclejs` 
+- gallop is inspired by many framworks like `lit-html,vue,react,cyclejs`
 
 - use `template literals` to auto detect dynamic & static code
 
@@ -23,15 +23,23 @@
 
 - `react-hooks-like` development experience, even `much` better 🌝
 
-- hooks  
-  | | |
-  |-|-|
-  |useState() | ✅ |
-  |useContext() | ✅ |
-  |useEffect() | ✅ |
-  |useCache()| ✅ |
-  |useMemo()| ✅ |
-  |useStyle()| ✅ |
+- hooks
+
+  |              |     |
+  | ------------ | --- |
+  | useState()   | ✅  |
+  | useContext() | ✅  |
+  | useEffect()  | ✅  |
+  | useCache()   | ✅  |
+  | useMemo()    | ✅  |
+  | useStyle()   | ✅  |
+
+- directives
+
+  |           |     |
+  | --------- | --- |
+  | repeat()  | ✅  |
+  | dynamic() | ✅  |
 
 - support `<slot>` by web components, also `named slot`
 
@@ -51,13 +59,11 @@
 
 - support `HOC`
 
-- support `dynamic component` for complex component by built-in component `<dyna-mic></dyna-mic>`
+- support `dynamic component` for complex component by built-in directive `dynamic()`
 
-- `dynamic component` also magically support `named slot`
+- ⚡⚡ enable `key diffing` in list rendering by built-in directive `repeat()`
 
-- ⚡⚡ enable `key diffing` in list rendering by `repeat()` directive
-
-- for more detail, check packages/sandbox or [Sandbox](https://gallop-sandbox.now.sh/)
+- for more detail, check packages/sandbox or clone this project run `yarn run web`
 
 ## Simple use case
 
@@ -153,13 +159,17 @@ render(html`
 `)
 ```
 
-## TODO
+## TODO (⌛--- WIP)
 
 - router ⌛
 
+- doc ⌛
+
 - vscode syntax highlighting and intelliSense plugin  
-  ( for now, I recommend you to use `lit-html` plugin in vscode extension market <br>
-  & configure file association for `.ts` to `typescript react` )
+  ( for now, I recommend you to use <br>
+  `lit-html` & `vscode-styled-components`<br>
+   plugin in vscode extension market <br>
+  then configure file association for `.ts` to `typescript react` )
 
 - ui library ([zeit-design](https://zeit-style.now.sh/))
 

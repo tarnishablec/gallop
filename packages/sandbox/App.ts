@@ -57,6 +57,7 @@ component(
 component('test-b', () => {
   useEffect(() => {
     console.log(`test-b mounted`)
+    return () => console.log(`test-b unmounted`)
   }, [])
   return html` <div>this is test-b <slot></slot></div> `
 })
