@@ -1,6 +1,6 @@
 import { html, render, component } from '@gallop/gallop'
-import './src/register'
-import './src/styles'
+import './register'
+import './styles'
 
 component('app-root', () => html`<side-menu></side-menu> <app-main></app-main>`)
 

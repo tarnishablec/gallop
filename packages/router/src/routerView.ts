@@ -3,21 +3,19 @@ import {
   directive,
   Part,
   NodePart,
-  DirectivePartTypeError,
-  DirectiveFn
+  DirectivePartTypeError
 } from '@gallop/gallop'
 
 import { Router, Route } from '@gallop/router'
 import { match, parse, compile } from 'path-to-regexp'
 
+const partMap = new Map<Part, unknown>()
+
 export const routerView = directive(
-  (props?: unknown): DirectiveFn =>
-    function(part: Part) {
+  (props?: unknown) =>
+    function (part: Part) {
       if (!(part instanceof NodePart)) {
         throw DirectivePartTypeError(part.type)
       }
-
-      const { startNode, endNode } = part.location
-    },
-  true
+    }
 )

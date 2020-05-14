@@ -16,7 +16,7 @@ component('side-menu', () => {
           (m) => m.name,
           (m) => html`
             <li class="primary-menu">
-              <a .href="${`/#${m.name}`}">
+              <a .href="${`/#/${m.name}`}">
                 ${m.name}
               </a>
               ${m.children
@@ -26,7 +26,7 @@ component('side-menu', () => {
                       (n) => n,
                       (n) => html`
                         <li class="child-menu">
-                          <a .href="${`/#${n}`}">${n}</a>
+                          <a .href="${`/#/${n}`}">${n}</a>
                         </li>
                       `
                     )}

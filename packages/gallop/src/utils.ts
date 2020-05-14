@@ -11,10 +11,6 @@ export type Primitive =
 
 export type Key = Exclude<Primitive, null | undefined | boolean>
 
-export type Clazz<T = Object> = {
-  new (...args: any[]): T
-}
-
 export function tryParseToString(val: unknown): string {
   if (
     val === undefined ||

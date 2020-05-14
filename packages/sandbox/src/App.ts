@@ -9,8 +9,8 @@ import {
   useMemo
 } from '@gallop/gallop'
 
-import './src/styles/index.scss'
-import { MyCount } from './src/components/MyCount'
+import './styles/index.scss'
+import { MyCount } from './components/MyCount'
 
 component(
   'test-a',

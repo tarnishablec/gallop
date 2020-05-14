@@ -13,7 +13,7 @@ module.exports = (dir) => {
     mode: 'development',
 
     entry: {
-      main: './App.ts'
+      main: './src/App.ts'
     },
     output: {
       filename: 'js/[name].js',

@@ -15,7 +15,7 @@
 
 - gallop is `Non-intrusive` so technically you can use it in any framework like vue or react
 
-- gallop is inspired by many framworks like `lit-html,vue,react,cyclejs`
+- gallop is inspired by many frameworks like `lit-html, vue, react, cyclejs`
 
 - use `template literals` to auto detect dynamic & static code
 
@@ -108,7 +108,7 @@ component('test-name', function (
 
   useContext([context]) //you need to hook Context to this component by useContext()
 
-  const [cache] = useCache({ val: 1 }) //will not trigger rerender, and only execute once, ⚠⚠you can not use queryselector api in cache
+  const [cache] = useCache({ val: 1 }) //will not trigger rerender, and only execute once, ⚠⚠you can not access dom in cache
 
   useEffect(() => {
     console.dir(this) //this context can be pass by arrow function
@@ -125,7 +125,7 @@ component('test-name', function (
     <div>${data.b}</div>
     <div>${age}</div>
     ${repeat(
-      [1, 2, 3], //list need to be render
+      [1, 2, 3], //list need to be rendered
       (item) => item, //key diff callback to generate key
       (
         item //actually render

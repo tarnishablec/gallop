@@ -1,4 +1,4 @@
-import { component, html, useState, dynamic } from '@gallop/gallop'
+import { component, html, useState } from '@gallop/gallop'
 
 export const MyCount = component('my-count', () => {
   const [state] = useState({ count: 0 })
@@ -10,8 +10,6 @@ export const MyCount = component('my-count', () => {
     <button @click="${() => state.count++}">
       +
     </button>
-
-    ${dynamic(state.count % 2 ? 'test-a' : 'test-b', { count: 20 })}
     <style>
       * {
         font-size: 200%;

@@ -1,4 +1,6 @@
-import { Clazz } from './utils'
+type Clazz<T = {}> = {
+  new (...args: any[]): T
+}
 
 export function DoAble<T extends Clazz>(BaseClazz: T) {
   return class extends BaseClazz {

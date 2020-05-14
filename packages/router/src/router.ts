@@ -1,7 +1,7 @@
 export type RouterOption = {
   mode: 'hash' | 'history'
   routes: Route[]
-  hooks: {
+  hooks?: {
     beforeEach: (from: Route, to: Route) => void
     afterEach: (from: Route, to: Route) => void
   }
@@ -9,18 +9,16 @@ export type RouterOption = {
 
 export type Route = {
   path: string
-  component: string | (() => Promise<unknown>)
+  component?: string | (() => Promise<unknown>)
   exact?: boolean
   meta?: unknown
   children?: Route[]
 }
 
-export class Router {
-  constructor(public option: RouterOption) {}
-
-  push() {}
-  replace() {}
-  back() {}
-  forward() {}
-  go() {}
+export interface Router {
+  push(): void
+  replace(): void
+  forward(): void
+  go(): void
+  back(): void
 }

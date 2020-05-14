@@ -2,7 +2,7 @@
   "name": "@gallop/doc",
   "version": "0.9.1",
   "description": "doc",
-  "main": "./App.ts",
+  "main": "./src/App.ts",
   "files": [
     "App.ts",
     "src"
@@ -24,27 +24,6 @@
   "homepage": "",
   "publishConfig": {
     "access": "public"
-  },
-  "devDependencies": {
-    "autoprefixer": "^9.7.6",
-    "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^5.1.1",
-    "cross-env": "^7.0.2",
-    "css-loader": "^3.5.3",
-    "file-loader": "^6.0.0",
-    "html-webpack-plugin": "^4.3.0",
-    "mini-css-extract-plugin": "^0.9.0",
-    "postcss-loader": "^3.0.0",
-    "sass": "^1.26.5",
-    "sass-loader": "^8.0.2",
-    "style-loader": "^1.2.1",
-    "terser-webpack-plugin": "^3.0.1",
-    "ts-loader": "^7.0.4",
-    "typescript": "^3.8.3",
-    "url-loader": "^4.1.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.0"
   },
   "gitHead": "208ab89d0d7fcf82d4e08e28a0fa290c0a9860c4",
   "dependencies": {

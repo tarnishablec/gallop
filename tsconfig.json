@@ -77,7 +77,6 @@
     "packages/*/src",
     "packages/*/index.ts",
     "packages/*/__tests__",
-    "global.d.ts",
-    "packages/sandbox/App.ts", "packages/doc/src/register.ts", "packages/doc/App.ts"
+    "global.d.ts"
   ]
 }
