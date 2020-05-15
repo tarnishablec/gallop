@@ -7,6 +7,11 @@ const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const { DefinePlugin } = require('webpack')
 
+const version = require('./packages/gallop/package.json').version.replace(
+  /^\^/,
+  ''
+)
+
 const ProdMode = process.env.NODE_ENV === 'production'
 
 module.exports = (dir) => {
@@ -115,7 +120,7 @@ module.exports = (dir) => {
         cleanAfterEveryBuildPatterns: ['./dist']
       }),
       new HtmlWebpackPlugin({
-        template: './public/index.html',
+        template: './public/index.ejs',
         inject: true,
         favicon: './public/favicon.ico',
         minify: {
@@ -124,12 +129,11 @@ module.exports = (dir) => {
         },
         hash: true,
         templateParameters: {
-          env: JSON.stringify(process.env)
+          env: JSON.stringify(process.env),
+          version
         }
       }),
-      new ScriptExtHtmlWebpackPlugin({
-        defaultAttribute: 'defer'
-      }),
+      new ScriptExtHtmlWebpackPlugin({}),
       new DefinePlugin({
         'process.env': {
           BASE_URL: '""'

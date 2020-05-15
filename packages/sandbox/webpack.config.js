@@ -2,7 +2,9 @@ const base = require('../../webpack.base.js')(__dirname)
 
 module.exports = {
   ...base,
-  externals: {
-    '@gallop/gallop': '@gallop/gallop'
-  }
+  output: {
+    ...base.output,
+    libraryTarget: 'umd'
+  },
+  externals: ['@gallop/gallop']
 }
