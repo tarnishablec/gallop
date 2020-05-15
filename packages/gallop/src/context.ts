@@ -29,7 +29,7 @@ export class Context<T extends object> {
 
   update() {
     this.watchedInstances.forEach((instance) => {
-      instance.enUpdateQueue()
+      instance.requestUpdate()
     })
     this.option?.updated?.(this.proxy[0])
   }

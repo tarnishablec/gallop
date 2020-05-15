@@ -83,12 +83,16 @@ component('app-root', function (this: ReactiveElement) {
       <hr />
       <div>
         ${suspense(
-          new Promise((res) => {
+          new Promise((res, rej) => {
             setTimeout(() => {
-              import('./components/MyCount').then((r) => res(r.default('red')))
+              import('./components/MyCount').then((r) => {
+                rej(new Error())
+                res(r.default('red'))
+              })
             }, 2000)
           }),
-          html`<div>Loading</div>`
+          html`<div>Loading</div>`,
+          html`<div>Error</div>`
         )}
       </div>
     </div>

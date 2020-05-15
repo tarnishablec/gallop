@@ -18,7 +18,7 @@ const updateQueue = new Set<ReactiveElement>()
 
 let dirty = false
 
-export function requestUpdate() {
+export function enUpdateQueue() {
   if (dirty) {
     return
   }
@@ -52,7 +52,7 @@ export abstract class ReactiveElement extends HTMLElement {
   $mountedEffects?: EffectInfo[]
   $disconnectedEffects?: (() => void)[]
 
-  $brobs: any = createProxy({}, () => this.enUpdateQueue())
+  $brobs: any = createProxy({}, () => this.requestUpdate())
   $cache?: [unknown]
 
   $effectsCount: number = 0
@@ -83,7 +83,7 @@ export abstract class ReactiveElement extends HTMLElement {
     this.$builder = builder
     this.$root = shadow ? this.attachShadow({ mode: 'open' }) : this
     this.initProps(propNames)
-    this.enUpdateQueue()
+    this.requestUpdate()
     // console.log(`${this.nodeName} constructed`)
   }
 
@@ -100,13 +100,13 @@ export abstract class ReactiveElement extends HTMLElement {
       }
     }
     propNames.length
-      ? (this.$props = createProxy(p, () => this.enUpdateQueue()))
+      ? (this.$props = createProxy(p, () => this.requestUpdate()))
       : undefined
   }
 
-  enUpdateQueue() {
+  requestUpdate() {
     updateQueue.add(this)
-    requestUpdate()
+    enUpdateQueue()
   }
 
   dispatchUpdate() {

@@ -75,7 +75,7 @@ const packageFormats = inlineFormats || defaultFormats
 packageFormats.forEach((format) => {
   console.log(formats[format])
   CONFIG[0].output.push(
-    Object.assign(formats[format], { name: name, extend: true })
+    Object.assign(formats[format], { name: `@${scope}/${name}`, extend: true })
   )
 })
 

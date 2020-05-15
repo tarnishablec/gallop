@@ -66,7 +66,7 @@
 
 - ⚡⚡ enable `key diffing` in list rendering by built-in directive `repeat()`
 
-- enable lazy rendering by built-in directive `suspense()`
+- enable lazy rendering and fallback rendering by built-in directive `suspense()`
 
 - for more detail, check packages/sandbox or clone this project run `yarn run web`
 

@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -126,19 +127,24 @@ module.exports = (dir) => {
           env: JSON.stringify(process.env)
         }
       }),
+      new ScriptExtHtmlWebpackPlugin({
+        defaultAttribute: 'defer'
+      }),
       new DefinePlugin({
         'process.env': {
           BASE_URL: '""'
         }
       }),
-      new CopyWebpackPlugin([
-        {
-          from: dir + '/public',
-          to: dir + '/dist',
-          toType: 'dir',
-          ignore: ['index.html', 'favicon.ico']
-        }
-      ]),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: path.resolve(dir, 'public'),
+            to: path.resolve(dir, 'dist'),
+            toType: 'dir',
+            globOptions: {}
+          }
+        ]
+      }),
       new MiniCssExtractPlugin({
         filename: 'css/[name].css'
       })

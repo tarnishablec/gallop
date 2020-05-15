@@ -5,7 +5,8 @@ import { DirectivePartTypeError } from '..'
 export const suspense = directive(
   (
     wish: Promise<unknown>,
-    fallback?: unknown,
+    pending: unknown = null,
+    fallback: unknown = null,
     hooks?: {
       onFinally?: () => void
       onThen?: (res: unknown) => void
@@ -17,16 +18,19 @@ export const suspense = directive(
     }
     wish
       .then(async (res) => {
-        let pendingVal = res
+        let temp = res
         // debugger
-        while (pendingVal instanceof Promise) {
-          pendingVal = await res
+        while (temp instanceof Promise) {
+          temp = await res
         }
-        part.setValue(pendingVal)
-        hooks?.onThen?.(pendingVal)
+        part.setValue(temp)
+        hooks?.onThen?.(temp)
       })
-      .catch(hooks?.onCatch)
+      .catch((error) => {
+        hooks?.onCatch?.(error)
+        part.setValue(fallback)
+      })
       .finally(hooks?.onFinally)
-    return fallback ?? null
+    return pending
   }
 )

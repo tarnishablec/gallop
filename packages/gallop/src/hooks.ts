@@ -9,7 +9,7 @@ export function useState<T extends object>(initState: T): [T] {
   const current = resolveCurrentHandle()
   return (
     (current.$state as [T]) ??
-    (current.$state = [createProxy(initState, () => current.enUpdateQueue())])
+    (current.$state = [createProxy(initState, () => current.requestUpdate())])
   )
 }
 
