@@ -6,11 +6,11 @@ import {
   repeat,
   useEffect,
   useState,
-  useMemo
+  useMemo,
+  suspense
 } from '@gallop/gallop'
 
 import './styles/index.scss'
-import { MyCount } from './components/MyCount'
 
 component(
   'test-a',
@@ -64,10 +64,10 @@ component('test-b', () => {
 
 component('app-root', function (this: ReactiveElement) {
   console.log('app-root')
-  let [state] = useState<{ count: number; page: 'count' | 'main' }>({
-    count: 500,
-    page: 'count'
-  })
+  // let [state] = useState<{ count: number; page: 'count' | 'main' }>({
+  //   count: 500,
+  //   page: 'count'
+  // })
 
   useEffect(() => {
     const input = this.$root.querySelector('input')
@@ -79,28 +79,18 @@ component('app-root', function (this: ReactiveElement) {
 
   return html`
     <div>
-      <div class="main-title">
-        <div>
-          change page
-        </div>
-        <div>
-          <button @click="${() => (state.page = 'count')}">count</button>
-          <button @click="${() => (state.page = 'main')}">main</button>
-        </div>
-      </div>
+      <div class="main-title"></div>
       <hr />
-      ${state.page === 'count'
-        ? MyCount()
-        : html`
-            <input
-              .value="${state.count}"
-              @input="${(e: Event) => {
-                state.count = Number((e.target as HTMLInputElement).value)
-              }}"
-            />
-            ${state.count}
-            <test-a :count="${state.count}"></test-a>
-          `}
+      <div>
+        ${suspense(
+          new Promise((res) => {
+            setTimeout(() => {
+              import('./components/MyCount').then((r) => res(r.default('red')))
+            }, 2000)
+          }),
+          html`<div>Loading</div>`
+        )}
+      </div>
     </div>
     <style>
       input {

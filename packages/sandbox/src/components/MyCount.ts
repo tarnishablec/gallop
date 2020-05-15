@@ -1,7 +1,15 @@
-import { component, html, useState } from '@gallop/gallop'
+import { component, html, useState, useStyle, css } from '@gallop/gallop'
 
-export const MyCount = component('my-count', () => {
+const MyCount = component('my-count', (color: string) => {
   const [state] = useState({ count: 0 })
+
+  useStyle(
+    () => css`
+      span {
+        color: ${color};
+      }
+    `
+  )
   return html`
     <button @click="${() => state.count--}">
       -
@@ -32,3 +40,5 @@ export const MyCount = component('my-count', () => {
     </style>
   `
 })
+
+export default MyCount

@@ -38,10 +38,11 @@
 
 - directives
 
-  |           |     |
-  | --------- | --- |
-  | repeat()  | ✅  |
-  | dynamic() | ✅  |
+  |            |     |
+  | ---------- | --- |
+  | repeat()   | ✅  |
+  | dynamic()  | ✅  |
+  | suspense() | ✅  |
 
 - support `<slot>` by web components, also `named slot`
 
@@ -65,6 +66,8 @@
 
 - ⚡⚡ enable `key diffing` in list rendering by built-in directive `repeat()`
 
+- enable lazy rendering by built-in directive `suspend()`
+
 - for more detail, check packages/sandbox or clone this project run `yarn run web`
 
 ## Simple use case
@@ -79,6 +82,8 @@ import {
   useCache,
   useStyle,
   render,
+  repeat,
+  suspense,
   html,
   css,
   ReactiveElement
@@ -151,6 +156,16 @@ component('test-name', function (
     >
       click
     </button>
+    <div>
+      ${suspense(
+        new Promise((res) => {
+          setTimeout(() => {
+            import('./components/MyCount').then((r) => res(r.default('red')))
+          }, 2000)
+        }),                         
+        html`<div>Loading</div>`  //  fallback in pending time
+      )}
+    </div>
   `
 })
 
@@ -170,7 +185,7 @@ render(html`
 - vscode syntax highlighting and intelliSense plugin  
   ( for now, I recommend you to use <br>
   `lit-html` & `vscode-styled-components`<br>
-   plugin in vscode extension market <br>
+  plugin in vscode extension market <br>
   then configure file association for `.ts` to `typescript react` )
 
 - ui library ([zeit-design](https://zeit-style.now.sh/))
