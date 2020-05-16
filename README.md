@@ -66,7 +66,7 @@
 
 - ⚡⚡ enable `key diffing` in list rendering by built-in directive `repeat()`
 
-- enable lazy rendering and fallback rendering by built-in directive `suspense()`
+- support `lazy load` and `fallback rendering` by built-in directive `suspense()`
 
 - for more detail, check packages/sandbox or clone this project run `yarn run web`
 
@@ -158,12 +158,11 @@ component('test-name', function (
     </button>
     <div>
       ${suspense(
-        new Promise((res) => {
-          setTimeout(() => {
-            import('./components/MyCount').then((r) => res(r.default('red')))
-          }, 2000)
-        }),                         
-        html`<div>Loading</div>`  //  fallback in pending time
+        Promise.resolve(
+          import('./components/MyCount').then((res) => res.default('green'))
+        ),
+        html`<div>Loading</div>`,
+        html`<div>Error</div>`
       )}
     </div>
   `

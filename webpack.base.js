@@ -14,6 +14,8 @@ const version = require('./packages/gallop/package.json').version.replace(
 
 const ProdMode = process.env.NODE_ENV === 'production'
 
+console.log(`production : ${ProdMode}`)
+
 module.exports = (dir) => {
   return {
     mode: 'development',
@@ -23,7 +25,7 @@ module.exports = (dir) => {
     },
     output: {
       filename: 'js/[name].js',
-      path: path.resolve(dir, 'dist')
+      path: path.resolve(dir, './dist')
     },
 
     // watch: true,
@@ -130,7 +132,9 @@ module.exports = (dir) => {
         hash: true,
         templateParameters: {
           env: JSON.stringify(process.env),
-          version
+          gallopCdn: ProdMode
+            ? `<script src="https://unpkg.com/@gallop/gallop@${version}/dist/index.umd.js"></script>`
+            : ''
         }
       }),
       new ScriptExtHtmlWebpackPlugin({}),
