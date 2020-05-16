@@ -59,7 +59,20 @@ module.exports = (dir) => {
     },
     module: {
       rules: [
-        { test: /\.(j|t)sx?$/, use: 'ts-loader', exclude: /node_modules/ },
+        {
+          test: /\.(j|t)sx?$/,
+          use: [
+            {
+              loader: 'ts-loader',
+              options: {
+                compilerOptions: {
+                  declaration: false
+                }
+              }
+            }
+          ],
+          exclude: /node_modules/
+        },
         {
           test: /\.((s[ac])|c)ss$/,
           use: [
