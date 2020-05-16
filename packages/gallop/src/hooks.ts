@@ -3,7 +3,7 @@ import { createProxy, dirtyMap } from './reactive'
 import { isProxy } from './is'
 import { shallowEqual } from './utils'
 import { Context } from './context'
-import { Memo } from './memo'
+import { Memo, checkMemoDirty } from './memo'
 
 export function useState<T extends object>(initState: T): [T] {
   const current = resolveCurrentHandle()
@@ -118,12 +118,11 @@ export function useMemo<T extends () => any>(
         current.$memoDepends![count][i] = depends[i]
       }
     }
-    for (const [obj, key] of memo.watchList) {
-      if (dirtyMap.get(obj)?.has(key)) {
-        shouldRecalc = true
-        break
-      }
+
+    if (checkMemoDirty(memo)) {
+      shouldRecalc = true
     }
+
     if (shouldRecalc) {
       memo = new Memo(calc)
       current.$memos.set(count, memo)

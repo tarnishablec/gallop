@@ -7,7 +7,8 @@ import {
   useEffect,
   useState,
   useMemo,
-  suspense
+  suspense,
+  portal
 } from '@gallop/gallop'
 
 import './styles/index.scss'
@@ -69,6 +70,8 @@ component('app-root', function (this: ReactiveElement) {
   //   page: 'count'
   // })
 
+  let [state] = useState({ portalCount: 0 })
+
   useEffect(() => {
     const input = this.$root.querySelector('input')
     console.log(input)
@@ -83,45 +86,29 @@ component('app-root', function (this: ReactiveElement) {
       <hr />
       <div>
         ${suspense(
-          async () => {
-            await new Promise((res) => {
-              setTimeout(() => {
-                // rej()
-                res()
-              }, 2000)
-            }) //a simulation of lagging
-            return (await import('./components/MyCount')).default('red')
-          },
+          async () => (await import('./components/MyCount')).default('red'),
           html`<div>Loading</div>`,
           html`<div>Error</div>`
         )}
       </div>
       <hr />
       <div>
-        ${suspense(
-          Promise.resolve(
-            import('./components/MyCount').then(async (res) => {
-              await new Promise((res, rej) => {
-                setTimeout(() => {
-                  rej()
-                  res()
-                }, 2000)
-              }) //a simulation of lagging
-              return res.default('green')
-            })
-          ),
-          html`<div>Loading</div>`,
-          html`<div>Error</div>`
+        hello
+        <button @click="${() => state.portalCount++}">add portal count</button>
+        ${portal(
+          html`<div>${state.portalCount}</div>`,
+          document.querySelector('body')!
         )}
+        <div>
+          ${state.portalCount}
+        </div>
       </div>
       <hr />
       <div>
-        ${suspense(
-          Promise.resolve(
-            import('./components/MyCount').then((res) => res.default('green'))
-          ),
-          html`<div>Loading</div>`,
-          html`<div>Error</div>`
+        ${repeat(
+          new Array(5000).fill(void 0).map((v, i) => i),
+          (v) => v,
+          (v) => html` <div>this is ${v}</div>`
         )}
       </div>
     </div>
