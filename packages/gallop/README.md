@@ -15,7 +15,7 @@
 
 - gallop is `Non-intrusive` so technically you can use it in any framework like vue or react
 
-- gallop is inspired by many framworks like `lit-html,vue,react,cyclejs`
+- gallop is inspired by many frameworks like `lit-html, vue, react, cyclejs`
 
 - use `template literals` to auto detect dynamic & static code
 
@@ -34,12 +34,15 @@
   | useMemo()    | ✅  |
   | useStyle()   | ✅  |
 
+- `directive function` design from `lit-html` give gallop super good extendiability
+
 - directives
 
-  |           |     |
-  | --------- | --- |
-  | repeat()  | ✅  |
-  | dynamic() | ✅  |
+  |            |     |
+  | ---------- | --- |
+  | repeat()   | ✅  |
+  | dynamic()  | ✅  |
+  | suspense() | ✅  |
 
 - support `<slot>` by web components, also `named slot`
 
@@ -63,6 +66,8 @@
 
 - ⚡⚡ enable `key diffing` in list rendering by built-in directive `repeat()`
 
+- support `lazy load` and `fallback rendering` by built-in directive `suspense()`
+
 - for more detail, check packages/sandbox or clone this project run `yarn run web`
 
 ## Simple use case
@@ -77,6 +82,8 @@ import {
   useCache,
   useStyle,
   render,
+  repeat,
+  suspense,
   html,
   css,
   ReactiveElement
@@ -106,7 +113,7 @@ component('test-name', function (
 
   useContext([context]) //you need to hook Context to this component by useContext()
 
-  const [cache] = useCache({ val: 1 }) //will not trigger rerender, and only execute once, ⚠⚠you can not use queryselector api in cache
+  const [cache] = useCache({ val: 1 }) //will not trigger rerender, and only execute once, ⚠⚠you can not access dom in cache
 
   useEffect(() => {
     console.dir(this) //this context can be pass by arrow function
@@ -123,7 +130,7 @@ component('test-name', function (
     <div>${data.b}</div>
     <div>${age}</div>
     ${repeat(
-      [1, 2, 3], //list need to be render
+      [1, 2, 3], //list need to be rendered
       (item) => item, //key diff callback to generate key
       (
         item //actually render
@@ -149,6 +156,15 @@ component('test-name', function (
     >
       click
     </button>
+    <div>
+      ${suspense(
+        Promise.resolve(
+          import('./components/MyCount').then((res) => res.default('green'))
+        ),
+        html`<div>Loading</div>`,
+        html`<div>Error</div>`
+      )}
+    </div>
   `
 })
 
@@ -168,7 +184,7 @@ render(html`
 - vscode syntax highlighting and intelliSense plugin  
   ( for now, I recommend you to use <br>
   `lit-html` & `vscode-styled-components`<br>
-   plugin in vscode extension market <br>
+  plugin in vscode extension market <br>
   then configure file association for `.ts` to `typescript react` )
 
 - ui library ([zeit-design](https://zeit-style.now.sh/))

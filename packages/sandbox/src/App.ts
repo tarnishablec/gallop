@@ -83,14 +83,43 @@ component('app-root', function (this: ReactiveElement) {
       <hr />
       <div>
         ${suspense(
-          new Promise((res, rej) => {
-            setTimeout(() => {
-              import('./components/MyCount').then((r) => {
-                rej(new Error())
-                res(r.default('red'))
-              })
-            }, 2000)
-          }),
+          async () => {
+            await new Promise((res) => {
+              setTimeout(() => {
+                // rej()
+                res()
+              }, 2000)
+            }) //a simulation of lagging
+            return (await import('./components/MyCount')).default('red')
+          },
+          html`<div>Loading</div>`,
+          html`<div>Error</div>`
+        )}
+      </div>
+      <hr />
+      <div>
+        ${suspense(
+          Promise.resolve(
+            import('./components/MyCount').then(async (res) => {
+              await new Promise((res, rej) => {
+                setTimeout(() => {
+                  rej()
+                  res()
+                }, 2000)
+              }) //a simulation of lagging
+              return res.default('green')
+            })
+          ),
+          html`<div>Loading</div>`,
+          html`<div>Error</div>`
+        )}
+      </div>
+      <hr />
+      <div>
+        ${suspense(
+          Promise.resolve(
+            import('./components/MyCount').then((res) => res.default('green'))
+          ),
           html`<div>Loading</div>`,
           html`<div>Error</div>`
         )}

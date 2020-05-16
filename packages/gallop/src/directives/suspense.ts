@@ -4,7 +4,7 @@ import { DirectivePartTypeError } from '..'
 
 export const suspense = directive(
   (
-    wish: Promise<unknown>,
+    wish: (() => Promise<unknown>) | Promise<unknown>,
     pending: unknown = null,
     fallback: unknown = null,
     hooks?: {
@@ -16,21 +16,20 @@ export const suspense = directive(
     if (!(part instanceof NodePart)) {
       throw DirectivePartTypeError(part.type)
     }
-    wish
-      .then(async (res) => {
-        let temp = res
-        // debugger
-        while (temp instanceof Promise) {
-          temp = await res
-        }
-        part.setValue(temp)
-        hooks?.onThen?.(temp)
-      })
-      .catch((error) => {
-        hooks?.onCatch?.(error)
-        part.setValue(fallback)
-      })
-      .finally(hooks?.onFinally)
+
+    const v = wish instanceof Promise ? wish : wish()
+
+    v.then(async (res) => {
+      let temp = res
+      while (temp instanceof Promise) {
+        temp = await temp
+      }
+      part.setValue(temp)
+    }).catch((e) => {
+      hooks?.onCatch?.(e)
+      part.setValue(fallback)
+    })
+
     return pending
   }
 )
