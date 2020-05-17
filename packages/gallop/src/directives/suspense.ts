@@ -1,32 +1,33 @@
 import { directive } from '../directive'
 import { Part, NodePart } from '../part'
 import { DirectivePartTypeError } from '../error'
-import { shallowEqual } from '../utils'
-// import { Memo, checkMemoDirty } from '../memo'
 
-const empty = Symbol('empty')
+type SuspenseOption = {
+  pending: unknown
+  fallback?: unknown
+  maxDuration?: unknown
+  virtualLoad?: unknown
+}
 
-const renderCache = new WeakMap<NodePart, unknown>()
-// const memosCache = new WeakMap<NodePart, Memo<any>>()
+export const suspense = directive(function <T>(
+  wish: () => Promise<T>,
+  {
+    pending,
+    fallback = null,
+    maxDuration = 1500,
+    virtualLoad = 200
+  }: SuspenseOption
+) {
+  console.log(pending, fallback, maxDuration, virtualLoad)
 
-const dependsCache = new Map<NodePart, unknown[]>()
-
-export const suspense = directive(
-  (
-    wish: () => Promise<unknown>,
-    pending: unknown = null,
-    fallback: unknown = null,
-    depends: unknown[] = [],
-    hooks?: {
-      onFinally?: () => void
-      onThen?: (res: unknown) => void
-      onCatch?: (err: Error) => void
-    },
-    maxDuration: number = 1500,
-    virtualLoading: number = 300
-  ) => (part: Part) => {
+  return (part: Part) => {
     if (!(part instanceof NodePart)) {
       throw DirectivePartTypeError(part.type)
     }
+    console.log('in')
+    wish().then((res) => {
+      part.setValue(res)
+    })
+    return pending
   }
-)
+})

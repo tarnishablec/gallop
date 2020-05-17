@@ -1,8 +1,8 @@
 import { component, html, useState, useStyle, css } from '@gallop/gallop'
 
-const MyCount = component('my-count', (color: string) => {
+export const MyCount = component('my-count', (color: string) => {
   const [state] = useState({ count: 0 })
-
+  console.log('my-count')
   useStyle(
     () => css`
       span {
@@ -40,5 +40,3 @@ const MyCount = component('my-count', (color: string) => {
     </style>
   `
 })
-
-export default MyCount

@@ -13,9 +13,9 @@ import {
 
 import './styles/index.scss'
 
-component(
+const TestA = component(
   'test-a',
-  (count: number) => {
+  (count: number = 22) => {
     const [state] = useState({
       arr: new Array(count).fill(void 0).map((v, i) => i)
     })
@@ -84,11 +84,12 @@ component('app-root', function (this: ReactiveElement) {
     <div>
       <div class="main-title"></div>
       <hr />
+      ${TestA()}
+      <hr />
       <div>
         ${suspense(
-          async () => (await import('./components/MyCount')).default('red'),
-          html`<div>Loading</div>`,
-          html`<div>Error</div>`
+          async () => (await import('./components/MyCount')).MyCount('red'),
+          { pending: 1 }
         )}
       </div>
       <hr />
@@ -99,14 +100,11 @@ component('app-root', function (this: ReactiveElement) {
           html`<div>${state.portalCount}</div>`,
           document.querySelector('body')!
         )}
-        <div>
-          ${state.portalCount}
-        </div>
       </div>
       <hr />
       <div>
         ${repeat(
-          new Array(5000).fill(void 0).map((v, i) => i),
+          new Array(10).fill(void 0).map((v, i) => i),
           (v) => v,
           (v) => html` <div>this is ${v}</div>`
         )}
@@ -139,23 +137,67 @@ render(
   `
 )
 
-// function testTask() {
-//   window.requestIdleCallback(() => {
-//     console.log('ric')
-//     // const end = new Date().getTime()
-//     // console.log(end - start)
-//   })
-//   requestAnimationFrame(() => {
-//     console.log('raf')
-//     requestAnimationFrame(() => console.log('raf | raf'))
-//     setTimeout(() => console.log('raf | set'), 0)
-//   })
-//   setTimeout(() => {
-//     console.log('set')
-//     setTimeout(() => console.log(`set | set`), 0)
-//     requestAnimationFrame(() => console.log(`set | raf`))
-//   }, 0)
-//   console.log('normal')
+// window.requestIdleCallback(() => {
+//   console.log('ric')
+//   // const end = new Date().getTime()
+//   // console.log(end - start)
+// })
+// requestAnimationFrame(() => {
+//   console.log('raf')
+//   requestAnimationFrame(() => console.log('raf | raf'))
+//   setTimeout(() => console.log('raf | set'), 0)
+// })
+// setTimeout(() => {
+//   console.log('set')
+//   setTimeout(() => console.log(`set | set`), 0)
+//   requestAnimationFrame(() => console.log(`set | raf`))
+// }, 0)
+// console.log('normal')
+
+// console.log('script start')
+
+// async function async1() {
+//   console.log(await 1)
+//   await async2()
+//   await async3()
+//   console.log('async1 end')
+// }
+// async function async2() {
+//   sync4()
+//   console.log('async2 end')
+//   return await async5()
+// }
+// async function async3() {
+//   console.log('async3 end')
 // }
 
-// testTask()
+// function sync4() {
+//   console.log('sync4 end')
+// }
+
+// async function async5() {
+//   console.log('async5 end')
+// }
+
+// async1()
+
+// requestAnimationFrame(() => {
+//   console.log('raf')
+// })
+
+// setTimeout(function () {
+//   console.log('setTimeout')
+// }, 0)
+
+// new Promise((resolve) => {
+//   console.log('Promise')
+//   resolve()
+// })
+//   .then(function () {
+//     console.log('promise1')
+//   })
+//   .then(function () {
+//     console.log('promise2')
+//   })
+
+// console.log('script end')
