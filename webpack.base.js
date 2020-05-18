@@ -28,8 +28,6 @@ module.exports = (dir) => {
       path: path.resolve(dir, './dist'),
       libraryTarget: 'umd'
     },
-
-    externals: ProdMode ? ['@gallop/gallop'] : [],
     // watch: true,
     // watchOptions: {
     //   poll: 1000,

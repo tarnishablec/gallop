@@ -151,11 +151,10 @@ export abstract class ReactiveElement<
 
 export const componentPool = new Map<string, boolean>()
 
-export function component<P extends object, F extends Component>(
+export function component<F extends Component>(
   name: string,
   builder: F,
   option: {
-    // propList?: string[]
     unstable?: boolean
     shadow?: boolean
     definitionOptions?: ElementDefinitionOptions
@@ -164,13 +163,9 @@ export function component<P extends object, F extends Component>(
     unstable: false
   }
 ) {
-  const clazz = class extends ReactiveElement<P> {
+  const clazz = class extends ReactiveElement {
     constructor() {
-      super(
-        (builder as unknown) as Component,
-        option.shadow ?? true,
-        option.unstable ?? false
-      )
+      super(builder, option.shadow ?? true, option.unstable ?? false)
     }
   }
 
