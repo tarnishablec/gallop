@@ -1,6 +1,6 @@
 import { component, html, useState, useStyle, css } from '@gallop/gallop'
 
-export const MyCount = component('my-count', (color: string) => {
+export const MyCount = component('my-count', ({ color }: { color: string }) => {
   const [state] = useState({ count: 0 })
   console.log('my-count')
   useStyle(

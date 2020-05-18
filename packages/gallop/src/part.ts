@@ -7,14 +7,18 @@ import { checkDirective } from './directive'
 import { DirectivePartTypeError } from './error'
 
 type AttrEventLocation = { node: Element; name: string }
-type PropLocation = { node: ReactiveElement; name: string }
+type PropLocation = { node: ReactiveElement<any>; name: string }
 type NodeLocation = { startNode: Comment; endNode: Comment }
 
 type PartLocation = AttrEventLocation | PropLocation | NodeLocation
 type NodePartType = 'clip' | 'clips' | 'text' | 'element'
 type PartType = 'node' | 'attr' | 'event' | 'prop' | NodePartType
 
-export type NodeValueType = Clip | string | ReactiveElement | NodeValueType[]
+export type NodeValueType =
+  | Clip
+  | string
+  | ReactiveElement<any>
+  | NodeValueType[]
 
 const initValue = Symbol('')
 
@@ -194,10 +198,10 @@ export class PropPart extends Part {
   }
   commit(): void {
     const { name, node } = this.location
-    if (name !== '$props') {
-      node.mergeProp(name, this.value)
+    if (name === '$props') {
+      node.mergeProps(this.value as object)
     } else {
-      node.mergeProps(this.value as unknown[])
+      node.mergeProps({ name: this.value })
     }
   }
 
@@ -210,7 +214,7 @@ export class PropPart extends Part {
 
 ////////////////
 
-export function initEntry(val: VirtualElement): ReactiveElement
+export function initEntry(val: VirtualElement): ReactiveElement<any>
 export function initEntry(val: HTMLClip): Clip
 export function initEntry(val: unknown[]): NodeValueType[]
 export function initEntry(val: unknown): NodeValueType
@@ -242,7 +246,7 @@ export function tryUpdateEntry(
     }
   } else if (pre instanceof ReactiveElement && val instanceof VirtualElement) {
     if (pre.localName === val.tag) {
-      return [pre.mergeProps(val.props ?? []), false]
+      return [pre.mergeProps(val.args?.[0]), false]
     }
   } else if (Array.isArray(val)) {
     return [initEntry(val), true]

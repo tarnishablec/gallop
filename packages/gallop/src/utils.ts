@@ -1,4 +1,4 @@
-import { isMarker } from './is'
+// import { isMarker } from './is'
 
 export type Primitive =
   | null
@@ -83,80 +83,80 @@ export function lastOf<T>(arr: T[]) {
   return arr[arr.length - 1]
 }
 
-export function isMatchedSymbol(front: string | undefined, back: string) {
-  switch (back) {
-    case ')':
-      return front === '('
-    case '}':
-      return front === '{'
-    case ']':
-      return front === '['
-    case '>':
-      return front === '<'
-    case '"':
-      return front === '"'
-    case "'":
-      return front === "'"
-    default:
-      return false
-  }
-}
+// export function isMatchedSymbol(front: string | undefined, back: string) {
+//   switch (back) {
+//     case ')':
+//       return front === '('
+//     case '}':
+//       return front === '{'
+//     case ']':
+//       return front === '['
+//     case '>':
+//       return front === '<'
+//     case '"':
+//       return front === '"'
+//     case "'":
+//       return front === "'"
+//     default:
+//       return false
+//   }
+// }
 
-export function getFuncArgNames(func: Function) {
-  const [funcHead] = digStringBlock(func.toString(), undefined, false)
-  const arr = funcHead.replace(/(\/\*.*?\*\/)|\s/g, '')
-  let res = []
-  let temp = ''
-  let canPush = true
-  let blockStack = []
+// export function getFuncArgNames(func: Function) {
+//   const [funcHead] = digStringBlock(func.toString(), undefined, false)
+//   const arr = funcHead.replace(/(\/\*.*?\*\/)|\s/g, '')
+//   let res = []
+//   let temp = ''
+//   let canPush = true
+//   let blockStack = []
 
-  for (let i = 0; i < arr.length; i++) {
-    const isInBlock = !!blockStack.length
-    const cur = arr[i]
+//   for (let i = 0; i < arr.length; i++) {
+//     const isInBlock = !!blockStack.length
+//     const cur = arr[i]
 
-    if (isMatchedSymbol(lastOf(blockStack), cur)) {
-      blockStack.pop()
-      continue
-    } else if (
-      ['(', ')', '[', ']', '{', '}', '<', '>', '"', "'"].includes(cur)
-    ) {
-      blockStack.push(cur)
-    }
+//     if (isMatchedSymbol(lastOf(blockStack), cur)) {
+//       blockStack.pop()
+//       continue
+//     } else if (
+//       ['(', ')', '[', ']', '{', '}', '<', '>', '"', "'"].includes(cur)
+//     ) {
+//       blockStack.push(cur)
+//     }
 
-    if (!isInBlock) {
-      if (cur === ',') {
-        canPush = true
-        continue
-      }
-      if (canPush) {
-        temp += cur
-        if ([',', '='].includes(arr[i + 1]) || i + 1 === arr.length) {
-          res.push(temp)
-          temp = ''
-          canPush = false
-        }
-      }
-    }
-  }
-  return res
-}
+//     if (!isInBlock) {
+//       if (cur === ',') {
+//         canPush = true
+//         continue
+//       }
+//       if (canPush) {
+//         temp += cur
+//         if ([',', '='].includes(arr[i + 1]) || i + 1 === arr.length) {
+//           res.push(temp)
+//           temp = ''
+//           canPush = false
+//         }
+//       }
+//     }
+//   }
+//   return res
+// }
 
-export function extractProps(attr: NamedNodeMap) {
-  return Array.from(attr)
-    .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
-    .reduce((acc, { name, value }) => {
-      let v: string | boolean
-      if (value === '') {
-        v = true
-      } else if (value === "''") {
-        v = ''
-      } else {
-        v = value
-      }
-      Reflect.set(acc, name.slice(1), v)
-      return acc
-    }, {} as any)
-}
+// export function extractProps(attr: NamedNodeMap) {
+//   return Array.from(attr)
+//     .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
+//     .reduce((acc, { name, value }) => {
+//       let v: string | boolean
+//       if (value === '') {
+//         v = true
+//       } else if (value === "''") {
+//         v = ''
+//       } else {
+//         v = value
+//       }
+//       Reflect.set(acc, name.slice(1), v)
+//       return acc
+//     }, {} as any)
+// }
 
 const is = Object.is
 function keys<T>(val: T) {

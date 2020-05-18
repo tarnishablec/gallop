@@ -1,45 +1,45 @@
 import {
-  getFuncArgNames,
-  extractProps,
-  shallowEqual,
-  digStringBlock
+  // getFuncArgNames,
+  // extractProps,
+  shallowEqual
+  // digStringBlock
 } from '../src/utils'
 import { html } from '../src/parse'
 import { getShaHtml } from '../src/clip'
 
 describe('utils', () => {
-  test('getFuncArgNames', () => {
-    const func = (
-      _you = { name: 'yi,han', children: [{ his: true }] },
-      b: number,
-      c: Array<number> = [12, 3]
-    ) => `${_you.name}${b}${c[1]}`
+  // test('getFuncArgNames', () => {
+  //   const func = (
+  //     _you = { name: 'yi,han', children: [{ his: true }] },
+  //     b: number,
+  //     c: Array<number> = [12, 3]
+  //   ) => `${_you.name}${b}${c[1]}`
 
-    const builder = (
-      /*asdasddfgas""daq,asdas{}*/ name: /*asdasddfgas""daq,asdas{}*/ string,
-      /*asdasddfgas""daq,asdas{}*/ age: number = 25
-    ) =>
-      html`
-        <h3>name is &zwnj;${name}; age is ${age}</h3>
-      `
+  //   const builder = (
+  //     /*asdasddfgas""daq,asdas{}*/ name: /*asdasddfgas""daq,asdas{}*/ string,
+  //     /*asdasddfgas""daq,asdas{}*/ age: number = 25
+  //   ) =>
+  //     html`
+  //       <h3>name is &zwnj;${name}; age is ${age}</h3>
+  //     `
 
-    expect(getFuncArgNames(func)).toEqual(['_you', 'b', 'c'])
-    expect(getFuncArgNames(getFuncArgNames)).toEqual(['func'])
-    expect(
-      getFuncArgNames((/*asdasddfgas""daq,asdas{}*/) => console.log(1))
-    ).toEqual([])
-    expect(
-      getFuncArgNames(
-        (
-          a: { person: { name: string; age: number } } = {
-            person: { name: 'yihan', age: 25 }
-          },
-          b_ss: number = 'asd,"{}asd'.length
-        ) => console.log(a.person.age + b_ss)
-      )
-    ).toEqual(['a', 'b_ss'])
-    expect(getFuncArgNames(builder)).toEqual(['name', 'age'])
-  })
+  //   expect(getFuncArgNames(func)).toEqual(['_you', 'b', 'c'])
+  //   expect(getFuncArgNames(getFuncArgNames)).toEqual(['func'])
+  //   expect(
+  //     getFuncArgNames((/*asdasddfgas""daq,asdas{}*/) => console.log(1))
+  //   ).toEqual([])
+  //   expect(
+  //     getFuncArgNames(
+  //       (
+  //         a: { person: { name: string; age: number } } = {
+  //           person: { name: 'yihan', age: 25 }
+  //         },
+  //         b_ss: number = 'asd,"{}asd'.length
+  //       ) => console.log(a.person.age + b_ss)
+  //     )
+  //   ).toEqual(['a', 'b_ss'])
+  //   expect(getFuncArgNames(builder)).toEqual(['name', 'age'])
+  // })
 
   test('extractProp', () => {
     const hobbies = ['sing', 'jump', 'rap', '🏀']
@@ -52,10 +52,10 @@ describe('utils', () => {
     div.append(
       document.createRange().createContextualFragment(shaClip.do(getShaHtml))
     )
-    expect(extractProps((div.firstChild as Element).attributes)).toEqual({
-      name: 'yihan',
-      age: '66'
-    })
+    // expect(extractProps((div.firstChild as Element).attributes)).toEqual({
+    //   name: 'yihan',
+    //   age: '66'
+    // })
   })
 
   test('shallowEqual', () => {
@@ -95,25 +95,25 @@ describe('utils', () => {
 
   test('diff result', () => {})
 
-  test('digStringBlock', () => {
-    expect(digStringBlock('asdad[eeeeeee]asdasdaa', '[')[0]).toBe('[eeeeeee]')
-    expect(digStringBlock('asdad[eeeeeee]asdasdaa', '[', false)[0]).toBe(
-      'eeeeeee'
-    )
-    expect(digStringBlock('asdad{eeeeeee}asdasdaa', '{', false)[0]).toBe(
-      'eeeeeee'
-    )
-    expect(digStringBlock('asdad{eeeeeee}asdasdaa', '{')[0]).toBe('{eeeeeee}')
-    expect(digStringBlock('asdad<eeeeeee>asdasdaa', '<', false)[0]).toBe(
-      'eeeeeee'
-    )
-    expect(digStringBlock('asdad<eeeeeee>asdasdaa', '<')[0]).toBe('<eeeeeee>')
-    expect(digStringBlock('asdad(eeeeeee)asdasdaa', '(')[0]).toBe('(eeeeeee)')
-    expect(digStringBlock('asdad(eeeeeee)asdasdaa', '(', false)[0]).toBe(
-      'eeeeeee'
-    )
-    expect(
-      () => digStringBlock('asdad"eeeee<ee""asdasdaa', '<', false)[0]
-    ).toThrowError()
-  })
+  // test('digStringBlock', () => {
+  //   expect(digStringBlock('asdad[eeeeeee]asdasdaa', '[')[0]).toBe('[eeeeeee]')
+  //   expect(digStringBlock('asdad[eeeeeee]asdasdaa', '[', false)[0]).toBe(
+  //     'eeeeeee'
+  //   )
+  //   expect(digStringBlock('asdad{eeeeeee}asdasdaa', '{', false)[0]).toBe(
+  //     'eeeeeee'
+  //   )
+  //   expect(digStringBlock('asdad{eeeeeee}asdasdaa', '{')[0]).toBe('{eeeeeee}')
+  //   expect(digStringBlock('asdad<eeeeeee>asdasdaa', '<', false)[0]).toBe(
+  //     'eeeeeee'
+  //   )
+  //   expect(digStringBlock('asdad<eeeeeee>asdasdaa', '<')[0]).toBe('<eeeeeee>')
+  //   expect(digStringBlock('asdad(eeeeeee)asdasdaa', '(')[0]).toBe('(eeeeeee)')
+  //   expect(digStringBlock('asdad(eeeeeee)asdasdaa', '(', false)[0]).toBe(
+  //     'eeeeeee'
+  //   )
+  //   expect(
+  //     () => digStringBlock('asdad"eeeee<ee""asdasdaa', '<', false)[0]
+  //   ).toThrowError()
+  // })
 })

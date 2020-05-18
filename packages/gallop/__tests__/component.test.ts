@@ -18,66 +18,57 @@ describe('component', () => {
     let b = 1
 
     const hobbies = ['sing', 'jump', 'rap', '🏀']
-    component(
-      'sandbox-a',
-      function (
-        this: ReactiveElement,
-        name: string = 'yihan',
-        age: number,
-        hobbies: string[],
-        status: { hungry: boolean } = { hungry: true }
-      ) {
-        let [state] = useState({ tok: 100 })
+    component('sandbox-a', function (
+      this: ReactiveElement,
+      name: string = 'yihan',
+      age: number,
+      hobbies: string[],
+      status: { hungry: boolean } = { hungry: true }
+    ) {
+      let [state] = useState({ tok: 100 })
 
-        useContext([context])
+      useContext([context])
 
-        useEffect(() => {
-          a++
-          expect(this.localName).toBe('sandbox')
-          expect(this.$state).toEqual({ tok: 100 })
-        }, [])
+      useEffect(() => {
+        a++
+        expect(this.localName).toBe('sandbox')
+        expect(this.$state).toEqual({ tok: 100 })
+      }, [])
 
-        let sha = html`
-          <div id="root" style="color:red" .class=${'sandbox'}>
-            <div>${name}</div>
-            <div>${age}</div>
-            <div>${hobbies}</div>
-            <div>${status.hungry}</div>
-            <div>${data.tik}</div>
-            <div>${state.tok}</div>
-            <button
-              @click="${(e: Event) => {
-                data.tik += 1
-                state.tok += 1
-                b += 2
-                console.log(data.tik)
-                console.log(e)
-              }}"
-            ></button>
-          </div>
-        `
+      let sha = html`
+        <div id="root" style="color:red" .class=${'sandbox'}>
+          <div>${name}</div>
+          <div>${age}</div>
+          <div>${hobbies}</div>
+          <div>${status.hungry}</div>
+          <div>${data.tik}</div>
+          <div>${state.tok}</div>
+          <button
+            @click="${(e: Event) => {
+              data.tik += 1
+              state.tok += 1
+              b += 2
+              console.log(data.tik)
+              console.log(e)
+            }}"
+          ></button>
+        </div>
+      `
 
-        expect(
-          isMarker(
-            sha
-              .do(createClip)
-              .dof.querySelector('#root')
-              ?.getAttribute('.class')
-          )
-        ).toBe(true)
+      expect(
+        isMarker(
+          sha.do(createClip).dof.querySelector('#root')?.getAttribute('.class')
+        )
+      ).toBe(true)
 
-        expect(
-          isMarker(
-            sha.do(createClip).dof.querySelector('#root')?.getAttribute('style')
-          )
-        ).toBe(false)
+      expect(
+        isMarker(
+          sha.do(createClip).dof.querySelector('#root')?.getAttribute('style')
+        )
+      ).toBe(false)
 
-        return sha
-      },
-      {
-        propList: ['name', 'age', 'hobbies', 'status']
-      }
-    )
+      return sha
+    })
 
     render(html` <sandbox-a :hobbies="${hobbies}" :age="24"></sandbox-a> `)
 

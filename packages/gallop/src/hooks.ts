@@ -15,7 +15,7 @@ export function useState<T extends object>(initState: T): [T] {
 
 export type Effect = (
   ...args: any[]
-) => void | ((this: ReactiveElement, ...args: any[]) => void)
+) => void | ((this: ReactiveElement<any>, ...args: any[]) => void)
 
 export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
   const current = resolveCurrentHandle()
@@ -58,7 +58,7 @@ export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
 }
 
 export function resolveEffects(
-  element: ReactiveElement,
+  element: ReactiveElement<any>,
   effects?: { e: Effect; index: number }[]
 ) {
   setTimeout(() => {

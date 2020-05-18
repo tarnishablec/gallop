@@ -1,5 +1,5 @@
 import { Clip, HTMLClip, createClip, getVals, getShaHtml } from './clip'
-import { getFuncArgNames, extractProps } from './utils'
+// import { getFuncArgNames, extractProps } from './utils'
 import { createProxy, resetDirtyMap } from './reactive'
 import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
@@ -36,15 +36,18 @@ export function enUpdateQueue() {
   })
 }
 
-export type Component = (...props: any[]) => HTMLClip
+export type ComponentArgs = [object?, ...any[]]
+export type Component = (...args: any) => HTMLClip
 // export type AsyncComponent = (...props: any[]) => Promise<HTMLClip>
-export type Complex = (...props: any[]) => VirtualElement
+export type Complex<P extends object> = (...args: any) => VirtualElement
 export type EffectInfo = { e: Effect; index: number }
 
-export abstract class ReactiveElement extends HTMLElement {
-  $props: unknown[] = []
+export abstract class ReactiveElement<
+  P extends object = any
+> extends HTMLElement {
+  $props: P = createProxy({}, () => this.requestUpdate()) as P
   $state?: [unknown]
-  $root: ShadowRoot | ReactiveElement
+  $root: ShadowRoot | ReactiveElement<P>
   $builder: Component
   $alive: boolean = false
 
@@ -52,7 +55,7 @@ export abstract class ReactiveElement extends HTMLElement {
   $mountedEffects?: EffectInfo[]
   $disconnectedEffects?: (() => void)[]
 
-  $brobs: any = createProxy({}, () => this.requestUpdate())
+  // $brobs: any = createProxy({}, () => this.requestUpdate())
   $cache?: [unknown]
 
   $effectsCount: number = 0
@@ -72,36 +75,13 @@ export abstract class ReactiveElement extends HTMLElement {
 
   protected propNames: string[] = []
 
-  constructor(
-    builder: Component,
-    shadow: boolean,
-    propNames: string[],
-    unstable: boolean
-  ) {
+  constructor(builder: Component, shadow: boolean, unstable: boolean) {
     super()
     this.$unstable = unstable
     this.$builder = builder
     this.$root = shadow ? this.attachShadow({ mode: 'open' }) : this
-    this.initProps(propNames)
     this.requestUpdate()
     // console.log(`${this.nodeName} constructed`)
-  }
-
-  initProps(propNames: string[]) {
-    this.propNames = propNames
-    const p = new Array(this.propNames.length).fill(undefined)
-    const staticProps = extractProps(this.attributes)
-    for (const key in staticProps) {
-      const index = this.propNames.indexOf(key)
-      if (index >= 0) {
-        p[index] = staticProps[key]
-      } else {
-        Reflect.set(this.$brobs, key, staticProps[key])
-      }
-    }
-    propNames.length
-      ? (this.$props = createProxy(p, () => this.requestUpdate()))
-      : undefined
   }
 
   requestUpdate() {
@@ -110,7 +90,7 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 
   dispatchUpdate() {
-    const shaClip = this.$builder.apply(this, this.$props)
+    const shaClip = this.$builder.apply(this, [this.$props])
     if (!this.$clip) {
       this.mount(shaClip)
     } else if (this.$unstable) {
@@ -139,19 +119,8 @@ export abstract class ReactiveElement extends HTMLElement {
     resolveEffects(this, this.$mountedEffects)
   }
 
-  mergeProp(name: string, val: unknown) {
-    const index = this.propNames?.indexOf(name)
-    if (index >= 0) {
-      this.$props[index] = val
-    } else {
-      Reflect.set(this.$brobs, name, val)
-    }
-  }
-
-  mergeProps(props: unknown[]) {
-    props.forEach((prop, index) => {
-      this.$props[index] = prop
-    })
+  mergeProps(props?: object) {
+    props && Object.assign(this.$props, props)
     return this
   }
 
@@ -180,13 +149,13 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 }
 
-export const componentPool = new Map<string, string[]>()
+export const componentPool = new Map<string, boolean>()
 
-export function component<F extends Component>(
+export function component<P extends object, F extends Component>(
   name: string,
   builder: F,
   option: {
-    propList?: string[]
+    // propList?: string[]
     unstable?: boolean
     shadow?: boolean
     definitionOptions?: ElementDefinitionOptions
@@ -195,26 +164,26 @@ export function component<F extends Component>(
     unstable: false
   }
 ) {
-  const propNames = (option?.propList ?? getFuncArgNames(builder)).map((name) =>
-    name.toLowerCase()
-  )
-
-  const clazz = class extends ReactiveElement {
+  const clazz = class extends ReactiveElement<P> {
     constructor() {
-      super(builder, option.shadow ?? true, propNames, option.unstable ?? false)
+      super(
+        (builder as unknown) as Component,
+        option.shadow ?? true,
+        option.unstable ?? false
+      )
     }
   }
 
   customElements.define(name, clazz, option.definitionOptions)
-  componentPool.set(name, propNames)
+  componentPool.set(name, true)
 
-  return (...props: Parameters<F>) => new VirtualElement(name, props)
+  return (...args: Parameters<F>) => new VirtualElement(name, args)
 }
 
 export class VirtualElement extends DoAble(Object) {
   el?: ReactiveElement
   slotContent?: HTMLClip
-  constructor(public tag: string, public props?: unknown[]) {
+  constructor(public tag: string, public args?: ComponentArgs) {
     super()
   }
 
@@ -225,7 +194,7 @@ export class VirtualElement extends DoAble(Object) {
         this.slotContent?.do(createClip).tryUpdate(this.slotContent.do(getVals))
           .dof
       )
-    this.props && this.el.mergeProps(this.props)
+    this.args && this.el.mergeProps(this.args[0])
     return this.el
   }
 

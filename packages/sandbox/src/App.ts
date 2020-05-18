@@ -13,47 +13,42 @@ import {
 
 import './styles/index.scss'
 
-const TestA = component(
-  'test-a',
-  (count: number = 22) => {
-    const [state] = useState({
-      arr: new Array(count).fill(void 0).map((v, i) => i)
-    })
+const TestA = component('test-a', ({ count = 22 }: { count?: number }) => {
+  const [state] = useState({
+    arr: new Array(count).fill(void 0).map((v, i) => i)
+  })
 
-    useMemo(
-      () => (state.arr = new Array(count).fill(void 0).map((v, i) => i)),
-      [count]
-    )
+  useMemo(() => (state.arr = new Array(count).fill(void 0).map((v, i) => i)), [
+    count
+  ])
 
-    // debugger
-    console.log('test-a')
-    useEffect(() => {
-      console.log('test-a mounted')
-    }, [])
+  // debugger
+  console.log('test-a')
+  useEffect(() => {
+    console.log('test-a mounted')
+  }, [])
 
-    return html`
+  return html`
+    <div>
+      this is test-a
       <div>
-        this is test-a
-        <div>
-          <button
-            @click="${() => {
-              console.log('button clicked')
-              state.arr.unshift(state.arr.pop()!)
-            }}"
-          >
-            circle move
-          </button>
-        </div>
-        ${repeat(
-          state.arr,
-          (v) => v,
-          (v) => html` <test-b>${v}</test-b>`
-        )}
+        <button
+          @click="${() => {
+            console.log('button clicked')
+            state.arr.unshift(state.arr.pop()!)
+          }}"
+        >
+          circle move
+        </button>
       </div>
-    `
-  },
-  { propList: ['count'] }
-)
+      ${repeat(
+        state.arr,
+        (v) => v,
+        (v) => html` <test-b>${v}</test-b>`
+      )}
+    </div>
+  `
+})
 
 component('test-b', () => {
   useEffect(() => {
@@ -84,11 +79,12 @@ component('app-root', function (this: ReactiveElement) {
     <div>
       <div class="main-title"></div>
       <hr />
-      ${TestA()}
+      ${TestA({ count: 2 })}
       <hr />
       <div>
         ${suspense(
-          async () => (await import('./components/MyCount')).MyCount('red'),
+          async () =>
+            (await import('./components/MyCount')).MyCount({ color: 'red' }),
           { pending: 1 }
         )}
       </div>
