@@ -29,7 +29,6 @@ module.exports = (dir) => {
       libraryTarget: 'umd'
     },
 
-    externals: ProdMode ? ['@gallop/gallop'] : [],
     // watch: true,
     // watchOptions: {
     //   poll: 1000,

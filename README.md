@@ -42,7 +42,7 @@
   | ---------- | --- |
   | repeat()   | ✅  |
   | dynamic()  | ✅  |
-  | suspense() | ✅  |
+  | suspense() | ⌛  |
   | portal()   | ✅  |
 
 - support `<slot>` by web components, also `named slot`

@@ -25,9 +25,14 @@ export const suspense = directive(function <T>(
       throw DirectivePartTypeError(part.type)
     }
     console.log('in')
-    wish().then((res) => {
-      part.setValue(res)
-    })
+    wish()
+      .then((res) => {
+        part.setValue(res)
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        part.setValue(fallback)
+      })
     return pending
   }
 })
