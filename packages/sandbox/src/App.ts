@@ -73,11 +73,11 @@ component('app-root', function (this: ReactiveElement) {
   let [state] = useState({ portalCount: 0 })
 
   useEffect(() => {
-    const input = this.$root.querySelector('input')
-    console.log(input)
-    input?.addEventListener('change', (e) => {
-      console.log(e.target)
-    })
+    // const input = this.$root.querySelector('input')
+    // console.log(input)
+    // input?.addEventListener('change', (e) => {
+    //   console.log(e.target)
+    // })
   }, [])
 
   return html`
@@ -89,7 +89,7 @@ component('app-root', function (this: ReactiveElement) {
       <div>
         ${suspense(
           async () => (await import('./components/MyCount')).MyCount('red'),
-          { pending: 1 }
+          { pending: html`<div>Loading</div>` }
         )}
       </div>
       <hr />

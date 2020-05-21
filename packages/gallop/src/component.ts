@@ -185,27 +185,29 @@ export const componentPool = new Map<string, string[]>()
 export function component<F extends Component>(
   name: string,
   builder: F,
-  option: {
+  {
+    propList,
+    unstable = false,
+    shadow = true,
+    definitionOptions
+  }: {
     propList?: string[]
     unstable?: boolean
     shadow?: boolean
     definitionOptions?: ElementDefinitionOptions
-  } = {
-    shadow: true,
-    unstable: false
-  }
+  } = {}
 ) {
-  const propNames = (option?.propList ?? getFuncArgNames(builder)).map((name) =>
+  const propNames = (propList ?? getFuncArgNames(builder)).map((name) =>
     name.toLowerCase()
   )
 
   const clazz = class extends ReactiveElement {
     constructor() {
-      super(builder, option.shadow ?? true, propNames, option.unstable ?? false)
+      super(builder, shadow, propNames, unstable)
     }
   }
 
-  customElements.define(name, clazz, option.definitionOptions)
+  customElements.define(name, clazz, definitionOptions)
   componentPool.set(name, propNames)
 
   return (...props: Parameters<F>) => new VirtualElement(name, props)
