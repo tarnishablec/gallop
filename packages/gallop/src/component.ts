@@ -215,24 +215,24 @@ export function component<F extends Component>(
 
 export class VirtualElement extends DoAble(Object) {
   el?: ReactiveElement
-  slotContent?: HTMLClip
+  // slotContent?: HTMLClip
   constructor(public tag: string, public props?: unknown[]) {
     super()
   }
 
   createInstance() {
     this.el = document.createElement(this.tag) as ReactiveElement
-    this.slotContent &&
-      this.el.append(
-        this.slotContent?.do(createClip).tryUpdate(this.slotContent.do(getVals))
-          .dof
-      )
+    // this.slotContent &&
+    //   this.el.append(
+    //     this.slotContent?.do(createClip).tryUpdate(this.slotContent.do(getVals))
+    //       .dof
+    //   )
     this.props && this.el.mergeProps(this.props)
     return this.el
   }
 
-  useSlot(content?: HTMLClip) {
-    content && (this.slotContent = content)
-    return this
-  }
+  // useSlot(content?: HTMLClip) {
+  //   content && (this.slotContent = content)
+  //   return this
+  // }
 }

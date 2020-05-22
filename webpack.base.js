@@ -146,9 +146,7 @@ module.exports = (dir) => {
         hash: true,
         templateParameters: {
           env: JSON.stringify(process.env),
-          gallopCdn: ProdMode
-            ? `<script src="https://unpkg.com/@gallop/gallop@${version}/dist/index.umd.js"></script>`
-            : ''
+          gallopCdn: `<script src="https://unpkg.com/@gallop/gallop@${version}/dist/index.umd.js"></script>`
         }
       }),
       new ScriptExtHtmlWebpackPlugin({}),

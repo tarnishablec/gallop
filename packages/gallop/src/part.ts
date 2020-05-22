@@ -50,7 +50,7 @@ export abstract class Part {
 
 export class NodePart extends Part {
   clear(): void {
-    this.shaHtmlCache = undefined
+    // this.shaHtmlCache = undefined
     const { startNode, endNode } = this.location
     const parent = startNode.parentNode!
     removeNodes(parent, startNode.nextSibling, endNode)

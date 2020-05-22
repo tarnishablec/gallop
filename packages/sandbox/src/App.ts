@@ -12,6 +12,7 @@ import {
 } from '@gallop/gallop'
 
 import './styles/index.scss'
+import { AsyncCount } from './components/AsyncCount'
 
 const TestA = component(
   'test-a',
@@ -125,9 +126,10 @@ component('app-root', function (this: ReactiveElement) {
 
 render(
   html`
-    <app-root>
+    <!-- <app-root>
       this is slot
-    </app-root>
+    </app-root> -->
+    ${AsyncCount()}
     <style>
       body {
         background: grey;
