@@ -72,6 +72,9 @@ export abstract class ReactiveElement extends HTMLElement {
 
   protected propNames: string[] = []
 
+  $on = this.addEventListener
+  $emit = this.dispatchEvent
+
   constructor(
     builder: Component,
     shadow: boolean,

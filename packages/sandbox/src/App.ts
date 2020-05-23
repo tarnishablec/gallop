@@ -12,7 +12,9 @@ import {
 } from '@gallop/gallop'
 
 import './styles/index.scss'
-import { AsyncCount } from './components/AsyncCount'
+// import { AsyncCount } from './components/AsyncCount'
+
+import './components/FkTable'
 
 const TestA = component(
   'test-a',
@@ -66,20 +68,9 @@ component('test-b', () => {
 
 component('app-root', function (this: ReactiveElement) {
   console.log('app-root')
-  // let [state] = useState<{ count: number; page: 'count' | 'main' }>({
-  //   count: 500,
-  //   page: 'count'
-  // })
-
   let [state] = useState({ portalCount: 0 })
 
-  useEffect(() => {
-    // const input = this.$root.querySelector('input')
-    // console.log(input)
-    // input?.addEventListener('change', (e) => {
-    //   console.log(e.target)
-    // })
-  }, [])
+  useEffect(() => {}, [])
 
   return html`
     <div>
@@ -129,7 +120,8 @@ render(
     <!-- <app-root>
       this is slot
     </app-root> -->
-    ${AsyncCount()}
+    <!-- {AsyncCount()} -->
+    <fk-table @dataChange=${() => console.log(111)}></fk-table>
     <style>
       body {
         background: grey;
