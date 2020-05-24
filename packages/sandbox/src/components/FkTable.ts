@@ -8,8 +8,7 @@ export const FkTable = component('fk-table', function (this: ReactiveElement) {
     this.$on('click', (e) => {
       console.log(e, e.detail)
     })
-    this.$emit(new CustomEvent('mycustomevent', { detail: 'world' }))
-    this.$emit(new Event('click'))
+    this.$emit(new CustomEvent('datachange', { detail: 'world' }))
   }, [])
 
   return html` <table>

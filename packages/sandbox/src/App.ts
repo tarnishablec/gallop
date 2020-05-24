@@ -68,7 +68,7 @@ component('test-b', () => {
 
 component('app-root', function (this: ReactiveElement) {
   console.log('app-root')
-  let [state] = useState({ portalCount: 0 })
+  const [state] = useState({ portalCount: 0 })
 
   useEffect(() => {}, [])
 
@@ -121,7 +121,7 @@ render(
       this is slot
     </app-root> -->
     <!-- {AsyncCount()} -->
-    <fk-table @dataChange=${() => console.log(111)}></fk-table>
+    <fk-table @datachange="${(e: CustomEvent) => console.log(e)}"></fk-table>
     <style>
       body {
         background: grey;
