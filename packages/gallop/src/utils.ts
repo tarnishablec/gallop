@@ -50,12 +50,12 @@ export function digStringBlock(
       tail = "'"
       break
   }
-  let startIndex = rawStr.indexOf(head)
+  const startIndex = rawStr.indexOf(head)
   if (startIndex < 0) {
     return ['', rawStr]
   }
   let endIndex
-  let stack = [0]
+  const stack = [0]
   for (let i = startIndex + 1; i < rawStr.length; i++) {
     if (rawStr[i] === tail) {
       stack.pop()
@@ -105,10 +105,10 @@ export function isMatchedSymbol(front: string | undefined, back: string) {
 export function getFuncArgNames(func: Function) {
   const [funcHead] = digStringBlock(func.toString(), undefined, false)
   const arr = funcHead.replace(/(\/\*.*?\*\/)|\s/g, '')
-  let res = []
+  const res = []
   let temp = ''
   let canPush = true
-  let blockStack = []
+  const blockStack = []
 
   for (let i = 0; i < arr.length; i++) {
     const isInBlock = !!blockStack.length

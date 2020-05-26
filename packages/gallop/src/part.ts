@@ -86,14 +86,14 @@ export class AttrPart extends Part {
   commit(): void {
     const { node, name } = this.location
     let res: string
-    let val = this.value ?? ''
+    const val = this.value ?? ''
     if (name === 'style') {
       res = `${this.styleCache ?? ''}${this.styleCache ? ';' : ''}${val}`
     } else {
       res = val
     }
     if (name === 'class') {
-      let classes = this.value.split(' ').filter(Boolean)
+      const classes = this.value.split(' ').filter(Boolean)
       if (!twoStrArrayCompare(classes, this.classCache ?? [])) {
         node.classList.remove(...(this.classCache ?? []))
         node.classList.add(...classes)
@@ -137,7 +137,7 @@ export class EventPart extends Part {
     this.clear()
     const { node } = this.location
     this.value.forEach((v) => {
-      let ev = this.tryGetFromCache(v)
+      const ev = this.tryGetFromCache(v)
       node.addEventListener(this.eventName, ev, this.options)
     })
   }

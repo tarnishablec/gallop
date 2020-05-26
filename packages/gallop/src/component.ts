@@ -113,7 +113,7 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 
   dispatchUpdate() {
-    const shaClip = this.$builder.apply(this, this.$props)
+    const shaClip = this.$builder.call(this, ...this.$props)
     if (!this.$clip) {
       this.mount(shaClip)
     } else if (this.$unstable) {
