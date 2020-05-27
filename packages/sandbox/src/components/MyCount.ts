@@ -2,7 +2,7 @@ import { component, html, useState, useStyle, css } from '@gallop/gallop'
 
 export const MyCount = component(
   'my-count',
-  (color: string) => {
+  (color: string = 'purple') => {
     const [state] = useState({ count: 0 })
     console.log('my-count')
     useStyle(

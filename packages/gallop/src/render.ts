@@ -14,3 +14,8 @@ export function render(
   }
   container.insertBefore(dof, before)
 }
+
+export function instantiate(this: HTMLClip | VirtualElement) {
+  if (this instanceof HTMLClip) {
+  }
+}

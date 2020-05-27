@@ -16,7 +16,7 @@ type PartType = 'node' | 'attr' | 'event' | 'prop' | NodePartType
 
 export type NodeValueType = Clip | string | ReactiveElement | NodeValueType[]
 
-const initValue = Symbol('')
+export const initValue = Symbol('')
 
 export abstract class Part {
   index: number
@@ -167,6 +167,7 @@ export class EventPart extends Part {
   }
 
   tryGetFromCache(e: EventInstance) {
+    // unsafe
     return (
       this.eventCache.get(e.toString()) ??
       this.eventCache.set(e.toString(), e).get(e.toString())!

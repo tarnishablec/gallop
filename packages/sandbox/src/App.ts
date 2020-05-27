@@ -80,8 +80,22 @@ component('app-root', function (this: ReactiveElement) {
       <hr />
       <div>
         ${suspense(
-          async () => (await import('./components/MyCount')).MyCount('red'),
-          { pending: html`<div>Loading</div>` }
+          async () => {
+            // await new Promise((res) => {
+            //   setTimeout(() => {
+            //     res()
+            //   }, 2000)
+            // })
+            await import('./components/MyCount')
+            return html`<div>
+              <my-count></my-count>
+              ${state.portalCount}
+            </div>`
+          },
+          {
+            pending: html`<div>Loading${state.portalCount}</div>`,
+            fallback: html`<div>Error</div>`
+          }
         )}
       </div>
       <hr />
@@ -117,11 +131,11 @@ component('app-root', function (this: ReactiveElement) {
 
 render(
   html`
-    <!-- <app-root>
+    <app-root>
       this is slot
-    </app-root> -->
+    </app-root>
     <!-- {AsyncCount()} -->
-    <fk-table @datachange="${(e: CustomEvent) => console.log(e)}"></fk-table>
+    <!-- <fk-table @datachange="{(e: CustomEvent) => console.log(e)}"></fk-table> -->
     <style>
       body {
         background: grey;

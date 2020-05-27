@@ -144,7 +144,7 @@ export abstract class ReactiveElement extends HTMLElement {
 
   mergeProp(name: string, val: unknown) {
     const index = this.propNames?.indexOf(name)
-    if (index >= 0) {
+    if (~index) {
       this.$props[index] = val
     } else {
       Reflect.set(this.$brobs, name, val)

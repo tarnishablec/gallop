@@ -48,5 +48,3 @@ export type { Effect } from './hooks'
 export type { DirectiveFn } from './directive'
 export type { ContextOption } from './context'
 export type { NodeValueType } from './part'
-
-console.log('llllllllllllasdasdasdasd')
