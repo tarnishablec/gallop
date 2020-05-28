@@ -1,10 +1,22 @@
-import { component, html, useState, useStyle, css } from '@gallop/gallop'
+import {
+  component,
+  html,
+  useState,
+  useStyle,
+  css,
+  useEffect
+} from '@gallop/gallop'
 
 export const MyCount = component(
   'my-count',
   (color: string = 'purple') => {
     const [state] = useState({ count: 0 })
     console.log('my-count')
+
+    useEffect(() => {
+      console.log('my-count mounted')
+    }, [])
+
     useStyle(
       () => css`
         span {

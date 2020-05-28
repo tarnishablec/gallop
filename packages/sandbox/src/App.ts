@@ -8,7 +8,8 @@ import {
   useState,
   useMemo,
   suspense,
-  portal
+  portal,
+  keepalive
 } from '@gallop/gallop'
 
 import './styles/index.scss'
@@ -18,7 +19,7 @@ import './components/FkTable'
 
 const TestA = component(
   'test-a',
-  (count: number = 22) => {
+  (count: number = 6) => {
     const [state] = useState({
       arr: new Array(count).fill(void 0).map((v, i) => i)
     })
@@ -84,7 +85,7 @@ component('app-root', function (this: ReactiveElement) {
             // await new Promise((res) => {
             //   setTimeout(() => {
             //     res()
-            //   }, 2000)
+            //   }, 1000)
             // })
             await import('./components/MyCount')
             return html`<div>
@@ -109,11 +110,7 @@ component('app-root', function (this: ReactiveElement) {
       </div>
       <hr />
       <div>
-        ${repeat(
-          new Array(10).fill(void 0).map((v, i) => i),
-          (v) => v,
-          (v) => html` <div>this is ${v}</div>`
-        )}
+        ${keepalive(state.portalCount % 2 ? html`<div>good</div>` : 666)}
       </div>
     </div>
     <style>

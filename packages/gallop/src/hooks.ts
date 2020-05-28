@@ -132,7 +132,7 @@ export function useMemo<T extends () => any>(
   }
 }
 
-export function useStyle(czz: () => string, depends?: unknown[]) {
+export function useStyle(css: () => string, depends?: unknown[]) {
   const current = resolveCurrentHandle()
   useMemo(() => {
     let el = current.$root.querySelector('style.hook-style')
@@ -141,6 +141,6 @@ export function useStyle(czz: () => string, depends?: unknown[]) {
       el.classList.add('hook-style')
       current.$root.append(el)
     }
-    el.innerHTML = czz()
+    el.innerHTML = css()
   }, depends)
 }

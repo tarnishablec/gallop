@@ -73,6 +73,7 @@ export class NodePart extends Part {
       const parent = endNode.parentNode!
       parent.insertBefore(dof, endNode)
     }
+    return this.value
   }
 
   value!: NodeValueType

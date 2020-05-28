@@ -32,7 +32,7 @@ export {
 
 export { HTMLClip, getShaHtml, getVals } from './clip'
 
-export { repeat, dynamic, suspense, portal } from './directives'
+export { repeat, dynamic, suspense, portal, keepalive } from './directives'
 export { directive, directives, isDirective } from './directive'
 
 export {
