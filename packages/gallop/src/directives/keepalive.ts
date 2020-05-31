@@ -1,23 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { directive } from '../directive'
-import { Part, NodePart, NodeValueType } from '../part'
+import { Part, NodePart } from '../part'
 import { DirectivePartTypeError } from '../error'
-import { HTMLClip } from '../clip'
-import { VirtualElement } from '../component'
+import { VirtualElement, ReactiveElement } from '../component'
 
-const aliveMap = new WeakMap<NodePart, NodeValueType>()
+// const clipAliveMap = new WeakMap<NodePart, Map<string, NodeValueType>>()
+const virtAliveMap = new WeakMap<NodePart, Map<string, ReactiveElement>>()
 
-export const keepalive = directive(
-  (view: unknown) => (part: Part) => {
-    if (!(part instanceof NodePart)) {
-      throw DirectivePartTypeError(part.type)
+export const keepalive = directive((view: unknown) => (part: Part) => {
+  if (!(part instanceof NodePart)) {
+    throw DirectivePartTypeError(part.type)
+  }
+
+  if (view instanceof VirtualElement) {
+    const map =
+      virtAliveMap.get(part) ?? virtAliveMap.set(part, new Map()).get(part)!
+    const res = map.get(view.tag)
+    if (res) {
+      view.el = res
+    } else {
+      view.aliveFn = (el: ReactiveElement) => map.set(view.tag, el)
     }
-
-    // if (view instanceof HTMLClip || view instanceof VirtualElement) {
-    //   aliveMap.get(part) ?? aliveMap.set(part, part.setValue(view)!)
-    // } else {
-    //   part.setValue(view)
-    // }
-  },
-  true
-)
+  }
+  return view
+})

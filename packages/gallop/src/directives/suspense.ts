@@ -23,7 +23,6 @@ export const suspense = directive(function <T>(
       part.setValue(pending)
       wish()
         .then((res) => {
-          // console.log(part.value)
           part.setValue(res)
         })
         .catch(() => {

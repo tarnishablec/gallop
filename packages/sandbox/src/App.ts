@@ -15,7 +15,7 @@ import {
 import './styles/index.scss'
 // import { AsyncCount } from './components/AsyncCount'
 
-import './components/FkTable'
+import { MyCount } from './components/MyCount'
 
 const TestA = component(
   'test-a',
@@ -87,11 +87,7 @@ component('app-root', function (this: ReactiveElement) {
             //     res()
             //   }, 1000)
             // })
-            await import('./components/MyCount')
-            return html`<div>
-              <my-count></my-count>
-              ${state.portalCount}
-            </div>`
+            return (await import('./components/FkTable')).FkTable()
           },
           {
             pending: html`<div>Loading${state.portalCount}</div>`,
@@ -110,7 +106,7 @@ component('app-root', function (this: ReactiveElement) {
       </div>
       <hr />
       <div>
-        ${keepalive(state.portalCount % 2 ? html`<div>good</div>` : 666)}
+        ${keepalive(!(state.portalCount % 2) ? MyCount('tomato') : 666)}
       </div>
     </div>
     <style>

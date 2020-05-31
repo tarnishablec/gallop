@@ -159,20 +159,20 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this.$alive = true
     // console.log(`${this.nodeName} connected`)
   }
 
   disconnectedCallback() {
     this.$disconnectedEffects?.filter(Boolean).forEach((effect) => effect())
 
-    this.$contexts?.forEach((context) => context.unWatch(this))
-    this.$memos?.forEach((m) => m.watchList.clear())
-    this.$contexts = undefined
-    this.$memos?.clear()
-    this.$memos = undefined
-    this.$alive = false
-    // console.log(`${this.nodeName} disconnected`)
+    if (!this.$alive) {
+      this.$contexts?.forEach((context) => context.unWatch(this))
+      this.$memos?.forEach((m) => m.watchList.clear())
+      this.$contexts = undefined
+      this.$memos?.clear()
+      this.$memos = undefined
+      // console.log(`${this.nodeName} disconnected`)
+    }
   }
 
   resetEffects() {
@@ -218,18 +218,20 @@ export function component<F extends Component>(
 
 export class VirtualElement extends DoAble(Object) {
   el?: ReactiveElement
+  aliveFn?: (el: ReactiveElement) => unknown
   // slotContent?: HTMLClip
   constructor(public tag: string, public props?: unknown[]) {
     super()
   }
 
   createInstance() {
-    this.el = document.createElement(this.tag) as ReactiveElement
-    // this.slotContent &&
-    //   this.el.append(
-    //     this.slotContent?.do(createClip).tryUpdate(this.slotContent.do(getVals))
-    //       .dof
-    //   )
+    if (!this.el) {
+      this.el = document.createElement(this.tag) as ReactiveElement
+      if (this.aliveFn) {
+        this.el.$alive = true
+        this.aliveFn?.(this.el)
+      }
+    }
     this.props && this.el.mergeProps(this.props)
     return this.el
   }

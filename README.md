@@ -1,7 +1,8 @@
 # gallop
 
 [![Coverage Status](https://coveralls.io/repos/github/tarnishablec/gallop/badge.svg?branch=master)](https://coveralls.io/github/tarnishablec/gallop?branch=master)&nbsp;&nbsp;
-[![Gitter](https://badges.gitter.im/gallopweb/community.svg)](https://gitter.im/gallopweb/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/gallopweb/community.svg)](https://gitter.im/gallopweb/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)&nbsp;&nbsp;
+[![npm version](https://badge.fury.io/js/%40gallop%2Fgallop.svg)](https://badge.fury.io/js/%40gallop%2Fgallop)
 
     yarn add @gallop/gallop
 
@@ -38,12 +39,13 @@
 
 - directives
 
-  |            |     |
-  | ---------- | --- |
-  | repeat()   | ✅  |
-  | dynamic()  | ✅  |
-  | suspense() | ⌛  |
-  | portal()   | ✅  |
+  |             |     |
+  | ----------- | --- |
+  | repeat()    | ✅  |
+  | dynamic()   | ✅  |
+  | suspense()  | ✅  |
+  | portal()    | ✅  |
+  | keepalive() | ✅  |
 
 - support `<slot>` by web components, also `named slot`
 
