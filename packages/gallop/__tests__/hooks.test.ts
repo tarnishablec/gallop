@@ -6,8 +6,8 @@ describe('hooks', () => {
     expect(() => useState({ a: 1 })).toThrowError(/Cannot read property/)
     let temp: { a: number }
     component('test-state', () => {
-      let [state] = useState({ a: 1 })
-      expect(resolveCurrentHandle().$state?.[0]).toBe(state)
+      const [state] = useState({ a: 1 })
+      expect(resolveCurrentHandle().$state).toBe(state)
       temp = state
       return html` <div>${state.a}</div>`
     })
@@ -15,7 +15,7 @@ describe('hooks', () => {
     render(html` <test-state></test-state> `)
     setTimeout(() => {
       expect(
-        (document.querySelector('test-state') as ReactiveElement).$state?.[0]
+        (document.querySelector('test-state') as ReactiveElement).$state
       ).toBe(temp)
     }, 0)
 
@@ -29,9 +29,9 @@ describe('hooks', () => {
 
     component('test-a', function (
       this: ReactiveElement,
-      name: string = 'yihan'
+      { name = 'yihan' }: { name: string }
     ) {
-      let [state] = useState({ tik: 1, children: [2, 3, 4] })
+      const [state] = useState({ tik: 1, children: [2, 3, 4] })
 
       useEffect(() => {
         testres += 1
@@ -53,7 +53,7 @@ describe('hooks', () => {
     const Pure2 = () => html`<span>pure</span>`
 
     component('test-c', function (this: ReactiveElement) {
-      let [state] = useState({ tik: 1, children: [2, 3, 4] })
+      const [state] = useState({ tik: 1, children: [2, 3, 4] })
 
       useEffect(() => {
         testUpdate += 2

@@ -12,72 +12,70 @@ import { isMarker } from '../src/is'
 
 describe('component', () => {
   test('register component', () => {
-    let [data, context] = createContext({ tik: 0 })
+    const [data, context] = createContext({ tik: 0 })
 
     let a = 1
     let b = 1
 
     const hobbies = ['sing', 'jump', 'rap', '🏀']
-    component(
-      'sandbox-a',
-      function (
-        this: ReactiveElement,
-        name: string = 'yihan',
-        age: number,
-        hobbies: string[],
-        status: { hungry: boolean } = { hungry: true }
-      ) {
-        let [state] = useState({ tok: 100 })
-
-        useContext([context])
-
-        useEffect(() => {
-          a++
-          expect(this.localName).toBe('sandbox')
-          expect(this.$state).toEqual({ tok: 100 })
-        }, [])
-
-        let sha = html`
-          <div id="root" style="color:red" .class=${'sandbox'}>
-            <div>${name}</div>
-            <div>${age}</div>
-            <div>${hobbies}</div>
-            <div>${status.hungry}</div>
-            <div>${data.tik}</div>
-            <div>${state.tok}</div>
-            <button
-              @click="${(e: Event) => {
-                data.tik += 1
-                state.tok += 1
-                b += 2
-                console.log(data.tik)
-                console.log(e)
-              }}"
-            ></button>
-          </div>
-        `
-
-        expect(
-          isMarker(
-            sha
-              .do(createClip)
-              .dof.querySelector('#root')
-              ?.getAttribute('.class')
-          )
-        ).toBe(true)
-
-        expect(
-          isMarker(
-            sha.do(createClip).dof.querySelector('#root')?.getAttribute('style')
-          )
-        ).toBe(false)
-
-        return sha
-      },
+    component('sandbox-a', function (
+      this: ReactiveElement,
       {
-        propList: ['name', 'age', 'hobbies', 'status']
+        name = 'yihan',
+        age,
+        hobbies,
+        status = { hungry: true }
+      }: {
+        name: string
+        age: number
+        hobbies: string[]
+        status: { hungry: boolean }
       }
-    )
+    ) {
+      const [state] = useState({ tok: 100 })
+
+      useContext([context])
+
+      useEffect(() => {
+        a++
+        expect(this.localName).toBe('sandbox')
+        expect(this.$state).toEqual({ tok: 100 })
+      }, [])
+
+      const sha = html`
+        <div id="root" style="color:red" .class=${'sandbox'}>
+          <div>${name}</div>
+          <div>${age}</div>
+          <div>${hobbies}</div>
+          <div>${status.hungry}</div>
+          <div>${data.tik}</div>
+          <div>${state.tok}</div>
+          <button
+            @click="${(e: Event) => {
+              data.tik += 1
+              state.tok += 1
+              b += 2
+              console.log(data.tik)
+              console.log(e)
+            }}"
+          ></button>
+        </div>
+      `
+
+      expect(
+        isMarker(
+          sha.do(createClip).dof.querySelector('#root')?.getAttribute('.class')
+        )
+      ).toBe(true)
+
+      expect(
+        isMarker(
+          sha.do(createClip).dof.querySelector('#root')?.getAttribute('style')
+        )
+      ).toBe(false)
+
+      return sha
+    })
 
     render(html` <sandbox-a :hobbies="${hobbies}" :age="24"></sandbox-a> `)
 

@@ -7,10 +7,9 @@ import { Memo, checkMemoDirty } from './memo'
 
 export function useState<T extends object>(initState: T): [T] {
   const current = resolveCurrentHandle()
-  return (
-    (current.$state as [T]) ??
-    (current.$state = [createProxy(initState, () => current.requestUpdate())])
-  )
+  return current.$state
+    ? ([current.$state] as [T])
+    : [(current.$state = createProxy(initState, () => current.requestUpdate()))]
 }
 
 export type Effect = (
@@ -85,7 +84,7 @@ export function useContext(contexts: Context<any>[]) {
 
 export function useCache<T extends Object>(initVal: T) {
   const current = resolveCurrentHandle()
-  return (current.$cache as [T]) ?? (current.$cache = [initVal])
+  return current.$cache ? [current.$cache] : [(current.$cache = initVal)]
 }
 
 export function useMemo<T extends () => any>(

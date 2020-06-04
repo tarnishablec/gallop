@@ -1,7 +1,7 @@
 import { component, html, useState, repeat } from '@gallop/gallop'
 
 component('side-menu', () => {
-  let [menu] = useState([
+  const [menu] = useState([
     { name: 'Introduction', children: ['Overview', 'Installation'] }
   ])
 
