@@ -175,7 +175,6 @@ module.exports = (dir) => {
         filename: 'css/[name].css'
       }),
       new CompressionPlugin({
-        deleteOriginalAssets: ProdMode,
         include: /\.js$/,
         filename: '[path].gz'
       })
