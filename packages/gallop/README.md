@@ -14,9 +14,9 @@
 
 ## Features
 
-- gallop is `Non-intrusive` so technically you can use it in any framework like vue or react
+- gallop is `non-intrusive` so technically you can use it in any framework like vue or react
 
-- gallop is inspired by many frameworks like `lit-html, vue, react, cyclejs`
+- gallop is inspired by many frameworks such as `lit-html, vue, react, cyclejs`
 
 - use `template literals` to auto detect dynamic & static code
 
@@ -98,8 +98,7 @@ export const PureComponent = (prop: string) => html`<div>pure ${prop}</div>` //p
 
 component('test-name', function (
   this: ReactiveElement, //this parameter: https://www.typescriptlang.org/docs/handbook/functions.html
-  name: string,
-  age: number = 1
+  { name, age = 1 }: { name: string; age?: number }
 ) {
   let [state] = useState({ a: 1, color: 'red' }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
   console.dir(this) //access dom directly by this

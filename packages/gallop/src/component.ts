@@ -1,5 +1,5 @@
 import { Clip, HTMLClip, createClip, getVals, getShaHtml } from './clip'
-import { getFuncArgNames, extractProps } from './utils'
+import { extractProps, keysOf } from './utils'
 import { createProxy, resetDirtyMap } from './reactive'
 import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
@@ -36,14 +36,14 @@ export function enUpdateQueue() {
   })
 }
 
-export type Component = (...props: any[]) => HTMLClip
-// export type AsyncComponent = (...props: any[]) => Promise<HTMLClip>
-export type Complex = (...props: any[]) => VirtualElement
+export type Component = (...args: any) => HTMLClip
+export type Complex = (...args: any) => VirtualElement
+
 export type EffectInfo = { e: Effect; index: number }
 
 export abstract class ReactiveElement extends HTMLElement {
-  $props: unknown[] = []
-  $state?: [unknown]
+  protected $props = createProxy({}, () => this.requestUpdate())
+  $state?: unknown
   $root: ShadowRoot | ReactiveElement
   $builder: Component
   $alive: boolean = false
@@ -53,7 +53,7 @@ export abstract class ReactiveElement extends HTMLElement {
   $disconnectedEffects?: (() => void)[]
 
   $brobs: any = createProxy({}, () => this.requestUpdate())
-  $cache?: [unknown]
+  $cache?: unknown
 
   $effectsCount: number = 0
   $memosCount: number = 0
@@ -70,41 +70,17 @@ export abstract class ReactiveElement extends HTMLElement {
   $contexts?: Set<Context<Object>>
   $memos?: Map<number, Memo<() => any>>
 
-  protected propNames: string[] = []
-
   $on = this.addEventListener
   $emit = this.dispatchEvent
 
-  constructor(
-    builder: Component,
-    shadow: boolean,
-    propNames: string[],
-    unstable: boolean
-  ) {
+  constructor(builder: Component, shadow: boolean, unstable: boolean) {
     super()
     this.$unstable = unstable
     this.$builder = builder
     this.$root = shadow ? this.attachShadow({ mode: 'open' }) : this
-    this.initProps(propNames)
+    this.mergeProps(extractProps(this.attributes))
     this.requestUpdate()
     // console.log(`${this.nodeName} constructed`)
-  }
-
-  initProps(propNames: string[]) {
-    this.propNames = propNames
-    const p = new Array(this.propNames.length).fill(undefined)
-    const staticProps = extractProps(this.attributes)
-    for (const key in staticProps) {
-      const index = this.propNames.indexOf(key)
-      if (index >= 0) {
-        p[index] = staticProps[key]
-      } else {
-        Reflect.set(this.$brobs, key, staticProps[key])
-      }
-    }
-    propNames.length
-      ? (this.$props = createProxy(p, () => this.requestUpdate()))
-      : undefined
   }
 
   requestUpdate() {
@@ -113,7 +89,7 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 
   dispatchUpdate() {
-    const shaClip = this.$builder.call(this, ...this.$props)
+    const shaClip = this.$builder.call(this, this.$props)
     if (!this.$clip) {
       this.mount(shaClip)
     } else if (this.$unstable) {
@@ -143,17 +119,13 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 
   mergeProp(name: string, val: unknown) {
-    const index = this.propNames?.indexOf(name)
-    if (~index) {
-      this.$props[index] = val
-    } else {
-      Reflect.set(this.$brobs, name, val)
-    }
+    Reflect.set(this.$props, name, val)
+    return this
   }
 
-  mergeProps(props: unknown[]) {
-    props.forEach((prop, index) => {
-      this.$props[index] = prop
+  mergeProps(props: object) {
+    keysOf(props).forEach((k) => {
+      this.mergeProp(k, props[k])
     })
     return this
   }
@@ -183,44 +155,38 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 }
 
-export const componentPool = new Map<string, string[]>()
+export const componentPool = new Map<string, number>()
 
 export function component<F extends Component>(
   name: string,
   builder: F,
   {
-    propList,
     unstable = false,
     shadow = true,
     definitionOptions
   }: {
-    propList?: string[]
     unstable?: boolean
     shadow?: boolean
     definitionOptions?: ElementDefinitionOptions
   } = {}
 ) {
-  const propNames = (propList ?? getFuncArgNames(builder)).map((name) =>
-    name.toLowerCase()
-  )
-
   const clazz = class extends ReactiveElement {
     constructor() {
-      super(builder, shadow, propNames, unstable)
+      super(builder, shadow, unstable)
     }
   }
 
   customElements.define(name, clazz, definitionOptions)
-  componentPool.set(name, propNames)
+  componentPool.set(name, 1)
 
-  return (...props: Parameters<F>) => new VirtualElement(name, props)
+  return (...args: Parameters<F>) => new VirtualElement(name, args[0])
 }
 
 export class VirtualElement extends DoAble(Object) {
   el?: ReactiveElement
   aliveFn?: (el: ReactiveElement) => unknown
   // slotContent?: HTMLClip
-  constructor(public tag: string, public props?: unknown[]) {
+  constructor(public tag: string, public props?: object) {
     super()
   }
 

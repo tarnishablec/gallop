@@ -159,7 +159,7 @@ export function extractProps(attr: NamedNodeMap) {
 }
 
 const is = Object.is
-function keys<T>(val: T) {
+export function keysOf<T>(val: T) {
   return Object.keys(val) as Array<keyof T>
 }
 
@@ -174,8 +174,8 @@ export function shallowEqual(objA: unknown, objB: unknown) {
     return false
   }
 
-  const keysA = keys(objA)
-  const keysB = keys(objB)
+  const keysA = keysOf(objA)
+  const keysB = keysOf(objB)
 
   if (keysA.length !== keysB.length) return false
 

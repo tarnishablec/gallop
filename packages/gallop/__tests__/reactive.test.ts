@@ -4,12 +4,12 @@ import { isProxy } from '../src/is'
 describe('reactive', () => {
   test('proxy', () => {
     const a = { a: { b: 1 } }
-    let p = createProxy(a)
+    const p = createProxy(a)
     expect(isProxy(p)).toBe(true)
     expect(isProxy(p.a)).toBe(true)
     expect(isProxy(a)).toBe(false)
     const b = { x: { y: '🏀' } }
-    let pb = createProxy(b, () => console.log('b changed'), undefined, true)
+    const pb = createProxy(b, () => console.log('b changed'), undefined, true)
     expect(() => Reflect.set(pb.x, 'z', 1)).toThrowError(
       /Can not set new property to locked object/
     )

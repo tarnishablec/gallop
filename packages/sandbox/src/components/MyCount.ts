@@ -9,7 +9,7 @@ import {
 
 export const MyCount = component(
   'my-count',
-  (color: string = 'purple') => {
+  ({ color = 'red' }: { color?: string } = {}) => {
     const [state] = useState({ count: 0 })
     console.log('my-count')
 
@@ -53,6 +53,5 @@ export const MyCount = component(
         }
       </style>
     `
-  },
-  { propList: ['color'] }
+  }
 )

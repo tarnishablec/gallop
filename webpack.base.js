@@ -130,11 +130,14 @@ module.exports = (dir) => {
       open: true,
       stats: 'errors-only',
       compress: true,
-      host: 'localhost'
+      host: 'localhost',
+      watchOptions: {
+        // ignored: '**/__tests__/**'
+      }
     },
     plugins: [
       new CleanWebpackPlugin({
-        cleanAfterEveryBuildPatterns: ['./dist']
+        eanAfterEveryBuildPatterns: ['./dist']
       }),
       new HtmlWebpackPlugin({
         template: './public/index.ejs',
@@ -147,7 +150,9 @@ module.exports = (dir) => {
         hash: true,
         templateParameters: {
           env: JSON.stringify(process.env),
-          gallopCdn: `<script src="https://unpkg.com/@gallop/gallop@${version}/dist/index.umd.js"></script>`
+          gallopCdn: ProdMode
+            ? `<script src="https://unpkg.com/@gallop/gallop@${version}/dist/index.umd.js"></script>`
+            : ''
         }
       }),
       new ScriptExtHtmlWebpackPlugin({}),

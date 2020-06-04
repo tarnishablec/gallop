@@ -25,6 +25,7 @@
       { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
     ],
     "no-empty": "off",
-    "no-debugger": "off"
+    "no-debugger": "off",
+    "prefer-const": "warn"
   }
 }

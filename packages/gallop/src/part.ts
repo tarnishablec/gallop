@@ -199,7 +199,7 @@ export class PropPart extends Part {
     if (name !== '$props') {
       node.mergeProp(name, this.value)
     } else {
-      node.mergeProps(this.value as unknown[])
+      node.mergeProps(this.value as object)
     }
   }
 
