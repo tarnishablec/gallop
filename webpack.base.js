@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const CompressionPlugin = require('compression-webpack-plugin')
+// const CompressionPlugin = require('compression-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
@@ -173,11 +173,11 @@ module.exports = (dir) => {
       }),
       new MiniCssExtractPlugin({
         filename: 'css/[name].css'
-      }),
-      new CompressionPlugin({
-        include: /\.js$/,
-        filename: '[path].gz'
       })
+      // new CompressionPlugin({
+      //   include: /\.js$/,
+      //   filename: '[path].gz',
+      // })
     ]
   }
 }
