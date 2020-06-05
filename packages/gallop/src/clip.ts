@@ -118,7 +118,7 @@ export function attachParts(clip: Clip) {
         }
       }
     } else if (cur instanceof Comment) {
-      if (cur.data === `{{${markerIndex}}}`) {
+      if (cur.data === markerIndex) {
         const tail = new Comment(cur.data)
         insertAfter(cur.parentNode!, tail, cur)
         clip.parts.push(

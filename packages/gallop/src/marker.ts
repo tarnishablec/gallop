@@ -1,3 +1,3 @@
 export const markerIndex = 'π'
 
-export const marker = `<!--{{${markerIndex}}}-->`
+export const marker = `<!--${markerIndex}-->`

@@ -136,6 +136,7 @@ export abstract class ReactiveElement extends HTMLElement {
 
   disconnectedCallback() {
     this.$disconnectedEffects?.filter(Boolean).forEach((effect) => effect())
+    // console.log(`${this.nodeName} disconnected`)
 
     if (!this.$alive) {
       this.$contexts?.forEach((context) => context.unWatch(this))
@@ -143,7 +144,6 @@ export abstract class ReactiveElement extends HTMLElement {
       this.$contexts = undefined
       this.$memos?.clear()
       this.$memos = undefined
-      // console.log(`${this.nodeName} disconnected`)
     }
   }
 
@@ -184,26 +184,14 @@ export function component<F extends Component>(
 
 export class VirtualElement extends DoAble(Object) {
   el?: ReactiveElement
-  aliveFn?: (el: ReactiveElement) => unknown
-  // slotContent?: HTMLClip
+
   constructor(public tag: string, public props?: object) {
     super()
   }
 
   createInstance() {
-    if (!this.el) {
-      this.el = document.createElement(this.tag) as ReactiveElement
-      if (this.aliveFn) {
-        this.el.$alive = true
-        this.aliveFn?.(this.el)
-      }
-    }
+    this.el = document.createElement(this.tag) as ReactiveElement
     this.props && this.el.mergeProps(this.props)
     return this.el
   }
-
-  // useSlot(content?: HTMLClip) {
-  //   content && (this.slotContent = content)
-  //   return this
-  // }
 }

@@ -97,7 +97,7 @@ export let [data, context] = createContext({ b: 2 }) //context can be exported t
 export const PureComponent = (prop: string) => html`<div>pure ${prop}</div>` //pure component with no any lifecycle
 
 component('test-name', function (
-  this: ReactiveElement, //this parameter: https://www.typescriptlang.org/docs/handbook/functions.html
+  this: ReactiveElement, //this parameter: https://www.staging-typescript.org/docs/handbook/functions.html#this-parameters
   { name, age = 1 }: { name: string; age?: number }
 ) {
   let [state] = useState({ a: 1, color: 'red' }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
