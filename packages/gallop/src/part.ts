@@ -228,7 +228,7 @@ export function initEntry(val: unknown): NodeValueType {
     clip.tryUpdate(val.do(getVals))
     return clip
   } else if (val instanceof VirtualElement) {
-    debugger
+    // debugger
     return val.createInstance()
   } else {
     return tryParseToString(val)

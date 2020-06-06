@@ -6,20 +6,20 @@ import {
   useState,
   dynamic,
   keepalive,
-  useEffect
+  useEffect,
+  suspense
 } from '@gallop/gallop'
+
+// import { random } from 'lodash'
 
 import './styles/index.scss'
 import { MyCount } from './components/MyCount'
-
-const TestA = component('test-a', ({ count }: { count: number }) => {
-  return html` <div>${count}</div>`
-})
+import { TestA } from './components/TestA'
 
 component('app-root', function (this: ReactiveElement) {
   const [state] = useState({ count: 0 })
 
-  useEffect(() => {
+  useEffect(async () => {
     const s = (this.$root.querySelector('my-count') as ReactiveElement)?.$state
     console.log(s)
   }, [state.count])
@@ -34,9 +34,30 @@ component('app-root', function (this: ReactiveElement) {
       </div>
       <hr />
       ${keepalive(!(state.count % 2) ? MyCount() : 666)}
+      <hr />
+      ${suspense(
+        async () => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          await new Promise((res, rej) => {
+            setTimeout(() => {
+              // rej()
+              res()
+            }, 1000)
+          })
+          // await import('./components/MyCount')
+          return html`<my-count :color="white"></my-count>`
+        },
+        {
+          pending: html`<div>Loading</div>`,
+          fallback: html`<div>Error</div>`
+        }
+      )}
+      <hr />
     </div>
   `
 })
+
+// console.log(random(1, 5))
 
 render(
   html`

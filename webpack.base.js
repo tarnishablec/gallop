@@ -22,7 +22,7 @@ module.exports = (dir) => {
     mode: 'development',
 
     entry: {
-      main: './src/App.ts'
+      main: path.resolve(dir, './src/App.ts')
     },
     output: {
       filename: 'js/[name].js',
@@ -132,12 +132,12 @@ module.exports = (dir) => {
       compress: true,
       host: 'localhost',
       watchOptions: {
-        // ignored: '**/__tests__/**'
+        ignored: '/__tests__/'
       }
     },
     plugins: [
       new CleanWebpackPlugin({
-        eanAfterEveryBuildPatterns: ['./dist']
+        cleanAfterEveryBuildPatterns: ['./dist']
       }),
       new HtmlWebpackPlugin({
         template: './public/index.ejs',
@@ -167,7 +167,9 @@ module.exports = (dir) => {
             from: path.resolve(dir, 'public'),
             to: path.resolve(dir, 'dist'),
             toType: 'dir',
-            globOptions: {}
+            globOptions: {
+              ignore: ['index.ejs']
+            }
           }
         ]
       }),

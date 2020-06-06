@@ -193,3 +193,5 @@ export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
   }
   return arrA.join('') === arrB.join('')
 }
+
+export const hahaha = () => console.log('not treeshaked')

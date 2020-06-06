@@ -24,7 +24,7 @@ describe('parse', () => {
     expect((dof.firstChild as Element).localName).toBe('div')
     expect(dof.firstChild?.childNodes[2].nodeType).toBe(Node.COMMENT_NODE)
     expect((dof.firstChild?.childNodes[2] as Comment).data).toBe(
-      `{{${markerIndex}}}`
+      `${markerIndex}`
     )
   })
 })

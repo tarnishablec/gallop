@@ -10,7 +10,7 @@ export const portal = directive(
     }
 
     if (container === null) {
-      throw new Error(`portal tagert Element can not be found.`)
+      throw new Error(`portal target element can not be found.`)
     }
 
     const { startNode, endNode } = part.location

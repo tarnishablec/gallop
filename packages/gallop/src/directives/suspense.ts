@@ -4,15 +4,17 @@ import { DirectivePartTypeError } from '../error'
 
 // const partValueMap = new WeakMap<NodePart, unknown>()
 
+const onceSet = new WeakSet<NodePart>()
+
 type SuspenseOption = {
   pending?: unknown
   fallback?: unknown
-  keepalive?: boolean
+  once?: boolean
 }
 
 export const suspense = directive(function <T>(
   wish: () => Promise<T>,
-  { pending, fallback = null }: SuspenseOption = {}
+  { pending = null, fallback = null, once = true }: SuspenseOption = {}
 ) {
   return (part: Part) => {
     if (!(part instanceof NodePart)) {
@@ -20,13 +22,21 @@ export const suspense = directive(function <T>(
     }
 
     setTimeout(() => {
-      part.setValue(pending)
+      if (once) {
+        if (!onceSet.has(part)) {
+          part.setValue(pending)
+          onceSet.add(part)
+        }
+      } else {
+        part.setValue(pending)
+      }
       wish()
         .then((res) => {
           part.setValue(res)
         })
         .catch(() => {
           part.setValue(fallback)
+          onceSet.delete(part)
         })
         .finally(() => {})
     }, 0)

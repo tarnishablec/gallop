@@ -13,8 +13,8 @@ export function useState<T extends object>(initState: T): [T] {
 }
 
 export type Effect = (
-  ...args: any[]
-) => void | ((this: ReactiveElement, ...args: any[]) => void)
+  ...args: any
+) => void | ((...args: any) => void) | Promise<void | ((...args: any) => void)>
 
 export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
   const current = resolveCurrentHandle()
@@ -61,8 +61,8 @@ export function resolveEffects(
   effects?: { e: Effect; index: number }[]
 ) {
   setTimeout(() => {
-    effects?.forEach(({ e, index }) => {
-      const res = e.apply(element)
+    effects?.forEach(async ({ e, index }) => {
+      const res = await e.apply(element)
       res
         ? ((element.$disconnectedEffects ??
             (element.$disconnectedEffects = []))[index] = res)
