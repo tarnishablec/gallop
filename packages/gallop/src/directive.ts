@@ -8,11 +8,11 @@ export function isDirective(val: unknown): val is DirectiveFn {
   return val instanceof Function && directives.has(val)
 }
 
-export function directive<F extends (...args: any[]) => DirectiveFn>(
+export function directive<F extends (...args: any) => DirectiveFn>(
   f: F,
   override: boolean = false
 ) {
-  return ((...args: any[]) => {
+  return ((...args: any) => {
     const d = f(...args)
     directives.set(d, override)
     return d
