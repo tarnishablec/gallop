@@ -1,6 +1,6 @@
 {
   "name": "@gallop/router",
-  "version": "0.9.6",
+  "version": "0.9.11-alpha.0",
   "description": "router",
   "main": "src/index.ts",
   "module": "dist/index.esm.js",
