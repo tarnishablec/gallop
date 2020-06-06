@@ -31,11 +31,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "peerDependencies": {
-    "@gallop/gallop": "^0.8.10"
-  },
   "dependencies": {
     "path-to-regexp": "^6.1.0"
   },
-  "gitHead": "208ab89d0d7fcf82d4e08e28a0fa290c0a9860c4"
+  "gitHead": "208ab89d0d7fcf82d4e08e28a0fa290c0a9860c4",
+  "peerDependencies": {
+    "@gallop/gallop": "^0.9.10"
+  }
 }
