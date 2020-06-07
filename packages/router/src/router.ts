@@ -1,21 +1,27 @@
-export type RouterOption = {
-  mode: 'hash' | 'history'
+import { HTMLClip, VirtualElement } from '@gallop/gallop'
+
+export type RouterOptions = {
+  mode: 'hash' | 'normal'
   routes: Route[]
   hooks?: {
-    beforeEach: (from: Route, to: Route) => void
-    afterEach: (from: Route, to: Route) => void
+    beforeEach?: (from: Route, to: Route) => void
+    afterEach?: (from: Route, to: Route) => void
   }
 }
 
 export type Route = {
   path: string
-  component?: string | (() => Promise<unknown>)
+  component?:
+    | string
+    | HTMLClip
+    | VirtualElement
+    | (() => Promise<HTMLClip | VirtualElement>)
   exact?: boolean
   meta?: unknown
   children?: Route[]
 }
 
-export interface Router {
+export interface IRouter {
   push(): void
   replace(): void
   forward(): void

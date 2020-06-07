@@ -43,6 +43,7 @@ export class Clip {
     public shaHtml: string,
     public partCount: number
   ) {
+    // debugger
     this.dof = dof
     this.parts = new Array<Part>()
     this.partCount = partCount

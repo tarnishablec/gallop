@@ -7,7 +7,8 @@ import {
   dynamic,
   keepalive,
   useEffect,
-  suspense
+  suspense,
+  getShaHtml
 } from '@gallop/gallop'
 
 // import { random } from 'lodash'
@@ -57,19 +58,17 @@ component('app-root', function (this: ReactiveElement) {
   `
 })
 
-// console.log(random(1, 5))
+const template = html`
+  <app-root> </app-root>
+  <style>
+    body {
+      background: grey;
+      color: white;
+    }
+  </style>
+`
 
-render(
-  html`
-    <app-root> </app-root>
-    <style>
-      body {
-        background: grey;
-        color: white;
-      }
-    </style>
-  `
-)
+render(template)
 
 // window.requestIdleCallback(() => {
 //   console.log('ric')

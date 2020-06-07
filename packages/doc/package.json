@@ -27,6 +27,7 @@
   },
   "gitHead": "2cd70b5cd29cec83256f2881d98666af4c73afdb",
   "dependencies": {
-    "@gallop/gallop": "^0.9.10"
+    "@gallop/gallop": "^0.9.10",
+    "@gallop/router": "^0.9.11-alpha.0"
   }
 }
