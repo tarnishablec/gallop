@@ -36,16 +36,35 @@ export const keepalive = directive(
     }
 
     if (view instanceof VirtualElement) {
-      const map = aliveMap.get(part) ?? aliveMap.set(part, new Map()).get(part)!
-      const res = map.get(view.tag)
-      const ae = new AliveVirtualElement(view.tag, view.props)
-      if (res) {
-        ae.el = res
-      } else {
-        ae.aliveFn = (el: ReactiveElement) => map.set(ae.tag, el)
+      const { tag, props } = view
+
+      if (
+        (exclude &&
+          !matches(exclude, tag) &&
+          !(include && !matches(include, tag))) ||
+        (!exclude && include && matches(include, tag))
+      ) {
+        const map =
+          aliveMap.get(part) ?? aliveMap.set(part, new Map()).get(part)!
+        const res = map.get(tag)
+        const ae = new AliveVirtualElement(tag, props)
+        if (res) {
+          ae.el = res
+        } else {
+          ae.aliveFn = (el: ReactiveElement) => map.set(ae.tag, el)
+        }
+        view = ae
       }
-      view = ae
     }
     return view
   }
 )
+
+const matches = (matcher: AliveMatcher, tag: string) =>
+  matcher.some((m) => {
+    if (typeof m === 'string') {
+      return m === tag
+    } else {
+      return m.test(tag)
+    }
+  })
