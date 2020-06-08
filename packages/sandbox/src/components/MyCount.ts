@@ -15,6 +15,7 @@ export const MyCount = component(
 
     useEffect(() => {
       console.log('my-count mounted')
+      return () => console.log(`m-count unmounted`)
     }, [])
 
     useStyle(

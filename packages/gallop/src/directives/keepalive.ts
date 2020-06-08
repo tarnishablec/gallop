@@ -3,6 +3,8 @@ import { Part, NodePart } from '../part'
 import { DirectivePartTypeError } from '../error'
 import { VirtualElement, ReactiveElement } from '../component'
 
+type AliveMatcher = (string | RegExp)[]
+
 const aliveMap = new WeakMap<NodePart, Map<string, ReactiveElement>>()
 
 class AliveVirtualElement extends VirtualElement {
@@ -21,21 +23,29 @@ class AliveVirtualElement extends VirtualElement {
   }
 }
 
-export const keepalive = directive((view: unknown) => (part: Part) => {
-  if (!(part instanceof NodePart)) {
-    throw DirectivePartTypeError(part.type)
-  }
-
-  if (view instanceof VirtualElement) {
-    const map = aliveMap.get(part) ?? aliveMap.set(part, new Map()).get(part)!
-    const res = map.get(view.tag)
-    const ae = new AliveVirtualElement(view.tag, view.props)
-    if (res) {
-      ae.el = res
-    } else {
-      ae.aliveFn = (el: ReactiveElement) => map.set(ae.tag, el)
+export const keepalive = directive(
+  (
+    view: unknown,
+    {
+      include,
+      exclude
+    }: { include?: AliveMatcher; exclude?: AliveMatcher } = {}
+  ) => (part: Part) => {
+    if (!(part instanceof NodePart)) {
+      throw DirectivePartTypeError(part.type)
     }
-    view = ae
+
+    if (view instanceof VirtualElement) {
+      const map = aliveMap.get(part) ?? aliveMap.set(part, new Map()).get(part)!
+      const res = map.get(view.tag)
+      const ae = new AliveVirtualElement(view.tag, view.props)
+      if (res) {
+        ae.el = res
+      } else {
+        ae.aliveFn = (el: ReactiveElement) => map.set(ae.tag, el)
+      }
+      view = ae
+    }
+    return view
   }
-  return view
-})
+)

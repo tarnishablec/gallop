@@ -8,7 +8,7 @@ import {
   keepalive,
   useEffect,
   suspense,
-  getShaHtml
+  createContext
 } from '@gallop/gallop'
 
 // import { random } from 'lodash'
@@ -16,6 +16,8 @@ import {
 import './styles/index.scss'
 import { MyCount } from './components/MyCount'
 import { TestA } from './components/TestA'
+
+export const [data, context] = createContext({ tick: 1 })
 
 component('app-root', function (this: ReactiveElement) {
   const [state] = useState({ count: 0 })
@@ -45,7 +47,6 @@ component('app-root', function (this: ReactiveElement) {
               res()
             }, 1000)
           })
-          // await import('./components/MyCount')
           return html`<my-count :color="white"></my-count>`
         },
         {
