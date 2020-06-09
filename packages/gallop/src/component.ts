@@ -135,8 +135,8 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.$disconnectedEffects?.filter(Boolean).forEach((effect) => effect())
     // console.log(`${this.nodeName} disconnected`)
+    this.$disconnectedEffects?.filter(Boolean).forEach((effect) => effect())
 
     if (!this.$alive) {
       this.$contexts?.forEach((context) => context.unWatch(this))

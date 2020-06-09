@@ -19,14 +19,14 @@ export function directive<F extends (...args: any) => DirectiveFn>(
   }) as F
 }
 
-export function checkDirective(val: unknown, part: Part): [unknown, boolean] {
-  let pendingVal = val
+export function resolveDirective(val: unknown, part: Part): [boolean] {
+  part.pendingValue = val
   let isOverrided = false
-  while (isDirective(pendingVal)) {
-    if (directives.get(pendingVal)) {
+  while (isDirective(part.pendingValue)) {
+    if (directives.get(part.pendingValue)) {
       isOverrided = true
     }
-    pendingVal = pendingVal(part)
+    part.pendingValue = part.pendingValue(part)
   }
-  return [pendingVal, isOverrided]
+  return [isOverrided]
 }

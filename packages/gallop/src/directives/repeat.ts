@@ -133,7 +133,7 @@ export const repeat = directive(function <T>(
     })
 
     partKeyCache.set(part, newKeys)
-    return newVals
+    return (part.pendingValue = newVals)
   }
 },
 true)

@@ -36,7 +36,11 @@ component('app-root', function (this: ReactiveElement) {
         <button @click="${() => state.count++}">add count</button>
       </div>
       <hr />
-      ${keepalive(!(state.count % 2) ? MyCount() : 666)}
+      ${keepalive(
+        !(state.count % 2)
+          ? MyCount({ color: 'yellow' })
+          : dynamic('test-a', { count: state.count })
+      )}
       <hr />
       ${suspense(
         async () => {

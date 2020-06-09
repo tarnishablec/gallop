@@ -3,7 +3,7 @@ import { ReactiveElement, VirtualElement } from './component'
 import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'
-import { checkDirective } from './directive'
+import { resolveDirective } from './directive'
 import { DirectivePartTypeError } from './error'
 
 type AttrEventLocation = { node: Element; name: string }
@@ -20,7 +20,8 @@ export const initValue = Symbol('')
 
 export abstract class Part {
   index: number
-  value: unknown = initValue
+  protected value: unknown
+  pendingValue: unknown
   location: PartLocation
   type: PartType
 
@@ -31,20 +32,25 @@ export abstract class Part {
   }
 
   setValue(val: unknown) {
-    const [pendingVal, isOverrided] = checkDirective(val, this)
+    const [isOverrided] = resolveDirective(val, this)
     if (isOverrided) {
       return
     }
 
-    if (shallowEqual(this.value, pendingVal)) {
+    if (shallowEqual(this.value, this.pendingValue)) {
       // console.log(`nothing changed`)
       return
     } else {
-      this.value = pendingVal
+      this.value = this.pendingValue
       this.commit()
     }
   }
-  abstract commit(): unknown
+
+  setPending<T>(val: T) {
+    this.pendingValue = val
+    return val
+  }
+  protected abstract commit(): unknown
   abstract clear(): void
 }
 
@@ -56,15 +62,15 @@ export class NodePart extends Part {
     removeNodes(parent, startNode.nextSibling, endNode)
   }
 
-  commit(): void {}
+  protected commit(): void {}
 
   setValue(val: unknown) {
-    const [pendingVal, isOverrided] = checkDirective(val, this)
+    const [isOverrided] = resolveDirective(val, this)
     if (isOverrided) {
       return
     }
-
-    const [newVal, isInit] = tryUpdateEntry(this.value, pendingVal)
+    // debugger
+    const [newVal, isInit] = tryUpdateEntry(this.value, this.pendingValue)
     this.value = newVal
     if (isInit) {
       this.clear()
@@ -76,7 +82,7 @@ export class NodePart extends Part {
     return this.value
   }
 
-  value!: NodeValueType
+  protected value!: NodeValueType
   location!: NodeLocation;
   // shaHtmlCache?: string;
   [key: string]: unknown //for directives
@@ -118,7 +124,7 @@ export class AttrPart extends Part {
     }
   }
 
-  value!: string
+  protected value!: string
   location!: AttrEventLocation
   styleCache?: string
   classCache?: string[]
@@ -134,7 +140,7 @@ export class EventPart extends Part {
     this.eventCache.clear()
   }
 
-  commit(): void {
+  protected commit(): void {
     this.clear()
     const { node } = this.location
     this.value.forEach((v) => {
@@ -144,25 +150,25 @@ export class EventPart extends Part {
   }
 
   setValue(val: EventInstance | EventInstance[]) {
-    const [pendingVal, isOverrided] = checkDirective(val, this)
+    const [isOverrided] = resolveDirective(val, this)
     if (isOverrided) {
       return
     }
 
-    if (!(pendingVal instanceof Function)) {
+    const pv = this.pendingValue
+
+    if (!(pv instanceof Function)) {
       throw DirectivePartTypeError(this.type)
     }
 
     let temp: string[]
-    if (Array.isArray(pendingVal)) {
-      temp = pendingVal.map((v) => v?.toString())
+    if (Array.isArray(pv)) {
+      temp = pv.map((v) => v?.toString())
     } else {
-      temp = [pendingVal.toString()]
+      temp = [pv.toString()]
     }
     if (!twoStrArrayCompare(temp, Array.from(this.eventCache.keys()))) {
-      this.value = (Array.isArray(pendingVal)
-        ? pendingVal
-        : [pendingVal]) as EventInstance[]
+      this.value = (Array.isArray(pv) ? pv : [pv]) as EventInstance[]
       this.commit()
     }
   }
@@ -194,7 +200,7 @@ export class PropPart extends Part {
   clear(): void {
     throw new Error('Method not implemented.')
   }
-  commit(): void {
+  protected commit(): void {
     const { name, node } = this.location
     if (name !== '$props') {
       node.mergeProp(name, this.value)
@@ -245,7 +251,7 @@ export function tryUpdateEntry(
     }
   } else if (pre instanceof ReactiveElement && val instanceof VirtualElement) {
     if (pre.localName === val.tag) {
-      return [pre.mergeProps(val.props ?? []), false]
+      return [pre.mergeProps(val.props ?? {}), false]
     }
   } else if (Array.isArray(val)) {
     return [initEntry(val), true]

@@ -3,7 +3,7 @@ import { Part, NodePart } from '../part'
 import { DirectivePartTypeError } from '../error'
 import { VirtualElement, ReactiveElement } from '../component'
 
-type AliveMatcher = (string | RegExp)[]
+type Matchers = (string | RegExp)[]
 
 const aliveMap = new WeakMap<NodePart, Map<string, ReactiveElement>>()
 
@@ -29,7 +29,10 @@ export const keepalive = directive(
     {
       include,
       exclude
-    }: { include?: AliveMatcher; exclude?: AliveMatcher } = {}
+    }: {
+      include?: Matchers
+      exclude?: Matchers
+    } = {}
   ) => (part: Part) => {
     if (!(part instanceof NodePart)) {
       throw DirectivePartTypeError(part.type)
@@ -39,10 +42,8 @@ export const keepalive = directive(
       const { tag, props } = view
 
       if (
-        (exclude &&
-          !matches(exclude, tag) &&
-          !(include && !matches(include, tag))) ||
-        (!exclude && include && matches(include, tag))
+        (!exclude || !matches(exclude, tag)) &&
+        (!include || matches(include, tag))
       ) {
         const map =
           aliveMap.get(part) ?? aliveMap.set(part, new Map()).get(part)!
@@ -56,11 +57,11 @@ export const keepalive = directive(
         view = ae
       }
     }
-    return view
+    return part.setPending(view)
   }
 )
 
-const matches = (matcher: AliveMatcher, tag: string) =>
+const matches = (matcher: Matchers, tag: string) =>
   matcher.some((m) => {
     if (typeof m === 'string') {
       return m === tag
