@@ -1,6 +1,6 @@
 {
   "name": "@gallop/sandbox",
-  "version": "0.9.11-alpha.0",
+  "version": "0.9.11",
   "description": "sandbox",
   "main": "./src/App.ts",
   "files": [
@@ -29,8 +29,8 @@
     "@types/lodash": "^4.14.150"
   },
   "dependencies": {
-    "@gallop/gallop": "^0.9.10",
-    "@gallop/router": "^0.9.11-alpha.0",
+    "@gallop/gallop": "^0.9.11",
+    "@gallop/router": "^0.9.11",
     "lodash": "^4.17.15",
     "rxjs": "^6.5.5"
   },
