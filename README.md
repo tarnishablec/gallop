@@ -69,9 +69,13 @@
 
 - ⚡⚡ enable `key diffing` in list rendering by built-in directive `repeat()`
 
-<!-- - ⌛ (need refactor) support `lazy load` and `fallback rendering` by built-in directive `suspense()` -->
+- support `lazy load` and `fallback rendering` by built-in directive `suspense()`
 
-- for more detail, check packages/sandbox or clone this project run `yarn run web`
+- support `portal` by built-in directive `portal()`
+
+- support `keepalive` by built-in directive `keepalive()`
+
+- for more detail, check packages/sandbox or clone this project run `yarn run sand`
 
 ## Simple use case
 
@@ -96,7 +100,7 @@ export let [data, context] = createContext({ b: 2 }) //context can be exported t
 
 export const PureComponent = (prop: string) => html`<div>pure ${prop}</div>` //pure component with no any lifecycle
 
-component('test-name', function (
+export const TestA = component('test-a', function (
   this: ReactiveElement, //this parameter: https://www.staging-typescript.org/docs/handbook/functions.html#this-parameters
   { name, age = 1 }: { name: string; age?: number }
 ) {
@@ -144,7 +148,7 @@ component('test-name', function (
         `
     )}
     <slot>
-      default slot context
+      default slot content
     </slot>
     <div>${memo}</div>
     <button
@@ -171,9 +175,9 @@ component('test-name', function (
 })
 
 render(html`
-  <test-name :name="haha" :age="${2}">
+  <test-a :name="haha" :age="${2}">
     slot content
-  </test-name>
+  </test-a>
 `)
 ```
 

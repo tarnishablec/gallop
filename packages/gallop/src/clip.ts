@@ -54,6 +54,10 @@ export class Clip {
     this.parts.forEach((part, index) => part.setValue(vals[index]))
     return this
   }
+
+  destroy() {
+    this.parts.forEach((p) => p.destroy())
+  }
 }
 
 export function attachParts(clip: Clip) {

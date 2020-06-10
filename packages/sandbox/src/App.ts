@@ -8,7 +8,8 @@ import {
   keepalive,
   useEffect,
   suspense,
-  createContext
+  createContext,
+  portal
 } from '@gallop/gallop'
 
 // import { random } from 'lodash'
@@ -59,6 +60,7 @@ component('app-root', function (this: ReactiveElement) {
         }
       )}
       <hr />
+      ${portal(html` <div>${state.count}</div> `)}
     </div>
   `
 })

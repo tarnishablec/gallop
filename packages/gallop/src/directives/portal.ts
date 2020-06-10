@@ -16,6 +16,10 @@ export const portal = directive(
     const { startNode, endNode } = part.location
     const parent = startNode.parentElement!
     if (!parent.isSameNode(container)) {
+      const cbs = part.destroyedCallbacks ?? (part.destroyedCallbacks = [])
+      cbs.push(() =>
+        removeNodes(startNode.parentNode!, startNode, endNode.nextSibling)
+      )
       removeNodes(parent, startNode.nextSibling, endNode)
       container.append(startNode, endNode)
     }

@@ -24,6 +24,7 @@ export abstract class Part {
   pendingValue: unknown
   location: PartLocation
   type: PartType
+  destroyedCallbacks?: (() => void)[]
 
   constructor(index: number, location: PartLocation, type: PartType) {
     this.index = index
@@ -52,6 +53,9 @@ export abstract class Part {
   }
   protected abstract commit(): unknown
   abstract clear(): void
+  destroy() {
+    this.destroyedCallbacks?.forEach((cb) => cb())
+  }
 }
 
 export class NodePart extends Part {
