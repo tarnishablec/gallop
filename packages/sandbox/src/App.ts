@@ -8,7 +8,9 @@ import {
   keepalive,
   useEffect,
   createContext,
-  portal
+  portal,
+  repeat,
+  useContext
 } from '@gallop/gallop'
 
 // import { random } from 'lodash'
@@ -17,7 +19,7 @@ import './styles/index.scss'
 import { MyCount } from './components/MyCount'
 import './components/TestA'
 
-export const [data, context] = createContext({ tick: 1 })
+export const [data, context] = createContext({ tick: 1, list: [1, 2, 3] })
 
 component('app-root', function (this: ReactiveElement) {
   const [state] = useState({ count: 0 })
@@ -26,6 +28,8 @@ component('app-root', function (this: ReactiveElement) {
     const s = (this.$root.querySelector('my-count') as ReactiveElement)?.$state
     console.log(s)
   }, [state.count])
+
+  useContext([context])
 
   return html`
     <div>
@@ -40,6 +44,16 @@ component('app-root', function (this: ReactiveElement) {
       )}
       <hr />
       ${portal(html` <div>${state.count}</div> `)}
+      <hr />
+      ${repeat(
+        data.list,
+        (v) => v,
+        (v) => dynamic('test-a', { count: v })
+      )}
+      <hr />
+      <button @click="${() => data.list.unshift(data.list.pop()!)}">
+        circle move
+      </button>
     </div>
   `
 })

@@ -21,7 +21,7 @@ export const initValue = Symbol('')
 export abstract class Part {
   index: number
   protected value: unknown
-  pendingValue: unknown
+  // pendingValue: unknown
   location: PartLocation
   type: PartType
   destroyedCallbacks?: (() => void)[]
@@ -33,23 +33,18 @@ export abstract class Part {
   }
 
   setValue(val: unknown) {
-    const [isOverrided] = resolveDirective(val, this)
+    const [pendingValue, isOverrided] = resolveDirective(val, this)
     if (isOverrided) {
       return
     }
 
-    if (shallowEqual(this.value, this.pendingValue)) {
+    if (shallowEqual(this.value, pendingValue)) {
       // console.log(`nothing changed`)
       return
     } else {
-      this.value = this.pendingValue
+      this.value = pendingValue
       this.commit()
     }
-  }
-
-  setPending<T>(val: T) {
-    this.pendingValue = val
-    return val
   }
   protected abstract commit(): unknown
   abstract clear(): void
@@ -69,12 +64,12 @@ export class NodePart extends Part {
   protected commit(): void {}
 
   setValue(val: unknown) {
-    const [isOverrided] = resolveDirective(val, this)
+    const [pendingVal, isOverrided] = resolveDirective(val, this)
     if (isOverrided) {
       return
     }
     // debugger
-    const [newVal, isInit] = tryUpdateEntry(this.value, this.pendingValue)
+    const [newVal, isInit] = tryUpdateEntry(this.value, pendingVal)
     this.value = newVal
     if (isInit) {
       this.clear()
@@ -87,9 +82,7 @@ export class NodePart extends Part {
   }
 
   protected value!: NodeValueType
-  location!: NodeLocation;
-  // shaHtmlCache?: string;
-  [key: string]: unknown //for directives
+  location!: NodeLocation
 }
 
 export class AttrPart extends Part {
@@ -154,12 +147,12 @@ export class EventPart extends Part {
   }
 
   setValue(val: EventInstance | EventInstance[]) {
-    const [isOverrided] = resolveDirective(val, this)
+    const [pendingValue, isOverrided] = resolveDirective(val, this)
     if (isOverrided) {
       return
     }
 
-    const pv = this.pendingValue
+    const pv = pendingValue
 
     if (!(pv instanceof Function)) {
       throw DirectivePartTypeError(this.type)

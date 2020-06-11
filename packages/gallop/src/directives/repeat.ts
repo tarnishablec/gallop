@@ -1,4 +1,4 @@
-import { directive, DirectiveFn } from '../directive'
+import { directive, DirectiveFn, resolveDirective } from '../directive'
 import {
   Part,
   NodePart,
@@ -57,7 +57,11 @@ export const repeat = directive(function <T>(
       .filter((k) => !diffRes.map((v) => v.key).includes(k))
       .forEach((key) => {
         const { start, end, val } = keyRangeMap.get(key)!
-        const [v, isInit] = tryUpdateEntry(val, newVals[newKeys.indexOf(key)])
+        const [pendingVal] = resolveDirective(
+          newVals[newKeys.indexOf(key)],
+          part
+        )
+        const [v, isInit] = tryUpdateEntry(val, pendingVal)
         keyRangeMap.set(key, { start, end, val: v })
         if (isInit) {
           parent.insertBefore(extractDof(v), start)
@@ -73,7 +77,12 @@ export const repeat = directive(function <T>(
         case 'insert':
           {
             const { key, after } = change
-            const val = initEntry(newVals[newKeys.indexOf(key)])
+            const [pendingVal] = resolveDirective(
+              newVals[newKeys.indexOf(key)],
+              part
+            )
+
+            const val = initEntry(pendingVal)
             const dof = extractDof(val)
             keyRangeMap.set(key, {
               start: dof.firstChild,
@@ -88,10 +97,12 @@ export const repeat = directive(function <T>(
           {
             const { key } = change
             const { start, end, val } = keyRangeMap.get(key)!
-            const [v, isInit] = tryUpdateEntry(
-              val,
-              newVals[newKeys.indexOf(key)]
+            const [pendingVal] = resolveDirective(
+              newVals[newKeys.indexOf(key)],
+              part
             )
+
+            const [v, isInit] = tryUpdateEntry(val, pendingVal)
             let nodes: DocumentFragment = removeNodes(
               parent,
               start,
@@ -133,7 +144,7 @@ export const repeat = directive(function <T>(
     })
 
     partKeyCache.set(part, newKeys)
-    return (part.pendingValue = newVals)
+    Reflect.set(part, 'value', newVals)
   }
 },
 true)

@@ -27,6 +27,6 @@ export const portal = directive(
       removeNodes(parent, startNode.nextSibling, endNode)
       container.append(startNode, endNode)
     }
-    return part.setPending(view)
+    return view
   }
 )

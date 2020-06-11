@@ -41,11 +41,11 @@
 
   |             |     |
   | ----------- | --- |
-  | repeat()    | ✅  |
-  | dynamic()   | ✅  |
-  | suspense()  | ✅  |
-  | portal()    | ✅  |
-  | keepalive() | ✅  |
+  | repeat()    | ⌛  |
+  | dynamic()   | ⌛  |
+  | suspense()  | ⌛  |
+  | portal()    | ⌛  |
+  | keepalive() | ⌛  |
 
 - support `<slot>` by web components, also `named slot`
 
