@@ -20,6 +20,10 @@ export const portal = directive(
       cbs.push(() =>
         removeNodes(startNode.parentNode!, startNode, endNode.nextSibling)
       )
+      const hash = `portal-${Math.random().toString().slice(2)}`
+      parent.insertBefore(new Comment(hash), startNode)
+      startNode.replaceData(0, 1, hash)
+      endNode.replaceData(0, 1, hash)
       removeNodes(parent, startNode.nextSibling, endNode)
       container.append(startNode, endNode)
     }

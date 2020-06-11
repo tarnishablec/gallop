@@ -7,7 +7,6 @@ import {
   dynamic,
   keepalive,
   useEffect,
-  suspense,
   createContext,
   portal
 } from '@gallop/gallop'
@@ -16,7 +15,7 @@ import {
 
 import './styles/index.scss'
 import { MyCount } from './components/MyCount'
-import { TestA } from './components/TestA'
+import './components/TestA'
 
 export const [data, context] = createContext({ tick: 1 })
 
@@ -30,9 +29,6 @@ component('app-root', function (this: ReactiveElement) {
 
   return html`
     <div>
-      <test-a :count="${state.count}"></test-a>
-      ${TestA({ count: state.count + 1 })}
-      ${dynamic('test-a', { count: state.count + 2 })}
       <div>
         <button @click="${() => state.count++}">add count</button>
       </div>
@@ -41,23 +37,6 @@ component('app-root', function (this: ReactiveElement) {
         !(state.count % 2)
           ? MyCount({ color: 'yellow' })
           : dynamic('test-a', { count: state.count })
-      )}
-      <hr />
-      ${suspense(
-        async () => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          await new Promise((res, rej) => {
-            setTimeout(() => {
-              // rej()
-              res()
-            }, 1000)
-          })
-          return html`<my-count :color="white"></my-count>`
-        },
-        {
-          pending: html`<div>Loading</div>`,
-          fallback: html`<div>Error</div>`
-        }
       )}
       <hr />
       ${portal(html` <div>${state.count}</div> `)}
