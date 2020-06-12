@@ -1,4 +1,4 @@
-import { directive, DirectiveFn, resolveDirective } from '../directive'
+import { directive, DirectiveFn } from '../directive'
 import {
   Part,
   NodePart,
@@ -10,8 +10,12 @@ import {
 import { Key } from '../utils'
 import { DuplicatedKeyError, DirectivePartTypeError } from '../error'
 import { insertAfter, removeNodes } from '../dom'
+import { HTMLClip } from '../clip'
+import { VirtualElement } from '../component'
 
 export type DiffKey = Key
+
+type View = HTMLClip | VirtualElement | string | number | View[]
 
 const partKeyCache = new WeakMap<NodePart, DiffKey[]>()
 const partKeyRangeCache = new WeakMap<
@@ -22,7 +26,7 @@ const partKeyRangeCache = new WeakMap<
 export const repeat = directive(function <T>(
   items: Iterable<T>,
   keyFn: (item: T, index: number) => DiffKey,
-  mapFn: (item: T, index: number) => unknown
+  mapFn: (item: T, index: number) => View
 ): DirectiveFn {
   return (part: Part) => {
     if (!(part instanceof NodePart)) {
@@ -57,11 +61,8 @@ export const repeat = directive(function <T>(
       .filter((k) => !diffRes.map((v) => v.key).includes(k))
       .forEach((key) => {
         const { start, end, val } = keyRangeMap.get(key)!
-        const [pendingVal] = resolveDirective(
-          newVals[newKeys.indexOf(key)],
-          part
-        )
-        const [v, isInit] = tryUpdateEntry(val, pendingVal)
+
+        const [v, isInit] = tryUpdateEntry(val, newVals[newKeys.indexOf(key)])
         keyRangeMap.set(key, { start, end, val: v })
         if (isInit) {
           parent.insertBefore(extractDof(v), start)
@@ -77,12 +78,8 @@ export const repeat = directive(function <T>(
         case 'insert':
           {
             const { key, after } = change
-            const [pendingVal] = resolveDirective(
-              newVals[newKeys.indexOf(key)],
-              part
-            )
 
-            const val = initEntry(pendingVal)
+            const val = initEntry(newVals[newKeys.indexOf(key)])
             const dof = extractDof(val)
             keyRangeMap.set(key, {
               start: dof.firstChild,
@@ -97,12 +94,11 @@ export const repeat = directive(function <T>(
           {
             const { key } = change
             const { start, end, val } = keyRangeMap.get(key)!
-            const [pendingVal] = resolveDirective(
-              newVals[newKeys.indexOf(key)],
-              part
-            )
 
-            const [v, isInit] = tryUpdateEntry(val, pendingVal)
+            const [v, isInit] = tryUpdateEntry(
+              val,
+              newVals[newKeys.indexOf(key)]
+            )
             let nodes: DocumentFragment = removeNodes(
               parent,
               start,
@@ -144,10 +140,8 @@ export const repeat = directive(function <T>(
     })
 
     partKeyCache.set(part, newKeys)
-    Reflect.set(part, 'value', newVals)
   }
-},
-true)
+})
 
 type Change =
   | {

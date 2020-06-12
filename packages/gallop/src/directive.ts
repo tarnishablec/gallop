@@ -1,32 +1,27 @@
 import { Part } from './part'
 
-export const directives = new WeakMap<Function, boolean>()
+export const directives = new WeakSet<Function>()
 
-export type DirectiveFn = (part: Part) => unknown
+export type DirectiveFn = (part: Part) => void
 
 export function isDirective(val: unknown): val is DirectiveFn {
   return val instanceof Function && directives.has(val)
 }
 
-export function directive<F extends (...args: any) => DirectiveFn>(
-  f: F,
-  override: boolean = false
-) {
+export function directive<F extends (...args: any) => DirectiveFn>(f: F) {
   return ((...args: any) => {
     const d = f(...args)
-    directives.set(d, override)
+    directives.add(d)
     return d
   }) as F
 }
 
-export function resolveDirective(val: unknown, part: Part): [unknown, boolean] {
-  let pendingVal = val
+export function resolveDirective(val: unknown, part: Part) {
+  let pv = val
   let isOverrided = false
-  while (isDirective(pendingVal)) {
-    if (directives.get(pendingVal)) {
-      isOverrided = true
-    }
-    pendingVal = pendingVal(part)
+  while (isDirective(pv)) {
+    isOverrided = true
+    pv = pv(part)
   }
-  return [pendingVal, isOverrided]
+  return isOverrided
 }

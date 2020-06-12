@@ -33,16 +33,16 @@ export abstract class Part {
   }
 
   setValue(val: unknown) {
-    const [pendingValue, isOverrided] = resolveDirective(val, this)
-    if (isOverrided) {
+    const over = resolveDirective(val, this)
+    if (over) {
       return
     }
 
-    if (shallowEqual(this.value, pendingValue)) {
+    if (shallowEqual(this.value, val)) {
       // console.log(`nothing changed`)
       return
     } else {
-      this.value = pendingValue
+      this.value = val
       this.commit()
     }
   }
@@ -55,7 +55,6 @@ export abstract class Part {
 
 export class NodePart extends Part {
   clear(): void {
-    // this.shaHtmlCache = undefined
     const { startNode, endNode } = this.location
     const parent = startNode.parentNode!
     removeNodes(parent, startNode.nextSibling, endNode)
@@ -64,12 +63,12 @@ export class NodePart extends Part {
   protected commit(): void {}
 
   setValue(val: unknown) {
-    const [pendingVal, isOverrided] = resolveDirective(val, this)
-    if (isOverrided) {
+    const over = resolveDirective(val, this)
+    if (over) {
       return
     }
     // debugger
-    const [newVal, isInit] = tryUpdateEntry(this.value, pendingVal)
+    const [newVal, isInit] = tryUpdateEntry(this.value, val)
     this.value = newVal
     if (isInit) {
       this.clear()
@@ -147,12 +146,12 @@ export class EventPart extends Part {
   }
 
   setValue(val: EventInstance | EventInstance[]) {
-    const [pendingValue, isOverrided] = resolveDirective(val, this)
-    if (isOverrided) {
+    const over = resolveDirective(val, this)
+    if (over) {
       return
     }
 
-    const pv = pendingValue
+    const pv = val
 
     if (!(pv instanceof Function)) {
       throw DirectivePartTypeError(this.type)

@@ -48,7 +48,7 @@ component('app-root', function (this: ReactiveElement) {
       ${repeat(
         data.list,
         (v) => v,
-        (v) => dynamic('test-a', { count: v })
+        (v) => html` <test-a :count="${v}"></test-a> `
       )}
       <hr />
       <button @click="${() => data.list.unshift(data.list.pop()!)}">

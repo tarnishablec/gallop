@@ -57,7 +57,7 @@ export const keepalive = directive(
         view = ae
       }
     }
-    return view
+    part.setValue(view)
   }
 )
 

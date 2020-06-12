@@ -14,19 +14,19 @@ export const portal = directive(
     }
 
     const { startNode, endNode } = part.location
-    const parent = startNode.parentElement!
-    if (!parent.isSameNode(container)) {
+    const parent = startNode.parentElement
+    if (!parent?.isSameNode(container)) {
       const cbs = part.destroyedCallbacks ?? (part.destroyedCallbacks = [])
-      cbs.push(() =>
+      cbs.push(() => {
         removeNodes(startNode.parentNode!, startNode, endNode.nextSibling)
-      )
+      })
       const hash = `portal-${Math.random().toString().slice(2)}`
-      parent.insertBefore(new Comment(hash), startNode)
+      parent?.insertBefore(new Comment(hash), startNode)
       startNode.replaceData(0, 1, hash)
       endNode.replaceData(0, 1, hash)
-      removeNodes(parent, startNode.nextSibling, endNode)
+      parent && removeNodes(parent, startNode.nextSibling, endNode)
       container.append(startNode, endNode)
     }
-    return view
+    part.setValue(view)
   }
 )

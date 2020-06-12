@@ -41,5 +41,4 @@ export const suspense = directive(function <T>(
         .finally(() => {})
     }, 0)
   }
-},
-true)
+})
