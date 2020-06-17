@@ -3,9 +3,9 @@ import { extractProps, keysOf } from './utils'
 import { createProxy, resetDirtyMap } from './reactive'
 import { Effect, resolveEffects } from './hooks'
 import { Context } from './context'
-import { DoAble } from './do'
 import { removeNodes } from './dom'
 import { Memo } from './memo'
+import { VirtualElement } from './virtual'
 
 let currentHandle: ReactiveElement
 
@@ -181,18 +181,4 @@ export function component<F extends Component>(
   componentPool.set(name, 1)
 
   return (...args: Parameters<F>) => new VirtualElement(name, args[0])
-}
-
-export class VirtualElement extends DoAble(Object) {
-  el?: ReactiveElement
-
-  constructor(public tag: string, public props?: object) {
-    super()
-  }
-
-  createInstance() {
-    this.el = document.createElement(this.tag) as ReactiveElement
-    this.props && this.el.mergeProps(this.props)
-    return this.el
-  }
 }

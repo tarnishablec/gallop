@@ -11,7 +11,7 @@ import { Key } from '../utils'
 import { DuplicatedKeyError, DirectivePartTypeError } from '../error'
 import { insertAfter, removeNodes } from '../dom'
 import { HTMLClip } from '../clip'
-import { VirtualElement } from '../component'
+import { VirtualElement } from '../virtual'
 
 export type DiffKey = Key
 

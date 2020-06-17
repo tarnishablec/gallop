@@ -20,12 +20,14 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "no-unused-vars": "off",
+    "no-empty": "off",
+    "no-debugger": "off",
+    "prefer-const": "warn",
+    "max-params": "warn",
+    ///
     "@typescript-eslint/no-unused-vars": [
       "warn",
       { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
-    ],
-    "no-empty": "off",
-    "no-debugger": "off",
-    "prefer-const": "warn"
+    ]
   }
 }

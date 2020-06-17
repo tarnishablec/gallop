@@ -1,5 +1,6 @@
 import { HTMLClip, createClip, getVals } from './clip'
-import { VirtualElement, ReactiveElement } from './component'
+import { ReactiveElement } from './component'
+import { VirtualElement } from './virtual'
 
 export function render(
   view: HTMLClip | VirtualElement,

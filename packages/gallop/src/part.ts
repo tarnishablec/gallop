@@ -1,5 +1,6 @@
 import { Clip, HTMLClip, createClip, getVals, getShaHtml } from './clip'
-import { ReactiveElement, VirtualElement } from './component'
+import { ReactiveElement } from './component'
+import { VirtualElement } from './virtual'
 import { shallowEqual, twoStrArrayCompare, tryParseToString } from './utils'
 import { generateEventOptions } from './event'
 import { removeNodes } from './dom'

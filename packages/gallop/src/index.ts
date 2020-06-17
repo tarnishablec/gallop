@@ -3,11 +3,11 @@ export { render } from './render'
 export {
   component,
   ReactiveElement,
-  VirtualElement,
   resolveCurrentHandle,
   setCurrentHandle,
   componentPool
 } from './component'
+export { VirtualElement } from './virtual'
 export { createContext, Context } from './context'
 export {
   useState,

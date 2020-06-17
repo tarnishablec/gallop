@@ -1,7 +1,8 @@
 import { directive } from '../directive'
 import { Part, NodePart } from '../part'
 import { DirectivePartTypeError } from '../error'
-import { VirtualElement, ReactiveElement } from '../component'
+import { ReactiveElement } from '../component'
+import { VirtualElement } from '../virtual'
 
 type Matchers = (string | RegExp)[]
 
