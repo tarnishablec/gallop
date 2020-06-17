@@ -1,9 +1,10 @@
 import { DoAble } from './do'
 import { ReactiveElement } from './component'
+import { HTMLClip } from './clip'
 
 export class VirtualElement extends DoAble(Object) {
   el?: ReactiveElement
-  slotContent?: unknown
+  slotContent?: HTMLClip
 
   constructor(public tag: string, public props?: object) {
     super()
@@ -15,7 +16,7 @@ export class VirtualElement extends DoAble(Object) {
     return this.el
   }
 
-  useSlot(view: unknown) {
+  useSlot(view: HTMLClip) {
     this.slotContent = view
     return this
   }

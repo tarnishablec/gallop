@@ -79,7 +79,6 @@ export abstract class ReactiveElement extends HTMLElement {
     this.$builder = builder
     this.$root = shadow ? this.attachShadow({ mode: 'open' }) : this
     this.mergeProps(extractProps(this.attributes))
-    this.requestUpdate()
     // console.log(`${this.nodeName} constructed`)
   }
 
@@ -131,6 +130,7 @@ export abstract class ReactiveElement extends HTMLElement {
   }
 
   connectedCallback() {
+    this.requestUpdate()
     // console.log(`${this.nodeName} connected`)
   }
 

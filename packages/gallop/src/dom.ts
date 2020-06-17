@@ -1,3 +1,5 @@
+import { markerIndex } from './marker'
+
 export const cleanDofStr = (str: string) =>
   str.replace(/((?=>|^)\s*)|(\s*(?=<|$))/g, '')
 
@@ -27,4 +29,10 @@ export function removeNodes(
     start = n
   }
   return removed
+}
+
+export const resetCommentMarker = (marker: Comment) => {
+  const data = marker.data
+  const { length } = data
+  marker.replaceData(0, length, markerIndex)
 }
