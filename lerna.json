@@ -1,8 +1,10 @@
 {
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "packages": ["packages/*"],
-  "version": "0.9.13",
+  "packages": [
+    "packages/*"
+  ],
+  "version": "0.9.14",
   "command": {
     "publish": {
       "registry": "https://registry.npmjs.org/"
