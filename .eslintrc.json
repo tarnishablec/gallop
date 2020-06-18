@@ -20,8 +20,7 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "no-unused-vars": "off",
-    "no-empty": "off",
-    "no-debugger": "off",
+    "no-debugger": "warn",
     "prefer-const": "warn",
     "max-params": "warn",
     ///

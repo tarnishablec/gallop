@@ -7,7 +7,9 @@ async function main() {
   await run(`git add .`)
   try {
     await run(`git commit`)
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
   await run(`lerna publish`)
   await run('yarn run clean')
 }

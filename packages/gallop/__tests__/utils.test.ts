@@ -18,10 +18,7 @@ describe('utils', () => {
     const builder = (
       /*asdasddfgas""daq,asdas{}*/ name: /*asdasddfgas""daq,asdas{}*/ string,
       /*asdasddfgas""daq,asdas{}*/ age: number = 25
-    ) =>
-      html`
-        <h3>name is &zwnj;${name}; age is ${age}</h3>
-      `
+    ) => html` <h3>name is &zwnj;${name}; age is ${age}</h3> `
 
     expect(getFuncArgNames(func)).toEqual(['_you', 'b', 'c'])
     expect(getFuncArgNames(getFuncArgNames)).toEqual(['func'])

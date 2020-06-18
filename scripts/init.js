@@ -18,8 +18,8 @@ async function main() {
   await run(`git fetch template`)
   await run(`git merge template/master --allow-unrelated-histories`)
 
-  filesNeedReplace.forEach(f => {
-    let filePath = path.resolve(__dirname, '..', f)
+  filesNeedReplace.forEach((f) => {
+    const filePath = path.resolve(__dirname, '..', f)
     const res = fse
       .readFileSync(filePath, 'utf-8')
       .replace(/~oruo~/g, args.name)

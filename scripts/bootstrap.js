@@ -66,6 +66,7 @@ describe('test', () => {
   }
 }
 
+// eslint-disable-next-line max-params
 function initPkg(filePath, longName, shortName, args) {
   const pkgExists = fse.existsSync(filePath)
 
@@ -80,7 +81,7 @@ function initPkg(filePath, longName, shortName, args) {
     'gitHead'
   ]
 
-  let pkgCache = {}
+  const pkgCache = {}
 
   if (pkgExists) {
     oldPkg = require(filePath)

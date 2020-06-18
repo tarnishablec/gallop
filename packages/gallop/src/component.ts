@@ -42,7 +42,7 @@ export type Complex = (...args: any) => VirtualElement
 export type EffectInfo = { e: Effect; index: number }
 
 export abstract class ReactiveElement extends HTMLElement {
-  protected $props = createProxy({}, () => this.requestUpdate())
+  protected $props = createProxy({}, { onSet: () => this.requestUpdate() })
   $state?: unknown
   $root: ShadowRoot | ReactiveElement
   $builder: Component
@@ -52,7 +52,7 @@ export abstract class ReactiveElement extends HTMLElement {
   $mountedEffects?: EffectInfo[]
   $disconnectedEffects?: (() => void)[]
 
-  $brobs: any = createProxy({}, () => this.requestUpdate())
+  $brobs: any = createProxy({}, { onSet: () => this.requestUpdate() })
   $cache?: unknown
 
   $effectsCount: number = 0

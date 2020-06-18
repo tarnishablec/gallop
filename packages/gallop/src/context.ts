@@ -14,7 +14,7 @@ export class Context<T extends object> {
 
   constructor(public raw: T, public option?: ContextOption<T>) {
     this.raw = raw
-    this.proxy = [createProxy(this.raw, () => this.update()), this]
+    this.proxy = [createProxy(this.raw, { onSet: () => this.update() }), this]
     this.option?.created?.(this.raw, this)
   }
 

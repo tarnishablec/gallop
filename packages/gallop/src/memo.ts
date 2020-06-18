@@ -1,22 +1,23 @@
 import { Key } from './utils'
 import { dirtyMap } from './reactive'
 
-let currentMemo: Memo<() => any> | undefined = undefined
-
-export const resolveCurrentMemo = () => currentMemo
-
-export class Memo<T extends () => any> {
+export class Memo<T extends () => any = () => void> {
   watchList: Set<[Object, Key]> = new Set()
   value: ReturnType<T>
+  static currentMemo: Memo | undefined = undefined
 
   constructor(public calc?: T) {
-    currentMemo = this
+    Memo.currentMemo = this
     this.value = calc?.()
-    calc && (currentMemo = undefined)
+    calc && (Memo.currentMemo = undefined)
   }
 
   static stop() {
-    currentMemo = undefined
+    Memo.currentMemo = undefined
+  }
+
+  static resolveCurrentMemo() {
+    return Memo.currentMemo
   }
 
   watch(target: Object, prop: Key) {
@@ -24,7 +25,7 @@ export class Memo<T extends () => any> {
   }
 }
 
-export const checkMemoDirty = (memo: Memo<any>): boolean => {
+export const checkMemoDirty = (memo: Memo): boolean => {
   for (const [obj, key] of memo.watchList) {
     if (dirtyMap.get(obj)?.has(key)) {
       return true
