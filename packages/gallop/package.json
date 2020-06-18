@@ -5,7 +5,6 @@
   "main": "src/index.ts",
   "module": "dist/index.esm.js",
   "files": [
-    "index.js",
     "dist",
     "src"
   ],
