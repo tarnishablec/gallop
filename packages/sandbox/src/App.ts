@@ -17,11 +17,11 @@ import {
 
 import './styles/index.scss'
 import { MyCount } from './components/MyCount'
-import './components/TestA'
+import { TestA } from './components/TestA'
 
 export const [data, context] = createContext({ tick: 1, list: [1, 2, 3] })
 
-component('app-root', function (this: ReactiveElement) {
+const AppRoot = component('app-root', function (this: ReactiveElement) {
   const [state] = useState({ count: 0 })
 
   useEffect(async () => {
@@ -36,6 +36,7 @@ component('app-root', function (this: ReactiveElement) {
       <div>
         <button @click="${() => state.count++}">add count</button>
       </div>
+      <slot></slot>
       <hr />
       ${keepalive(
         !(state.count % 2)
@@ -54,21 +55,26 @@ component('app-root', function (this: ReactiveElement) {
       <button @click="${() => data.list.unshift(data.list.pop()!)}">
         circle move
       </button>
+      <hr />
+      ${keepalive(
+        state.count % 2
+          ? TestA({ count: state.count }).useSlot(html` ${MyCount()} `)
+          : null
+      )}
+      <hr />
     </div>
   `
 })
 
-const template = html`
-  <app-root> </app-root>
+render(html`
+  ${AppRoot().useSlot(html` <my-count></my-count> `)}
   <style>
     body {
       background: grey;
       color: white;
     }
   </style>
-`
-
-render(template)
+`)
 
 // window.requestIdleCallback(() => {
 //   console.log('ric')

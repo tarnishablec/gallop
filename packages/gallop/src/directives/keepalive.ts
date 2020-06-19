@@ -20,6 +20,7 @@ class AliveVirtualElement extends VirtualElement {
       }
     }
     this.props && this.el.mergeProps(this.props)
+    this.initSlot()
     return this.el
   }
 }
@@ -49,7 +50,7 @@ export const keepalive = directive(
         const map =
           aliveMap.get(part) ?? aliveMap.set(part, new Map()).get(part)!
         const res = map.get(tag)
-        const ae = new AliveVirtualElement(tag, props)
+        const ae = new AliveVirtualElement(tag, props).useSlot(view.slotContent)
         if (res) {
           ae.el = res
         } else {

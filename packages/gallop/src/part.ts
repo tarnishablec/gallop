@@ -248,6 +248,8 @@ export function tryUpdateEntry(
     }
   } else if (pre instanceof ReactiveElement && val instanceof VirtualElement) {
     if (pre.localName === val.tag) {
+      val.slotContent &&
+        pre.$virtualSlotClip?.tryUpdate(val.slotContent?.do(getVals))
       return [pre.mergeProps(val.props ?? {}), false]
     }
   } else if (Array.isArray(val)) {

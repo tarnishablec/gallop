@@ -61,6 +61,9 @@ export abstract class ReactiveElement extends HTMLElement {
   $effectDepends?: unknown[][]
   $memoDepends?: unknown[][]
 
+  $virtualSlotClip?: Clip
+  $virtualSlotVals?: readonly unknown[]
+
   $clip?: Clip
 
   $unstable: boolean
@@ -131,6 +134,12 @@ export abstract class ReactiveElement extends HTMLElement {
 
   connectedCallback() {
     this.requestUpdate()
+    if (this.$virtualSlotClip) {
+      this.$virtualSlotClip.tryUpdate(this.$virtualSlotVals ?? [])
+      const dof = this.$virtualSlotClip.dof
+      this.append(dof)
+    }
+
     // console.log(`${this.nodeName} connected`)
   }
 
