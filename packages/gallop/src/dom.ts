@@ -1,6 +1,5 @@
-export const cleanDomStr = (str: string) => {
-  return str.replace(/((?=>|^)\s*)|(\s*(?=<|$))/g, '')
-}
+export const cleanDomStr = (str: string) =>
+  str.replace(/((?=>|^)\s*)|(\s*(?=<|$))/g, '')
 
 export function insertAfter(
   container: Node,

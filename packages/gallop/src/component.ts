@@ -4,7 +4,7 @@ import { Obj } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
 
-type Component = (...args: any[]) => HTMLClip
+export type Component = (...args: any[]) => HTMLClip
 
 type RegisterOption = {
   extend?: keyof HTMLElementTagNameMap
@@ -23,8 +23,8 @@ export interface ReactiveElement extends HTMLElement {
   requestUpdate(): void
   dispatchUpdate(): void
 
-  $emit: InstanceType<typeof HTMLElement>['dispatchEvent']
-  $on: InstanceType<typeof HTMLElement>['addEventListener']
+  $emit: InstanceType<typeof EventTarget>['dispatchEvent']
+  $on: InstanceType<typeof EventTarget>['addEventListener']
 }
 
 export function component<F extends Component>(
@@ -36,7 +36,7 @@ export function component<F extends Component>(
     Inherit = HTMLElement
   }: RegisterOption = {}
 ) {
-  class Clazz extends Inherit implements ReactiveElement {
+  const clazz = class extends Inherit implements ReactiveElement {
     $builder = builder
     $root = shadow ? this.attachShadow({ mode: 'open' }) : this
 
@@ -66,5 +66,5 @@ export function component<F extends Component>(
       super()
     }
   }
-  customElements.define(name, Clazz, { extends: extend })
+  customElements.define(name, clazz, { extends: extend })
 }
