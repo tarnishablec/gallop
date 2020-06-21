@@ -8,7 +8,7 @@ declare module '*.css' {
   export = content
 }
 
-type RequestIdleCallbackHandle = any
+type RequestIdleCallbackHandle = number
 type RequestIdleCallbackOptions = {
   timeout: number
 }
@@ -24,3 +24,5 @@ interface Window {
   ) => RequestIdleCallbackHandle
   cancelIdleCallback: (handle: RequestIdleCallbackHandle) => void
 }
+
+interface ImportMeta {}

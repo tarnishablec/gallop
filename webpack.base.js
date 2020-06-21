@@ -132,7 +132,7 @@ module.exports = (dir) => {
       compress: true,
       host: 'localhost',
       watchOptions: {
-        ignored: '/__tests__/'
+        ignored: /__tests__/
       }
     },
     plugins: [

@@ -1,193 +1,70 @@
-import { Clip, HTMLClip, createClip, getVals, getShaHtml } from './clip'
-import { extractProps, keysOf } from './utils'
-import { createProxy, resetDirtyMap } from './reactive'
-import { Effect, resolveEffects } from './hooks'
-import { Context } from './context'
-import { removeNodes } from './dom'
-import { Memo } from './memo'
-import { VirtualElement } from './virtual'
+import { HTMLClip } from './clip'
+import { Patcher } from './patcher'
+import { Obj } from './utils'
+import { Looper } from './loop'
+import { createProxy } from './reactive'
 
-let currentHandle: ReactiveElement
+type Component = (...args: any[]) => HTMLClip
 
-export const resolveCurrentHandle = () => currentHandle
-
-export const setCurrentHandle = (element: ReactiveElement) =>
-  (currentHandle = element)
-
-const updateQueue = new Set<ReactiveElement>()
-
-let dirty = false
-
-export function enUpdateQueue() {
-  if (dirty) {
-    return
-  }
-  dirty = true
-  requestAnimationFrame(() => {
-    updateQueue.forEach((instance) => {
-      setCurrentHandle(instance)
-      instance.resetEffects()
-      instance.dispatchUpdate()
-      updateQueue.delete(instance)
-    })
-    resetDirtyMap()
-    dirty = false
-    updateQueue.clear()
-  })
+type RegisterOption = {
+  extend?: keyof HTMLElementTagNameMap
+  Inherit?: new () => HTMLElement
+  shadow?: boolean
 }
 
-export type Component = (...args: any) => HTMLClip
-export type Complex = (...args: any) => VirtualElement
-
-export type EffectInfo = { e: Effect; index: number }
-
-export abstract class ReactiveElement extends HTMLElement {
-  protected $props = createProxy({}, { onSet: () => this.requestUpdate() })
-  $state?: unknown
-  $root: ShadowRoot | ReactiveElement
+export interface ReactiveElement extends HTMLElement {
   $builder: Component
-  $alive: boolean = false
+  $root: ReactiveElement | ShadowRoot
+  $patcher?: Patcher
 
-  $updateEffects?: EffectInfo[]
-  $mountedEffects?: EffectInfo[]
-  $disconnectedEffects?: (() => void)[]
+  $props?: Obj
+  $state?: Obj
 
-  $brobs: any = createProxy({}, { onSet: () => this.requestUpdate() })
-  $cache?: unknown
+  requestUpdate(): void
+  dispatchUpdate(): void
 
-  $effectsCount: number = 0
-  $memosCount: number = 0
-
-  $effectDepends?: unknown[][]
-  $memoDepends?: unknown[][]
-
-  $virtualSlotClip?: Clip
-  $virtualSlotVals?: readonly unknown[]
-
-  $clip?: Clip
-
-  $unstable: boolean
-
-  $shaCache?: string
-
-  $contexts?: Set<Context<Object>>
-  $memos?: Map<number, Memo<() => any>>
-
-  $on = this.addEventListener
-  $emit = this.dispatchEvent
-
-  constructor(builder: Component, shadow: boolean, unstable: boolean) {
-    super()
-    this.$unstable = unstable
-    this.$builder = builder
-    this.$root = shadow ? this.attachShadow({ mode: 'open' }) : this
-    this.mergeProps(extractProps(this.attributes))
-    // console.log(`${this.nodeName} constructed`)
-  }
-
-  requestUpdate() {
-    updateQueue.add(this)
-    enUpdateQueue()
-  }
-
-  dispatchUpdate() {
-    const shaClip = this.$builder.call(this, this.$props)
-    if (!this.$clip) {
-      this.mount(shaClip)
-    } else if (this.$unstable) {
-      if (this.$shaCache !== shaClip.do(getShaHtml)) {
-        removeNodes(this.$root)
-        this.initClip(shaClip)
-      }
-    }
-    this.$clip!.tryUpdate(shaClip.do(getVals))
-    // console.log(`${this.nodeName} updated`)
-    resolveEffects(this, this.$updateEffects)
-  }
-
-  initClip(shaClip: HTMLClip) {
-    const clip = shaClip.do(createClip)
-    if (this.$unstable) {
-      this.$shaCache = shaClip.do(getShaHtml)
-    }
-    this.$clip = clip
-    this.$root.append(this.$clip!.dof)
-  }
-
-  mount(shaClip: HTMLClip) {
-    this.initClip(shaClip)
-    // console.log(`${this.tagName} mounted`)
-    resolveEffects(this, this.$mountedEffects)
-  }
-
-  mergeProp(name: string, val: unknown) {
-    Reflect.set(this.$props, name, val)
-    return this
-  }
-
-  mergeProps(props: object) {
-    keysOf(props).forEach((k) => {
-      this.mergeProp(k, props[k])
-    })
-    return this
-  }
-
-  connectedCallback() {
-    this.requestUpdate()
-    if (this.$virtualSlotClip) {
-      this.$virtualSlotClip.tryUpdate(this.$virtualSlotVals ?? [])
-      const dof = this.$virtualSlotClip.dof
-      this.append(dof)
-    }
-
-    // console.log(`${this.nodeName} connected`)
-  }
-
-  disconnectedCallback() {
-    // console.log(`${this.nodeName} disconnected`)
-    this.$disconnectedEffects?.filter(Boolean).forEach((effect) => effect())
-    this.$clip?.destroy()
-
-    if (!this.$alive) {
-      this.$contexts?.forEach((context) => context.unWatch(this))
-      this.$memos?.forEach((m) => m.watchList.clear())
-      this.$contexts = undefined
-      this.$memos?.clear()
-      this.$memos = undefined
-    }
-  }
-
-  resetEffects() {
-    this.$updateEffects = []
-    this.$mountedEffects = []
-    this.$effectsCount = 0
-    this.$memosCount = 0
-  }
+  $emit: InstanceType<typeof HTMLElement>['dispatchEvent']
+  $on: InstanceType<typeof HTMLElement>['addEventListener']
 }
-
-export const componentPool = new Map<string, number>()
 
 export function component<F extends Component>(
   name: string,
   builder: F,
   {
-    unstable = false,
     shadow = true,
-    definitionOptions
-  }: {
-    unstable?: boolean
-    shadow?: boolean
-    definitionOptions?: ElementDefinitionOptions
-  } = {}
+    extend = undefined,
+    Inherit = HTMLElement
+  }: RegisterOption = {}
 ) {
-  const clazz = class extends ReactiveElement {
+  class Clazz extends Inherit implements ReactiveElement {
+    $builder = builder
+    $root = shadow ? this.attachShadow({ mode: 'open' }) : this
+
+    $props = createProxy(
+      {},
+      {
+        onSet: () => this.requestUpdate()
+      }
+    )
+
+    $emit = this.dispatchEvent
+    $on = this.addEventListener
+
+    requestUpdate() {
+      Looper.enUpdateQueue(this)
+    }
+    dispatchUpdate() {
+      this.$builder.call(this, this.$props)
+    }
+
+    connectedCallback() {
+      this.requestUpdate()
+    }
+    disconnectedCallback() {}
+
     constructor() {
-      super(builder, shadow, unstable)
+      super()
     }
   }
-
-  customElements.define(name, clazz, definitionOptions)
-  componentPool.set(name, 1)
-
-  return (...args: Parameters<F>) => new VirtualElement(name, args[0])
+  customElements.define(name, Clazz, { extends: extend })
 }

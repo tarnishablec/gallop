@@ -1,8 +1,10 @@
-import { Primitive } from './utils'
+import { Primitive, Obj, Key } from './utils'
 
-export const LockedProxyError = (target: object) =>
+export const LockedProxyError = (target: Obj, prop: Key) =>
   new Error(
-    `Can not set new property to locked object "${JSON.stringify(target)}".`
+    `Can not set new property "${String(
+      prop
+    )}" to locked object "${JSON.stringify(target)}".`
   )
 
 export const NotReactiveELementError = (name: string) =>

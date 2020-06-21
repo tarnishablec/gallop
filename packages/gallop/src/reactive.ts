@@ -1,17 +1,10 @@
-import { shallowEqual, Key } from './utils'
-import { isProxy } from './is'
+import { Obj, shallowEqual, Key } from './utils'
 import { LockedProxyError } from './error'
-import { Memo } from './memo'
 
-export const _isProxy = Symbol('isProxy')
-// export const _dirty = Symbol('dirty')
+const rawProxyMap = new WeakMap<Obj, Obj>()
+const dirtyMap = new WeakMap<Obj, Set<Key>>()
 
-export const dirtyMap = new Map<object, Set<Key>>()
-export const resetDirtyMap = () => dirtyMap.clear()
-
-const rawProxyMap = new WeakMap<object, object>()
-
-export const createProxy = <T extends object>(
+export function createProxy<T extends Obj>(
   raw: T,
   {
     onSet,
@@ -21,51 +14,40 @@ export const createProxy = <T extends object>(
   }: {
     onSet?: (target: T, prop: Key, val: unknown, receiver: unknown) => void
     onGet?: (target: T, prop: Key, receiver: unknown) => void
-    deep?: boolean
     lock?: boolean
+    deep?: boolean
   } = {}
-): T =>
-  new Proxy(raw, {
+): T {
+  return new Proxy(raw, {
     // eslint-disable-next-line max-params
     set: (target, prop, val, receiver) => {
       if (lock) {
         if (!(prop in target)) {
-          throw LockedProxyError(target)
+          throw LockedProxyError(target, prop)
         }
       }
-      const hasChanged = !shallowEqual(Reflect.get(target, prop), val)
+
+      const hasChanged = shallowEqual(Reflect.get(target, prop), val)
       const res = Reflect.set(target, prop, val, receiver)
       if (hasChanged) {
         dirtyMap.set(target, (dirtyMap.get(target) ?? new Set()).add(prop))
+        onSet?.(target, prop, val, receiver)
       }
-      // debugger
-      hasChanged && onSet?.(target, prop, val, receiver)
       return res
     },
-    get: (target, prop, reciver) => {
-      if (prop === _isProxy) {
-        return true
-      }
-      const memo = Memo.resolveCurrentMemo()
-      memo && memo.watch(target, prop)
-
-      onGet?.(target, prop, reciver)
-      const res = Reflect.get(target, prop, reciver)
-      if (
-        res instanceof Object &&
-        deep &&
-        !(res instanceof Function) &&
-        !isProxy(res)
-      ) {
-        if (!rawProxyMap.has(res)) {
-          const temp = createProxy(res, { onSet, onGet, lock })
-          rawProxyMap.set(res, temp)
-          return temp
-        } else {
+    get: (target, prop, receiver) => {
+      onGet?.(target, prop, receiver)
+      const res = Reflect.get(target, prop)
+      if (deep && res instanceof Object && !(res instanceof Function)) {
+        if (rawProxyMap.has(res)) {
           return rawProxyMap.get(res)
+        } else {
+          const p = createProxy(res, { onSet, onGet, lock, deep })
+          rawProxyMap.set(res, p)
+          return p
         }
-      } else {
-        return res
       }
+      return res
     }
   })
+}

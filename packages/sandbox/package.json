@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "@gallop/gallop": "^0.9.14",
-    "@gallop/router": "^0.9.11",
     "lodash": "^4.17.15",
     "rxjs": "^6.5.5"
   },

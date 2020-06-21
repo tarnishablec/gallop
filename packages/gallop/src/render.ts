@@ -1,17 +1,13 @@
-import { HTMLClip, createClip, getVals } from './clip'
-import { ReactiveElement } from './component'
-import { VirtualElement } from './virtual'
+import { HTMLClip, createPatcher, getVals } from './clip'
+import { insertAfter } from './dom'
 
 export function render(
-  view: HTMLClip | VirtualElement,
-  container: Element | ShadowRoot = document.body,
-  before: Node | null = container.firstChild
+  view: HTMLClip,
+  {
+    container = document.body,
+    after = container.lastChild
+  }: { container?: Node; after?: Node | null } = {}
 ) {
-  let dof: DocumentFragment | ReactiveElement
-  if (view instanceof HTMLClip) {
-    dof = view.do(createClip).tryUpdate(view.do(getVals)).dof
-  } else {
-    dof = view.createInstance()
-  }
-  container.insertBefore(dof, before)
+  const dof = view.do(createPatcher).tryUpdate(view.do(getVals)).dof
+  insertAfter(container, dof, after)
 }
