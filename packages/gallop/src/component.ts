@@ -1,4 +1,4 @@
-import { HTMLClip } from './clip'
+import { HTMLClip, createPatcher, getVals } from './clip'
 import { Patcher } from './patcher'
 import { Obj } from './utils'
 import { Looper } from './loop'
@@ -10,6 +10,7 @@ type RegisterOption = {
   extend?: keyof HTMLElementTagNameMap
   Inherit?: new () => HTMLElement
   shadow?: boolean
+  stable?: boolean
 }
 
 export interface ReactiveElement extends HTMLElement {
@@ -17,7 +18,8 @@ export interface ReactiveElement extends HTMLElement {
   $root: ReactiveElement | ShadowRoot
   $patcher?: Patcher
 
-  $props?: Obj
+  $props: Obj
+
   $state?: Obj
 
   requestUpdate(): void
@@ -39,7 +41,7 @@ export function component<F extends Component>(
   const clazz = class extends Inherit implements ReactiveElement {
     $builder = builder
     $root = shadow ? this.attachShadow({ mode: 'open' }) : this
-
+    $patcher?: Patcher = undefined
     $props = createProxy(
       {},
       {
@@ -54,7 +56,12 @@ export function component<F extends Component>(
       Looper.enUpdateQueue(this)
     }
     dispatchUpdate() {
-      this.$builder.call(this, this.$props)
+      const clip = this.$builder.call(this, this.$props)
+      if (!this.$patcher) {
+        this.$patcher = clip.do(createPatcher)
+        this.$root.append(this.$patcher.dof)
+      }
+      this.$patcher.tryUpdate(clip.do(getVals))
     }
 
     connectedCallback() {

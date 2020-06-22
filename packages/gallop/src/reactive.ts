@@ -36,8 +36,8 @@ export function createProxy<T extends Obj>(
       return res
     },
     get: (target, prop, receiver) => {
-      onGet?.(target, prop, receiver)
       const res = Reflect.get(target, prop)
+      onGet?.(target, prop, receiver)
       if (deep && res instanceof Object && !(res instanceof Function)) {
         if (rawProxyMap.has(res)) {
           return rawProxyMap.get(res)
