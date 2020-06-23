@@ -19,7 +19,6 @@ export function createProxy<T extends Obj>(
   } = {}
 ): T {
   return new Proxy(raw, {
-    // eslint-disable-next-line max-params
     set: (target, prop, val, receiver) => {
       if (lock) {
         if (!(prop in target)) {

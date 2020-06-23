@@ -5,8 +5,6 @@ const args = require('minimist')(process.argv.slice(2))
 
 const targets = resolveTargets(args._)
 
-cleanAll()
-
 function clean(target) {
   const distDir = path.resolve(`packages/${target}/dist`)
   fse.remove(distDir)
@@ -17,3 +15,5 @@ function cleanAll() {
     clean(target)
   })
 }
+
+cleanAll()

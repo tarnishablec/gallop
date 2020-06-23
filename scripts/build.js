@@ -9,8 +9,6 @@ const devOnly = args.devOnly || args.d
 
 const targets = require('./utils').resolveTargets(args._)
 
-buildAll(targets)
-
 // const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
 
 // async function generateDts(target) {
@@ -100,3 +98,5 @@ async function buildAll(targets) {
     // await generateDts(target)
   }
 }
+
+buildAll(targets)

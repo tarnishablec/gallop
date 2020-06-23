@@ -1,6 +1,6 @@
 import { html, render } from '@gallop/gallop'
 
-render(html` <div>hello</div> `)
+render(html` <div>hel${1}lo</div> `)
 
 // window.requestIdleCallback(() => {
 //   console.log('ric')

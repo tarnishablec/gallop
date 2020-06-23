@@ -78,5 +78,6 @@
     "packages/*/index.ts",
     "packages/*/__tests__",
     "global.d.ts"
-  ]
+  ],
+  "exclude": ["node_modules", "packages/doc"]
 }

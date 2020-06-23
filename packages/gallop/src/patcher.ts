@@ -53,7 +53,6 @@ function createParts(patcher: Patcher) {
         insertAfter(cur.parentNode!, tail, cur)
         result.push(new NodePart({ startNode: cur, endNode: tail }))
         count++
-        walker.nextNode()
       }
     }
   }

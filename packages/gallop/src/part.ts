@@ -1,58 +1,75 @@
-import { shallowEqual } from './utils'
-import { resolveDirective } from './directive'
-
 type AttrPartLocation = { node: Node; name: string }
 type NodePartLocation = { startNode: Node; endNode: Node }
 type PartLocation = AttrPartLocation | NodePartLocation
 
-export abstract class Part {
-  protected value: unknown
-  constructor(public location: PartLocation) {}
-  setValue(val: unknown) {
-    if (resolveDirective(val, this)) {
-      return
-    }
-    if (!shallowEqual(val, this.value)) {
-      this.value = val
-      this.commit()
-    }
-  }
-  protected abstract clear(): void
-  protected abstract commit(): unknown
+export interface Part {
+  value: unknown
+  location: PartLocation
+  setValue(val: unknown): void
+  clear(): void
+  commit(): unknown
 }
 
-export class NodePart extends Part {
-  protected clear(): void {
-    throw new Error('Method not implemented.')
-  }
-  protected commit(): unknown {
-    throw new Error('Method not implemented.')
-  }
-}
+export class NodePart implements Part {
+  value: unknown
 
-export class AttrPart extends Part {
-  protected clear(): void {
+  constructor(public location: NodePartLocation) {}
+
+  setValue(val: unknown): void {
     throw new Error('Method not implemented.')
   }
-  protected commit(): unknown {
+  clear(): void {
+    throw new Error('Method not implemented.')
+  }
+  commit(): unknown {
     throw new Error('Method not implemented.')
   }
 }
 
-export class PropPart extends Part {
-  protected clear(): void {
+export class AttrPart implements Part {
+  value: unknown
+
+  constructor(public location: AttrPartLocation) {}
+
+  setValue(val: unknown): void {
     throw new Error('Method not implemented.')
   }
-  protected commit(): unknown {
+  clear(): void {
+    throw new Error('Method not implemented.')
+  }
+  commit(): unknown {
     throw new Error('Method not implemented.')
   }
 }
 
-export class EventPart extends Part {
-  protected clear(): void {
+export class PropPart implements Part {
+  value: unknown
+
+  constructor(public location: AttrPartLocation) {}
+
+  setValue(val: unknown): void {
     throw new Error('Method not implemented.')
   }
-  protected commit(): unknown {
+  clear(): void {
+    throw new Error('Method not implemented.')
+  }
+  commit(): unknown {
+    throw new Error('Method not implemented.')
+  }
+}
+
+export class EventPart implements Part {
+  value: unknown
+
+  constructor(public location: AttrPartLocation) {}
+
+  setValue(val: unknown): void {
+    throw new Error('Method not implemented.')
+  }
+  clear(): void {
+    throw new Error('Method not implemented.')
+  }
+  commit(): unknown {
     throw new Error('Method not implemented.')
   }
 }
