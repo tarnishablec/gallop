@@ -2,7 +2,7 @@ import { ReactiveElement } from './component'
 
 export class Looper {
   protected static updateQueue = new Set<ReactiveElement>()
-  protected static current?: ReactiveElement
+  protected static current: ReactiveElement
   protected static dirty = false
 
   private constructor() {}
