@@ -1,5 +1,5 @@
 export const cleanDomStr = (str: string) =>
-  str.replace(/((?=>|^)\s*)|(\s*(?=<|$))/g, '')
+  str.replace(/((?<=>|^)\s+)|(\s+(?=<|$))/g, '')
 
 export function insertAfter(
   container: Node,
@@ -28,3 +28,11 @@ export function removeNodes(
   }
   return removed
 }
+
+export const generateEventOptions = (
+  set: Set<string>
+): AddEventListenerOptions => ({
+  capture: set.has('capture'),
+  once: set.has('once'),
+  passive: set.has('passive')
+})

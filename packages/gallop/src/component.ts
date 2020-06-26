@@ -1,6 +1,6 @@
 import { HTMLClip, createPatcher, getVals } from './clip'
 import { Patcher } from './patcher'
-import { Obj } from './utils'
+import { Obj, extractProps } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
 
@@ -17,16 +17,15 @@ export interface ReactiveElement extends HTMLElement {
   $builder: Component
   $root: ReactiveElement | ShadowRoot
   $patcher?: Patcher
-
+  $isReactive: boolean
   $props: Obj
-
   $state?: Obj
-
-  requestUpdate(): void
-  dispatchUpdate(): void
 
   $emit: InstanceType<typeof EventTarget>['dispatchEvent']
   $on: InstanceType<typeof EventTarget>['addEventListener']
+
+  requestUpdate(): void
+  dispatchUpdate(): void
 }
 
 export function component<F extends Component>(
@@ -52,6 +51,8 @@ export function component<F extends Component>(
     $emit = this.dispatchEvent
     $on = this.addEventListener
 
+    $isReactive = true
+
     requestUpdate() {
       Looper.enUpdateQueue(this)
     }
@@ -61,7 +62,7 @@ export function component<F extends Component>(
         this.$patcher = clip.do(createPatcher)
         this.$root.append(this.$patcher.dof)
       }
-      this.$patcher.tryUpdate(clip.do(getVals))
+      this.$patcher.patch(clip.do(getVals))
     }
 
     connectedCallback() {
@@ -71,7 +72,21 @@ export function component<F extends Component>(
 
     constructor() {
       super()
+      const staticProps = extractProps(this.attributes)
+      mergeProps(this, staticProps)
     }
   }
   customElements.define(name, clazz, { extends: extend })
 }
+
+export const isReactive = (node: Node): node is ReactiveElement =>
+  Reflect.get(node, '$isReactive')
+
+export const mergeProp = (
+  node: ReactiveElement,
+  name: string,
+  value: unknown
+) => Reflect.set(node.$props, name, value)
+
+export const mergeProps = (node: ReactiveElement, value: Obj) =>
+  Object.assign(node.$props, value)

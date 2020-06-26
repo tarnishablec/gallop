@@ -1,4 +1,6 @@
 import { HTMLClip, createPatcher, getVals } from './clip'
+import { markerIndex } from './marker'
+import { removeNodes } from './dom'
 
 export function render(
   view: HTMLClip,
@@ -7,8 +9,12 @@ export function render(
     before = container.firstChild
   }: { container?: Node; before?: Node | null } = {}
 ) {
-  const patcher = view.do(createPatcher).tryUpdate(view.do(getVals))
+  const patcher = view.do(createPatcher).patch(view.do(getVals))
+  const startNode = new Comment(markerIndex)
+  const endNode = new Comment(markerIndex)
+  container.insertBefore(endNode, before)
+  container.insertBefore(startNode, endNode)
   const dof = patcher.dof
-  container.insertBefore(dof, before)
-  return patcher
+  container.insertBefore(dof, endNode)
+  return () => removeNodes(container, startNode, endNode.nextSibling)
 }

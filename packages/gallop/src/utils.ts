@@ -1,3 +1,5 @@
+import { marker } from './marker'
+
 export type Primitive =
   | number
   | string
@@ -49,4 +51,21 @@ export function shallowEqual(objA: unknown, objB: unknown) {
     }
   }
   return true
+}
+
+export function extractProps(attr: NamedNodeMap) {
+  return Array.from(attr)
+    .filter((a) => /^:\S+/.test(a.name) && a.value !== marker)
+    .reduce((acc, { name, value }) => {
+      let v: string | boolean
+      if (value === '') {
+        v = true
+      } else if (value === "''") {
+        v = ''
+      } else {
+        v = value
+      }
+      Reflect.set(acc, name.slice(1), v)
+      return acc
+    }, {} as Obj)
 }

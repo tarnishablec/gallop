@@ -1,6 +1,15 @@
-import { html, render } from '@gallop/gallop'
+import { html, render, component } from '@gallop/gallop'
 
-render(html` <div>hel${1}lo</div> `)
+component(
+  'test-app',
+  () => html`
+    <div>
+      test-app
+    </div>
+  `
+)
+
+render(html` <test-app></test-app> `)
 
 // window.requestIdleCallback(() => {
 //   console.log('ric')

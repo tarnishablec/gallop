@@ -35,13 +35,13 @@ function createParts(patcher: Patcher) {
           const bindName = name.slice(1)
           switch (prefix) {
             case '.':
-              result.push(new AttrPart({ node: cur, name: bindName }))
+              result.push(new AttrPart({ node: cur, name: bindName }, count))
               break
             case ':':
-              result.push(new PropPart({ node: cur, name: bindName }))
+              result.push(new PropPart({ node: cur, name: bindName }, count))
               break
             case '@':
-              result.push(new EventPart({ node: cur, name: bindName }))
+              result.push(new EventPart({ node: cur, name: bindName }, count))
               break
           }
           count++
@@ -51,7 +51,7 @@ function createParts(patcher: Patcher) {
       if (markerIndex === cur.data) {
         const tail = new Comment(marker)
         insertAfter(cur.parentNode!, tail, cur)
-        result.push(new NodePart({ startNode: cur, endNode: tail }))
+        result.push(new NodePart({ startNode: cur, endNode: tail }, count))
         count++
       }
     }
@@ -66,7 +66,7 @@ export class Patcher {
     this.parts = createParts(this)
   }
 
-  tryUpdate(vals: ReadonlyArray<unknown>) {
+  patch(vals: ReadonlyArray<unknown>) {
     this.parts.forEach((p, i) => p.setValue(vals[i]))
     return this
   }
