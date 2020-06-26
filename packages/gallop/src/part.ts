@@ -1,11 +1,11 @@
 import { isReactive, mergeProps, mergeProp } from './component'
 import { NotReactiveELementError } from './error'
-import { Obj } from './utils'
+import { Obj, tryParseToString } from './utils'
 import { resolveDirective } from './directive'
 import { generateEventOptions } from './dom'
 
-export type AttrPartLocation = { node: Node; name: string }
-export type NodePartLocation = { startNode: Node; endNode: Node }
+export type AttrPartLocation = { node: Element; name: string }
+export type NodePartLocation = { startNode: Comment; endNode: Comment }
 export type PartLocation = AttrPartLocation | NodePartLocation
 
 export interface Part {
@@ -30,11 +30,45 @@ export class NodePart implements Part {
 
 export class AttrPart implements Part {
   value: unknown
+  cache: { style?: string; classes?: string[] }
 
-  constructor(public location: AttrPartLocation, public index: number) {}
+  constructor(public location: AttrPartLocation, public index: number) {
+    const { node } = location
+    const style = node.getAttribute('style') ?? undefined
+    this.cache = { style }
+  }
 
   setValue(val: unknown): void {
-    throw new Error('Method not implemented.')
+    if (resolveDirective(val, this)) return
+    if (this.value === val) return
+    const { node, name } = this.location
+
+    if (name === 'value') {
+      Reflect.set(node, name, val)
+      this.value = val
+      return
+    }
+
+    let temp = tryParseToString(val)
+
+    if (name === 'class') {
+      const { classes } = this.cache
+      const cs = temp.split(' ').filter(Boolean)
+      if (cs.join('') !== classes?.join('')) {
+        node.classList.remove(...(classes ?? []))
+        node.classList.add(...cs)
+        this.cache.classes = cs
+      }
+      this.value = cs
+      return
+    }
+
+    if (name === 'style') {
+      const { style } = this.cache
+      temp = `${style ?? ''}${style ? ';' : ''}${temp}`
+    }
+    node.setAttribute(name, temp)
+    this.value = temp
   }
   clear(): void {
     throw new Error('Method not implemented.')

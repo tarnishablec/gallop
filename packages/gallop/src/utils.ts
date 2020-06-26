@@ -13,15 +13,14 @@ export type Key = Exclude<Primitive, null | undefined | boolean>
 export type Obj = Record<string, unknown>
 
 export function tryParseToString(val: unknown): string {
+  if (val === undefined || val === null) return ''
   if (
-    val === undefined ||
     typeof val === 'string' ||
     typeof val === 'function' ||
     typeof val === 'symbol' ||
     typeof val === 'number'
   )
     return String(val)
-  if (val === null) return ''
   return JSON.stringify(val)
 }
 
