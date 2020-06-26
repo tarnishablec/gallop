@@ -1,6 +1,6 @@
 import { isReactive, mergeProps, mergeProp } from './component'
-import { NotReactiveELementError } from './error'
-import { Obj, tryParseToString } from './utils'
+import { NotReactiveElementError } from './error'
+import { tryParseToString } from './utils'
 import { resolveDirective } from './directive'
 import { generateEventOptions } from './dom'
 
@@ -85,15 +85,11 @@ export class PropPart implements Part {
 
     const { name, node } = this.location
     if (!isReactive(node)) {
-      throw NotReactiveELementError(name)
+      throw NotReactiveElementError(name)
     }
 
     if (name === '$props') {
-      if (val instanceof Object) {
-        mergeProps(node, val as Obj)
-      } else {
-        throw new SyntaxError(`$props prop need an object`)
-      }
+      mergeProps(node, val)
     } else {
       mergeProp(node, name, val)
     }

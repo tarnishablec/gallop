@@ -66,14 +66,13 @@ export function component<F extends Component>(
     }
 
     connectedCallback() {
-      this.requestUpdate()
+      const staticProps = extractProps(this.attributes)
+      mergeProps(this, staticProps)
     }
     disconnectedCallback() {}
 
     constructor() {
       super()
-      const staticProps = extractProps(this.attributes)
-      mergeProps(this, staticProps)
     }
   }
   customElements.define(name, clazz, { extends: extend })
@@ -88,5 +87,5 @@ export const mergeProp = (
   value: unknown
 ) => Reflect.set(node.$props, name, value)
 
-export const mergeProps = (node: ReactiveElement, value: Obj) =>
+export const mergeProps = (node: ReactiveElement, value: unknown) =>
   Object.assign(node.$props, value)

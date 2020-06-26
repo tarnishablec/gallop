@@ -30,6 +30,8 @@ export class Looper {
         Looper.setCurrent(instance)
         instance.dispatchUpdate()
       })
+      Looper.dirty = false
+      Looper.updateQueue.clear()
     })
   }
 }

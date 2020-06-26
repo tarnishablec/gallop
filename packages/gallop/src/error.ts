@@ -7,7 +7,7 @@ export const LockedProxyError = (target: Obj, prop: Key) =>
     )}" to locked object "${JSON.stringify(target)}".`
   )
 
-export const NotReactiveELementError = (name: string) =>
+export const NotReactiveElementError = (name: string) =>
   new SyntaxError(`${name} element is not an Reactive Element`)
 
 export const DirectivePartTypeError = (name: string) =>
