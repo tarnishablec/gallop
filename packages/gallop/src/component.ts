@@ -3,6 +3,7 @@ import { Patcher } from './patcher'
 import { Obj, extractProps } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
+import { Context } from './context'
 
 export type Component = (...args: any[]) => HTMLClip
 
@@ -18,8 +19,10 @@ export interface ReactiveElement extends HTMLElement {
   $root: ReactiveElement | ShadowRoot
   $patcher?: Patcher
   $isReactive: boolean
+
   $props: Obj
   $state?: Obj
+  $contexts: Set<Context<Obj>>
 
   $emit: InstanceType<typeof EventTarget>['dispatchEvent']
   $on: InstanceType<typeof EventTarget>['addEventListener']
@@ -47,6 +50,7 @@ export function component<F extends Component>(
         onSet: () => this.requestUpdate()
       }
     )
+    $contexts = new Set<Context<Obj>>()
 
     $emit = this.dispatchEvent
     $on = this.addEventListener
@@ -68,6 +72,9 @@ export function component<F extends Component>(
     connectedCallback() {
       const staticProps = extractProps(this.attributes)
       mergeProps(this, staticProps)
+      this.requestUpdate()
+
+      Context.globalContext && Context.globalContext.watch(this)
     }
     disconnectedCallback() {}
 

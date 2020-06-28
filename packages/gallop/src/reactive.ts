@@ -1,10 +1,12 @@
 import { Obj, shallowEqual, Key } from './utils'
 import { LockedProxyError } from './error'
 
-const rawProxyMap = new WeakMap<Obj, Obj>()
-const dirtyMap = new WeakMap<Obj, Set<Key>>()
+const rawProxyMap = new WeakMap()
 
-export function createProxy<T extends Obj>(
+export let dirtyMap = new WeakMap()
+export const resetDirtyMap = () => (dirtyMap = new WeakMap())
+
+export const createProxy = <T extends Obj>(
   raw: T,
   {
     onSet,
@@ -17,16 +19,15 @@ export function createProxy<T extends Obj>(
     lock?: boolean
     deep?: boolean
   } = {}
-): T {
-  return new Proxy(raw, {
+): T =>
+  new Proxy(raw, {
     set: (target, prop, val, receiver) => {
       if (lock) {
         if (!(prop in target)) {
           throw LockedProxyError(target, prop)
         }
       }
-
-      const hasChanged = shallowEqual(Reflect.get(target, prop), val)
+      const hasChanged = !shallowEqual(Reflect.get(target, prop), val)
       const res = Reflect.set(target, prop, val, receiver)
       if (hasChanged) {
         dirtyMap.set(target, (dirtyMap.get(target) ?? new Set()).add(prop))
@@ -49,4 +50,3 @@ export function createProxy<T extends Obj>(
       return res
     }
   })
-}

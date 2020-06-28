@@ -1,13 +1,39 @@
-import { html, render, component } from '@gallop/gallop'
+import {
+  html,
+  render,
+  component,
+  Context,
+  useEffect,
+  useState,
+  ReactiveElement
+} from '@gallop/gallop'
 
-component(
-  'test-app',
-  () => html`
+export const [global, globalContext] = Context.initGlobal({ data: 1 })
+
+component('test-app', function (this: ReactiveElement) {
+  const [state] = useState({ tick: 0 })
+
+  useEffect(() => {
+    console.log(state.tick)
+  }, [state.tick])
+
+  useEffect(() => {
+    console.log(`state.tick`)
+  }, [])
+
+  useEffect(() => {
+    console.log(this.$root.querySelector('button'))
+  })
+
+  console.log(`test-app`)
+
+  return html`
     <div>
       test-app
+      <button @click="${() => state.tick++}">add</button>
     </div>
   `
-)
+})
 
 render(html` <test-app></test-app> `)
 
