@@ -4,6 +4,7 @@ import { Obj, extractProps } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
 import { Context } from './context'
+import { unmountEffectMap } from './hooks'
 
 export type Component = (...args: any[]) => HTMLClip
 
@@ -76,7 +77,9 @@ export function component<F extends Component>(
 
       Context.globalContext && Context.globalContext.watch(this)
     }
-    disconnectedCallback() {}
+    disconnectedCallback() {
+      unmountEffectMap.get(this)?.forEach((fn) => fn())
+    }
 
     constructor() {
       super()

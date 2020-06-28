@@ -1,6 +1,11 @@
 import { ReactiveElement } from './component'
 import { resetDirtyMap } from './reactive'
-import { effectQueueMap, resolveEffects, resetLastHookEl } from './hooks'
+import {
+  effectQueueMap,
+  resolveEffects,
+  resetLastHookEl,
+  unmountEffectMap
+} from './hooks'
 
 export class Looper {
   protected static updateQueue = new Set<ReactiveElement>()
@@ -29,7 +34,9 @@ export class Looper {
       Looper.updateQueue.forEach((instance) => {
         Looper.setCurrent(instance)
         instance.dispatchUpdate()
-        resolveEffects(effectQueueMap.get(instance))
+        resolveEffects(effectQueueMap.get(instance))?.then((res) =>
+          unmountEffectMap.set(instance, res)
+        )
       })
       resetDirtyMap()
       Looper.dirty = false

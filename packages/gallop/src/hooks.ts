@@ -56,6 +56,7 @@ export function useDepends(depends: unknown[]) {
 
 type Effect = () => void | (() => void)
 export const effectQueueMap = new WeakMap<ReactiveElement, Effect[]>()
+export const unmountEffectMap = new WeakMap<ReactiveElement, (() => void)[]>()
 export function useEffect(effect: Effect, depends?: unknown[]) {
   const current = Looper.resolveCurrent()
   current !== hookElLast && effectQueueMap.set(current, [])
@@ -64,9 +65,10 @@ export function useEffect(effect: Effect, depends?: unknown[]) {
     (effectQueueMap.get(current) ??
       effectQueueMap.set(current, []).get(current))!.push(effect)
 }
-export const resolveEffects = (effects?: Effect[]) => {
+export const resolveEffects = (effects?: Effect[]) =>
   effects &&
-    Promise.resolve().then(() => {
-      effects.forEach((e) => e())
-    })
-}
+  Promise.resolve().then(() => {
+    const res: (void | (() => void))[] = []
+    effects.forEach((e) => res.push(e()))
+    return res.filter(Boolean) as (() => void)[]
+  })
