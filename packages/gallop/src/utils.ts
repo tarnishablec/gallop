@@ -9,7 +9,6 @@ export type Primitive =
   | boolean
   | bigint
 
-export type Key = Exclude<Primitive, null | undefined | boolean>
 export type Obj = Record<string, unknown>
 
 export function tryParseToString(val: unknown): string {

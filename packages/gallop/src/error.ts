@@ -1,6 +1,6 @@
-import { Primitive, Obj, Key } from './utils'
+import { Primitive } from './utils'
 
-export const LockedProxyError = (target: Obj, prop: Key) =>
+export const LockedProxyError = (target: unknown, prop: unknown) =>
   new Error(
     `Can not set new property "${String(
       prop

@@ -1,7 +1,9 @@
-import { Obj, shallowEqual, Key } from './utils'
+import { Obj, shallowEqual, Primitive } from './utils'
 import { LockedProxyError } from './error'
 
 const rawProxyMap = new WeakMap()
+
+type Key = Exclude<Primitive, null | boolean | bigint | undefined>
 
 export const createProxy = <T extends Obj>(
   raw: T,
