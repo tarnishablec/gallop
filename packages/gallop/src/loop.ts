@@ -20,6 +20,9 @@ export class Looper {
     Looper.flush()
   }
 
+  static loopEachCallbacks: Map<string, (current: ReactiveElement) => unknown>
+  static loopEndCallbacks: Map<string, () => unknown>
+
   static flush() {
     if (Looper.dirty) return
     Looper.dirty = true
@@ -27,10 +30,12 @@ export class Looper {
       Looper.updateQueue.forEach((instance) => {
         Looper.setCurrent(instance)
         instance.dispatchUpdate()
+        Looper.loopEachCallbacks.forEach((cb) => cb(instance))
       })
       Looper.setCurrent(undefined)
       Looper.dirty = false
       Looper.updateQueue.clear()
+      Looper.loopEndCallbacks.forEach((cb) => cb())
     })
   }
 }
