@@ -11,12 +11,12 @@ import {
 export const [global, globalContext] = Context.initGlobal({ data: 1 })
 
 component('test-app', function (this: ReactiveElement) {
-  const [state] = useState({ tick: 0 })
+  const [state] = useState({ tick: 0, children: [1, 2, 3] })
 
   useEffect(() => {
     console.log(state.tick)
     return () => console.log(state.tick + '!!!')
-  }, [state.tick])
+  }, [state, state.children])
 
   useEffect(() => {
     console.log(`state.tick`)
@@ -31,7 +31,14 @@ component('test-app', function (this: ReactiveElement) {
   return html`
     <div>
       test-app
-      <button @click="${() => state.tick++}">add</button>
+      <button
+        @click="${() => {
+          state.tick++
+          state.children.push(2)
+        }}"
+      >
+        add
+      </button>
     </div>
   `
 })

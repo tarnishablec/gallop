@@ -1,18 +1,11 @@
 import { ReactiveElement } from './component'
-import { resetDirtyMap } from './reactive'
-import {
-  effectQueueMap,
-  resolveEffects,
-  resetLastHookEl,
-  unmountEffectMap
-} from './hooks'
 
 export class Looper {
+  private constructor() {}
+
   protected static updateQueue = new Set<ReactiveElement>()
   protected static current?: ReactiveElement
   protected static dirty = false
-
-  private constructor() {}
 
   static resolveCurrent() {
     return Looper.current!
@@ -34,14 +27,9 @@ export class Looper {
       Looper.updateQueue.forEach((instance) => {
         Looper.setCurrent(instance)
         instance.dispatchUpdate()
-        resolveEffects(effectQueueMap.get(instance))?.then((res) =>
-          unmountEffectMap.set(instance, res)
-        )
       })
-      resetDirtyMap()
-      Looper.dirty = false
       Looper.setCurrent(undefined)
-      resetLastHookEl()
+      Looper.dirty = false
       Looper.updateQueue.clear()
     })
   }

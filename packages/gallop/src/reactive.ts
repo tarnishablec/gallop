@@ -3,9 +3,6 @@ import { LockedProxyError } from './error'
 
 const rawProxyMap = new WeakMap()
 
-export let dirtyMap = new WeakMap()
-export const resetDirtyMap = () => (dirtyMap = new WeakMap())
-
 export const createProxy = <T extends Obj>(
   raw: T,
   {
@@ -19,20 +16,13 @@ export const createProxy = <T extends Obj>(
     lock?: boolean
     deep?: boolean
   } = {}
-): T =>
-  new Proxy(raw, {
+): T => {
+  return new Proxy(raw, {
     set: (target, prop, val, receiver) => {
-      if (lock) {
-        if (!(prop in target)) {
-          throw LockedProxyError(target, prop)
-        }
-      }
+      if (lock && !(prop in target)) throw LockedProxyError(target, prop)
       const hasChanged = !shallowEqual(Reflect.get(target, prop), val)
       const res = Reflect.set(target, prop, val, receiver)
-      if (hasChanged) {
-        dirtyMap.set(target, (dirtyMap.get(target) ?? new Set()).add(prop))
-        onSet?.(target, prop, val, receiver)
-      }
+      if (hasChanged) onSet?.(target, prop, val, receiver)
       return res
     },
     get: (target, prop, receiver) => {
@@ -50,3 +40,4 @@ export const createProxy = <T extends Obj>(
       return res
     }
   })
+}

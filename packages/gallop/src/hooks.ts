@@ -1,11 +1,8 @@
 import { Obj } from './utils'
 import { Looper } from './loop'
-import { createProxy, dirtyMap } from './reactive'
+import { createProxy } from './reactive'
 import { Context } from './context'
 import { ReactiveElement } from './component'
-
-export let hookElLast: ReactiveElement | undefined
-export const resetLastHookEl = () => (hookElLast = undefined)
 
 export function useState<T extends Obj>(raw: T): [T] {
   const current = Looper.resolveCurrent()
@@ -23,26 +20,28 @@ export function useContext(contexts: Context<Obj>[]) {
   contexts.forEach((ctx) => ctx.watch(current))
 }
 
+export let hookElLast: ReactiveElement | undefined
+export const resetLastHookEl = () => (hookElLast = undefined)
+// Looper.loopFinishCallbacks.set('resetLastHookEl', resetLastHookEl)
 let depCount: number
 const depCountMap = new WeakMap<ReactiveElement, Map<number, unknown[]>>()
-export function useDepends(depends: unknown[]) {
+export function useDepends(depends?: unknown[]): [boolean, boolean] {
   const current = Looper.resolveCurrent()
-  if (current !== hookElLast) depCount = 0
+  let diff: boolean = false
+  if (current !== hookElLast) {
+    depCount = 0
+    diff = true
+  }
+  if (!depends) {
+    return [true, diff]
+  }
   const oldVals = depCountMap.get(current)?.get(depCount)
   let dirty = false
   if (!oldVals) {
     dirty = true
   } else {
     depends.forEach((dep, i) => {
-      if (dep instanceof Object) {
-        if (!Object.is(dep, oldVals[i]) || dirtyMap.has(dep)) {
-          dirty = true
-        }
-      } else {
-        if (!Object.is(dep, oldVals[i])) {
-          dirty = true
-        }
-      }
+      Object.is(dep, oldVals[i]) || (dirty = true)
     })
   }
   !(
@@ -51,7 +50,7 @@ export function useDepends(depends: unknown[]) {
   ).set(depCount, depends)
   hookElLast = current
   depCount++
-  return dirty
+  return [dirty, diff]
 }
 
 type Effect = () => void | (() => void)
@@ -59,8 +58,8 @@ export const effectQueueMap = new WeakMap<ReactiveElement, Effect[]>()
 export const unmountEffectMap = new WeakMap<ReactiveElement, (() => void)[]>()
 export function useEffect(effect: Effect, depends?: unknown[]) {
   const current = Looper.resolveCurrent()
-  current !== hookElLast && effectQueueMap.set(current, [])
-  const dirty = depends ? useDepends(depends) : true
+  const [dirty, diff] = useDepends(depends)
+  diff && effectQueueMap.set(current, [])
   dirty &&
     (effectQueueMap.get(current) ??
       effectQueueMap.set(current, []).get(current))!.push(effect)
@@ -72,3 +71,4 @@ export const resolveEffects = (effects?: Effect[]) =>
     effects.forEach((e) => res.push(e()))
     return res.filter(Boolean) as (() => void)[]
   })
+//
