@@ -26,8 +26,6 @@ component('test-app', function (this: ReactiveElement) {
     console.log(this.$root.querySelector('button'))
   })
 
-  console.log(`test-app`)
-
   return html`
     <div>
       test-app

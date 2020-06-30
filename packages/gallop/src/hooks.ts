@@ -40,13 +40,17 @@ export function useDepends(depends?: unknown[]): [boolean, boolean, number] {
   if (!oldVals) {
     dirty = true
   } else {
-    depends.forEach(
-      (dep, i) =>
-        ((dep instanceof Object &&
+    for (let i = 0; i < depends.length; i++) {
+      const dep = depends[i]
+      if (
+        (dep instanceof Object &&
           (!Object.is(dep, oldVals[i]) || dirtyCollectionSet.has(dep))) ||
-          !Object.is(dep, oldVals[i])) &&
-        (dirty = true)
-    )
+        !Object.is(dep, oldVals[i])
+      ) {
+        dirty = true
+        break
+      }
+    }
   }
   !(
     depCountMap.get(current) ??
