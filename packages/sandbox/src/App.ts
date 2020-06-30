@@ -16,7 +16,7 @@ component('test-app', function (this: ReactiveElement) {
   useEffect(() => {
     console.log(state.tick)
     return () => console.log(state.tick + '!!!')
-  }, [state])
+  }, [state.tick])
 
   useEffect(() => {
     console.log(`state.tick`)
@@ -33,7 +33,9 @@ component('test-app', function (this: ReactiveElement) {
       test-app
       <button
         @click="${() => {
-          state.tick++
+          for (let i = 0; i < 100; i++) {
+            state.tick++
+          }
           state.children.push(2)
         }}"
       >

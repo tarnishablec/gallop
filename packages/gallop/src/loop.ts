@@ -1,11 +1,6 @@
 import { ReactiveElement } from './component'
 import { ReacMap, resetDirtyCollectionSet } from './reactive'
-import {
-  resolveEffects,
-  effectQueueMap,
-  unmountEffectMap,
-  resetLastDepEl
-} from './hooks'
+import { resolveEffects, unmountEffectMap, resetLastDepEl } from './hooks'
 
 const createCallbackMap = <CB extends (...args: any[]) => unknown>() =>
   new ReacMap<string, CB, { before: string } | { after: string }>({
