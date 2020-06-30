@@ -16,7 +16,7 @@ component('test-app', function (this: ReactiveElement) {
   useEffect(() => {
     console.log(state.tick)
     return () => console.log(state.tick + '!!!')
-  }, [state, state.children])
+  }, [state])
 
   useEffect(() => {
     console.log(`state.tick`)
