@@ -1,24 +1,6 @@
 import { ReactiveElement } from './component'
-import { ReacMap, resetDirtyCollectionSet } from './reactive'
+import { resetDirtyCollectionSet } from './reactive'
 import { resolveEffects, unmountEffectMap, resetLastDepEl } from './hooks'
-
-const createCallbackMap = <CB extends (...args: any[]) => unknown>() =>
-  new ReacMap<string, CB, { before: string } | { after: string }>({
-    onSet: (k, v, s, p) => {
-      const mapArr = Array.from(s.$map)
-      if (p) {
-        const index =
-          'before' in p
-            ? mapArr.findIndex((a) => a[0] === p.before)
-            : mapArr.findIndex((a) => a[0] === p.after) + 1
-        mapArr.splice(~index ? index : Infinity, 0, [k, v])
-        s.$map = new Map(mapArr)
-      } else {
-        s.$map.set(k, v)
-      }
-      return s
-    }
-  })
 
 export class Looper {
   private constructor() {}
@@ -40,10 +22,11 @@ export class Looper {
     Looper.flush()
   }
 
-  static loopEachCallbacks = createCallbackMap<
+  static loopEachCallbacks = new Map<
+    string,
     (current: ReactiveElement) => unknown
   >()
-  static loopEndCallbacks = createCallbackMap<() => void>()
+  static loopEndCallbacks = new Map<string, () => void>()
 
   static flush() {
     if (Looper.dirty) return

@@ -67,3 +67,13 @@ export function extractProps(attr: NamedNodeMap) {
       return acc
     }, {} as Obj)
 }
+
+export function instanceofOneOf(
+  target: unknown,
+  classes: Iterable<new () => unknown>
+) {
+  for (const clazz of classes) {
+    if (target instanceof clazz) return clazz
+  }
+  return false
+}
