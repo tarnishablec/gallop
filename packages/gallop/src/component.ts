@@ -12,7 +12,6 @@ type RegisterOption = {
   extend?: keyof HTMLElementTagNameMap
   Inherit?: new () => HTMLElement
   shadow?: boolean
-  stable?: boolean
 }
 
 export interface ReactiveElement extends HTMLElement {
