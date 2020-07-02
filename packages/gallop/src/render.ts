@@ -16,5 +16,5 @@ export function render(
   container.insertBefore(startNode, endNode)
   const dof = patcher.dof
   container.insertBefore(dof, endNode)
-  return () => removeNodes(container, startNode, endNode.nextSibling)
+  return () => removeNodes({ startNode, endNode, edge: true })
 }
