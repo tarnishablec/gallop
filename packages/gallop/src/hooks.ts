@@ -10,7 +10,7 @@ export function useState<T extends Obj>(raw: T): [T] {
     current.$state
       ? (current.$state as T)
       : (current.$state = createProxy(raw, {
-          onSet: () => current.requestUpdate()
+          onMut: () => current.requestUpdate()
         }))
   ]
 }

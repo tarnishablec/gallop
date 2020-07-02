@@ -14,7 +14,7 @@ export class Context<T extends Obj> {
   watchList: Set<ReactiveElement> = new Set()
 
   constructor(public raw: T, public options?: ContextOptions<T>) {
-    this.proxy = createProxy(raw, { onSet: () => this.update() })
+    this.proxy = createProxy(raw, { onMut: () => this.update() })
     options?.onCreate?.(this)
   }
 

@@ -47,7 +47,7 @@ export function component<F extends Component>(
     $props = createProxy(
       {},
       {
-        onSet: () => this.requestUpdate()
+        onMut: () => this.requestUpdate()
       }
     )
     $contexts = new Set<Context<Obj>>()
