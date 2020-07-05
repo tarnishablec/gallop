@@ -91,3 +91,17 @@ export function resolveEffects(current: ReactiveElement) {
     })
   )
 }
+
+const memoMap = new WeakMap<ReactiveElement, unknown[]>()
+export function useMemo(func: () => unknown, depends?: unknown[]) {
+  const current = Looper.resolveCurrent()
+  const [dirty, , count] = useDepends(depends)
+  const vals = memoMap.get(current) ?? memoMap.set(current, []).get(current)!
+  if (dirty) {
+    const result = func()
+    vals[count] = result
+    return result
+  } else {
+    return vals[count]
+  }
+}

@@ -2,6 +2,9 @@ import { HTMLClip, createPatcher, getVals } from './clip'
 import { markerIndex } from './marker'
 import { removeNodes } from './dom'
 
+/**
+ * @returns ununmout function
+ */
 export function render(
   view: HTMLClip,
   {

@@ -5,6 +5,7 @@ import {
   Context,
   useEffect,
   useState,
+  useMemo,
   ReactiveElement
 } from '@gallop/gallop'
 
@@ -12,6 +13,10 @@ export const [global, globalContext] = Context.initGlobal({ data: 1 })
 
 component('test-app', function (this: ReactiveElement) {
   const [state] = useState({ tick: 0, tok: 0, children: [1, 2, 3] })
+
+  useEffect(() => {
+    console.log(`test-app mounted`)
+  }, [])
 
   useEffect(() => {
     console.log(state.tick)
@@ -26,15 +31,19 @@ component('test-app', function (this: ReactiveElement) {
     console.log(this.$root.querySelector('button'))
   })
 
+  const sum = useMemo(() => {
+    console.log(`calculated`)
+    return state.tick + state.tok
+  }, [state.tick, state.tok])
+
   return html`
     <div>
       test-app
       <button
         @click="${() => {
-          for (let i = 0; i < 1; i++) {
+          for (let i = 0; i < 100; i++) {
             state.tick++
           }
-          state.children.push(2)
         }}"
       >
         add tick
@@ -45,6 +54,13 @@ component('test-app', function (this: ReactiveElement) {
       <button @click="${() => state.tok++}">add tok</button>
       <hr />
       <div>${state.tok}</div>
+      <hr />
+      <button @click="${() => state.children.push(2)}">
+        add children
+      </button>
+      <hr />
+      <hr />
+      <div>${sum}</div>
     </div>
   `
 })
