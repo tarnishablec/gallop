@@ -26,9 +26,8 @@ export class Context<T extends Obj> {
   static globalContext?: Context<Obj>
   static global?: Obj
   static initGlobal<G extends Obj>(init: G, options?: ContextOptions<G>) {
-    if (Context.globalContext || Context.global) {
+    if (Context.globalContext || Context.global)
       throw new Error(`Can not init global context twice.`)
-    }
     return ([Context.global, Context.globalContext as unknown] = createContext(
       init,
       options

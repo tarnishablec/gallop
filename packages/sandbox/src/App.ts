@@ -19,8 +19,8 @@ component('test-app', function (this: ReactiveElement) {
   }, [state.tick])
 
   useEffect(() => {
-    console.log(`state.tick`)
-  }, [])
+    console.log(state.children)
+  }, [state.children])
 
   useEffect(() => {
     console.log(this.$root.querySelector('button'))
@@ -31,7 +31,7 @@ component('test-app', function (this: ReactiveElement) {
       test-app
       <button
         @click="${() => {
-          for (let i = 0; i < 100; i++) {
+          for (let i = 0; i < 1; i++) {
             state.tick++
           }
           state.children.push(2)

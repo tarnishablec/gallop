@@ -56,7 +56,7 @@ export const createProxy = <T extends Obj>(
       const hasChanged = !shallowEqual(Reflect.get(target, prop), val)
       const res = Reflect.set(target, prop, val, receiver)
       if (hasChanged) {
-        Array.isArray(target) && dirtyCollectionSet.add(target)
+        Array.isArray(target) && dirtyCollectionSet.add(receiver)
         onMut?.(target, prop, val, receiver)
       }
       return res
