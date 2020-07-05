@@ -1,7 +1,7 @@
 import { Obj, shallowEqual, Primitive } from './utils'
 import { LockedProxyError } from './error'
 
-type Key = Exclude<Primitive, null | boolean | bigint>
+type Key = Exclude<Primitive, null | boolean | bigint | undefined>
 
 const rawProxyMap = new WeakMap()
 
@@ -24,7 +24,12 @@ export const createProxy = <T extends Obj>(
     lock = false,
     deep = true
   }: {
-    onMut?: (target: T, prop: Key, val: unknown, receiver: unknown) => void
+    onMut?: (
+      target: T,
+      prop: Key | undefined,
+      val: unknown,
+      receiver: unknown
+    ) => void
     onGet?: (target: T, prop: Key, receiver: unknown) => void
     lock?: boolean
     deep?: boolean
@@ -34,6 +39,7 @@ export const createProxy = <T extends Obj>(
     return new Proxy(raw, {
       get: (target, prop, receiver) => {
         const value = Reflect.get(target, prop, receiver)
+        // TODO ?
         if (value instanceof Function) {
           if (mutFuncs.includes(prop)) {
             dirtyCollectionSet.add(target)

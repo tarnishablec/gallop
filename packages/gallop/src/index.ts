@@ -4,7 +4,7 @@ export { HTMLClip } from './clip'
 export { Patcher } from './patcher'
 export { Looper } from './loop'
 
-export { component } from './component'
+export { component, mergeProp, mergeProps } from './component'
 
 export { Context, createContext } from './context'
 

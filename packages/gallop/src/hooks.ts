@@ -75,18 +75,19 @@ export function useEffect(effect: Effect, depends?: unknown[]) {
     ((effectQueueMap.get(current) ??
       effectQueueMap.set(current, []).get(current))![count] = effect)
 }
-export const resolveEffects = (current: ReactiveElement) => {
+export function resolveEffects(current: ReactiveElement) {
   const effects = effectQueueMap.get(current)
   return (
     effects &&
-    Promise.resolve().then(() => {
-      const resList: (void | (() => void))[] =
-        unmountEffectMap.get(current) ?? []
-      effects.forEach((e, i) => {
-        const res = e?.()
-        res && (resList[i] = res)
-      })
-      return resList
+    new Promise<(void | (() => void))[]>((resovle) => {
+      const resList = unmountEffectMap.get(current) ?? []
+      setTimeout(() => {
+        effects.forEach((e, i) => {
+          const res = e?.()
+          res && (resList[i] = res)
+          resovle(resList)
+        })
+      }, 0)
     })
   )
 }
