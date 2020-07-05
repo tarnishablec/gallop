@@ -10,6 +10,7 @@ export type Primitive =
   | bigint
 
 export type Obj = Record<string, unknown>
+export type Key = Exclude<Primitive, null | boolean | bigint | undefined>
 
 export function tryParseToString(val: unknown): string {
   if (val === undefined || val === null) return ''
