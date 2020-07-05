@@ -2,6 +2,7 @@ import { DoAble } from './do'
 import { cleanDomStr } from './dom'
 import { Patcher } from './patcher'
 import { marker } from './marker'
+import { hashify } from './utils'
 
 const range = new Range()
 
@@ -23,8 +24,10 @@ export function getShaHtml(this: HTMLClip) {
 }
 
 export function createPatcher(this: HTMLClip) {
+  const shaHtml = this.do(getShaHtml)
   return new Patcher(
-    range.createContextualFragment(this.do(getShaHtml)),
-    this.vals.length
+    range.createContextualFragment(shaHtml),
+    this.vals.length,
+    hashify(shaHtml)
   )
 }

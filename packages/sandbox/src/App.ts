@@ -11,7 +11,7 @@ import {
 export const [global, globalContext] = Context.initGlobal({ data: 1 })
 
 component('test-app', function (this: ReactiveElement) {
-  const [state] = useState({ tick: 0, children: [1, 2, 3] })
+  const [state] = useState({ tick: 0, tok: 0, children: [1, 2, 3] })
 
   useEffect(() => {
     console.log(state.tick)
@@ -37,8 +37,14 @@ component('test-app', function (this: ReactiveElement) {
           state.children.push(2)
         }}"
       >
-        add
+        add tick
       </button>
+      <hr />
+      <div>${state.tick}</div>
+      <hr />
+      <button @click="${() => state.tok++}">add tok</button>
+      <hr />
+      <div>${state.tok}</div>
     </div>
   `
 })

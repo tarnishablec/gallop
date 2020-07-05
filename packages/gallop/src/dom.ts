@@ -7,15 +7,11 @@ export const insertAfter = (
   afterChild?: Node | null
 ) => container.insertBefore(newChild, afterChild?.nextSibling ?? null)
 
-export function removeNodes({
-  startNode,
-  endNode,
+export function removeNodes(
+  startNode: Node,
+  endNode: Node,
   edge = false
-}: {
-  startNode: Node
-  endNode: Node
-  edge?: boolean
-}): DocumentFragment {
+): DocumentFragment {
   const range = new Range()
   edge ? range.setStartBefore(startNode) : range.setStartAfter(startNode)
   edge ? range.setEndAfter(endNode) : range.setEndBefore(endNode)

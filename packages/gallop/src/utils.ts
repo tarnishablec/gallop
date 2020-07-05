@@ -13,8 +13,8 @@ export type Obj = Record<string, unknown>
 
 export function tryParseToString(val: unknown): string {
   if (val === undefined || val === null) return ''
+  if (typeof val === 'string') return val
   if (
-    typeof val === 'string' ||
     typeof val === 'function' ||
     typeof val === 'symbol' ||
     typeof val === 'number'
@@ -51,8 +51,8 @@ export function shallowEqual(objA: unknown, objB: unknown) {
   return true
 }
 
-export function extractProps(attr: NamedNodeMap) {
-  return Array.from(attr)
+export function extractProps(attrs: NamedNodeMap) {
+  return Array.from(attrs)
     .filter((a) => /^:\S+/.test(a.name) && a.value !== marker)
     .reduce((acc, { name, value }) => {
       let v: string | boolean
@@ -67,3 +67,12 @@ export function extractProps(attr: NamedNodeMap) {
       return acc
     }, {} as Obj)
 }
+
+/**
+ * https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+ */
+export const hashify = (str: string) =>
+  str.split('').reduce((a, b) => {
+    a = (a << 5) - a + b.charCodeAt(0)
+    return a & a
+  }, 0)

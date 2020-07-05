@@ -12,36 +12,31 @@ function createParts(patcher: Patcher) {
     walker.nextNode()
     const { currentNode: cur } = walker
 
-    if (cur === null) {
-      break
-    }
-
-    if (cur instanceof HTMLStyleElement) {
-      throw StyleInTemplateError(cur)
-    }
+    if (cur === null) break
+    if (cur instanceof HTMLStyleElement) throw StyleInTemplateError(cur)
 
     if (cur instanceof Element) {
       const { attributes: attrs } = cur
       const { length } = attrs
 
       for (let i = 0; i < length; i++) {
-        const { name } = attrs[i]
+        let { name } = attrs[i]
         const prefix = name[0]
         if (
           prefix === '.' ||
           prefix === '@' ||
-          (prefix === ':' && attrs[i].value !== marker)
+          (prefix === ':' && marker !== attrs[i].value)
         ) {
-          const bindName = name.slice(1)
+          name = name.slice(1)
           switch (prefix) {
             case '.':
-              result.push(new AttrPart({ node: cur, name: bindName }, count))
+              result.push(new AttrPart({ node: cur, name }, count))
               break
             case ':':
-              result.push(new PropPart({ node: cur, name: bindName }, count))
+              result.push(new PropPart({ node: cur, name }, count))
               break
             case '@':
-              result.push(new EventPart({ node: cur, name: bindName }, count))
+              result.push(new EventPart({ node: cur, name }, count))
               break
           }
           count++
@@ -49,7 +44,7 @@ function createParts(patcher: Patcher) {
       }
     } else if (cur instanceof Comment) {
       if (markerIndex === cur.data) {
-        const tail = new Comment(marker)
+        const tail = new Comment(markerIndex)
         insertAfter(cur.parentNode!, tail, cur)
         result.push(new NodePart({ startNode: cur, endNode: tail }, count))
         walker.nextNode()
@@ -63,7 +58,11 @@ function createParts(patcher: Patcher) {
 export class Patcher {
   parts: Part[]
 
-  constructor(public dof: DocumentFragment, public size: number) {
+  constructor(
+    public dof: DocumentFragment,
+    public size: number,
+    public hash: number
+  ) {
     this.parts = createParts(this)
   }
 
