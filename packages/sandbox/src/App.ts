@@ -6,7 +6,8 @@ import {
   useEffect,
   useState,
   useMemo,
-  ReactiveElement
+  ReactiveElement,
+  repeat
 } from '@gallop/gallop'
 
 export const [global, globalContext] = Context.initGlobal({ data: 1 })
@@ -16,7 +17,7 @@ component('test-app', function (this: ReactiveElement) {
     tick: 0,
     tok: 0,
     children: [1, 2, 3],
-    map: new Map()
+    map: new Map<number, number>()
   })
 
   useEffect(() => {
@@ -49,31 +50,40 @@ component('test-app', function (this: ReactiveElement) {
   }, [state.tick, state.tok])
 
   return html`
-    <div>
+    <div @hover="${() => console.log('hover')}" .style="${{ display: 'grid' }}">
       test-app
-      <button
-        @click="${() => {
-          for (let i = 0; i < 100; i++) {
-            state.tick++
-          }
-        }}"
-      >
-        add tick
-      </button>
-      <hr />
-      <div>${state.tick}</div>
-      <hr />
-      <button @click="${() => state.tok++}">add tok</button>
-      <hr />
-      <div>${state.tok}</div>
-      <hr />
-      <button @click="${() => state.children.push(2)}">
-        add children
-      </button>
-      <hr />
-      <div>${res}</div>
-      <hr />
-      <div>${sum}</div>
+    </div>
+    <hr />
+    <button
+      @click="${() => {
+        for (let i = 0; i < 100; i++) {
+          state.tick++
+        }
+      }}"
+    >
+      add tick
+    </button>
+    <hr />
+    <div>${state.tick}</div>
+    <hr />
+    <button @click="${() => state.tok++}">add tok</button>
+    <hr />
+    <div>${state.tok}</div>
+    <hr />
+    <button @click="${() => state.children.push(2)}">
+      add children
+    </button>
+    <hr />
+    <div>${res}</div>
+    <hr />
+    <div>${sum}</div>
+    <hr />
+    <div>
+      ${repeat(
+        state.children,
+        (_, index) => index,
+        (item) => html`<span>${item}</span>`
+      )}
     </div>
   `
 })

@@ -73,7 +73,7 @@ export function extractProps(attrs: NamedNodeMap) {
  * https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
  */
 export const hashify = (str: string) =>
-  str.split('').reduce((a, b) => {
+  [...str].reduce((a, b) => {
     a = (a << 5) - a + b.charCodeAt(0)
     return a & a
   }, 0)

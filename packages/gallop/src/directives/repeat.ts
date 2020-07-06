@@ -121,6 +121,7 @@ export const repeat = directive(function <T>(
     }
 
     const diffRes = listKeyDiff(oldKeys ?? [], newKeys)
+    debugger
     // TODO
     diffRes.forEach((change) => {
       switch (change.type) {
