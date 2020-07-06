@@ -40,7 +40,7 @@ export const createProxy = <T extends Obj>(
         // TODO ?
         if (value instanceof Function) {
           if (mutFuncs.includes(prop)) {
-            dirtyCollectionSet.add(target)
+            dirtyCollectionSet.add(receiver)
             onMut?.(target, undefined, undefined, receiver)
           }
           return value.bind(target)

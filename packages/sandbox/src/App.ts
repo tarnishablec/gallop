@@ -12,7 +12,12 @@ import {
 export const [global, globalContext] = Context.initGlobal({ data: 1 })
 
 component('test-app', function (this: ReactiveElement) {
-  const [state] = useState({ tick: 0, tok: 0, children: [1, 2, 3] })
+  const [state] = useState({
+    tick: 0,
+    tok: 0,
+    children: [1, 2, 3],
+    map: new Map()
+  })
 
   useEffect(() => {
     console.log(`test-app mounted`)
@@ -30,6 +35,13 @@ component('test-app', function (this: ReactiveElement) {
   useEffect(() => {
     console.log(this.$root.querySelector('button'))
   })
+
+  const res = useMemo(() => {
+    state.map.set(state.tok, state.tick)
+    const result = state.map.get(state.tok)
+    console.log(state.map)
+    return result
+  }, [state.tick, state.tok])
 
   const sum = useMemo(() => {
     console.log(`calculated`)
@@ -59,6 +71,7 @@ component('test-app', function (this: ReactiveElement) {
         add children
       </button>
       <hr />
+      <div>${res}</div>
       <hr />
       <div>${sum}</div>
     </div>
