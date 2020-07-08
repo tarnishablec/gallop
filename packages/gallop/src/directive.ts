@@ -5,7 +5,7 @@ export const directives = new WeakSet()
 export type DirectiveFn = (part: Part) => void
 
 export function isDirective(val: unknown): val is DirectiveFn {
-  return val instanceof Function && directives.has(val)
+  return typeof val === 'function' && directives.has(val)
 }
 
 export function directive<F extends (...args: any[]) => DirectiveFn>(f: F) {
@@ -17,10 +17,10 @@ export function directive<F extends (...args: any[]) => DirectiveFn>(f: F) {
 }
 
 export function resolveDirective(val: unknown, part: Part) {
-  let isOverrided = false
+  let isOverridden = false
   while (isDirective(val)) {
-    isOverrided = true
+    isOverridden = true
     val = val(part)
   }
-  return isOverrided
+  return isOverridden
 }

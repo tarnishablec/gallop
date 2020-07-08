@@ -4,7 +4,7 @@ import { Obj, extractProps } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
 import { Context } from './context'
-import { unmountEffectMap } from './hooks'
+import { unmountedEffectMap } from './hooks'
 
 export type Component = (...args: any[]) => HTMLClip
 
@@ -34,11 +34,7 @@ export interface ReactiveElement extends HTMLElement {
 export function component<F extends Component>(
   name: string,
   builder: F,
-  {
-    shadow = true,
-    extend = undefined,
-    Inherit = HTMLElement
-  }: RegisterOption = {}
+  { shadow = true, extend = undefined, Inherit = HTMLElement }: RegisterOption = {}
 ) {
   const clazz = class extends Inherit implements ReactiveElement {
     $builder = builder
@@ -77,7 +73,7 @@ export function component<F extends Component>(
       Context.globalContext && Context.globalContext.watch(this)
     }
     disconnectedCallback() {
-      unmountEffectMap.get(this)?.forEach((fn) => fn())
+      unmountedEffectMap.get(this)?.forEach((fn) => fn())
     }
 
     constructor() {
@@ -88,13 +84,10 @@ export function component<F extends Component>(
 }
 
 export const isReactive = (node: Node): node is ReactiveElement =>
-  Reflect.get(node, '$isReactive')
+  !!Reflect.get(node, '$isReactive')
 
-export const mergeProp = (
-  node: ReactiveElement,
-  name: string,
-  value: unknown
-) => Reflect.set(node.$props, name, value)
+export const mergeProp = (node: ReactiveElement, name: string, value: unknown) =>
+  Reflect.set(node.$props, name, value)
 
 export const mergeProps = (node: ReactiveElement, value: unknown) =>
   Object.assign(node.$props, value)

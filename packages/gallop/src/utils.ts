@@ -9,6 +9,15 @@ export type Primitive =
   | boolean
   | bigint
 
+/**
+ * stupid js
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof#null
+ */
+export function isObject<T = object>(target: unknown): target is T & object {
+  return target !== null && typeof target === 'object'
+}
+
 export type Obj = Record<string, unknown>
 export type Key = Exclude<Primitive, null | boolean | bigint | undefined>
 

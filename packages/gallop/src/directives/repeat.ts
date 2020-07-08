@@ -25,70 +25,70 @@ type Change =
       key: DiffKey
     }
 
-const nulltag = Symbol('null')
+const nullTag = Symbol('null')
 
 function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
-  let oldhead = 0
-  let newhead = 0
-  let oldtail = oldList.length - 1
-  let newtail = newList.length - 1
-  let lasthead: DiffKey | null = null
-  let lasttail: DiffKey | null = null
+  let oldHead = 0
+  let newHead = 0
+  let oldTail = oldList.length - 1
+  let newTail = newList.length - 1
+  let lastHead: DiffKey | null = null
+  let lastTail: DiffKey | null = null
   const res: Change[] = []
 
-  while (oldhead < oldtail && newhead < newtail) {
-    if (oldList[oldhead] === nulltag) {
-      oldhead++
-    } else if (oldList[oldtail] === nulltag) {
-      oldtail--
-    } else if (newList[newhead] === oldList[oldhead]) {
-      lasthead = newList[newhead]
-      newhead++
-      oldhead++
-    } else if (newList[newhead] === oldList[oldtail]) {
-      res.push({ type: 'movea', key: oldList[oldtail], after: lasthead })
-      lasthead = oldList[oldtail]
-      newhead++
-      oldtail--
-    } else if (newList[newtail] === oldList[oldtail]) {
-      lasttail = oldList[oldtail]
-      oldtail--
-      newtail--
-    } else if (newList[newtail] === oldList[oldhead]) {
-      res.push({ type: 'moveb', key: oldList[oldhead], before: lasttail })
-      lasttail = oldList[oldhead]
-      newtail--
-      oldhead++
+  while (oldHead < oldTail && newHead < newTail) {
+    if (oldList[oldHead] === nullTag) {
+      oldHead++
+    } else if (oldList[oldTail] === nullTag) {
+      oldTail--
+    } else if (newList[newHead] === oldList[oldHead]) {
+      lastHead = newList[newHead]
+      newHead++
+      oldHead++
+    } else if (newList[newHead] === oldList[oldTail]) {
+      res.push({ type: 'movea', key: oldList[oldTail], after: lastHead })
+      lastHead = oldList[oldTail]
+      newHead++
+      oldTail--
+    } else if (newList[newTail] === oldList[oldTail]) {
+      lastTail = oldList[oldTail]
+      oldTail--
+      newTail--
+    } else if (newList[newTail] === oldList[oldHead]) {
+      res.push({ type: 'moveb', key: oldList[oldHead], before: lastTail })
+      lastTail = oldList[oldHead]
+      newTail--
+      oldHead++
     } else {
-      const headIndex = oldList.indexOf(newList[newhead])
+      const headIndex = oldList.indexOf(newList[newHead])
       if (~headIndex) {
-        res.push({ type: 'movea', key: newList[newhead], after: lasthead })
-        oldList[headIndex] = nulltag
+        res.push({ type: 'movea', key: newList[newHead], after: lastHead })
+        oldList[headIndex] = nullTag
       } else {
-        res.push({ type: 'insert', key: newList[newhead], after: lasthead })
+        res.push({ type: 'insert', key: newList[newHead], after: lastHead })
       }
-      lasthead = newList[newhead]
-      newhead++
+      lastHead = newList[newHead]
+      newHead++
 
-      if (!newList.includes(oldList[oldtail])) {
-        res.push({ type: 'remove', key: oldList[oldtail] })
-        oldtail--
+      if (!newList.includes(oldList[oldTail])) {
+        res.push({ type: 'remove', key: oldList[oldTail] })
+        oldTail--
       }
     }
   }
-  if (newhead < newtail || newhead > oldtail) {
-    for (; newhead <= newtail; newhead++) {
-      if (!oldList.includes(newList[newhead])) {
-        res.push({ type: 'insert', key: newList[newhead], after: lasthead })
+  if (newHead < newTail || newHead > oldTail) {
+    for (; newHead <= newTail; newHead++) {
+      if (!oldList.includes(newList[newHead])) {
+        res.push({ type: 'insert', key: newList[newHead], after: lastHead })
       }
-      lasthead = newList[newhead]
+      lastHead = newList[newHead]
     }
   }
-  if (oldhead < oldtail || oldhead > newtail) {
-    for (; oldhead <= oldtail; oldhead++) {
-      if (oldList[oldhead] !== nulltag) {
-        if (!newList.includes(oldList[oldhead])) {
-          res.push({ type: 'remove', key: oldList[oldhead] })
+  if (oldHead < oldTail || oldHead > newTail) {
+    for (; oldHead <= oldTail; oldHead++) {
+      if (oldList[oldHead] !== nullTag) {
+        if (!newList.includes(oldList[oldHead])) {
+          res.push({ type: 'remove', key: oldList[oldHead] })
         }
       }
     }
@@ -121,7 +121,7 @@ export const repeat = directive(function <T>(
     }
 
     const diffRes = listKeyDiff(oldKeys ?? [], newKeys)
-    debugger
+    // debugger
     // TODO
     diffRes.forEach((change) => {
       switch (change.type) {

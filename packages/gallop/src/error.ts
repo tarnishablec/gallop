@@ -2,9 +2,9 @@ import { Primitive } from './utils'
 
 export const LockedProxyError = (target: unknown, prop: unknown) =>
   new Error(
-    `Can not set new property "${String(
-      prop
-    )}" to locked object "${JSON.stringify(target)}".`
+    `Can not set new property "${String(prop)}" to locked object "${JSON.stringify(
+      target
+    )}".`
   )
 
 export const NotReactiveElementError = (name: string) =>

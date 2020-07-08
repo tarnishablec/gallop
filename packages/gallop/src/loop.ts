@@ -1,33 +1,21 @@
 import { ReactiveElement } from './component'
-import { resetDirtyCollectionSet } from './reactive'
-import { resolveEffects, unmountEffectMap, resetLastDepEl } from './hooks'
+import { resolveEffects, unmountedEffectMap, resetLastDepEl } from './hooks'
+import { Recycler } from './dirty'
 
 export class Looper {
   private constructor() {}
 
-  protected static updateQueue = new Set<ReactiveElement>()
   protected static current?: ReactiveElement
-  protected static dirty = false
+  static resolveCurrent = () => Looper.current!
+  static setCurrent = (el: ReactiveElement | undefined) => (Looper.current = el)
+  static enUpdateQueue = (el: ReactiveElement) =>
+    Looper.updateQueue.add(el) && Looper.flush()
 
-  static resolveCurrent() {
-    return Looper.current!
-  }
-
-  static setCurrent(el: ReactiveElement | undefined) {
-    Looper.current = el
-  }
-
-  static enUpdateQueue(el: ReactiveElement) {
-    Looper.updateQueue.add(el)
-    Looper.flush()
-  }
-
-  static loopEachCallbacks = new Map<
-    string,
-    (current: ReactiveElement) => unknown
-  >()
+  static loopEachCallbacks = new Map<string, (current: ReactiveElement) => unknown>()
   static loopEndCallbacks = new Map<string, () => void>()
 
+  protected static updateQueue = new Set<ReactiveElement>()
+  protected static dirty = false
   static flush() {
     if (Looper.dirty) return
     Looper.dirty = true
@@ -45,10 +33,15 @@ export class Looper {
   }
 }
 
+//// Loop end
 Looper.loopEndCallbacks.set('resetLastDepEl', resetLastDepEl)
-Looper.loopEndCallbacks.set('resetDirtyCollectionSet', resetDirtyCollectionSet)
+Looper.loopEndCallbacks.set(
+  'resetDirtyCollectionSet',
+  Recycler.resetDirtyCollectionSet
+)
+//// Loop each
 Looper.loopEachCallbacks.set('resolveEffects', (current) =>
   resolveEffects(current)?.then((res) =>
-    unmountEffectMap.set(current, res.filter(Boolean) as (() => void)[])
+    unmountedEffectMap.set(current, res.filter(Boolean) as (() => void)[])
   )
 )

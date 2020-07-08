@@ -26,3 +26,11 @@ interface Window {
 }
 
 interface ImportMeta {}
+
+declare namespace Reflect {
+  function get<T extends object, P extends PropertyKey>(
+    target: T,
+    propertyKey: P,
+    receiver?: T
+  ): P extends '__raw__' ? T : T[keyof T]
+}

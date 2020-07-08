@@ -1,8 +1,9 @@
-import { Obj } from './utils'
+import { Obj, isObject } from './utils'
 import { Looper } from './loop'
-import { createProxy, dirtyCollectionSet } from './reactive'
+import { createProxy } from './reactive'
 import { Context } from './context'
 import { ReactiveElement } from './component'
+import { Recycler } from './dirty'
 
 export function useState<T extends Obj>(raw: T): [T] {
   const current = Looper.resolveCurrent()
@@ -43,8 +44,8 @@ export function useDepends(depends?: unknown[]): [boolean, boolean, number] {
     for (let i = 0; i < depends.length; i++) {
       const dep = depends[i]
       if (
-        (dep instanceof Object &&
-          (!Object.is(dep, oldVals[i]) || dirtyCollectionSet.has(dep))) ||
+        (isObject(dep) &&
+          (!Object.is(dep, oldVals[i]) || Recycler.checkDirty(dep))) ||
         !Object.is(dep, oldVals[i])
       ) {
         dirty = true
@@ -53,8 +54,7 @@ export function useDepends(depends?: unknown[]): [boolean, boolean, number] {
     }
   }
   !(
-    depCountMap.get(current) ??
-    depCountMap.set(current, new Map()).get(current)!
+    depCountMap.get(current) ?? depCountMap.set(current, new Map()).get(current)!
   ).set(depCount, depends)
   lastDepEl = current
   depCount++
@@ -62,30 +62,28 @@ export function useDepends(depends?: unknown[]): [boolean, boolean, number] {
 }
 
 type Effect = () => void | (() => void)
-export const effectQueueMap = new WeakMap<
-  ReactiveElement,
-  (Effect | undefined)[]
->()
-export const unmountEffectMap = new WeakMap<ReactiveElement, (() => void)[]>()
+export const effectQueueMap = new WeakMap<ReactiveElement, (Effect | undefined)[]>()
+export const unmountedEffectMap = new WeakMap<ReactiveElement, (() => void)[]>()
 export function useEffect(effect: Effect, depends?: unknown[]) {
   const current = Looper.resolveCurrent()
   const [dirty, diff, count] = useDepends(depends)
   diff && effectQueueMap.set(current, [])
   dirty &&
-    ((effectQueueMap.get(current) ??
-      effectQueueMap.set(current, []).get(current))![count] = effect)
+    ((effectQueueMap.get(current) ?? effectQueueMap.set(current, []).get(current))![
+      count
+    ] = effect)
 }
 export function resolveEffects(current: ReactiveElement) {
   const effects = effectQueueMap.get(current)
   return (
     effects &&
-    new Promise<(void | (() => void))[]>((resovle) => {
-      const resList = unmountEffectMap.get(current) ?? []
+    new Promise<(void | (() => void))[]>((resolve) => {
+      const resList = unmountedEffectMap.get(current) ?? []
       setTimeout(() => {
         effects.forEach((e, i) => {
           const res = e?.()
           res && (resList[i] = res)
-          resovle(resList)
+          resolve(resList)
         })
       }, 0)
     })
