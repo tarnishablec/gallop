@@ -33,13 +33,13 @@ export class Looper {
   }
 }
 
-//// Loop end
+// Loop end
 Looper.loopEndCallbacks.set('resetLastDepEl', resetLastDepEl)
 Looper.loopEndCallbacks.set(
   'resetDirtyCollectionSet',
   Recycler.resetDirtyCollectionSet
 )
-//// Loop each
+// Loop each
 Looper.loopEachCallbacks.set('resolveEffects', (current) =>
   resolveEffects(current)?.then((res) =>
     unmountedEffectMap.set(current, res.filter(Boolean) as (() => void)[])
