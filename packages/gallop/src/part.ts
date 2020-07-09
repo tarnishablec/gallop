@@ -141,7 +141,7 @@ export class EventPart implements Part {
   }
 }
 
-/////
+//
 function initEntry(val: unknown): unknown {
   if (Array.isArray(val)) throw new SyntaxError(`use repeat() directive`)
   if (val instanceof HTMLClip) return val.do(createPatcher).patch(val.do(getVals))

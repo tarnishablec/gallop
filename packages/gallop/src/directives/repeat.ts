@@ -96,7 +96,10 @@ function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
   return res
 }
 
-const partKeyCache = new WeakMap<NodePart, DiffKey[]>()
+const partCache = new WeakMap<
+  NodePart,
+  { oldKeys: DiffKey[]; oldVals: unknown[]; kvMap: Map<DiffKey, unknown> }
+>()
 
 export const repeat = directive(function <T>(
   items: Iterable<T>,
@@ -107,7 +110,11 @@ export const repeat = directive(function <T>(
     if (!(part instanceof NodePart))
       throw DirectivePartTypeError(part.constructor.name)
 
-    const oldKeys = partKeyCache.get(part)
+    const { oldKeys, oldVals, kvMap } = partCache.get(part) ?? {
+      oldKeys: [],
+      oldVals: [],
+      kvMap: new Map()
+    }
     const newKeys: DiffKey[] = []
     const newVals: unknown[] = []
 
@@ -123,9 +130,13 @@ export const repeat = directive(function <T>(
     const diffRes = listKeyDiff(oldKeys ?? [], newKeys)
     // debugger
     // TODO
+
     diffRes.forEach((change) => {
       switch (change.type) {
         case 'insert':
+          {
+            const { key, after } = change
+          }
           break
         default:
           break

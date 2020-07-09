@@ -85,6 +85,10 @@ component('test-app', function (this: ReactiveElement) {
         (item) => html`<span>${item}</span>`
       )}
     </div>
+    <hr />
+    <div>
+      ${html` <div>${state.tick}</div> `}
+    </div>
   `
 })
 

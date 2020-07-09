@@ -44,6 +44,16 @@ function createParts(patcher: Patcher) {
       }
     } else if (cur instanceof Comment) {
       if (markerIndex === cur.data) {
+        // const parent = cur.parentNode!
+        // const index = Array.prototype.indexOf.call(parent.childNodes, cur)
+        // debugger
+        // const range = new StaticRange({
+        //   startContainer: parent,
+        //   endContainer: parent,
+        //   startOffset: index,
+        //   endOffset: index + 1
+        // })
+        // console.log(range)
         const tail = new Comment(markerIndex)
         insertAfter(cur.parentNode!, tail, cur)
         result.push(new NodePart({ startNode: cur, endNode: tail }, count))
