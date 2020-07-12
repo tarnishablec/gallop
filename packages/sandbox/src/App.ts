@@ -10,6 +10,8 @@ import {
   repeat
 } from '@gallop/gallop'
 
+import './styles/index'
+
 export const [global, globalContext] = Context.initGlobal({ data: 1 })
 
 component('test-app', function (this: ReactiveElement) {
@@ -70,7 +72,7 @@ component('test-app', function (this: ReactiveElement) {
     <hr />
     <div>${state.tok}</div>
     <hr />
-    <button @click="${() => state.children.push(2)}">
+    <button @click="${() => state.children.unshift(state.children.pop()!)}">
       add children
     </button>
     <hr />
@@ -81,7 +83,7 @@ component('test-app', function (this: ReactiveElement) {
     <div>
       ${repeat(
         state.children,
-        (_, index) => index,
+        (_) => _,
         (item) => html`<span>${item}</span>`
       )}
     </div>

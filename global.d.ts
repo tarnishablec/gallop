@@ -1,12 +1,6 @@
-declare module '*.scss' {
-  const content: { [className: string]: string }
-  export = content
-}
+declare module '*.scss' {}
 
-declare module '*.css' {
-  const content: { [className: string]: string }
-  export = content
-}
+declare module '*.css' {}
 
 type RequestIdleCallbackHandle = number
 type RequestIdleCallbackOptions = {

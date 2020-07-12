@@ -86,3 +86,36 @@ export const hashify = (str: string) =>
     a = (a << 5) - a + b.charCodeAt(0)
     return a & a
   }, 0)
+
+export type MapTypes<V = unknown> = Map<unknown, V> | WeakMap<object, V>
+export type MapKey<T extends MapTypes> = T extends WeakMap<infer WK, unknown>
+  ? WK
+  : T extends Map<infer K, unknown>
+  ? K
+  : never
+export type MapValue<T> = T extends MapTypes<infer V> ? V : unknown
+
+export type SetTypes = Set<unknown> | WeakSet<object>
+export type SetItem<T extends SetTypes> = T extends WeakSet<infer WV>
+  ? WV
+  : T extends Set<infer V>
+  ? V
+  : never
+
+export type StrongTypes = Map<unknown, unknown> | Set<unknown>
+export type WeakTypes = WeakMap<object, unknown> | WeakSet<object>
+
+export type DeleteItem<T extends MapTypes | SetTypes> = T extends WeakTypes
+  ? object
+  : unknown
+
+export function forceGet<T extends MapTypes>(
+  map: T,
+  key: MapKey<T>,
+  val: MapValue<T>
+): MapValue<T> {
+  const v = map.get(key)
+  if (v) return v as MapValue<T>
+  map.set(key, val)
+  return val
+}

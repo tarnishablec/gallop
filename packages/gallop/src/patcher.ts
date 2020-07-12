@@ -1,6 +1,6 @@
 import { Part, AttrPart, PropPart, EventPart, NodePart } from './part'
 import { StyleInTemplateError } from './error'
-import { marker, markerIndex } from './marker'
+import { marker, markerIndex, isMarker } from './marker'
 import { insertAfter } from './dom'
 
 function createParts(patcher: Patcher) {
@@ -42,24 +42,22 @@ function createParts(patcher: Patcher) {
           count++
         }
       }
-    } else if (cur instanceof Comment) {
-      if (markerIndex === cur.data) {
-        // const parent = cur.parentNode!
-        // const index = Array.prototype.indexOf.call(parent.childNodes, cur)
-        // debugger
-        // const range = new StaticRange({
-        //   startContainer: parent,
-        //   endContainer: parent,
-        //   startOffset: index,
-        //   endOffset: index + 1
-        // })
-        // console.log(range)
-        const tail = new Comment(markerIndex)
-        insertAfter(cur.parentNode!, tail, cur)
-        result.push(new NodePart({ startNode: cur, endNode: tail }, count))
-        walker.nextNode()
-        count++
-      }
+    } else if (isMarker(cur)) {
+      // const parent = cur.parentNode!
+      // const index = Array.prototype.indexOf.call(parent.childNodes, cur)
+      // debugger
+      // const range = new StaticRange({
+      //   startContainer: parent,
+      //   endContainer: parent,
+      //   startOffset: index,
+      //   endOffset: index + 1
+      // })
+      // console.log(range)
+      const tail = new Comment(markerIndex)
+      insertAfter(cur.parentNode!, tail, cur)
+      result.push(new NodePart({ startNode: cur, endNode: tail }, count))
+      walker.nextNode()
+      count++
     }
   }
   return result

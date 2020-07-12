@@ -3,22 +3,22 @@ import { directive } from '../directive'
 import { Part, NodePart } from '../part'
 import { DirectivePartTypeError, DuplicatedKeyError } from '../error'
 
-type DiffKey = Key
+type DiffKey = Key | null
 type Change =
   | {
       type: 'insert'
       key: DiffKey
-      after: DiffKey | null
+      after: DiffKey
     }
   | {
-      type: 'movea'
+      type: 'movea' // move after
       key: DiffKey
-      after: DiffKey | null
+      after: DiffKey
     }
   | {
-      type: 'moveb'
+      type: 'moveb' // move before
       key: DiffKey
-      before: DiffKey | null
+      before: DiffKey
     }
   | {
       type: 'remove'
@@ -27,7 +27,7 @@ type Change =
 
 const nullTag = Symbol('null')
 
-function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
+export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
   let oldHead = 0
   let newHead = 0
   let oldTail = oldList.length - 1
@@ -96,11 +96,6 @@ function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
   return res
 }
 
-const partCache = new WeakMap<
-  NodePart,
-  { oldKeys: DiffKey[]; oldVals: unknown[]; kvMap: Map<DiffKey, unknown> }
->()
-
 export const repeat = directive(function <T>(
   items: Iterable<T>,
   keyFn: (item: T, index: number) => DiffKey,
@@ -110,11 +105,8 @@ export const repeat = directive(function <T>(
     if (!(part instanceof NodePart))
       throw DirectivePartTypeError(part.constructor.name)
 
-    const { oldKeys, oldVals, kvMap } = partCache.get(part) ?? {
-      oldKeys: [],
-      oldVals: [],
-      kvMap: new Map()
-    }
+    // TODO
+
     const newKeys: DiffKey[] = []
     const newVals: unknown[] = []
 
@@ -123,24 +115,9 @@ export const repeat = directive(function <T>(
       const k = keyFn(item, index)
       if (newKeys.includes(k)) throw DuplicatedKeyError(k)
       newKeys.push(k)
-      newVals.push(mapFn(item, index))
+      const v = mapFn(item, index)
+      newVals.push(v)
       index++
     }
-
-    const diffRes = listKeyDiff(oldKeys ?? [], newKeys)
-    // debugger
-    // TODO
-
-    diffRes.forEach((change) => {
-      switch (change.type) {
-        case 'insert':
-          {
-            const { key, after } = change
-          }
-          break
-        default:
-          break
-      }
-    })
   }
 })

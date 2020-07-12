@@ -1,23 +1,18 @@
-import { shallowEqual, isObject } from './utils'
+import {
+  shallowEqual,
+  isObject,
+  MapTypes,
+  MapKey,
+  SetTypes,
+  DeleteItem,
+  StrongTypes,
+  SetItem,
+  forceGet
+} from './utils'
 import { LockedProxyError } from './error'
 import { Recycler } from './dirty'
 
 const rawProxyMap = new WeakMap()
-
-type MapTypes = Map<unknown, unknown> | WeakMap<object, unknown>
-type MapKey<T extends MapTypes> = T extends WeakMap<object, unknown>
-  ? object
-  : unknown
-
-type SetTypes = Set<unknown> | WeakSet<object>
-type SetItem<T extends SetTypes> = T extends WeakSet<object> ? object : unknown
-
-type StrongTypes = Map<unknown, unknown> | Set<unknown>
-type WeakTypes = WeakMap<object, unknown> | WeakSet<object>
-
-type DeleteItem<T extends MapTypes | SetTypes> = T extends WeakTypes
-  ? object
-  : unknown
 
 const __raw__ = '__raw__'
 
@@ -41,12 +36,12 @@ export const createProxy = <T extends object>(
   } = {}
 ): T => {
   function getter(target: unknown) {
-    if (deep && isObject(target)) {
-      if (rawProxyMap.has(target)) return rawProxyMap.get(target)
-      const p = createProxy(target, { onGet, onMut, lock, deep })
-      rawProxyMap.set(target, p)
-      return p
-    }
+    if (deep && isObject(target))
+      return forceGet(
+        rawProxyMap,
+        target,
+        createProxy(target, { onGet, onMut, lock, deep })
+      )
     return target
   }
 

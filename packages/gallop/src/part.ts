@@ -30,8 +30,7 @@ export class NodePart implements Part {
       const { endNode } = this.location
       const parent = endNode.parentNode!
       this.clear()
-      if (result instanceof Patcher) parent.insertBefore(result.dof, endNode)
-      else parent.insertBefore(new Text(tryParseToString(result)), endNode)
+      parent.insertBefore(extractDof(initEntry(result)), endNode)
     }
 
     this.value = result
@@ -142,7 +141,7 @@ export class EventPart implements Part {
 }
 
 //
-function initEntry(val: unknown): unknown {
+export function initEntry(val: unknown): unknown {
   if (Array.isArray(val)) throw new SyntaxError(`use repeat() directive`)
   if (val instanceof HTMLClip) return val.do(createPatcher).patch(val.do(getVals))
   return val
@@ -153,7 +152,7 @@ function initEntry(val: unknown): unknown {
  * @returns 1 -> update part
  * @returns 2 -> clean and init part
  */
-function tryUpdateEntry(pre: unknown, val: unknown): [unknown, 0 | 1 | 2] {
+export function tryUpdateEntry(pre: unknown, val: unknown): [unknown, 0 | 1 | 2] {
   if (Object.is(pre, val)) return [pre, 0]
   if (
     pre instanceof Patcher &&
@@ -161,5 +160,9 @@ function tryUpdateEntry(pre: unknown, val: unknown): [unknown, 0 | 1 | 2] {
     pre.hash === hashify(val.do(getShaHtml))
   )
     return [pre.patch(val.do(getVals)), 1]
-  return [initEntry(val), 2]
+  return [val, 2]
+}
+
+export function extractDof(val: unknown) {
+  return val instanceof Patcher ? val.dof : new Text(tryParseToString(val))
 }
