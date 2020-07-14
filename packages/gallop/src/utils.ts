@@ -11,7 +11,6 @@ export type Primitive =
 
 /**
  * stupid js
- *
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof#null
  */
 export function isObject<T = object>(target: unknown): target is T & object {

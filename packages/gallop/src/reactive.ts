@@ -35,17 +35,17 @@ export const createProxy = <T extends object>(
     deep?: boolean
   } = {}
 ): T => {
-  function getter(target: unknown) {
-    if (deep && isObject(target))
-      return forceGet(
-        rawProxyMap,
-        target,
-        createProxy(target, { onGet, onMut, lock, deep })
-      )
-    return target
-  }
+  const getter = (target: unknown) =>
+    deep && isObject(target)
+      ? forceGet(
+          rawProxyMap,
+          target,
+          createProxy(target, { onGet, onMut, lock, deep })
+        )
+      : target
 
-  if ([Map, Set, WeakMap, WeakSet].some((v) => raw instanceof v)) {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  if (([Map, Set, WeakMap, WeakSet] as Function[]).includes(raw.constructor)) {
     const delegator = {
       get: function <T extends MapTypes>(this: MapTypes, key: MapKey<T>) {
         const r = Reflect.get(this, __raw__)
@@ -98,11 +98,20 @@ export const createProxy = <T extends object>(
       }
     }
     return new Proxy(raw, {
-      get: (target, prop, receiver) => {
+      get: (
+        target,
+        prop:
+          | '__raw__'
+          | keyof Map<unknown, unknown>
+          | keyof WeakMap<object, unknown>
+          | keyof Set<unknown>
+          | keyof WeakSet<object>,
+        receiver
+      ) => {
         if (prop === __raw__) return target
         const value = Reflect.get(target, prop, receiver)
         if (typeof value === 'function')
-          return Reflect.get(delegator, prop).bind(receiver)
+          return Reflect.get(delegator, prop)?.bind(receiver) ?? value.bind(target)
         return value
       }
     })
@@ -119,8 +128,8 @@ export const createProxy = <T extends object>(
       return res
     },
     get: (target, prop, receiver) => {
-      const res = Reflect.get(target, prop)
       if (prop === __raw__) return target
+      const res = Reflect.get(target, prop)
       onGet?.(target, prop, receiver)
       return getter(res)
     }

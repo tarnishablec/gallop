@@ -25,7 +25,7 @@ type Change =
       key: DiffKey
     }
 
-const nullTag = Symbol('null')
+const nul = Symbol(0)
 
 export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
   let oldHead = 0
@@ -37,9 +37,9 @@ export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
   const res: Change[] = []
 
   while (oldHead < oldTail && newHead < newTail) {
-    if (oldList[oldHead] === nullTag) {
+    if (oldList[oldHead] === nul) {
       oldHead++
-    } else if (oldList[oldTail] === nullTag) {
+    } else if (oldList[oldTail] === nul) {
       oldTail--
     } else if (newList[newHead] === oldList[oldHead]) {
       lastHead = newList[newHead]
@@ -63,7 +63,7 @@ export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
       const headIndex = oldList.indexOf(newList[newHead])
       if (~headIndex) {
         res.push({ type: 'movea', key: newList[newHead], after: lastHead })
-        oldList[headIndex] = nullTag
+        oldList[headIndex] = nul
       } else {
         res.push({ type: 'insert', key: newList[newHead], after: lastHead })
       }
@@ -86,7 +86,7 @@ export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
   }
   if (oldHead < oldTail || oldHead > newTail) {
     for (; oldHead <= oldTail; oldHead++) {
-      if (oldList[oldHead] !== nullTag) {
+      if (oldList[oldHead] !== nul) {
         if (!newList.includes(oldList[oldHead])) {
           res.push({ type: 'remove', key: oldList[oldHead] })
         }

@@ -3,6 +3,10 @@ import { StyleInTemplateError } from './error'
 import { marker, markerIndex, isMarker } from './marker'
 import { insertAfter } from './dom'
 
+/**
+ * createTreeWalker vs createNodeIterator
+ * https://jsperf.com/getcomments/6
+ */
 function createParts(patcher: Patcher) {
   const result: Part[] = []
   const { dof, size } = patcher
