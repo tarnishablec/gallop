@@ -10,10 +10,11 @@ export type Primitive =
   | bigint
 
 /**
- * stupid js
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof#null
  */
-export function isObject<T = object>(target: unknown): target is T & object {
+export function isObject<T extends object = object>(
+  target: unknown
+): target is T & object {
   return target !== null && typeof target === 'object'
 }
 

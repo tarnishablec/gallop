@@ -44,8 +44,7 @@ export const createProxy = <T extends object>(
         )
       : target
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  if (([Map, Set, WeakMap, WeakSet] as Function[]).includes(raw.constructor)) {
+  if ([Map, Set, WeakMap, WeakSet].some((v) => raw instanceof v)) {
     const delegator = {
       get: function <T extends MapTypes>(this: MapTypes, key: MapKey<T>) {
         const r = Reflect.get(this, __raw__)

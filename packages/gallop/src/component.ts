@@ -14,6 +14,7 @@ type RegisterOption = {
   shadow?: boolean
 }
 
+export const componentPool = new Set<string>()
 export interface ReactiveElement extends HTMLElement {
   $builder: Component
   $root: ReactiveElement | ShadowRoot

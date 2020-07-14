@@ -11,6 +11,6 @@ export { Context, createContext } from './context'
 export { useState, useContext, useDepends, useEffect, useMemo } from './hooks'
 
 export { directive, directives, resolveDirective } from './directive'
-export { repeat } from './directives'
+export { repeat, dynamic } from './directives'
 
 export type { Component, ReactiveElement } from './component'
