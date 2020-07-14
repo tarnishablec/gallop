@@ -29,7 +29,7 @@ function createParts(patcher: Patcher) {
         if (
           prefix === '.' ||
           prefix === '@' ||
-          (prefix === ':' && marker !== attrs[i].value)
+          (prefix === ':' && marker === attrs[i].value)
         ) {
           name = name.slice(1)
           switch (prefix) {

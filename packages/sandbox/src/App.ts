@@ -7,14 +7,18 @@ import {
   useState,
   useMemo,
   ReactiveElement,
-  repeat
+  repeat,
+  dynamic
 } from '@gallop/gallop'
 
 import './styles/index'
 
 export const [global, globalContext] = Context.initGlobal({ data: 1 })
 
-component('test-app', function (this: ReactiveElement) {
+component('test-app', function (
+  this: ReactiveElement,
+  { name = 'test-app-0' }: { name: string }
+) {
   const [state] = useState({
     tick: 0,
     tok: 0,
@@ -53,7 +57,7 @@ component('test-app', function (this: ReactiveElement) {
 
   return html`
     <div @hover="${() => console.log('hover')}" .style="${{ display: 'grid' }}">
-      test-app
+      ${name}
     </div>
     <hr />
     <button
@@ -94,7 +98,8 @@ component('test-app', function (this: ReactiveElement) {
   `
 })
 
-render(html` <test-app></test-app> `)
+render(html` <test-app :name="${'test-app-1'}"></test-app>
+  ${dynamic('test-app', { name: 'test-app-2' })}`)
 
 // window.requestIdleCallback(() => {
 //   console.log('ric')

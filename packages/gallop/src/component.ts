@@ -82,6 +82,7 @@ export function component<F extends Component>(
     }
   }
   customElements.define(name, clazz, { extends: extend })
+  componentPool.add(name)
 }
 
 export const isReactive = (node: Node): node is ReactiveElement =>
