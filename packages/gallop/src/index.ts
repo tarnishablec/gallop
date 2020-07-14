@@ -1,4 +1,4 @@
-export { html } from './parse'
+export { html, css } from './parse'
 export { render } from './render'
 export { HTMLClip } from './clip'
 export { Patcher } from './patcher'
@@ -8,7 +8,14 @@ export { component, mergeProp, mergeProps } from './component'
 
 export { Context, createContext } from './context'
 
-export { useState, useContext, useDepends, useEffect, useMemo } from './hooks'
+export {
+  useState,
+  useContext,
+  useDepends,
+  useEffect,
+  useMemo,
+  useStyle
+} from './hooks'
 
 export { directive, directives, resolveDirective } from './directive'
 export { repeat, dynamic } from './directives'

@@ -8,7 +8,9 @@ import {
   useMemo,
   ReactiveElement,
   repeat,
-  dynamic
+  dynamic,
+  useStyle,
+  css
 } from '@gallop/gallop'
 
 import './styles/index'
@@ -54,6 +56,15 @@ component('test-app', function (
     console.log(`calculated`)
     return state.tick + state.tok
   }, [state.tick, state.tok])
+
+  useStyle(
+    () => css`
+      button {
+        background: ${'red'};
+      }
+    `,
+    []
+  )
 
   return html`
     <div @hover="${() => console.log('hover')}" .style="${{ display: 'grid' }}">

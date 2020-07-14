@@ -4,6 +4,7 @@ import { createProxy } from './reactive'
 import { Context } from './context'
 import { ReactiveElement } from './component'
 import { Recycler } from './dirty'
+import { stubTrue } from 'lodash'
 
 export function useState<T extends Obj>(raw: T): [T] {
   const current = Looper.resolveCurrent()
@@ -96,5 +97,19 @@ export function useMemo<T>(func: () => T, depends?: unknown[]): T {
     return result
   } else {
     return vals[count] as T
+  }
+}
+
+export function useStyle(css: () => string, depends: unknown[]) {
+  const current = Looper.resolveCurrent()
+  const [dirty] = useDepends(depends)
+  if (dirty) {
+    let styleEl = current.$root.querySelector('.hook-style')
+    if (!styleEl) {
+      styleEl = document.createElement('style')
+      styleEl.classList.add('hook-style')
+      current.$root.append(styleEl)
+    }
+    styleEl.innerHTML = css()
   }
 }
