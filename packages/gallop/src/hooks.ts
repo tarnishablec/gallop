@@ -53,7 +53,7 @@ export function useDepends(depends?: unknown[]): [boolean, boolean, number] {
       }
     }
   }
-  forceGet(depCountMap, current, new Map()).set(depCount, depends)
+  forceGet(depCountMap, current, () => new Map()).set(depCount, depends)
   lastDepEl = current
   depCount++
   return [dirty, diff, depCount - 1]
@@ -66,7 +66,7 @@ export function useEffect(effect: Effect, depends?: unknown[]) {
   const current = Looper.resolveCurrent()
   const [dirty, diff, count] = useDepends(depends)
   diff && effectQueueMap.set(current, [])
-  dirty && (forceGet(effectQueueMap, current, [])[count] = effect)
+  dirty && (forceGet(effectQueueMap, current, () => [])[count] = effect)
 }
 export function resolveEffects(current: ReactiveElement) {
   const effects = effectQueueMap.get(current)
@@ -89,7 +89,7 @@ const memoMap = new WeakMap<ReactiveElement, unknown[]>()
 export function useMemo<T>(func: () => T, depends?: unknown[]): T {
   const current = Looper.resolveCurrent()
   const [dirty, , count] = useDepends(depends)
-  const vals = forceGet(memoMap, current, [])
+  const vals = forceGet(memoMap, current, () => [])
   if (dirty) {
     const result = func()
     vals[count] = result

@@ -1,7 +1,8 @@
-import { Key } from '../utils'
+import { Key, forceGet } from '../utils'
 import { directive } from '../directive'
 import { Part, NodePart } from '../part'
 import { DirectivePartTypeError, DuplicatedKeyError } from '../error'
+import { removeNodes, insertAfter } from '../dom'
 
 type DiffKey = Key | null
 type Change =
@@ -96,6 +97,57 @@ export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
   return res
 }
 
+class ArrayPart extends NodePart {
+  keyPartMap = new Map<DiffKey, NodePart>()
+  keys: DiffKey[] = []
+
+  createPartAfter(key: DiffKey, after: DiffKey) {
+    const [startNode, endNode] = [new Comment(), new Comment()]
+    const parent = this.location.endNode.parentNode!
+    if (after) {
+      const end = this.keyPartMap.get(after)?.location.endNode
+      insertAfter(parent, startNode, end)
+      insertAfter(parent, endNode, startNode)
+    } else {
+      parent.insertBefore(endNode, parent.firstChild)
+      parent.insertBefore(startNode, endNode)
+    }
+    const part = new NodePart({ startNode, endNode })
+    this.keyPartMap.set(key, part)
+  }
+
+  moveBefore(part: NodePart, before: DiffKey) {
+    const { startNode, endNode } = part.location
+    const nodes = removeNodes(startNode, endNode, true)
+    const { startNode: start } = this.keyPartMap.get(before)!.location
+    start.parentNode!.insertBefore(nodes, startNode)
+  }
+
+  moveAfter(part: NodePart, after: DiffKey) {
+    const { startNode, endNode } = part.location
+    const nodes = removeNodes(startNode, endNode, true)
+    if (after) {
+      const { endNode: end } = this.keyPartMap.get(after)!.location
+      insertAfter(end.parentNode!, nodes, end)
+    } else {
+      const parent = this.location.startNode.parentNode!
+      parent.insertBefore(nodes, parent.firstChild)
+    }
+  }
+
+  remove(key: DiffKey) {
+    this.keyPartMap.get(key)!.destroy()
+    this.keyPartMap.delete(key)
+  }
+
+  update(keys: DiffKey[], vals: unknown[]) {
+    this.keys = keys
+    this.keys.forEach((k, index) => this.keyPartMap.get(k)!.setValue(vals[index]))
+  }
+}
+
+const arrPartMap = new WeakMap<NodePart, ArrayPart>()
+
 export const repeat = directive(function <T>(
   items: Iterable<T>,
   keyFn: (item: T, index: number) => DiffKey,
@@ -105,7 +157,13 @@ export const repeat = directive(function <T>(
     if (!(part instanceof NodePart))
       throw DirectivePartTypeError(part.constructor.name)
 
-    // TODO
+    const arrPart = forceGet(
+      arrPartMap,
+      part,
+      () => new ArrayPart({ ...part.location })
+    )
+    const arrPartKeyPartMap = arrPart.keyPartMap
+    const oldKeys = arrPart.keys
 
     const newKeys: DiffKey[] = []
     const newVals: unknown[] = []
@@ -119,5 +177,26 @@ export const repeat = directive(function <T>(
       newVals.push(v)
       index++
     }
+
+    const diffRes = listKeyDiff(oldKeys, newKeys)
+
+    diffRes.forEach((change) => {
+      const { key } = change
+      switch (change.type) {
+        case 'insert':
+          arrPart.createPartAfter(key, change.after)
+          break
+        case 'movea':
+          arrPart.moveAfter(arrPartKeyPartMap.get(key)!, change.after)
+          break
+        case 'moveb':
+          arrPart.moveBefore(arrPartKeyPartMap.get(key)!, change.before)
+          break
+        case 'remove':
+          arrPart.remove(key)
+          break
+      }
+    })
+    arrPart.update(newKeys, newVals)
   }
 })

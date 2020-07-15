@@ -20,7 +20,7 @@ export interface Part {
 export class NodePart implements Part {
   value: unknown
 
-  constructor(public location: NodePartLocation, public index: number) {}
+  constructor(public location: NodePartLocation) {}
 
   setValue(val: unknown): void {
     if (resolveDirective(val, this)) return
@@ -39,13 +39,18 @@ export class NodePart implements Part {
     const { startNode, endNode } = this.location
     removeNodes(startNode, endNode)
   }
+
+  destroy() {
+    const { startNode, endNode } = this.location
+    removeNodes(startNode, endNode, true)
+  }
 }
 
 export class AttrPart implements Part {
   value: unknown
   cache: { style?: string; classes?: string[] }
 
-  constructor(public location: AttrPartLocation, public index: number) {
+  constructor(public location: AttrPartLocation) {
     const style = location.node.getAttribute('style') ?? undefined
     this.cache = { style }
   }
@@ -87,7 +92,7 @@ export class AttrPart implements Part {
 export class PropPart implements Part {
   value: unknown
 
-  constructor(public location: AttrPartLocation, public index: number) {}
+  constructor(public location: AttrPartLocation) {}
 
   setValue(val: unknown): void {
     if (resolveDirective(val, this)) return
@@ -113,7 +118,7 @@ export class EventPart implements Part {
   options: AddEventListenerOptions
   eventName: string
   cache: Map<string, EventInstance> = new Map()
-  constructor(public location: AttrPartLocation, public index: number) {
+  constructor(public location: AttrPartLocation) {
     const [eventName, ...opts] = location.name.split('.')
     this.options = generateEventOptions(new Set(opts))
     this.eventName = eventName

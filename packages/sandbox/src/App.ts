@@ -88,7 +88,7 @@ component('test-app', function (
     <div>${state.tok}</div>
     <hr />
     <button @click="${() => state.children.unshift(state.children.pop()!)}">
-      add children
+      circle move
     </button>
     <hr />
     <div>${res}</div>

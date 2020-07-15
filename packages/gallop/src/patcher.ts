@@ -34,13 +34,13 @@ function createParts(patcher: Patcher) {
           name = name.slice(1)
           switch (prefix) {
             case '.':
-              result.push(new AttrPart({ node: cur, name }, count))
+              result.push(new AttrPart({ node: cur, name }))
               break
             case ':':
-              result.push(new PropPart({ node: cur, name }, count))
+              result.push(new PropPart({ node: cur, name }))
               break
             case '@':
-              result.push(new EventPart({ node: cur, name }, count))
+              result.push(new EventPart({ node: cur, name }))
               break
           }
           count++
@@ -59,7 +59,7 @@ function createParts(patcher: Patcher) {
       // console.log(range)
       const tail = new Comment(markerIndex)
       insertAfter(cur.parentNode!, tail, cur)
-      result.push(new NodePart({ startNode: cur, endNode: tail }, count))
+      result.push(new NodePart({ startNode: cur, endNode: tail }))
       walker.nextNode()
       count++
     }

@@ -37,9 +37,7 @@ export const createProxy = <T extends object>(
 ): T => {
   const getter = (target: unknown) =>
     deep && isObject(target)
-      ? forceGet(
-          rawProxyMap,
-          target,
+      ? forceGet(rawProxyMap, target, () =>
           createProxy(target, { onGet, onMut, lock, deep })
         )
       : target
