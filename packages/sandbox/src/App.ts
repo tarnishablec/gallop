@@ -67,7 +67,7 @@ component('test-app', function (
   )
 
   return html`
-    <div @hover="${() => console.log('hover')}" .style="${{ display: 'grid' }}">
+    <div @mouseenter="${() => console.log('hover')}" .style="${{ display: 'grid' }}">
       ${name}
     </div>
     <hr />

@@ -4,7 +4,6 @@ import { createProxy } from './reactive'
 import { Context } from './context'
 import { ReactiveElement } from './component'
 import { Recycler } from './dirty'
-import { stubTrue } from 'lodash'
 
 export function useState<T extends Obj>(raw: T): [T] {
   const current = Looper.resolveCurrent()
