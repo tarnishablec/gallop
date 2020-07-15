@@ -30,7 +30,7 @@ export class NodePart implements Part {
       const { endNode } = this.location
       const parent = endNode.parentNode!
       this.clear()
-      parent.insertBefore(extractDof(initEntry(result)), endNode)
+      parent.insertBefore(extractDof(result), endNode)
     }
 
     this.value = result
@@ -165,7 +165,7 @@ export function tryUpdateEntry(pre: unknown, val: unknown): [unknown, 0 | 1 | 2]
     pre.hash === hashify(val.do(getShaHtml))
   )
     return [pre.patch(val.do(getVals)), 1]
-  return [val, 2]
+  return [initEntry(val), 2]
 }
 
 export function extractDof(val: unknown) {

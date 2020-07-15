@@ -99,7 +99,7 @@ component('test-app', function (
       ${repeat(
         state.children,
         (_) => _,
-        (item) => html`<span>${item}</span>`
+        (item) => html`<div>${item}</div>`
       )}
     </div>
     <hr />

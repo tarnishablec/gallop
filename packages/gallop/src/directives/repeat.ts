@@ -109,8 +109,8 @@ class ArrayPart extends NodePart {
       insertAfter(parent, startNode, end)
       insertAfter(parent, endNode, startNode)
     } else {
-      parent.insertBefore(endNode, parent.firstChild)
-      parent.insertBefore(startNode, endNode)
+      insertAfter(parent, startNode, this.location.startNode)
+      insertAfter(parent, endNode, startNode)
     }
     const part = new NodePart({ startNode, endNode })
     this.keyPartMap.set(key, part)
@@ -131,7 +131,7 @@ class ArrayPart extends NodePart {
       insertAfter(end.parentNode!, nodes, end)
     } else {
       const parent = this.location.startNode.parentNode!
-      parent.insertBefore(nodes, parent.firstChild)
+      insertAfter(parent, nodes, this.location.startNode)
     }
   }
 
