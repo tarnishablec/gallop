@@ -10,7 +10,8 @@ import {
   repeat,
   useStyle,
   css,
-  suspense
+  suspense,
+  portal
 } from '@gallop/gallop'
 
 import './styles/index'
@@ -121,6 +122,12 @@ component('test-app', function (
           }),
         { pending: `loading...`, fallback: `error!` }
       )}
+    </div>
+    <hr />
+    <div>
+      ${portal(html`<div>
+        ${state.tick}
+      </div>`)}
     </div>
   `
 })

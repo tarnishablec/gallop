@@ -41,11 +41,11 @@
 
   |             |     |
   | ----------- | --- |
-  | repeat()    | ⌛  |
-  | dynamic()   | ⌛  |
-  | suspense()  | ⌛  |
-  | portal()    | ⌛  |
-  | keepalive() | ⌛  |
+  | repeat()    | ✅  |
+  | dynamic()   | ✅  |
+  | suspense()  | ✅  |
+  | portal()    | ✅  |
+  | keepalive() | ✅  |
 
 - support `<slot>` by web components, also `named slot`
 
@@ -70,10 +70,6 @@
 - ⚡⚡ enable `key diffing` in list rendering by built-in directive `repeat()`
 
 - support `lazy load` and `fallback rendering` by built-in directive `suspense()`
-
-- support `portal` by built-in directive `portal()`
-
-- support `keepalive` by built-in directive `keepalive()`
 
 - for more detail, check packages/sandbox or clone this project run `yarn run sand`
 
@@ -100,22 +96,24 @@ export let [data, context] = createContext({ b: 2 }) //context can be exported t
 
 export const PureComponent = (prop: string) => html`<div>pure ${prop}</div>` //pure component with no any lifecycle
 
-export const TestA = component('test-a', function (
-  this: ReactiveElement, //this parameter: https://www.staging-typescript.org/docs/handbook/functions.html#this-parameters
+component('test-name', function (
+  this: ReactiveElement, //this parameter: https://www.typescriptlang.org/docs/handbook/functions.html
   { name, age = 1 }: { name: string; age?: number }
 ) {
   let [state] = useState({ a: 1, color: 'red' }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
   console.dir(this) //access dom directly by this
 
-  const [memo] = useMemo(() => state.a * 2) //just like react useMemo(), but auto collect depends like `computed` in vue
+  const memo = useMemo(() => state.a * 2, [state.a]) //just like react useMemo()
 
-  useStyle(() => {
-    return css`
-      div {
-        background: ${state.color};
-      }
-    `
-  })
+  useStyle(
+    () =>
+      css`
+        div {
+          background: ${state.color};
+        }
+      `,
+    [state.color]
+  )
 
   useContext([context]) //you need to hook Context to this component by useContext()
 
@@ -148,7 +146,7 @@ export const TestA = component('test-a', function (
         `
     )}
     <slot>
-      default slot content
+      default slot context
     </slot>
     <div>${memo}</div>
     <button
@@ -162,20 +160,17 @@ export const TestA = component('test-a', function (
     </button>
     <div>
       ${suspense(
-        Promise.resolve(
-          import('./components/MyCount').then((res) => res.default('green'))
-        ),
-        html`<div>Loading</div>`,
-        html`<div>Error</div>`
+        () => import('./components/MyCount').then((res) => res.default('green')),
+        { pending: html`<div>loading...</div>` }
       )}
     </div>
   `
 })
 
 render(html`
-  <test-a :name="haha" :age="${2}">
+  <test-name :name="haha" :age="${2}">
     slot content
-  </test-a>
+  </test-name>
 `)
 ```
 

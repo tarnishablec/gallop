@@ -69,9 +69,9 @@
 
 - ⚡⚡ enable `key diffing` in list rendering by built-in directive `repeat()`
 
-<!-- - ⌛ (need refactor) support `lazy load` and `fallback rendering` by built-in directive `suspense()` -->
+- support `lazy load` and `fallback rendering` by built-in directive `suspense()`
 
-- for more detail, check packages/sandbox or clone this project run `yarn run web`
+- for more detail, check packages/sandbox or clone this project run `yarn run sand`
 
 ## Simple use case
 
@@ -103,15 +103,17 @@ component('test-name', function (
   let [state] = useState({ a: 1, color: 'red' }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
   console.dir(this) //access dom directly by this
 
-  const [memo] = useMemo(() => state.a * 2) //just like react useMemo(), but auto collect depends like `computed` in vue
+  const memo = useMemo(() => state.a * 2, [state.a]) //just like react useMemo()
 
-  useStyle(() => {
-    return css`
-      div {
-        background: ${state.color};
-      }
-    `
-  })
+  useStyle(
+    () =>
+      css`
+        div {
+          background: ${state.color};
+        }
+      `,
+    [state.color]
+  )
 
   useContext([context]) //you need to hook Context to this component by useContext()
 
@@ -158,11 +160,8 @@ component('test-name', function (
     </button>
     <div>
       ${suspense(
-        Promise.resolve(
-          import('./components/MyCount').then((res) => res.default('green'))
-        ),
-        html`<div>Loading</div>`,
-        html`<div>Error</div>`
+        () => import('./components/MyCount').then((res) => res.default('green')),
+        { pending: html`<div>loading...</div>` }
       )}
     </div>
   `
