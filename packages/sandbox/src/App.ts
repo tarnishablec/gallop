@@ -8,9 +8,9 @@ import {
   useMemo,
   ReactiveElement,
   repeat,
-  dynamic,
   useStyle,
-  css
+  css,
+  suspense
 } from '@gallop/gallop'
 
 import './styles/index'
@@ -106,11 +106,29 @@ component('test-app', function (
     <div>
       ${html` <div>${state.tick}</div> `}
     </div>
+    <hr />
+    <div>
+      ${suspense(
+        () =>
+          new Promise((res) => {
+            setTimeout(() => {
+              // rej(new Error(`error`))
+              res(html`hello!`)
+            }, 2000)
+          }).then((res) => {
+            console.log(res)
+            return res
+          }),
+        { pending: `loading...`, fallback: `error!` }
+      )}
+    </div>
   `
 })
 
-render(html` <test-app :name="${'test-app-1'}"></test-app>
-  ${dynamic('test-app', { name: 'test-app-2' })}`)
+render(html`
+  <test-app :name="${'test-app-1'}"></test-app>
+  <!-- \${dynamic('test-app', { name: 'test-app-2' })} -->
+`)
 
 // window.requestIdleCallback(() => {
 //   console.log('ric')

@@ -17,7 +17,10 @@ export {
   useStyle
 } from './hooks'
 
+export { NodePart, AttrPart, PropPart, EventPart } from './part'
+
 export { directive, directives, resolveDirective } from './directive'
-export { repeat, dynamic } from './directives'
+export { repeat, dynamic, suspense } from './directives'
 
 export type { Component, ReactiveElement } from './component'
+export type { Part } from './part'

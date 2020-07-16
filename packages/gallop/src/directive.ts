@@ -2,7 +2,7 @@ import { Part } from './part'
 
 export const directives = new WeakSet()
 
-export type DirectiveFn = (part: Part) => void
+export type DirectiveFn = (part: Part) => unknown
 
 export function isDirective(val: unknown): val is DirectiveFn {
   return typeof val === 'function' && directives.has(val)
