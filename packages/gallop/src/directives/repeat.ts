@@ -102,9 +102,9 @@ class ArrayPart extends NodePart {
   keys: DiffKey[] = []
 
   createPartAfter(key: DiffKey, after: DiffKey) {
-    const [startNode, endNode] = [new Comment(), new Comment()]
+    const [startNode, endNode] = [new Comment(String(key)), new Comment(String(key))]
     const parent = this.location.endNode.parentNode!
-    if (after) {
+    if (after !== null) {
       const end = this.keyPartMap.get(after)?.location.endNode
       insertAfter(parent, startNode, end)
       insertAfter(parent, endNode, startNode)
@@ -126,7 +126,7 @@ class ArrayPart extends NodePart {
   moveAfter(part: NodePart, after: DiffKey) {
     const { startNode, endNode } = part.location
     const nodes = removeNodes(startNode, endNode, true)
-    if (after) {
+    if (after !== null) {
       const { endNode: end } = this.keyPartMap.get(after)!.location
       insertAfter(end.parentNode!, nodes, end)
     } else {
@@ -172,6 +172,7 @@ export const repeat = directive(function <T>(
     for (const item of items) {
       const k = keyFn(item, index)
       if (newKeys.includes(k)) throw DuplicatedKeyError(k)
+      if (k === null) throw new SyntaxError(`key can not be null`)
       newKeys.push(k)
       const v = mapFn(item, index)
       newVals.push(v)

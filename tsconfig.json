@@ -71,7 +71,13 @@
 
     /* Advanced Options */
     "keyofStringsOnly": true,
-    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin",
+        "tags": ["css"]
+      }
+    ]
   },
   "include": [
     "packages/*/src",

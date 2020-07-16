@@ -98,7 +98,7 @@ component('test-app', function (
     <div>
       ${repeat(
         state.children,
-        (_) => _,
+        (_, index) => index,
         (item) => html`<div>${item}</div>`
       )}
     </div>
