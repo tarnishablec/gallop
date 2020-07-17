@@ -92,10 +92,6 @@ component('test-app', function (
       circle move
     </button>
     <hr />
-    <div>${res}</div>
-    <hr />
-    <div>${sum}</div>
-    <hr />
     <div>
       ${repeat(
         state.children,
@@ -103,6 +99,10 @@ component('test-app', function (
         (item) => html`<div>${item}</div>`
       )}
     </div>
+    <hr />
+    <div>${res}</div>
+    <hr />
+    <div>${sum}</div>
     <hr />
     <div>
       ${html` <div>${state.tick}</div> `}

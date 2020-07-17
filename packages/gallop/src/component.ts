@@ -74,6 +74,7 @@ export function component<F extends Component>(
       Context.globalContext && Context.globalContext.watch(this)
     }
     disconnectedCallback() {
+      this.$contexts.forEach((ctx) => ctx.unwatch(this))
       unmountedEffectMap.get(this)?.forEach((fn) => fn())
     }
 
