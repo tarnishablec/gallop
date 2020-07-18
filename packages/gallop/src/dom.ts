@@ -1,38 +1,25 @@
-import { markerIndex } from './marker'
+export const cleanDomStr = (str: string) =>
+  str.replace(/((?<=>|^)\s+)|(\s+(?=<|$))/g, '')
 
-export const cleanDofStr = (str: string) =>
-  str.replace(/((?=>|^)\s*)|(\s*(?=<|$))/g, '')
-
-export function insertAfter(
+export const insertAfter = (
   container: Node,
   newChild: Node,
   afterChild?: Node | null
-) {
-  return container.insertBefore(
-    newChild,
-    afterChild ? afterChild.nextSibling ?? null : container.firstChild
-  )
-}
+) => container.insertBefore(newChild, afterChild?.nextSibling ?? null)
 
-/**
- * [)
- */
 export function removeNodes(
-  container: Node,
-  start: Node | null = container.firstChild,
-  end: Node | null = null
-) {
-  const removed = new DocumentFragment()
-  while (start !== end) {
-    const n = start!.nextSibling
-    removed.append(container.removeChild(start!))
-    start = n
-  }
-  return removed
+  startNode: Node,
+  endNode: Node,
+  edge = false
+): DocumentFragment {
+  const range = new Range()
+  edge ? range.setStartBefore(startNode) : range.setStartAfter(startNode)
+  edge ? range.setEndAfter(endNode) : range.setEndBefore(endNode)
+  return range.extractContents()
 }
 
-export const resetCommentMarker = (marker: Comment) => {
-  const data = marker.data
-  const { length } = data
-  marker.replaceData(0, length, markerIndex)
-}
+export const generateEventOptions = (set: Set<string>): AddEventListenerOptions => ({
+  capture: set.has('capture'),
+  once: set.has('once'),
+  passive: set.has('passive')
+})

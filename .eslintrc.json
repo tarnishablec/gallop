@@ -4,10 +4,7 @@
     "es6": true,
     "node": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/eslint-recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -21,12 +18,26 @@
   "rules": {
     "no-unused-vars": "off",
     "no-debugger": "warn",
+    "no-empty": "warn",
     "prefer-const": "warn",
-    "max-params": "warn",
+    "max-params": ["warn", { "max": 4 }],
+    "spaced-comment": "warn",
     ///
     "@typescript-eslint/no-unused-vars": [
       "warn",
       { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
+    ],
+    "@typescript-eslint/no-explicit-any": [
+      "warn",
+      {
+        "ignoreRestArgs": true
+      }
+    ],
+    "@typescript-eslint/ban-types": [
+      "warn",
+      {
+        "types": { "object": false }
+      }
     ]
   }
 }

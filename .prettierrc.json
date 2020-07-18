@@ -2,7 +2,7 @@
   "semi": false,
   "trailingComma": "none",
   "singleQuote": true,
-  "printWidth": 80,
+  "printWidth": 85,
   "tabWidth": 2,
   "jsxBracketSameLine": true,
   "endOfLine": "crlf",

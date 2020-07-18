@@ -1,4 +1,26 @@
-import { VirtualElement } from '../virtual'
+import { directive } from '../directive'
+import { NodePart } from '../part'
+import { DirectivePartTypeError } from '../error'
+import { ReactiveElement, mergeProps, componentPool } from '../component'
+import { Obj } from '../utils'
 
-export const dynamic = <T extends object>(is: string, props?: T) =>
-  new VirtualElement(is, props)
+const partElCache = new WeakMap<NodePart, ReactiveElement>()
+
+export const dynamic = directive((name: string, props: Obj = {}) => (part) => {
+  if (!(part instanceof NodePart))
+    throw DirectivePartTypeError(part.constructor.name)
+
+  const { endNode } = part.location
+
+  const lastEl = partElCache.get(part)
+  if (lastEl?.localName === name) return mergeProps(lastEl, props)
+  else {
+    if (!componentPool.has(name))
+      throw new SyntaxError(`[${name}] is not a ReactiveElement`)
+    part.clear()
+    const el = document.createElement(name) as ReactiveElement
+    mergeProps(el, props)
+    endNode.parentNode!.insertBefore(el, endNode)
+    partElCache.set(part, el)
+  }
+})

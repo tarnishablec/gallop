@@ -1,50 +1,26 @@
 export { html, css } from './parse'
 export { render } from './render'
-export {
-  component,
-  ReactiveElement,
-  resolveCurrentHandle,
-  setCurrentHandle,
-  componentPool
-} from './component'
-export { VirtualElement } from './virtual'
-export { createContext, Context } from './context'
+export { HTMLClip } from './clip'
+export { Patcher } from './patcher'
+export { Looper } from './loop'
+
+export { component, mergeProp, mergeProps } from './component'
+
+export { Context, createContext } from './context'
+
 export {
   useState,
-  useEffect,
   useContext,
-  useCache,
+  useDepends,
+  useEffect,
   useMemo,
   useStyle
 } from './hooks'
-export { DoAble } from './do'
-export { isProxy, isMarker } from './is'
-export {
-  Part,
-  NodePart,
-  AttrPart,
-  EventPart,
-  PropPart,
-  initEntry,
-  tryUpdateEntry,
-  extractDof
-} from './part'
 
-export { HTMLClip, getShaHtml, getVals } from './clip'
+export { NodePart, AttrPart, PropPart, EventPart } from './part'
 
-export { repeat, dynamic, suspense, portal, keepalive } from './directives'
-export { directive, directives, isDirective } from './directive'
+export { directive, directives, resolveDirective } from './directive'
+export { repeat, dynamic, suspense, portal } from './directives'
 
-export {
-  LockedProxyError,
-  NotReactiveELementError,
-  DirectivePartTypeError,
-  DuplicatedKeyError,
-  StyleInTemplateError
-} from './error'
-
-export type { Component, Complex } from './component'
-export type { Effect } from './hooks'
-export type { DirectiveFn } from './directive'
-export type { ContextOption } from './context'
-export type { NodeValueType } from './part'
+export type { Component, ReactiveElement } from './component'
+export type { Part } from './part'

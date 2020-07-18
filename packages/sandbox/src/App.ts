@@ -1,74 +1,132 @@
 import {
   html,
-  component,
   render,
-  ReactiveElement,
-  useState,
-  dynamic,
-  keepalive,
+  component,
+  Context,
   useEffect,
-  createContext,
-  portal,
+  useState,
+  useMemo,
+  ReactiveElement,
   repeat,
-  useContext
+  useStyle,
+  css,
+  suspense,
+  portal
 } from '@gallop/gallop'
 
-// import { random } from 'lodash'
+import './styles/index'
 
-import './styles/index.scss'
-import { MyCount } from './components/MyCount'
-import './components/TestA'
+export const [global, globalContext] = Context.initGlobal({ data: 1 })
 
-export const [data, context] = createContext({ tick: 1, list: [1, 2, 3] })
+component('test-app', function (
+  this: ReactiveElement,
+  { name = 'test-app-0' }: { name: string }
+) {
+  const [state] = useState({
+    tick: 0,
+    tok: 0,
+    children: [1, 2, 3],
+    map: new Map<number, number>()
+  })
 
-component('app-root', function (this: ReactiveElement) {
-  const [state] = useState({ count: 0 })
+  useEffect(() => {
+    console.log(`test-app mounted`)
+  }, [])
 
-  useEffect(async () => {
-    const s = (this.$root.querySelector('my-count') as ReactiveElement)?.$state
-    console.log(s)
-  }, [state.count])
+  useEffect(() => {
+    console.log(state.tick)
+    return () => console.log(state.tick + '!!!')
+  }, [state.tick])
 
-  useContext([context])
+  useEffect(() => {
+    console.log(state.children)
+  }, [state.children])
+
+  useEffect(() => {
+    console.log(this.$root.querySelector('button'))
+  })
+
+  const res = useMemo(() => {
+    state.map.set(state.tok, state.tick)
+    const result = state.map.get(state.tok)
+    console.log(state.map)
+    return result
+  }, [state.tick, state.tok])
+
+  const sum = useMemo(() => {
+    console.log(`calculated`)
+    return state.tick + state.tok
+  }, [state.tick, state.tok])
+
+  useStyle(
+    () => css`
+      button {
+        background: ${'red'};
+      }
+    `,
+    []
+  )
 
   return html`
+    <div @mouseenter="${() => console.log('hover')}" .style="${`display: grid`}">
+      ${name}
+    </div>
+    <hr />
+    <button
+      @click="${() => {
+        for (let i = 0; i < 100; i++) {
+          state.tick++
+        }
+      }}"
+    >
+      add tick
+    </button>
+    <hr />
+    <div>${state.tick}</div>
+    <hr />
+    <button @click="${() => state.tok++}">add tok</button>
+    <hr />
+    <div>${state.tok}</div>
+    <hr />
+    <button @click="${() => state.children.unshift(state.children.pop()!)}">
+      circle move
+    </button>
+    <hr />
     <div>
-      <div>
-        <button @click="${() => state.count++}">add count</button>
-      </div>
-      <hr />
-      ${keepalive(
-        !(state.count % 2)
-          ? MyCount({ color: 'yellow' })
-          : dynamic('test-a', { count: state.count })
-      )}
-      <hr />
-      ${portal(html` <div>${state.count}</div> `)}
-      <hr />
       ${repeat(
-        data.list,
-        (v) => v,
-        (v) => html` <test-a :count="${v}"></test-a> `
+        state.children,
+        (_, index) => index,
+        (item) => html`<div>${item}</div>`
       )}
-      <hr />
-      <button @click="${() => data.list.unshift(data.list.pop()!)}">
-        circle move
-      </button>
+    </div>
+    <hr />
+    <div>${res}</div>
+    <hr />
+    <div>${sum}</div>
+    <hr />
+    <div>
+      ${html` <div>${state.tick}</div> `}
+    </div>
+    <hr />
+    <div>
+      ${suspense(
+        () => import('./components/TestA').then(() => html`<test-a></test-a>`),
+        { pending: `loading...`, fallback: `error!`, delay: 1000 }
+      )}
+    </div>
+    <hr />
+    <div>
+      ${portal(html`<div>
+        ${state.tick}
+      </div>`)}
     </div>
   `
 })
 
-const template = html`
-  <app-root> </app-root>
-  <style>
-    body {
-      background: grey;
-      color: white;
-    }
-  </style>
-`
-
-render(template)
+render(html`
+  <test-app :name="${'test-app-1'}"></test-app>
+  <!-- \${dynamic('test-app', { name: 'test-app-2' })} -->
+`)
 
 // window.requestIdleCallback(() => {
 //   console.log('ric')

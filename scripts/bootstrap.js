@@ -8,33 +8,6 @@ const packagesDir = path.resolve(__dirname, '../packages')
 const targets = require('./utils').resolveTargets(args._)
 const execa = require('execa')
 
-main()
-
-function main() {
-  targets.forEach((shortName) => {
-    const packageDir = path.join(packagesDir, shortName)
-    if (!fse.statSync(packageDir).isDirectory()) {
-      return
-    }
-
-    if (args.init) {
-      const indexTsPath = `${packageDir}/src/index.ts`
-      const testPath = `${packageDir}/__tests__/${shortName}.test.ts`
-
-      initIndexTs(indexTsPath)
-      initTest(testPath, shortName)
-    }
-
-    const longName = `@${scope}/${shortName}`
-    const pkgPath = path.join(packageDir, 'package.json')
-
-    initPkg(pkgPath, longName, shortName, args)
-  })
-  execa.commandSync('lerna bootstrap', {
-    stdio: 'inherit'
-  })
-}
-
 function initIndexTs(filePath) {
   const exists = fse.existsSync(filePath)
 
@@ -67,7 +40,7 @@ describe('test', () => {
 }
 
 // eslint-disable-next-line max-params
-function initPkg(filePath, longName, shortName, args) {
+function initPkg(filePath, longName, shortName, _args) {
   const pkgExists = fse.existsSync(filePath)
 
   let oldPkg = {}
@@ -95,7 +68,7 @@ function initPkg(filePath, longName, shortName, args) {
     }
   }
 
-  if (args.force || !pkgExists) {
+  if (_args.force || !pkgExists) {
     const pkgJson = {
       name: longName,
       version: baseVersion,
@@ -130,3 +103,29 @@ function initPkg(filePath, longName, shortName, args) {
     )
   }
 }
+function main() {
+  targets.forEach((shortName) => {
+    const packageDir = path.join(packagesDir, shortName)
+    if (!fse.statSync(packageDir).isDirectory()) {
+      return
+    }
+
+    if (args.init) {
+      const indexTsPath = `${packageDir}/src/index.ts`
+      const testPath = `${packageDir}/__tests__/${shortName}.test.ts`
+
+      initIndexTs(indexTsPath)
+      initTest(testPath, shortName)
+    }
+
+    const longName = `@${scope}/${shortName}`
+    const pkgPath = path.join(packageDir, 'package.json')
+
+    initPkg(pkgPath, longName, shortName, args)
+  })
+  execa.commandSync('lerna bootstrap', {
+    stdio: 'inherit'
+  })
+}
+
+main()

@@ -1,170 +1,44 @@
-import { isMarker } from './is'
+import { marker } from './marker'
 
 export type Primitive =
-  | null
-  | undefined
-  | boolean
   | number
   | string
   | symbol
-  | BigInt
+  | undefined
+  | null
+  | boolean
+  | bigint
 
-export type Key = Exclude<Primitive, null | undefined | boolean>
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof#null
+ */
+export function isObject<T extends object = object>(
+  target: unknown
+): target is T & object {
+  return target !== null && typeof target === 'object'
+}
+
+export type Obj = Record<string, unknown>
+export type Key = Exclude<Primitive, null | boolean | bigint | undefined>
 
 export function tryParseToString(val: unknown): string {
+  if (val === undefined || val === null) return ''
+  if (typeof val === 'string') return val
   if (
-    val === undefined ||
-    typeof val === 'string' ||
     typeof val === 'function' ||
     typeof val === 'symbol' ||
     typeof val === 'number'
   )
     return String(val)
-  if (val === null) return ''
   return JSON.stringify(val)
 }
 
-export function digStringBlock(
-  rawStr: string,
-  head: '(' | '{' | '[' | '<' | '"' | "'" = '(',
-  edge: boolean = true
-): [string, string] {
-  let tail
-  switch (head) {
-    case '(':
-      tail = ')'
-      break
-    case '{':
-      tail = '}'
-      break
-    case '[':
-      tail = ']'
-      break
-    case '<':
-      tail = '>'
-      break
-    case '"':
-      tail = '"'
-      break
-    case "'":
-      tail = "'"
-      break
-  }
-  const startIndex = rawStr.indexOf(head)
-  if (startIndex < 0) {
-    return ['', rawStr]
-  }
-  let endIndex
-  const stack = [0]
-  for (let i = startIndex + 1; i < rawStr.length; i++) {
-    if (rawStr[i] === tail) {
-      stack.pop()
-    } else if (rawStr[i] === head) {
-      stack.push(0)
-    }
-
-    if (stack.length === 0) {
-      endIndex = i
-      return [
-        rawStr
-          .slice(
-            edge ? startIndex : startIndex + 1,
-            edge ? endIndex + 1 : endIndex
-          )
-          .trim(),
-        rawStr.slice(endIndex + 1)
-      ]
-    }
-  }
-  throw new Error('syntax error')
-}
-
-export function lastOf<T>(arr: T[]) {
-  return arr[arr.length - 1]
-}
-
-export function isMatchedSymbol(front: string | undefined, back: string) {
-  switch (back) {
-    case ')':
-      return front === '('
-    case '}':
-      return front === '{'
-    case ']':
-      return front === '['
-    case '>':
-      return front === '<'
-    case '"':
-      return front === '"'
-    case "'":
-      return front === "'"
-    default:
-      return false
-  }
-}
-
-export function getFuncArgNames(func: Function) {
-  const [funcHead] = digStringBlock(func.toString(), undefined, false)
-  const arr = funcHead.replace(/(\/\*.*?\*\/)|\s/g, '')
-  const res = []
-  let temp = ''
-  let canPush = true
-  const blockStack = []
-
-  for (let i = 0; i < arr.length; i++) {
-    const isInBlock = !!blockStack.length
-    const cur = arr[i]
-
-    if (isMatchedSymbol(lastOf(blockStack), cur)) {
-      blockStack.pop()
-      continue
-    } else if (
-      ['(', ')', '[', ']', '{', '}', '<', '>', '"', "'"].includes(cur)
-    ) {
-      blockStack.push(cur)
-    }
-
-    if (!isInBlock) {
-      if (cur === ',') {
-        canPush = true
-        continue
-      }
-      if (canPush) {
-        temp += cur
-        if ([',', '='].includes(arr[i + 1]) || i + 1 === arr.length) {
-          res.push(temp)
-          temp = ''
-          canPush = false
-        }
-      }
-    }
-  }
-  return res
-}
-
-export function extractProps(attr: NamedNodeMap) {
-  return Array.from(attr)
-    .filter((a) => /^:\S+/.test(a.name) && !isMarker(a.value))
-    .reduce((acc, { name, value }) => {
-      let v: string | boolean
-      if (value === '') {
-        v = true
-      } else if (value === "''") {
-        v = ''
-      } else {
-        v = value
-      }
-      Reflect.set(acc, name.slice(1), v)
-      return acc
-    }, {} as any)
-}
-
-const is = Object.is
 export function keysOf<T>(val: T) {
   return Object.keys(val) as Array<keyof T>
 }
 
 export function shallowEqual(objA: unknown, objB: unknown) {
-  if (is(objA, objB)) return true
+  if (Object.is(objA, objB)) return true
   if (
     typeof objA !== 'object' ||
     objA === null ||
@@ -180,18 +54,69 @@ export function shallowEqual(objA: unknown, objB: unknown) {
   if (keysA.length !== keysB.length) return false
 
   for (let i = 0; i < keysA.length; i++) {
-    if (!(keysA[i] in objB) || !is(objA[keysA[i]], objB[keysA[i]])) {
+    if (!(keysA[i] in objB) || !Object.is(objA[keysA[i]], objB[keysA[i]])) {
       return false
     }
   }
   return true
 }
 
-export function twoStrArrayCompare(arrA: string[], arrB: string[]) {
-  if (arrA.length !== arrB.length) {
-    return false
-  }
-  return arrA.join('') === arrB.join('')
+export function extractProps(attrs: NamedNodeMap) {
+  return Array.from(attrs)
+    .filter((a) => /^:\S+/.test(a.name) && a.value !== marker)
+    .reduce((acc, { name, value }) => {
+      let v: string | boolean
+      if (value === '') {
+        v = true
+      } else if (value === "''") {
+        v = ''
+      } else {
+        v = value
+      }
+      Reflect.set(acc, name.slice(1), v)
+      return acc
+    }, {} as Obj)
 }
 
-export const hahaha = () => console.log('not treeshaked')
+/**
+ * https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+ */
+export const hashify = (str: string) =>
+  [...str].reduce((a, b) => {
+    a = (a << 5) - a + b.charCodeAt(0)
+    return a & a
+  }, 0)
+
+export type MapTypes<V = unknown> = Map<unknown, V> | WeakMap<object, V>
+export type MapKey<T extends MapTypes> = T extends WeakMap<infer WK, unknown>
+  ? WK
+  : T extends Map<infer K, unknown>
+  ? K
+  : never
+export type MapValue<T> = T extends MapTypes<infer V> ? V : unknown
+
+export type SetTypes = Set<unknown> | WeakSet<object>
+export type SetItem<T extends SetTypes> = T extends WeakSet<infer WV>
+  ? WV
+  : T extends Set<infer V>
+  ? V
+  : never
+
+export type StrongTypes = Map<unknown, unknown> | Set<unknown>
+export type WeakTypes = WeakMap<object, unknown> | WeakSet<object>
+
+export type DeleteItem<T extends MapTypes | SetTypes> = T extends WeakTypes
+  ? object
+  : unknown
+
+export function forceGet<T extends MapTypes>(
+  map: T,
+  key: MapKey<T>,
+  func: () => MapValue<T>
+): MapValue<T> {
+  const v = map.get(key)
+  if (v) return v as MapValue<T>
+  const val = func()
+  map.set(key, val)
+  return val
+}

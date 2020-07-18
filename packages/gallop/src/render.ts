@@ -1,17 +1,23 @@
-import { HTMLClip, createClip, getVals } from './clip'
-import { ReactiveElement } from './component'
-import { VirtualElement } from './virtual'
+import { HTMLClip, createPatcher, getVals } from './clip'
+import { markerIndex } from './marker'
+import { removeNodes } from './dom'
 
+/**
+ * @returns ununmout function
+ */
 export function render(
-  view: HTMLClip | VirtualElement,
-  container: Element | ShadowRoot = document.body,
-  before: Node | null = container.firstChild
+  view: HTMLClip,
+  {
+    container = document.body,
+    before = container.firstChild
+  }: { container?: Node; before?: Node | null } = {}
 ) {
-  let dof: DocumentFragment | ReactiveElement
-  if (view instanceof HTMLClip) {
-    dof = view.do(createClip).tryUpdate(view.do(getVals)).dof
-  } else {
-    dof = view.createInstance()
-  }
-  container.insertBefore(dof, before)
+  const patcher = view.do(createPatcher).patch(view.do(getVals))
+  const startNode = new Comment(markerIndex)
+  const endNode = new Comment(markerIndex)
+  container.insertBefore(endNode, before)
+  container.insertBefore(startNode, endNode)
+  const dof = patcher.dof
+  container.insertBefore(dof, endNode)
+  return () => removeNodes(startNode, endNode, true)
 }

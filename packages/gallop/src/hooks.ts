@@ -1,149 +1,114 @@
-import { resolveCurrentHandle, ReactiveElement } from './component'
-import { createProxy, dirtyMap } from './reactive'
-import { isProxy } from './is'
-import { shallowEqual } from './utils'
+import { Obj, isObject, forceGet } from './utils'
+import { Looper } from './loop'
+import { createProxy } from './reactive'
 import { Context } from './context'
-import { Memo, checkMemoDirty } from './memo'
+import { ReactiveElement } from './component'
+import { Recycler } from './dirty'
 
-export function useState<T extends object>(initState: T): [T] {
-  const current = resolveCurrentHandle()
-  return current.$state
-    ? ([current.$state] as [T])
-    : [
-        (current.$state = createProxy(initState, {
-          onSet: () => current.requestUpdate()
+export function useState<T extends Obj>(raw: T): [T] {
+  const current = Looper.resolveCurrent()
+  return [
+    current.$state
+      ? (current.$state as T)
+      : (current.$state = createProxy(raw, {
+          onMut: () => current.requestUpdate()
         }))
-      ]
+  ]
 }
 
-export type Effect = (
-  ...args: any
-) => void | ((...args: any) => void) | Promise<void | ((...args: any) => void)>
+export function useContext(contexts: Context<Obj>[]) {
+  const current = Looper.resolveCurrent()
+  contexts.forEach((ctx) => ctx.watch(current))
+}
 
-export function useEffect(effect: Effect, depends?: ReadonlyArray<unknown>) {
-  const current = resolveCurrentHandle()
-
-  const count = current.$effectsCount
-
+export let lastDepEl: ReactiveElement | undefined
+export const resetLastDepEl = () => (lastDepEl = undefined)
+let depCount: number
+const depCountMap = new WeakMap<ReactiveElement, Map<number, unknown[]>>()
+export function useDepends(depends?: unknown[]): [boolean, boolean, number] {
+  const current = Looper.resolveCurrent()
+  let diff: boolean = false
+  if (current !== lastDepEl) {
+    depCount = 0
+    diff = true
+  }
   if (!depends) {
-    if (!current.$updateEffects) {
-      current.$updateEffects = []
-    }
-    current.$updateEffects.push({ e: effect, index: count })
-  } else if (depends.length === 0) {
-    if (!current.$mountedEffects) {
-      current.$mountedEffects = []
-    }
-    current.$mountedEffects.push({ e: effect, index: count })
+    depCount++
+    return [true, diff, depCount - 1]
+  }
+  const oldVals = depCountMap.get(current)?.get(depCount)
+  let dirty = false
+  if (!oldVals) {
+    dirty = true
   } else {
-    let shouldTrigger = false
     for (let i = 0; i < depends.length; i++) {
       const dep = depends[i]
-      if (isProxy(dep)) {
-        shouldTrigger = dirtyMap.has(dep)
-      } else {
-        current.$effectDepends || (current.$effectDepends = [])
-        current.$effectDepends[count] || (current.$effectDepends[count] = [])
-        if (!shallowEqual(dep, current.$effectDepends[count][i])) {
-          shouldTrigger = true
-        }
-        current.$effectDepends[count][i] = dep
+      if (
+        (isObject(dep) &&
+          (!Object.is(dep, oldVals[i]) || Recycler.checkDirty(dep))) ||
+        !Object.is(dep, oldVals[i])
+      ) {
+        dirty = true
+        break
       }
     }
-    if (shouldTrigger) {
-      const updateEffects =
-        current.$updateEffects ?? (current.$updateEffects = [])
-      updateEffects.push({ e: effect, index: count })
-    }
   }
-
-  current.$effectsCount++
+  forceGet(depCountMap, current, () => new Map()).set(depCount, depends)
+  lastDepEl = current
+  depCount++
+  return [dirty, diff, depCount - 1]
 }
 
-export function resolveEffects(
-  element: ReactiveElement,
-  effects?: { e: Effect; index: number }[]
-) {
-  setTimeout(() => {
-    effects?.forEach(async ({ e, index }) => {
-      const res = await e.apply(element)
-      res
-        ? ((element.$disconnectedEffects ??
-            (element.$disconnectedEffects = []))[index] = res)
-        : null
+type Effect = () => void | (() => void)
+export const effectQueueMap = new WeakMap<ReactiveElement, (Effect | undefined)[]>()
+export const unmountedEffectMap = new WeakMap<ReactiveElement, (() => void)[]>()
+export function useEffect(effect: Effect, depends?: unknown[]) {
+  const current = Looper.resolveCurrent()
+  const [dirty, diff, count] = useDepends(depends)
+  diff && effectQueueMap.set(current, [])
+  dirty && (forceGet(effectQueueMap, current, () => [])[count] = effect)
+}
+export function resolveEffects(current: ReactiveElement) {
+  const effects = effectQueueMap.get(current)
+  return (
+    effects &&
+    new Promise<(void | (() => void))[]>((resolve) => {
+      const resList = unmountedEffectMap.get(current) ?? []
+      setTimeout(() => {
+        effects.forEach((e, i) => {
+          const res = e?.()
+          res && (resList[i] = res)
+          resolve(resList)
+        })
+      }, 0)
     })
-  }, 0)
+  )
 }
 
-export function useContext(contexts: Context<any>[]) {
-  const current = resolveCurrentHandle()
-  if (!current.$contexts) {
-    const elementContexts = (current.$contexts = new Set())
-    contexts.forEach((context) => {
-      context.watch(current)
-      elementContexts.add(context)
-    })
-  }
-}
-
-export function useCache<T extends Object>(initVal: T) {
-  const current = resolveCurrentHandle()
-  return current.$cache ? [current.$cache] : [(current.$cache = initVal)]
-}
-
-export function useMemo<T extends () => any>(
-  calc: T,
-  depends?: unknown[]
-): [Readonly<ReturnType<T>>] {
-  const current = resolveCurrentHandle()
-  const count = current.$memosCount
-
-  if (!current.$memos) {
-    current.$memos = new Map()
-  }
-  let memo = current.$memos.get(count)
-  if (!memo) {
-    depends && (current.$memoDepends || (current.$memoDepends = []))
-    memo = new Memo(calc)
-    current.$memos.set(count, memo)
-    depends && (current.$memoDepends![count] = depends)
-    current.$memosCount++
-    return [memo.value]
+const memoMap = new WeakMap<ReactiveElement, unknown[]>()
+export function useMemo<T>(func: () => T, depends?: unknown[]): T {
+  const current = Looper.resolveCurrent()
+  const [dirty, , count] = useDepends(depends)
+  const vals = forceGet(memoMap, current, () => [])
+  if (dirty) {
+    const result = func()
+    vals[count] = result
+    return result
   } else {
-    // debugger
-    let shouldRecalc = false
-    if (depends) {
-      for (let i = 0; i < depends.length; i++) {
-        current.$memoDepends![count] || (current.$memoDepends![count] = [])
-        if (!shallowEqual(current.$memoDepends![count][i], depends[i])) {
-          shouldRecalc = true
-        }
-        current.$memoDepends![count][i] = depends[i]
-      }
-    }
-
-    if (checkMemoDirty(memo)) {
-      shouldRecalc = true
-    }
-
-    if (shouldRecalc) {
-      memo = new Memo(calc)
-      current.$memos.set(count, memo)
-    }
-    current.$memosCount++
-    return [memo.value]
+    return vals[count] as T
   }
 }
 
-export function useStyle(css: () => string, depends?: unknown[]) {
-  const current = resolveCurrentHandle()
-  useMemo(() => {
-    let el = current.$root.querySelector('style.hook-style')
-    if (!el) {
-      el = document.createElement('style')
-      el.classList.add('hook-style')
-      current.$root.append(el)
+export function useStyle(css: () => string, depends: unknown[]) {
+  const current = Looper.resolveCurrent()
+  const [dirty] = useDepends(depends)
+  if (dirty) {
+    let styleEl = current.$root.querySelector('.hook-style')
+    if (!styleEl) {
+      styleEl = document.createElement('style')
+      styleEl.classList.add('hook-style')
+      current.$root.append(styleEl)
     }
-    el.innerHTML = css()
-  }, depends)
+    styleEl.innerHTML = css()
+  }
 }

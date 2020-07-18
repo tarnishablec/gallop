@@ -8,10 +8,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const { DefinePlugin } = require('webpack')
 
-const version = require('./packages/gallop/package.json').version.replace(
-  /^\^/,
-  ''
-)
+const version = require('./packages/gallop/package.json').version.replace(/^\^/, '')
 
 const ProdMode = process.env.NODE_ENV === 'production'
 
@@ -132,7 +129,7 @@ module.exports = (dir) => {
       compress: true,
       host: 'localhost',
       watchOptions: {
-        ignored: '/__tests__/'
+        ignored: /__tests__/
       }
     },
     plugins: [

@@ -9,8 +9,6 @@ const devOnly = args.devOnly || args.d
 
 const targets = require('./utils').resolveTargets(args._)
 
-buildAll(targets)
-
 // const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
 
 // async function generateDts(target) {
@@ -55,11 +53,9 @@ async function cleanDts(target) {
     fse.remove(`${distDir}/index.umd.d.ts`)
     fse.remove(`${distDir}/index.esm.min.d.ts`)
     fse.remove(`${distDir}/index.umd.min.d.ts`)
-    fse
-      .rename(`${distDir}/index.esm.d.ts`, `${distDir}/index.d.ts`)
-      .then(() => {
-        console.log(chalk.blueBright('d.ts file generated'))
-      })
+    fse.rename(`${distDir}/index.esm.d.ts`, `${distDir}/index.d.ts`).then(() => {
+      console.log(chalk.blueBright('d.ts file generated'))
+    })
   })
 }
 
@@ -79,11 +75,7 @@ async function build(target) {
     [
       '-c',
       '--environment',
-      [
-        `TARGET:${target}`,
-        `NODE_ENV:${env}`,
-        formats ? `FORMATS:${formats}` : ''
-      ]
+      [`TARGET:${target}`, `NODE_ENV:${env}`, formats ? `FORMATS:${formats}` : '']
         .filter(Boolean)
         .join(`,`)
     ],
@@ -100,3 +92,5 @@ async function buildAll(targets) {
     // await generateDts(target)
   }
 }
+
+buildAll(targets)

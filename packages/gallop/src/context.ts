@@ -1,43 +1,56 @@
-import { ReactiveElement } from './component'
+import { Obj } from './utils'
 import { createProxy } from './reactive'
+import { ReactiveElement } from './component'
 
-export type ContextOption<T extends object> = {
-  updated?: (value: T, context: Context<T>) => unknown
-  created?: (raw: T, context: Context<T>) => unknown
-  hooked?: (value: T, context: Context<T>, el: ReactiveElement) => unknown
-  [key: string]: unknown
-}
+export type ContextOptions<T extends Obj> = Partial<{
+  onCreate: (context: Context<T>) => unknown
+  onUpdate: (context: Context<T>) => unknown
+  onWatch: (context: Context<T>, el: ReactiveElement) => unknown
+  onUnwatch: (context: Context<T>, el: ReactiveElement) => unknown
+}>
 
-export class Context<T extends object> {
-  proxy: [T, Context<T>]
-  watchedInstances: Set<ReactiveElement> = new Set()
+export class Context<T extends Obj> {
+  proxy: T
+  watchList: Set<ReactiveElement> = new Set()
 
-  constructor(public raw: T, public option?: ContextOption<T>) {
-    this.raw = raw
-    this.proxy = [createProxy(this.raw, { onSet: () => this.update() }), this]
-    this.option?.created?.(this.raw, this)
-  }
-
-  watch(element: ReactiveElement) {
-    this.watchedInstances.add(element)
-    this.option?.hooked?.(this.proxy[0], this, element)
-  }
-
-  unWatch(element: ReactiveElement) {
-    this.watchedInstances.delete(element)
+  constructor(public raw: T, public options?: ContextOptions<T>) {
+    this.proxy = createProxy(raw, { onMut: () => this.update() })
+    options?.onCreate?.(this)
   }
 
   update() {
-    this.watchedInstances.forEach((instance) => {
-      instance.requestUpdate()
-    })
-    this.option?.updated?.(this.proxy[0], this)
+    this.watchList.forEach((el) => el.requestUpdate())
+    this.options?.onUpdate?.(this)
+  }
+
+  static globalContext?: Context<Obj>
+  static global?: Obj
+  static initGlobal<G extends Obj>(init: G, options?: ContextOptions<G>) {
+    if (Context.globalContext || Context.global)
+      throw new Error(`Can not init global context twice.`)
+    return ([Context.global, Context.globalContext as unknown] = createContext(
+      init,
+      options
+    ))
+  }
+
+  watch(el: ReactiveElement) {
+    this.watchList.add(el)
+    el.$contexts.add(this as Context<Obj>)
+    this.options?.onWatch?.(this, el)
+  }
+
+  unwatch(el: ReactiveElement) {
+    this.watchList.delete(el)
+    el.$contexts.delete(this as Context<Obj>)
+    this.options?.onUnwatch?.(this, el)
   }
 }
 
-export function createContext<T extends object>(
+export const createContext = <T extends Obj>(
   raw: T,
-  option?: ContextOption<T>
-) {
-  return new Context(raw, option).proxy
+  options?: ContextOptions<T>
+): [T, Context<T>] => {
+  const context = new Context(raw, options)
+  return [context.proxy, context]
 }

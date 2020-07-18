@@ -1,14 +1,8 @@
-declare module '*.scss' {
-  const content: { [className: string]: string }
-  export = content
-}
+declare module '*.scss' {}
 
-declare module '*.css' {
-  const content: { [className: string]: string }
-  export = content
-}
+declare module '*.css' {}
 
-type RequestIdleCallbackHandle = any
+type RequestIdleCallbackHandle = number
 type RequestIdleCallbackOptions = {
   timeout: number
 }
@@ -23,4 +17,15 @@ interface Window {
     opts?: RequestIdleCallbackOptions
   ) => RequestIdleCallbackHandle
   cancelIdleCallback: (handle: RequestIdleCallbackHandle) => void
+}
+
+interface ImportMeta {}
+
+declare namespace Reflect {
+  function get<T extends object, P extends PropertyKey>(
+    target: T,
+    propertyKey: P,
+    receiver?: T
+  ): P extends '__raw__' ? T : P extends keyof T ? T[P] : undefined
+  // ): P extends '__raw__' ? T : T[keyof T]
 }
