@@ -68,7 +68,7 @@ component('test-app', function (
   )
 
   return html`
-    <div @mouseenter="${() => console.log('hover')}" .style="${{ display: 'grid' }}">
+    <div @mouseenter="${() => console.log('hover')}" .style="${`display: grid`}">
       ${name}
     </div>
     <hr />
@@ -110,17 +110,8 @@ component('test-app', function (
     <hr />
     <div>
       ${suspense(
-        () =>
-          new Promise((res) => {
-            setTimeout(() => {
-              // rej(new Error(`error`))
-              res(html`hello!`)
-            }, 2000)
-          }).then((res) => {
-            console.log(res)
-            return res
-          }),
-        { pending: `loading...`, fallback: `error!` }
+        () => import('./components/TestA').then(() => html`<test-a></test-a>`),
+        { pending: `loading...`, fallback: `error!`, delay: 1000 }
       )}
     </div>
     <hr />

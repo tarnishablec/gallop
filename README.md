@@ -45,7 +45,6 @@
   | dynamic()   | ✅  |
   | suspense()  | ✅  |
   | portal()    | ✅  |
-  | keepalive() | ✅  |
 
 - support `<slot>` by web components, also `named slot`
 
@@ -160,7 +159,7 @@ component('test-name', function (
     </button>
     <div>
       ${suspense(
-        () => import('./components/MyCount').then((res) => res.default('green')),
+        () => import('./components/MyCount').then(() => html`<my-count></my-count>`),
         { pending: html`<div>loading...</div>` }
       )}
     </div>
