@@ -1,9 +1,9 @@
 import { component, html, useState, repeat } from '@gallop/gallop'
 
 component('side-menu', () => {
-  const [menu] = useState([
-    { name: 'Introduction', children: ['Overview', 'Installation'] }
-  ])
+  const [state] = useState({
+    menu: [{ name: 'Introduction', children: ['Overview', 'Installation'] }]
+  })
 
   return html`
     <header>
@@ -12,7 +12,7 @@ component('side-menu', () => {
     <div class="menu-list-container">
       <ul>
         ${repeat(
-          menu,
+          state.menu,
           (m) => m.name,
           (m) => html`
             <li class="primary-menu">
