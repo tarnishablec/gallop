@@ -56,7 +56,6 @@
     "types": [
       "node",
       "jest",
-      "lodash",
       "marked",
       "highlight.js",
       "webpack-env"

@@ -44,7 +44,7 @@ function upgrade() {
       })
     } else {
       execa.commandSync(
-        `yarn workspace @${scope}/${target} add ${depFields[dep].data} ${depFields[dep].tag}`,
+        `lerna add ${depFields[dep].tag} ${depFields[dep].data} --scope @${scope}/${target}`,
         {
           stdio: 'inherit'
         }
