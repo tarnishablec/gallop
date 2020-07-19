@@ -35,12 +35,16 @@ component('app-main', () => {
       }
 
       .app-main-content {
-        overflow-y: auto;
         width: 100%;
         max-width: 900px;
         padding: 0 1rem 0 2rem;
         margin: 0 auto;
         box-sizing: border-box;
+      }
+
+      .app-main-wrapper {
+        overflow-y: auto;
+        overflow-x: hidden;
       }
 
       .app-main-content hr {
@@ -70,28 +74,32 @@ component('app-main', () => {
     []
   )
 
-  return html` <nav>
+  return html`
+    <nav>
       <a style="color: black"><strong>guide</strong></a>
       <a href="https://gitter.im/gallopweb/community">/ chat</a>
     </nav>
-    <div class="app-main-content">
-      ${repeat(
-        menu,
-        (m) => m.name,
-        (m) => html`
-          <h2 .id="${m.name}">${lang(m.name, locale)}</h2>
-          <hr />
-          ${repeat(
-            m.children,
-            (c) => c,
-            (c) =>
-              html`<h3 .id="${c}">${lang(c, locale)}</h3>
-                <mark-down
-                  :locale="${locale}"
-                  :filename="${c.toLowerCase() + '.md'}"
-                ></mark-down> `
-          )}
-        `
-      )}
-    </div>`
+    <div class="app-main-wrapper">
+      <div class="app-main-content">
+        ${repeat(
+          menu,
+          (m) => m.name,
+          (m) => html`
+            <h2 .id="${m.name}">${lang(m.name, locale)}</h2>
+            <hr />
+            ${repeat(
+              m.children,
+              (c) => c,
+              (c) =>
+                html`<h3 .id="${c}">${lang(c, locale)}</h3>
+                  <mark-down
+                    :locale="${locale}"
+                    :filename="${c.toLowerCase() + '.md'}"
+                  ></mark-down> `
+            )}
+          `
+        )}
+      </div>
+    </div>
+  `
 })

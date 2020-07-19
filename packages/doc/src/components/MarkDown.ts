@@ -22,20 +22,23 @@ component('mark-down', function (
   { filename, locale = 'zh' }: { filename: string; locale?: string }
 ) {
   return html`<div>
-    ${suspense(async () => {
-      const content = (await importMd(filename, locale)).default
-      const worker = new MarkDownWoker()
-      worker.postMessage(content)
-      return new Promise((resolve) => {
-        const handler = (e: MessageEvent) => {
-          worker.removeEventListener('message', handler)
-          worker.terminate()
-          resolve(raw(e.data))
-        }
-        worker.addEventListener('message', handler)
-      })
-    })}
-  </div>`
+      ${suspense(async () => {
+        const content = (await importMd(filename, locale)).default
+        const worker = new MarkDownWoker()
+        worker.postMessage(content)
+        return new Promise((resolve) => {
+          const handler = (e: MessageEvent) => {
+            worker.removeEventListener('message', handler)
+            worker.terminate()
+            resolve(raw(e.data))
+          }
+          worker.addEventListener('message', handler)
+        })
+      })}
+    </div>
+    <style>
+      @import '//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css';
+    </style>`
 })
 
 const raw = directive((htmlStr: string) => (part) => {
