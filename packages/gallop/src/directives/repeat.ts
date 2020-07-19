@@ -1,7 +1,7 @@
 import { Key, forceGet } from '../utils'
-import { directive } from '../directive'
+import { directive, ensurePartType } from '../directive'
 import { NodePart } from '../part'
-import { DirectivePartTypeError, DuplicatedKeyError } from '../error'
+import { DuplicatedKeyError } from '../error'
 import { removeNodes, insertAfter } from '../dom'
 
 type DiffKey = Key | null
@@ -154,8 +154,7 @@ export const repeat = directive(function <T>(
   mapFn: (item: T, index: number) => unknown
 ) {
   return (part) => {
-    if (!(part instanceof NodePart))
-      throw DirectivePartTypeError(part.constructor.name)
+    if (!ensurePartType(part, NodePart)) return
 
     const arrPart = forceGet(
       arrPartMap,

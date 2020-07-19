@@ -1,9 +1,11 @@
-import { component, html, useState, repeat } from '@gallop/gallop'
+import { component, html, repeat, createContext, useContext } from '@gallop/gallop'
+
+export const [{ menu }, context] = createContext({
+  menu: [{ name: 'Introduction', children: ['Overview', 'Installation'] }]
+})
 
 component('side-menu', () => {
-  const [state] = useState({
-    menu: [{ name: 'Introduction', children: ['Overview', 'Installation'] }]
-  })
+  useContext([context])
 
   return html`
     <header>
@@ -12,7 +14,7 @@ component('side-menu', () => {
     <div class="menu-list-container">
       <ul>
         ${repeat(
-          state.menu,
+          menu,
           (m) => m.name,
           (m) => html`
             <li class="primary-menu">
@@ -44,6 +46,7 @@ component('side-menu', () => {
         display: grid;
         grid-auto-rows: min-content 1fr;
         box-shadow: 0 0 3px 1px gray;
+        z-index: 5;
       }
 
       a {

@@ -1,6 +1,5 @@
 import { NodePart } from '../part'
-import { directive } from '../directive'
-import { DirectivePartTypeError } from '../error'
+import { directive, ensurePartType } from '../directive'
 
 type SuspenseOption = {
   pending?: unknown
@@ -16,9 +15,7 @@ export const suspense = directive(function <T>(
   { pending = null, fallback = null, once = true, delay = 0 }: SuspenseOption = {}
 ) {
   return (part) => {
-    if (!(part instanceof NodePart))
-      throw DirectivePartTypeError(part.constructor.name)
-
+    if (!ensurePartType(part, NodePart)) return
     if (once) {
       if (!onceSet.has(part)) {
         part.setValue(pending)

@@ -9,7 +9,7 @@ export type ContextOptions<T extends Obj> = Partial<{
   onUnwatch: (context: Context<T>, el: ReactiveElement) => unknown
 }>
 
-export class Context<T extends Obj> {
+export class Context<T extends Obj = Obj> {
   proxy: T
   watchList: Set<ReactiveElement> = new Set()
 

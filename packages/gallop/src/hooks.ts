@@ -16,7 +16,8 @@ export function useState<T extends Obj>(raw: T): [T] {
   ]
 }
 
-export function useContext(contexts: Context<Obj>[]) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useContext(contexts: Context<any>[]) {
   const current = Looper.resolveCurrent()
   contexts.forEach((ctx) => ctx.watch(current))
 }
@@ -66,7 +67,10 @@ export function useEffect(effect: Effect, depends?: unknown[]) {
   const current = Looper.resolveCurrent()
   const [dirty, diff, count] = useDepends(depends)
   diff && effectQueueMap.set(current, [])
-  dirty && (forceGet(effectQueueMap, current, () => [])[count] = effect)
+  dirty &&
+    (forceGet(effectQueueMap, current, () => [] as (Effect | undefined)[])[
+      count
+    ] = effect)
 }
 export function resolveEffects(current: ReactiveElement) {
   const effects = effectQueueMap.get(current)
@@ -89,7 +93,7 @@ const memoMap = new WeakMap<ReactiveElement, unknown[]>()
 export function useMemo<T>(func: () => T, depends?: unknown[]): T {
   const current = Looper.resolveCurrent()
   const [dirty, , count] = useDepends(depends)
-  const vals = forceGet(memoMap, current, () => [])
+  const vals = forceGet(memoMap, current, () => [] as unknown[])
   if (dirty) {
     const result = func()
     vals[count] = result
@@ -111,4 +115,9 @@ export function useStyle(css: () => string, depends: unknown[]) {
     }
     styleEl.innerHTML = css()
   }
+}
+
+const cacheMap = new WeakMap<ReactiveElement, Obj>()
+export function useCache<T extends Obj>(raw: T): [T] {
+  return [forceGet(cacheMap, Looper.resolveCurrent(), () => raw)]
 }

@@ -1,4 +1,5 @@
 import { Part } from './part'
+import { DirectivePartTypeError } from './error'
 
 export const directives = new WeakSet()
 
@@ -23,4 +24,13 @@ export function resolveDirective(val: unknown, part: Part) {
     val = val(part)
   }
   return isOverridden
+}
+
+export function ensurePartType<T extends Part>(
+  part: Part,
+  partCtor: new (...args: any[]) => T
+): part is T {
+  if (!(part instanceof partCtor))
+    throw DirectivePartTypeError(part.constructor.name)
+  return true
 }

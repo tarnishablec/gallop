@@ -1,6 +1,5 @@
-import { directive } from '../directive'
+import { directive, ensurePartType } from '../directive'
 import { Part, NodePart } from '../part'
-import { DirectivePartTypeError } from '../error'
 import { removeNodes, insertAfter } from '../dom'
 
 export const portal = directive(
@@ -11,9 +10,7 @@ export const portal = directive(
       after = container.lastChild
     }: { container?: Element; after?: Node | null } = {}
   ) => (part: Part) => {
-    if (!(part instanceof NodePart)) {
-      throw DirectivePartTypeError(part.constructor.name)
-    }
+    if (!ensurePartType(part, NodePart)) return
 
     if (container === null) {
       throw new Error(`portal target element can not be found.`)

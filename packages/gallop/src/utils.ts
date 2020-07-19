@@ -93,7 +93,7 @@ export type MapKey<T extends MapTypes> = T extends WeakMap<infer WK, unknown>
   : T extends Map<infer K, unknown>
   ? K
   : never
-export type MapValue<T> = T extends MapTypes<infer V> ? V : unknown
+export type MapValue<T> = T extends MapTypes<infer V> ? V : never
 
 export type SetTypes = Set<unknown> | WeakSet<object>
 export type SetItem<T extends SetTypes> = T extends WeakSet<infer WV>
@@ -109,13 +109,13 @@ export type DeleteItem<T extends MapTypes | SetTypes> = T extends WeakTypes
   ? object
   : unknown
 
-export function forceGet<T extends MapTypes>(
+export function forceGet<T extends MapTypes, V>(
   map: T,
   key: MapKey<T>,
-  func: () => MapValue<T>
-): MapValue<T> {
+  func: () => V
+): V {
   const v = map.get(key)
-  if (v) return v as MapValue<T>
+  if (v) return v as V
   const val = func()
   map.set(key, val)
   return val

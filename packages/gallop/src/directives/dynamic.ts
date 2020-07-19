@@ -1,15 +1,12 @@
-import { directive } from '../directive'
+import { directive, ensurePartType } from '../directive'
 import { NodePart } from '../part'
-import { DirectivePartTypeError } from '../error'
 import { ReactiveElement, mergeProps, componentPool } from '../component'
 import { Obj } from '../utils'
 
 const partElCache = new WeakMap<NodePart, ReactiveElement>()
 
 export const dynamic = directive((name: string, props: Obj = {}) => (part) => {
-  if (!(part instanceof NodePart))
-    throw DirectivePartTypeError(part.constructor.name)
-
+  if (!ensurePartType(part, NodePart)) return
   const { endNode } = part.location
 
   const lastEl = partElCache.get(part)

@@ -14,12 +14,13 @@ export {
   useDepends,
   useEffect,
   useMemo,
-  useStyle
+  useStyle,
+  useCache
 } from './hooks'
 
 export { NodePart, AttrPart, PropPart, EventPart } from './part'
 
-export { directive, directives, resolveDirective } from './directive'
+export { directive, directives, resolveDirective, ensurePartType } from './directive'
 export { repeat, dynamic, suspense, portal } from './directives'
 
 export type { Component, ReactiveElement } from './component'
