@@ -3,7 +3,7 @@ const { resolveTargets } = require('./utils')
 const fse = require('fs-extra')
 const args = require('minimist')(process.argv.slice(2))
 
-const targets = resolveTargets(args._)
+const targets = resolveTargets(args._, true)
 
 function clean(target) {
   const distDir = path.resolve(`packages/${target}/dist`)

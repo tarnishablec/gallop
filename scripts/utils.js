@@ -3,10 +3,10 @@ const execa = require('execa')
 
 const excludes = ['sandbox', 'doc']
 
-const resolveTargets = (argsTargets) =>
+const resolveTargets = (argsTargets, all = false) =>
   (argsTargets.length === 0 ? fs.readdirSync('packages') : argsTargets).filter(
     (f) => {
-      if (excludes.includes(f)) {
+      if (excludes.includes(f) && !all) {
         return false
       }
       if (!fs.statSync(`packages/${f}`).isDirectory()) {

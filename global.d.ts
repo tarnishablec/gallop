@@ -2,6 +2,18 @@ declare module '*.scss' {}
 
 declare module '*.css' {}
 
+declare module '*.md' {
+  const content: { default: string }
+  export default content
+}
+
+declare module 'worker-loader!*' {
+  class WebpackWorker extends Worker {
+    constructor()
+  }
+  export default WebpackWorker
+}
+
 type RequestIdleCallbackHandle = number
 type RequestIdleCallbackOptions = {
   timeout: number

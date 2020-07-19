@@ -36,20 +36,11 @@ module.exports = (dir) => {
     resolve: {
       extensions: ['.ts', '.js', '.scss'],
       alias: {
-        // '~': path.resolve(__dirname, 'src')
+        // '@doc': path.resolve(__dirname, 'packages/doc')
       }
     },
     optimization: {
       minimize: ProdMode,
-      /**
-       * TODO
-       * 🚫 terser cause component props name can not be auto detected
-       * Feature request: https://github.com/terser/terser/issues/622
-       * if you want to enable minimization
-       * ensure using propList in component() options
-       * component('xxx-xx',(name,count)=>html`<div>xxx</div>`,{propList:['name','count']})
-       * to make gallop having ability to know your component's prop names
-       */
       minimizer: [
         new TerserPlugin({
           test: /\.js(\?.*)?$/i
@@ -71,6 +62,12 @@ module.exports = (dir) => {
             }
           ],
           exclude: /node_modules/
+        },
+        {
+          test: /\.worker\.js$/,
+          use: {
+            loader: 'worker-loader'
+          }
         },
         {
           test: /\.((s[ac])|c)ss$/,
@@ -117,6 +114,10 @@ module.exports = (dir) => {
               }
             }
           ]
+        },
+        {
+          test: /\.md(\?.*)?$/,
+          use: 'raw-loader'
         }
       ]
     },

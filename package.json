@@ -15,7 +15,8 @@
     "sand": "yarn workspace @gallop/sandbox start",
     "doc": "yarn workspace @gallop/doc start",
     "test": "jest",
-    "coveralls": "jest --coverage && coveralls < coverage/lcov.info"
+    "coveralls": "jest --coverage && coveralls < coverage/lcov.info",
+    "build:doc": "yarn workspace @gallop/doc run build"
   },
   "license": "MIT",
   "husky": {
@@ -39,6 +40,7 @@
     "@rollup/plugin-json": "^4.1.0",
     "@types/jest": "^26.0.4",
     "@types/lodash": "^4.14.157",
+    "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "^3.6.1",
     "@typescript-eslint/parser": "^3.6.1",
     "@wessberg/rollup-plugin-ts": "^1.2.28",
@@ -64,6 +66,7 @@
     "minimist": "^1.2.5",
     "postcss-loader": "^3.0.0",
     "prettier": "^2.0.5",
+    "raw-loader": "^4.0.1",
     "rollup": "^2.21.0",
     "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-terser": "^6.1.0",
@@ -79,6 +82,7 @@
     "url-loader": "^4.1.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.0",
+    "worker-loader": "^2.0.0"
   }
 }
