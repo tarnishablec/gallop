@@ -42,7 +42,6 @@ export class Context<T extends Obj = Obj> {
 
   unwatch(el: ReactiveElement) {
     this.watchList.delete(el)
-    el.$contexts.delete(this as Context<Obj>)
     this.options?.onUnwatch?.(this, el)
   }
 }
