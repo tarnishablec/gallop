@@ -1,4 +1,6 @@
 import { component, html, repeat, createContext, useContext } from '@gallop/gallop'
+import { gloabl } from '../../contexts'
+import { lang } from '../../language'
 
 export const [{ menu }, context] = createContext({
   menu: [{ name: 'Introduction', children: ['Overview', 'Installation'] }]
@@ -6,6 +8,8 @@ export const [{ menu }, context] = createContext({
 
 component('side-menu', () => {
   useContext([context])
+
+  const { locale } = gloabl
 
   return html`
     <header>
@@ -19,7 +23,7 @@ component('side-menu', () => {
           (m) => html`
             <li class="primary-menu">
               <a .href="${`/#/${m.name}`}">
-                ${m.name}
+                <strong>${lang(m.name, locale)}</strong>
               </a>
               ${m.children
                 ? html`<ul>
@@ -28,7 +32,7 @@ component('side-menu', () => {
                       (n) => n,
                       (n) => html`
                         <li class="child-menu">
-                          <a .href="${`/#/${n}`}">${n}</a>
+                          <a .href="${`/#/${n}`}">${lang(n, locale)}</a>
                         </li>
                       `
                     )}
@@ -84,7 +88,7 @@ component('side-menu', () => {
       }
 
       li.primary-menu > a {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         color: #333;
       }
 

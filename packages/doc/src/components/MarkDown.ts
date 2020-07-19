@@ -9,17 +9,21 @@ import {
 } from '@gallop/gallop'
 import MarkDownWoker from 'worker-loader!@gallop/doc/worker/markdown.worker'
 
-const importMd: (filename: string) => Promise<{ default: string }> = (
-  path: string
-) => require.context('../markdown', false, /\.md$/, 'lazy')(`./${path}`)
+const req = require.context('../markdown', true, /\.md$/, 'lazy-once')
+
+const importMd: (
+  filename: string,
+  locale?: string
+) => Promise<{ default: string }> = (filename, locale = 'zh') =>
+  req(`./${locale}/${filename}`)
 
 component('mark-down', function (
   this: ReactiveElement,
-  { filename }: { filename: string }
+  { filename, locale = 'zh' }: { filename: string; locale?: string }
 ) {
   return html`<div>
     ${suspense(async () => {
-      const content = (await importMd(filename)).default
+      const content = (await importMd(filename, locale)).default
       const worker = new MarkDownWoker()
       worker.postMessage(content)
       return new Promise((resolve) => {
