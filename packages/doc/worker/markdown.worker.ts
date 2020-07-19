@@ -6,6 +6,7 @@ importScripts(
 self.addEventListener('message', (e) => {
   self.postMessage(
     marked(e.data, {
+      gfm: true,
       highlight: (code) => hljs.highlightAuto(code).value
     })
   )
