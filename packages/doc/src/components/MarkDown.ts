@@ -1,12 +1,4 @@
-import {
-  component,
-  html,
-  suspense,
-  ReactiveElement,
-  directive,
-  ensurePartType,
-  NodePart
-} from '@gallop/gallop'
+import { component, html, suspense, ReactiveElement, raw } from '@gallop/gallop'
 import MarkDownWoker from 'worker-loader!@gallop/doc/worker/markdown.worker'
 
 const req = require.context('../markdown', true, /\.md$/, 'lazy-once')
@@ -39,14 +31,4 @@ component('mark-down', function (
     <style>
       @import '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.1/build/styles/default.min.css';
     </style>`
-})
-
-const raw = directive((htmlStr: string) => (part) => {
-  if (!ensurePartType(part, NodePart)) return
-  if (htmlStr === part.value) return
-  part.clear()
-  const node = new Range().createContextualFragment(htmlStr)
-  const { endNode } = part.location
-  endNode.parentNode!.insertBefore(node, endNode)
-  part.value = htmlStr
 })
