@@ -48,7 +48,7 @@ component('app-main', () => {
       }
 
       .app-main-content hr {
-        border: 1px solid rgba(239, 51, 53, 0.4);
+        border: 1px solid var(--active-color);
       }
 
       h2,
