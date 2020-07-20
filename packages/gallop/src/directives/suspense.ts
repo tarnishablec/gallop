@@ -1,7 +1,7 @@
 import { NodePart } from '../part'
 import { directive, ensurePartType } from '../directive'
 
-type SuspenseOption = {
+export type SuspenseOption = {
   pending?: unknown
   fallback?: unknown
   once?: boolean

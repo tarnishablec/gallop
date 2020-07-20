@@ -14,19 +14,25 @@ component('mark-down', function (
   { filename, locale = 'zh' }: { filename: string; locale?: string }
 ) {
   return html`<div>
-      ${suspense(async () => {
-        const content = (await importMd(filename, locale)).default
-        const worker = new MarkDownWoker()
-        worker.postMessage(content)
-        return new Promise((resolve) => {
-          const handler = (e: MessageEvent) => {
-            worker.removeEventListener('message', handler)
-            worker.terminate()
-            resolve(raw(e.data))
-          }
-          worker.addEventListener('message', handler)
-        })
-      })}
+      ${suspense(
+        async () => {
+          const content = (await importMd(filename, locale)).default
+          const worker = new MarkDownWoker()
+          worker.postMessage(content)
+          return new Promise((resolve) => {
+            const handler = (e: MessageEvent) => {
+              worker.removeEventListener('message', handler)
+              worker.terminate()
+              resolve(raw(e.data))
+            }
+            worker.addEventListener('message', handler)
+          })
+        },
+        {
+          pending: html` <skele-ton></skele-ton> `,
+          delay: 600
+        }
+      )}
     </div>
     <style>
       @import '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.1/build/styles/default.min.css';
