@@ -1,7 +1,4 @@
-<iframe
-     src="https://codesandbox.io/embed/overflow-with-padding-5rrv0?fontsize=14&hidenavigation=1&theme=dark"
-     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-     title="overflow-with-padding"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe height="500" style="width: 100%;" scrolling="no" title="glass" src="https://codepen.io/raczo/embed/preview/xxZyQGo?height=395&theme-id=default&default-tab=css,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/raczo/pen/xxZyQGo'>glass</a> by Oscar Salazar
+  (<a href='https://codepen.io/raczo'>@raczo</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>

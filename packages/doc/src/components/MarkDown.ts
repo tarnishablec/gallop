@@ -37,7 +37,7 @@ component('mark-down', function (
       })}
     </div>
     <style>
-      @import '//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css';
+      @import '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.1/build/styles/default.min.css';
     </style>`
 })
 

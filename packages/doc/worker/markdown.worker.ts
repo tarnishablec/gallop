@@ -1,6 +1,6 @@
 importScripts('https://cdn.jsdelivr.net/npm/marked/marked.min.js')
 importScripts(
-  'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js'
+  'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.1/build/highlight.min.js'
 )
 
 self.addEventListener('message', (e) => {
