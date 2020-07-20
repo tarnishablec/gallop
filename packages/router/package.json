@@ -1,6 +1,6 @@
 {
   "name": "@gallop/router",
-  "version": "0.9.16-y.0",
+  "version": "0.0.1",
   "description": "router",
   "main": "src/index.ts",
   "module": "dist/index.esm.js",
@@ -35,6 +35,5 @@
   },
   "dependencies": {
     "path-to-regexp": "^6.1.0"
-  },
-  "gitHead": "208ab89d0d7fcf82d4e08e28a0fa290c0a9860c4"
+  }
 }
