@@ -1,4 +1,12 @@
-import { component, html, repeat, createContext, useContext } from '@gallop/gallop'
+import {
+  component,
+  html,
+  repeat,
+  createContext,
+  useContext,
+  ReactiveElement,
+  queryPoolFirst
+} from '@gallop/gallop'
 import { gloabl } from '../../contexts'
 import { lang } from '../../language'
 
@@ -6,7 +14,7 @@ export const [{ menu }, context] = createContext({
   menu: [{ name: 'Introduction', children: ['Overview', 'Installation'] }]
 })
 
-component('side-menu', () => {
+component('side-menu', function (this: ReactiveElement) {
   useContext([context])
 
   const { locale } = gloabl
@@ -16,13 +24,23 @@ component('side-menu', () => {
       <a href="/">Gallop</a>
     </header>
     <div class="menu-list-container">
-      <ul>
+      <ul
+        @click="${(e: Event) => {
+          const { target } = e
+          if (target instanceof HTMLAnchorElement) {
+            const href = target.getAttribute('href')
+            queryPoolFirst('app-main')
+              ?.$root.querySelector(href ?? '#')
+              ?.scrollIntoView({ behavior: 'smooth' })
+          }
+        }}"
+      >
         ${repeat(
           menu,
           (m) => m.name,
           (m) => html`
             <li class="primary-menu">
-              <a .href="${`/#/${m.name}`}">
+              <a .href="${`#${m.name}`}">
                 <strong>${lang(m.name, locale)}</strong>
               </a>
               ${m.children
@@ -32,7 +50,7 @@ component('side-menu', () => {
                       (n) => n,
                       (n) => html`
                         <li class="child-menu">
-                          <a .href="${`/#/${n}`}">${lang(n, locale)}</a>
+                          <a .href="${`#${n}`}">${lang(n, locale)}</a>
                         </li>
                       `
                     )}

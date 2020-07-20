@@ -15,6 +15,7 @@ type RegisterOption = {
 }
 
 export const componentPool = new Set<string>()
+export const elementPool = new Map<string, Set<ReactiveElement>>()
 export interface ReactiveElement extends HTMLElement {
   $builder: Component
   $root: ReactiveElement | ShadowRoot
@@ -72,10 +73,19 @@ export function component<F extends Component>(
       this.requestUpdate()
 
       Context.globalContext && Context.globalContext.watch(this)
+      window.requestIdleCallback(() => {
+        if (elementPool.has(name)) elementPool.get(name)!.add(this)
+        else {
+          const set = new Set<ReactiveElement>()
+          set.add(this)
+          elementPool.set(name, set)
+        }
+      })
     }
     disconnectedCallback() {
       this.$contexts.forEach((ctx) => ctx.unwatch(this))
       unmountedEffectMap.get(this)?.forEach((fn) => fn())
+      elementPool.get(name)!.delete(this)
     }
 
     constructor() {
@@ -94,3 +104,7 @@ export const mergeProp = (node: ReactiveElement, name: string, value: unknown) =
 
 export const mergeProps = (node: ReactiveElement, value: unknown) =>
   Object.assign(node.$props, value)
+
+export const queryPoolFirst = (name: string): ReactiveElement | undefined =>
+  Array.from(elementPool.get(name) ?? [])[0]
+export const queryPoolAll = (name: string) => Array.from(elementPool.get(name) ?? [])
