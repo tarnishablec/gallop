@@ -1,13 +1,14 @@
-/* eslint-disable no-undef */
 importScripts(
-  'https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js'
+  'https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js'
 )
 
-if (workbox) {
+if (self.workbox) {
   console.log(`Yay! Workbox is loaded 🎉`)
 } else {
   console.log(`Boo! Workbox didn't load 😬`)
 }
+
+const { workbox } = self
 
 workbox.routing.registerRoute(
   /\.js\?\w*$/,
@@ -38,7 +39,7 @@ workbox.routing.registerRoute(
     // Use a custom cache name
     cacheName: 'image-cache',
     plugins: [
-      new workbox.expiration.Plugin({
+      new workbox.expiration.ExpirationPlugin({
         // Cache only 20 images
         maxEntries: 20,
         // Cache for a maximum of a week
