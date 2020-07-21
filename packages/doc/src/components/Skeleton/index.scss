@@ -1,0 +1,32 @@
+@keyframes loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.skeleton-avatar {
+  border-radius: 50%;
+  height: 40px;
+  line-height: 40px;
+  width: 40px;
+  margin: 0.5rem 1rem 0 0;
+}
+
+.skeleton-title {
+  height: 1.2rem;
+}
+
+.skeleton-paragraph {
+  padding: 0;
+  display: grid;
+  row-gap: 1rem;
+}
+
+.skeleton-paragraph > li {
+  list-style: none;
+  height: 1rem;
+  width: 100%;
+}

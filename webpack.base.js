@@ -7,12 +7,15 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const { DefinePlugin } = require('webpack')
+const chalk = require('chalk')
 
 const version = require('./packages/gallop/package.json').version.replace(/^\^/, '')
 
-const ProdMode = process.env.NODE_ENV === 'production'
+const __prod__ = process.env.NODE_ENV === 'production'
 
-console.log(`production : ${ProdMode}`)
+console.log(
+  `🔧 production : ${__prod__ ? chalk.green(__prod__) : chalk.red(__prod__)}`
+)
 
 module.exports = (dir) => {
   return {
@@ -36,11 +39,11 @@ module.exports = (dir) => {
     resolve: {
       extensions: ['.ts', '.js', '.scss'],
       alias: {
-        // '@doc': path.resolve(__dirname, 'packages/doc')
+        '~': '.'
       }
     },
     optimization: {
-      minimize: ProdMode,
+      minimize: __prod__,
       minimizer: [
         new TerserPlugin({
           test: /\.js(\?.*)?$/i
@@ -73,7 +76,7 @@ module.exports = (dir) => {
           test: /\.((s[ac])|c)ss$/,
           use: [
             // 'to-string-loader',
-            ProdMode ? MiniCssExtractPlugin.loader : 'style-loader',
+            __prod__ ? MiniCssExtractPlugin.loader : 'style-loader',
             'css-loader',
             {
               loader: 'postcss-loader',
@@ -121,7 +124,7 @@ module.exports = (dir) => {
         }
       ]
     },
-    devtool: ProdMode ? false : 'inline-source-map',
+    devtool: __prod__ ? false : 'inline-source-map',
     // devtool: false,
     devServer: {
       contentBase: './dist',
@@ -142,13 +145,13 @@ module.exports = (dir) => {
         inject: true,
         favicon: './public/favicon.ico',
         minify: {
-          collapseWhitespace: ProdMode,
+          collapseWhitespace: __prod__,
           removeComments: true
         },
         hash: true,
         templateParameters: {
           env: JSON.stringify(process.env),
-          gallopCdn: ProdMode
+          gallopCdn: __prod__
             ? `<script src="https://unpkg.com/@gallop/gallop@${version}/dist/index.umd.js"></script>`
             : ''
         }

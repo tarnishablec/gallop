@@ -1,77 +1,14 @@
-import { component, html, repeat, useContext, useStyle, css } from '@gallop/gallop'
+import { component, html, repeat, useContext, useStyle } from '@gallop/gallop'
 import { gloabl, menu, menuContext } from '../../contexts'
 import { lang } from '../../language'
+import style from '!!to-string-loader!css-loader!sass-loader!./index.scss'
 
 component('app-main', () => {
   useContext([menuContext])
 
   const { locale } = gloabl
 
-  useStyle(
-    () => css`
-      :host {
-        height: 100vh;
-        display: grid;
-        grid-template-rows: auto 1fr;
-      }
-
-      nav {
-        height: 3.6rem;
-        font-size: 1.1rem;
-        background: white;
-        box-shadow: 0 2px 2px -2px gray;
-        display: grid;
-        place-items: center end;
-        justify-content: end;
-        grid-template-columns: repeat(4, auto);
-        padding: 0 3rem;
-        column-gap: 0.5rem;
-      }
-
-      nav a {
-        text-decoration: none;
-        color: grey;
-      }
-
-      .app-main-content {
-        width: 100%;
-        max-width: 900px;
-        padding: 0 1rem 0 2rem;
-        margin: 0 auto;
-        box-sizing: border-box;
-      }
-
-      .app-main-wrapper {
-        overflow-y: auto;
-        overflow-x: hidden;
-      }
-
-      .app-main-content hr {
-        border: 1px solid var(--active-color);
-      }
-
-      h2,
-      h3 {
-        position: relative;
-        cursor: pointer;
-      }
-
-      h2:hover::before,
-      h3:hover::before {
-        visibility: unset;
-      }
-
-      h2::before,
-      h3::before {
-        content: url(https://rollupjs.org/images/anchor.svg);
-        display: block;
-        position: absolute;
-        left: -25px;
-        visibility: hidden;
-      }
-    `,
-    []
-  )
+  useStyle(() => style, [])
 
   return html`
     <nav>

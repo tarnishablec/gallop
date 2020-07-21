@@ -1,4 +1,7 @@
 import { html, component, useStyle, css, repeat } from '@gallop/gallop'
+import style from '!!to-string-loader!css-loader!sass-loader!./index.scss'
+
+console.log(style)
 
 component(
   'skele-ton',
@@ -19,43 +22,11 @@ component(
           --skeleton-color: ${color || 'rgb(242,242,242)'};
         }
 
-        @keyframes loading {
-          0% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0 50%;
-          }
-        }
+        ${style}
 
         .skeleton {
-          /* padding: 1rem; */
           display: grid;
           grid-template-columns: ${avatar ? 'auto' : ''} 1fr;
-        }
-
-        .skeleton-avatar {
-          border-radius: 50%;
-          height: 40px;
-          line-height: 40px;
-          width: 40px;
-          margin: 0.5rem 1rem 0 0;
-        }
-
-        .skeleton-title {
-          height: 1.2rem;
-        }
-
-        .skeleton-paragraph {
-          padding: 0;
-          display: grid;
-          row-gap: 1rem;
-        }
-
-        .skeleton-paragraph > li {
-          list-style: none;
-          height: 1rem;
-          width: 100%;
         }
 
         .skeleton-title,

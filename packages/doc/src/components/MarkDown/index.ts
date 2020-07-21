@@ -1,7 +1,7 @@
 import { component, html, ReactiveElement, raw, lazy } from '@gallop/gallop'
 import MarkDownWoker from 'worker-loader!@gallop/doc/worker/markdown.worker'
 
-const req = require.context('../markdown', true, /\.md$/, 'lazy-once')
+const req = require.context('../../markdown', true, /\.md$/, 'lazy-once')
 
 const importMd: (
   filename: string,

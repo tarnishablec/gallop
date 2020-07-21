@@ -73,14 +73,12 @@ export function component<F extends Component>(
       this.requestUpdate()
 
       Context.globalContext && Context.globalContext.watch(this)
-      window.requestIdleCallback(() => {
-        if (elementPool.has(name)) elementPool.get(name)!.add(this)
-        else {
-          const set = new Set<ReactiveElement>()
-          set.add(this)
-          elementPool.set(name, set)
-        }
-      })
+      if (elementPool.has(name)) elementPool.get(name)!.add(this)
+      else {
+        const set = new Set<ReactiveElement>()
+        set.add(this)
+        elementPool.set(name, set)
+      }
     }
     disconnectedCallback() {
       this.$contexts.forEach((ctx) => ctx.unwatch(this))

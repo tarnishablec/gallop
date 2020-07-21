@@ -2,16 +2,15 @@ import {
   component,
   html,
   repeat,
-  createContext,
   useContext,
   ReactiveElement,
   queryPoolFirst,
   useStyle,
-  css,
   useState
 } from '@gallop/gallop'
 import { gloabl, menuContext, menu } from '../../contexts'
 import { lang } from '../../language'
+import style from '!!to-string-loader!css-loader!sass-loader!./index.scss'
 
 component('side-menu', function (this: ReactiveElement) {
   useContext([menuContext])
@@ -20,87 +19,7 @@ component('side-menu', function (this: ReactiveElement) {
 
   const { locale } = gloabl
 
-  useStyle(
-    () => css`
-      :host {
-        background: rgba(0, 0, 0, 0.2);
-        display: grid;
-        grid-auto-rows: min-content 1fr;
-        box-shadow: 0 0 3px 1px gray;
-        z-index: 5;
-      }
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      header {
-        line-height: 3rem;
-        text-align: center;
-        font-family: 'Caveat', cursive;
-        font-size: 2rem;
-        user-select: none;
-      }
-
-      .menu-list-container {
-        padding: 0.5rem 1rem;
-      }
-
-      .menu-list-container ul {
-        padding-left: 1rem;
-        list-style-type: none;
-        margin: 0;
-      }
-
-      li {
-        margin: 0.3rem 0;
-      }
-
-      li.primary-menu::before {
-        content: '»';
-        position: absolute;
-        left: 1rem;
-        color: rgba(0, 0, 0, 0.5);
-      }
-
-      li.primary-menu > a {
-        font-size: 1.1rem;
-        color: #333;
-      }
-
-      li.child-menu > a {
-        color: #666;
-      }
-
-      .menu-list-container a.active::before,
-      .menu-list-container a:hover::before {
-        content: '';
-        display: inline-block;
-        height: 1.5rem;
-        width: 2px;
-        vertical-align: middle;
-        position: absolute;
-        line-height: normal;
-        left: 0;
-      }
-
-      .menu-list-container a:hover::before {
-        background: var(--active-color);
-        opacity: 0.4;
-      }
-
-      .menu-list-container a.active::before {
-        background: var(--active-color);
-        opacity: 1;
-      }
-
-      header span {
-        cursor: pointer;
-      }
-    `,
-    []
-  )
+  useStyle(() => style, [])
 
   return html`
     <header>
