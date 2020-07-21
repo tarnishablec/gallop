@@ -1,4 +1,4 @@
-import { component, html, suspense, ReactiveElement, raw } from '@gallop/gallop'
+import { component, html, ReactiveElement, raw, lazy } from '@gallop/gallop'
 import MarkDownWoker from 'worker-loader!@gallop/doc/worker/markdown.worker'
 
 const req = require.context('../markdown', true, /\.md$/, 'lazy-once')
@@ -14,7 +14,7 @@ component('mark-down', function (
   { filename, locale = 'zh' }: { filename: string; locale?: string }
 ) {
   return html`<div>
-      ${suspense(
+      ${lazy(
         async () => {
           const content = (await importMd(filename, locale)).default
           const worker = new MarkDownWoker()

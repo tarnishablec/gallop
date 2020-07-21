@@ -10,15 +10,11 @@ import {
   css,
   useState
 } from '@gallop/gallop'
-import { gloabl } from '../../contexts'
+import { gloabl, menuContext, menu } from '../../contexts'
 import { lang } from '../../language'
 
-export const [{ menu }, context] = createContext({
-  menu: [{ name: 'Essentials', children: ['Overview', 'Installation'] }]
-})
-
 component('side-menu', function (this: ReactiveElement) {
-  useContext([context])
+  useContext([menuContext])
 
   const [state] = useState({ active: menu[0]?.name ?? '' })
 

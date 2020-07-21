@@ -10,8 +10,8 @@ const interObs = new IntersectionObserver((entries) =>
 
 const loaded = Symbol('loaded')
 
-export const lazy = directive(function <T>(
-  wish: () => Promise<T>,
+export const lazy = directive(function (
+  wish: () => unknown,
   options: Omit<SuspenseOption, 'once'> = {}
 ) {
   return (part) => {

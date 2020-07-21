@@ -1,10 +1,9 @@
 import { component, html, repeat, useContext, useStyle, css } from '@gallop/gallop'
-import { menu, context } from '../SideMenu'
-import { gloabl } from '../../contexts'
+import { gloabl, menu, menuContext } from '../../contexts'
 import { lang } from '../../language'
 
 component('app-main', () => {
-  useContext([context])
+  useContext([menuContext])
 
   const { locale } = gloabl
 

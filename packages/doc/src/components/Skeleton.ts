@@ -16,7 +16,7 @@ component(
     useStyle(
       () => css`
         :host {
-          --skeleton-color: ${color || '#f2f2f2'};
+          --skeleton-color: ${color || 'rgb(242,242,242)'};
         }
 
         @keyframes loading {
@@ -65,9 +65,9 @@ component(
           ${active
             ? `background-image: linear-gradient(
             90deg,
-            rgb(242, 242, 242) 25%,
+            var(--skeleton-color) 25%,
             rgb(230, 230, 230) 37%,
-            rgb(242, 242, 242) 63%
+            var(--skeleton-color) 63%
           )`
             : `background: var(--skeleton-color)`};
           ${active ? `animation: loading 1.4s ease infinite;` : ''}

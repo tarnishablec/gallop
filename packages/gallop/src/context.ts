@@ -28,10 +28,7 @@ export class Context<T extends Obj = Obj> {
   static initGlobal<G extends Obj>(init: G, options?: ContextOptions<G>) {
     if (Context.globalContext || Context.global)
       throw new Error(`Can not init global context twice.`)
-    return ([Context.global, Context.globalContext as unknown] = createContext(
-      init,
-      options
-    ))
+    return ([Context.global] = createContext(init, options))
   }
 
   watch(el: ReactiveElement) {
