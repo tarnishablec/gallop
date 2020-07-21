@@ -92,7 +92,9 @@ module.exports = (dir) => {
             },
             {
               rules: [
-                __prod__ ? MiniCssExtractPlugin.loader : { loader: 'style-loader' },
+                __prod__
+                  ? { loader: MiniCssExtractPlugin.loader }
+                  : { loader: 'style-loader' },
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
