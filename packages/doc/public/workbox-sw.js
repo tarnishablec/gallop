@@ -13,12 +13,17 @@ const { workbox } = self
 workbox.routing.registerRoute(
   /\.js\?\w*$/,
   new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'js-cache'
+    cacheName: 'js-cache',
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 30
+      })
+    ]
   })
 )
 
 workbox.routing.registerRoute(
-  /\//,
+  /^\/$/,
   new workbox.strategies.NetworkFirst({
     cacheName: 'html-cache'
   })
@@ -33,7 +38,7 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
   // Cache image files
-  /.*\.(?:png|jpg|jpeg|svg|gif)/,
+  /.*\.(png|jpg|jpeg|svg|gif)/,
   // Use the cache if it's available
   new workbox.strategies.CacheFirst({
     // Use a custom cache name
@@ -41,7 +46,7 @@ workbox.routing.registerRoute(
     plugins: [
       new workbox.expiration.ExpirationPlugin({
         // Cache only 20 images
-        maxEntries: 20,
+        maxEntries: 30,
         // Cache for a maximum of a week
         maxAgeSeconds: 7 * 24 * 60 * 60
       })

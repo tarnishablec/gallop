@@ -39,7 +39,7 @@ module.exports = (dir) => {
     resolve: {
       extensions: ['.ts', '.js', '.scss'],
       alias: {
-        '~': '.'
+        // '~': '.'
       }
     },
     optimization: {
