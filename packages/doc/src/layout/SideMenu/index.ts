@@ -6,11 +6,12 @@ import {
   ReactiveElement,
   queryShadow,
   useStyle,
-  useState
+  useState,
+  css
 } from '@gallop/gallop'
 import { gloabl, menuContext, menu } from '../../contexts'
 import { lang } from '../../language'
-import style from '!!to-string-loader!css-loader!sass-loader!./index.scss'
+import url from './index.scss?url'
 
 component('side-menu', function (this: ReactiveElement) {
   useContext([menuContext])
@@ -19,7 +20,12 @@ component('side-menu', function (this: ReactiveElement) {
 
   const { locale } = gloabl
 
-  useStyle(() => style, [])
+  useStyle(
+    () => css`
+      @import '${url}';
+    `,
+    []
+  )
 
   return html`
     <header>

@@ -67,24 +67,42 @@ module.exports = (dir) => {
           exclude: /node_modules/
         },
         {
-          test: /\.worker\.js$/,
-          use: {
-            loader: 'worker-loader'
-          }
-        },
-        {
           test: /\.((s[ac])|c)ss$/,
-          use: [
-            // 'to-string-loader',
-            __prod__ ? MiniCssExtractPlugin.loader : 'style-loader',
-            'css-loader',
+          oneOf: [
             {
-              loader: 'postcss-loader',
-              options: {
-                plugins: [require('autoprefixer')]
-              }
+              resourceQuery: /url/,
+              rules: [
+                {
+                  loader: 'file-loader',
+                  options: {
+                    name: 'css/[hash:10].css'
+                  }
+                },
+                { loader: 'extract-loader' },
+                { loader: 'to-string-loader' },
+                { loader: 'css-loader' },
+                {
+                  loader: 'postcss-loader',
+                  options: {
+                    plugins: [require('autoprefixer')]
+                  }
+                },
+                { loader: 'sass-loader' }
+              ]
             },
-            'sass-loader'
+            {
+              rules: [
+                __prod__ ? MiniCssExtractPlugin.loader : { loader: 'style-loader' },
+                { loader: 'css-loader' },
+                {
+                  loader: 'postcss-loader',
+                  options: {
+                    plugins: [require('autoprefixer')]
+                  }
+                },
+                { loader: 'sass-loader' }
+              ]
+            }
           ]
         },
         {

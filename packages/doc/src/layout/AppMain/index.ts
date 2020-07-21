@@ -1,14 +1,20 @@
-import { component, html, repeat, useContext, useStyle } from '@gallop/gallop'
+import { component, html, repeat, useContext, useStyle, css } from '@gallop/gallop'
 import { gloabl, menu, menuContext } from '../../contexts'
 import { lang } from '../../language'
-import style from '!!to-string-loader!css-loader!sass-loader!./index.scss'
+import url from './index.scss?url'
 
 component('app-main', () => {
   useContext([menuContext])
 
   const { locale } = gloabl
 
-  useStyle(() => style, [])
+  useStyle(
+    () =>
+      css`
+        @import '${url}';
+      `,
+    []
+  )
 
   return html`
     <nav>

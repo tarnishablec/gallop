@@ -1,7 +1,5 @@
 import { html, component, useStyle, css, repeat } from '@gallop/gallop'
-import style from '!!to-string-loader!css-loader!sass-loader!./index.scss'
-
-// console.log(style)
+import url from './index.scss?url'
 
 component(
   'skele-ton',
@@ -18,11 +16,11 @@ component(
   } = {}) => {
     useStyle(
       () => css`
+        @import '${url}';
+
         :host {
           --skeleton-color: ${color || 'rgb(242,242,242)'};
         }
-
-        ${style}
 
         .skeleton {
           display: grid;
@@ -33,14 +31,16 @@ component(
         .skeleton-avatar,
         .skeleton-paragraph > li {
           background-size: 400% 100%;
-          ${active
-            ? `background-image: linear-gradient(
+          ${
+            active
+              ? `background-image: linear-gradient(
             90deg,
             var(--skeleton-color) 25%,
             rgb(230, 230, 230) 37%,
             var(--skeleton-color) 63%
           )`
-            : `background: var(--skeleton-color)`};
+              : `background: var(--skeleton-color)`
+          };
           ${active ? `animation: loading 1.4s ease infinite;` : ''}
         }
       `,
