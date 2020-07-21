@@ -103,6 +103,11 @@ export const mergeProp = (node: ReactiveElement, name: string, value: unknown) =
 export const mergeProps = (node: ReactiveElement, value: unknown) =>
   Object.assign(node.$props, value)
 
-export const queryPoolFirst = (name: string): ReactiveElement | undefined =>
-  Array.from(elementPool.get(name) ?? [])[0]
-export const queryPoolAll = (name: string) => Array.from(elementPool.get(name) ?? [])
+export const queryShadowAll = (name: string) =>
+  Array.from(elementPool.get(name) ?? [])
+
+export const queryShadow = (
+  name: string,
+  id?: string
+): ReactiveElement | undefined =>
+  queryShadowAll(name).find((v) => id === undefined || v.id === id)

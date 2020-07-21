@@ -4,7 +4,7 @@ import {
   repeat,
   useContext,
   ReactiveElement,
-  queryPoolFirst,
+  queryShadow,
   useStyle,
   useState
 } from '@gallop/gallop'
@@ -32,7 +32,7 @@ component('side-menu', function (this: ReactiveElement) {
           if (target instanceof HTMLAnchorElement) {
             const href = target.getAttribute('href')
             href && (state.active = href.slice(1))
-            queryPoolFirst('app-main')
+            queryShadow('app-main')
               ?.$root.querySelector(href ?? '#')
               ?.scrollIntoView({ behavior: 'smooth' })
           }

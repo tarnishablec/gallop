@@ -1,7 +1,7 @@
 import { html, component, useStyle, css, repeat } from '@gallop/gallop'
 import style from '!!to-string-loader!css-loader!sass-loader!./index.scss'
 
-console.log(style)
+// console.log(style)
 
 component(
   'skele-ton',
@@ -63,7 +63,7 @@ const SkeletonAvatar = () => html` <span class="skeleton-avatar"></span> `
 const SkeletonTitle = () =>
   html` <h3 class="skeleton-title" style="width: 38%"></h3> `
 
-const SkeletonParagraph = ({ line = 4 }: { line?: number }) =>
+const SkeletonParagraph = ({ line = 4 }: { line?: number } = {}) =>
   html`<ul class="skeleton-paragraph">
     ${repeat(
       new Array(line).fill(1),

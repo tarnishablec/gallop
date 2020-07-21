@@ -12,7 +12,12 @@ const loaded = Symbol('loaded')
 
 export const lazy = directive(function (
   wish: () => unknown,
-  options: Omit<SuspenseOption, 'once'> = {}
+  {
+    pending,
+    fallback,
+    delay,
+    minHeight = 0
+  }: Omit<SuspenseOption, 'once'> & { minHeight?: number } = {}
 ) {
   return (part) => {
     if (!ensurePartType(part, NodePart)) return
@@ -23,13 +28,13 @@ export const lazy = directive(function (
     }
 
     const { endNode } = part.location
-    const span = document.createElement('span')
-    endNode.parentNode!.insertBefore(span, endNode)
-    interObs.observe(span)
+    const div = document.createElement('div')
+    div.style.height = String(minHeight)
+    endNode.parentNode!.insertBefore(div, endNode)
 
-    anchorCbMap.set(span, () => {
+    anchorCbMap.set(div, () => {
       Reflect.set(part, loaded, true)
-      interObs.unobserve(span)
+      interObs.unobserve(div)
       part.clear()
       part.setValue(
         suspense(
@@ -37,9 +42,10 @@ export const lazy = directive(function (
             new Promise((resolve) => {
               resolve(wish())
             }),
-          options
+          { pending, fallback, delay }
         )
       )
     })
+    interObs.observe(div)
   }
 })
