@@ -80,8 +80,10 @@ export function component<F extends Component>(
       }
     }
     disconnectedCallback() {
+      // TODO ugly
       this.$contexts.forEach((ctx) => ctx.unwatch(this))
       unmountedEffectMap.get(this)?.forEach((fn) => fn())
+      unmountedEffectMap.delete(this)
       elementPool.get(name)!.delete(this)
     }
 

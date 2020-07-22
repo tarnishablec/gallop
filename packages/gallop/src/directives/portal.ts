@@ -38,7 +38,7 @@ export const portal = directive(
       if (host && !Reflect.get(part, __injected__)) {
         // TODO ? destroy portal
         const cbs = forceGet(unmountedEffectMap, host, () => [] as (() => unknown)[])
-        cbs.push(() => part.destroy())
+        cbs.push(() => part.destroy()) // possible memory leak
         Reflect.set(part, __injected__, true)
       }
     }
