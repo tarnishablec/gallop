@@ -11,7 +11,7 @@ if (self.workbox) {
 const { workbox } = self
 
 workbox.routing.registerRoute(
-  /\.js\?\w*$/,
+  /\.js(\?\w*)?$/,
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'js-cache',
     plugins: [
@@ -30,7 +30,7 @@ workbox.routing.registerRoute(
 )
 
 workbox.routing.registerRoute(
-  /\.css$/,
+  /\.css(\?\w*)?$/,
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'css-cache'
   })

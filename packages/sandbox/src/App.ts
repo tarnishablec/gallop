@@ -116,9 +116,12 @@ component('test-app', function (
     </div>
     <hr />
     <div>
-      ${portal(html`<div>
-        ${state.tick}
-      </div>`)}
+      ${portal(
+        html`<div>
+          ${state.tick}
+        </div>`,
+        { host: this }
+      )}
     </div>
   `
 })

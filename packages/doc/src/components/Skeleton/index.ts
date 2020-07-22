@@ -19,7 +19,7 @@ component(
         @import '${url}';
 
         :host {
-          --skeleton-color: ${color || 'rgb(242,242,242)'};
+          --skeleton-color: ${color ?? 'rgb(242,242,242)'};
         }
 
         .skeleton {
@@ -44,7 +44,7 @@ component(
           ${active ? `animation: loading 1.4s ease infinite;` : ''}
         }
       `,
-      [avatar, active]
+      [avatar, active, color]
     )
 
     return html`

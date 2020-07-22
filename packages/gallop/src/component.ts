@@ -1,10 +1,9 @@
 import { HTMLClip, createPatcher, getVals } from './clip'
 import { Patcher } from './patcher'
 import { Obj, extractProps } from './utils'
-import { Looper } from './loop'
+import { Looper, unmountedEffectMap } from './loop'
 import { createProxy } from './reactive'
 import { Context } from './context'
-import { unmountedEffectMap } from './hooks'
 
 export type Component = (...args: any[]) => HTMLClip
 

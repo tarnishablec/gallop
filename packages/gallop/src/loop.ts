@@ -1,5 +1,5 @@
 import { ReactiveElement } from './component'
-import { resolveEffects, unmountedEffectMap, resetLastDepEl } from './hooks'
+import { resolveEffects, resetLastDepEl } from './hooks'
 import { Recycler } from './dirty'
 
 export class Looper {
@@ -32,6 +32,8 @@ export class Looper {
     })
   }
 }
+
+export const unmountedEffectMap = new WeakMap<ReactiveElement, (() => unknown)[]>()
 
 // Loop end
 Looper.loopEndCallbacks.set('resetLastDepEl', resetLastDepEl)
