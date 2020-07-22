@@ -9,16 +9,16 @@ import {
   useState,
   css
 } from '@gallop/gallop'
-import { gloabl, menuContext, menu } from '../../contexts'
+import { localeContext, localeData, menuContext, menu } from '../../contexts'
 import { lang } from '../../language'
 import url from './index.scss?url'
 
 component('side-menu', function (this: ReactiveElement) {
-  useContext([menuContext])
+  useContext([menuContext, localeContext])
 
   const [state] = useState({ active: menu[0]?.name ?? '' })
 
-  const { locale } = gloabl
+  const { locale } = localeData
 
   useStyle(
     () => css`

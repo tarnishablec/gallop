@@ -1,7 +1,9 @@
-import { Context, createContext } from '@gallop/gallop'
-
-export const [gloabl] = Context.initGlobal({ locale: 'zh' })
+import { createContext } from '@gallop/gallop'
 
 export const [{ menu }, menuContext] = createContext({
   menu: [{ name: 'Essentials', children: ['Overview', 'Installation'] }]
+})
+
+export const [localeData, localeContext] = createContext({
+  locale: 'zh'
 })

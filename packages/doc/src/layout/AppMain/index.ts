@@ -1,12 +1,12 @@
 import { component, html, repeat, useContext, useStyle, css } from '@gallop/gallop'
-import { gloabl, menu, menuContext } from '../../contexts'
-import { lang } from '../../language'
+import { menu, menuContext, localeContext, localeData } from '../../contexts'
+import { lang } from '@doc/language'
 import url from './index.scss?url'
 
 component('app-main', () => {
-  useContext([menuContext])
+  useContext([menuContext, localeContext])
 
-  const { locale } = gloabl
+  const { locale } = localeData
 
   useStyle(
     () =>
