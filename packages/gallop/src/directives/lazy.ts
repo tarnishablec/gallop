@@ -8,7 +8,7 @@ const interObs = new IntersectionObserver((entries) =>
   entries.forEach((entry) => anchorCbMap.get(entry.target)?.())
 )
 
-const loaded = Symbol('loaded')
+const __loaded__ = Symbol('__loaded__')
 
 export const lazy = directive(function (
   wish: () => unknown,
@@ -22,7 +22,7 @@ export const lazy = directive(function (
   return (part) => {
     if (!ensurePartType(part, NodePart)) return
 
-    if (Reflect.get(part, loaded)) {
+    if (Reflect.get(part, __loaded__)) {
       part.setValue(wish())
       return
     }
@@ -33,7 +33,7 @@ export const lazy = directive(function (
     endNode.parentNode!.insertBefore(div, endNode)
 
     anchorCbMap.set(div, () => {
-      Reflect.set(part, loaded, true)
+      Reflect.set(part, __loaded__, true)
       interObs.unobserve(div)
       part.clear()
       part.setValue(

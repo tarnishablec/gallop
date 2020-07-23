@@ -1,7 +1,7 @@
 import { HTMLClip, createPatcher, getVals } from './clip'
 import { Patcher } from './patcher'
 import { Obj, extractProps } from './utils'
-import { Looper, unmountedEffectMap } from './loop'
+import { Looper } from './loop'
 import { createProxy } from './reactive'
 import { Context } from './context'
 
@@ -67,10 +67,6 @@ export function component<F extends Component>(
     }
 
     connectedCallback() {
-      const staticProps = extractProps(this.attributes)
-      mergeProps(this, staticProps)
-      this.requestUpdate()
-
       Context.globalContext && Context.globalContext.watch(this)
       if (elementPool.has(name)) elementPool.get(name)!.add(this)
       else {
@@ -80,19 +76,27 @@ export function component<F extends Component>(
       }
     }
     disconnectedCallback() {
-      // TODO ugly
       this.$contexts.forEach((ctx) => ctx.unwatch(this))
-      unmountedEffectMap.get(this)?.forEach((fn) => fn())
-      unmountedEffectMap.delete(this)
+      this.dispatchEvent(new CustomEvent('$disconnect$'))
       elementPool.get(name)!.delete(this)
     }
 
     constructor() {
       super()
+      const staticProps = extractProps(this.attributes)
+      mergeProps(this, staticProps)
+      this.requestUpdate()
     }
   }
   customElements.define(name, clazz, { extends: extend })
   componentPool.add(name)
+}
+
+export const observeDisconnect = (
+  el: ReactiveElement,
+  cb: EventListenerOrEventListenerObject
+) => {
+  el.addEventListener('$disconnect$', cb)
 }
 
 export const isReactive = (node: Node): node is ReactiveElement =>

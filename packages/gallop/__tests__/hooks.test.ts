@@ -1,4 +1,13 @@
-import { useState, component, html, render, useEffect, Looper } from '../src'
+import {
+  useState,
+  component,
+  html,
+  render,
+  useEffect,
+  Looper,
+  useStyle,
+  css
+} from '../src'
 import { ReactiveElement } from '../src/component'
 
 describe('hooks', () => {
@@ -24,7 +33,7 @@ describe('hooks', () => {
     }, 100)
   })
 
-  test('mount', (done: () => unknown) => {
+  test('useEffect mount', (done: () => unknown) => {
     let testres = 1
 
     component('test-a', function (
@@ -46,7 +55,7 @@ describe('hooks', () => {
     }, 100)
   })
 
-  test('update', (done: () => unknown) => {
+  test('useEffect update', (done: () => unknown) => {
     let testUpdate = 1
 
     const Pure1 = (a: string) => html`<div>pure${a}</div>`
@@ -80,7 +89,7 @@ describe('hooks', () => {
 
     render(html` <test-c></test-c> `)
 
-    new Promise((resolve: () => unknown) => {
+    new Promise((resolve) => {
       setTimeout(() => {
         const c = document.querySelector('test-c')!
         expect(
@@ -99,5 +108,41 @@ describe('hooks', () => {
     setTimeout(() => {
       done()
     }, 1000)
+  })
+
+  test('useStyle', (done) => {
+    let color: string
+
+    component('test-s', () => {
+      useStyle(
+        () => css`
+          div {
+            background: red;
+          }
+        `,
+        []
+      )
+
+      return html` <div>111</div> `
+    })
+
+    render(html`<test-s></test-s>`)
+
+    const el = document.querySelector('test-s') as ReactiveElement
+
+    setTimeout(() => {
+      const div = el.$root.querySelector('div')!
+      expect(div).toBeInstanceOf(HTMLDivElement)
+      color = window.getComputedStyle(div).getPropertyValue('background-color')
+    }, 500)
+
+    setTimeout(() => {
+      try {
+        expect(color).toBe('rgb(255, 0, 0)')
+        done()
+      } catch (error) {
+        done(error)
+      }
+    }, 600)
   })
 })

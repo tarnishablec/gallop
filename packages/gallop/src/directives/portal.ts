@@ -1,17 +1,13 @@
 import { directive, ensurePartType } from '../directive'
 import { Part, NodePart } from '../part'
 import { removeNodes, insertAfter } from '../dom'
-import { ReactiveElement } from '../component'
-import { unmountedEffectMap } from '../loop'
-import { forceGet } from '../utils'
+import { ReactiveElement, observeDisconnect } from '../component'
 
-type PortalLocation = {
+type PortalOptions = {
   host?: ReactiveElement
   container?: Element
   after?: Node | null
 }
-
-const __injected__ = Symbol('__injected__')
 
 export const portal = directive(
   (
@@ -20,7 +16,7 @@ export const portal = directive(
       host,
       container = document.body,
       after = container.lastChild
-    }: PortalLocation = {}
+    }: PortalOptions = {}
   ) => (part: Part) => {
     if (!ensurePartType(part, NodePart)) return
 
@@ -35,12 +31,7 @@ export const portal = directive(
       endNode.data = 'portal'
       const nodes = removeNodes(startNode, endNode, true)
       insertAfter(container, nodes, after)
-      if (host && !Reflect.get(part, __injected__)) {
-        // TODO ? destroy portal
-        const cbs = forceGet(unmountedEffectMap, host, () => [] as (() => unknown)[])
-        cbs.push(() => part.destroy()) // possible memory leak
-        Reflect.set(part, __injected__, true)
-      }
+      if (host) observeDisconnect(host, () => part.destroy())
     }
     part.setValue(view)
   }

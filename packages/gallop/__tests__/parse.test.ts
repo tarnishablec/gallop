@@ -1,4 +1,4 @@
-import { html } from '../src'
+import { html, css } from '../src'
 import { markerIndex } from '../src/marker'
 import { getShaHtml } from '../src/clip'
 
@@ -24,5 +24,12 @@ describe('parse', () => {
     expect((dof.firstChild as Element).localName).toBe('div')
     expect(dof.firstChild?.childNodes[2].nodeType).toBe(Node.COMMENT_NODE)
     expect((dof.firstChild?.childNodes[2] as Comment).data).toBe(`${markerIndex}`)
+  })
+
+  test('css', () => {
+    const style = css`
+      @import '${`https://hellowrold.css`}';
+    `
+    expect(style).toBe(`@import 'https://hellowrold.css';`)
   })
 })

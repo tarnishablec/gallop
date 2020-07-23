@@ -5,5 +5,7 @@ export function html(strs: TemplateStringsArray, ...vals: unknown[]) {
 }
 
 export function css(strs: TemplateStringsArray, ...vals: string[]) {
-  return strs.reduce((acc, cur, index) => `${acc}${cur}${vals[index] ?? ''}`, '')
+  return strs
+    .reduce((acc, cur, index) => `${acc}${cur}${vals[index] ?? ''}`, '')
+    .trim()
 }

@@ -11,7 +11,8 @@ export {
   queryShadowAll,
   queryShadow,
   componentPool,
-  elementPool
+  elementPool,
+  observeDisconnect
 } from './component'
 
 export { Context, createContext } from './context'

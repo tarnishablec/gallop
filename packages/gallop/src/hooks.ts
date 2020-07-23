@@ -1,8 +1,8 @@
 import { Obj, isObject, forceGet } from './utils'
-import { Looper, unmountedEffectMap } from './loop'
+import { Looper } from './loop'
 import { createProxy } from './reactive'
 import { Context } from './context'
-import { ReactiveElement } from './component'
+import { ReactiveElement, observeDisconnect } from './component'
 import { Recycler } from './dirty'
 
 export function useState<T extends Obj>(raw: T): [T] {
@@ -61,28 +61,37 @@ export function useDepends(depends?: unknown[]): [boolean, boolean, number] {
 }
 
 type Effect = () => void | (() => void)
-export const effectQueueMap = new WeakMap<ReactiveElement, (Effect | undefined)[]>()
+type DisconnectEffect = () => unknown
+const effectQueueMap = new WeakMap<ReactiveElement, (Effect | undefined)[]>()
+const disconnectEffectMap = new WeakMap<ReactiveElement, DisconnectEffect[]>()
 export function useEffect(effect: Effect, depends?: unknown[]) {
   const current = Looper.resolveCurrent()
   const [dirty, diff, count] = useDepends(depends)
   diff && effectQueueMap.set(current, [])
-  dirty &&
-    (forceGet(effectQueueMap, current, () => [] as (Effect | undefined)[])[
-      count
-    ] = effect)
+  dirty && (forceGet(effectQueueMap, current, () => [])[count] = effect)
 }
-export function resolveEffects(current: ReactiveElement) {
-  const effects = effectQueueMap.get(current)
+export function resolveEffects(el: ReactiveElement) {
+  const effects = effectQueueMap.get(el)
   return (
     effects &&
-    new Promise<(void | (() => void))[]>((resolve) => {
-      const resList = unmountedEffectMap.get(current) ?? []
+    new Promise<DisconnectEffect[]>((resolve) => {
+      let resList: DisconnectEffect[]
+      const temp = disconnectEffectMap.get(el)
+      if (temp) resList = temp
+      else {
+        resList = []
+        disconnectEffectMap.set(el, resList)
+        observeDisconnect(el, () => {
+          resList.forEach((fn) => fn())
+          disconnectEffectMap.delete(el)
+        })
+      }
       setTimeout(() => {
         effects.forEach((e, i) => {
           const res = e?.()
           res && (resList[i] = res)
-          resolve(resList)
         })
+        resolve(resList)
       }, 0)
     })
   )
@@ -92,7 +101,7 @@ const memoMap = new WeakMap<ReactiveElement, unknown[]>()
 export function useMemo<T>(func: () => T, depends?: unknown[]): T {
   const current = Looper.resolveCurrent()
   const [dirty, , count] = useDepends(depends)
-  const vals = forceGet(memoMap, current, () => [] as unknown[])
+  const vals = forceGet(memoMap, current, () => [])
   if (dirty) {
     const result = func()
     vals[count] = result
@@ -118,5 +127,5 @@ export function useStyle(css: () => string, depends: unknown[]) {
 
 const cacheMap = new WeakMap<ReactiveElement, Obj>()
 export function useCache<T extends Obj>(raw: T): [T] {
-  return [forceGet(cacheMap, Looper.resolveCurrent(), () => raw)]
+  return [forceGet(cacheMap, Looper.resolveCurrent(), () => raw) as T]
 }

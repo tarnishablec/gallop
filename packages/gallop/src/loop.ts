@@ -33,17 +33,12 @@ export class Looper {
   }
 }
 
-export const unmountedEffectMap = new WeakMap<ReactiveElement, (() => unknown)[]>()
-
 // Loop end
 Looper.loopEndCallbacks.set('resetLastDepEl', resetLastDepEl)
 Looper.loopEndCallbacks.set(
   'resetDirtyCollectionSet',
   Recycler.resetDirtyCollectionSet
 )
+
 // Loop each
-Looper.loopEachCallbacks.set('resolveEffects', (current) =>
-  resolveEffects(current)?.then((res) =>
-    unmountedEffectMap.set(current, res.filter(Boolean) as (() => void)[])
-  )
-)
+Looper.loopEachCallbacks.set('resolveEffects', (current) => resolveEffects(current))

@@ -10,6 +10,7 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/packages/**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
+    '!<rootDir>/packages/gallop/src/directives/**',
     '!<rootDir>/packages/{sandbox,doc,router}/**',
     '!<rootDir>/packages/*/dist/**',
     '!<rootDir>/packages/*/index.js',

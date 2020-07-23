@@ -18,6 +18,14 @@ describe('reactive', () => {
     expect(aa).toBe(aaa)
   })
 
+  test('lock object', () => {
+    const a = { a: { b: 1 } }
+    const p = createProxy(a, { lock: true })
+    expect(() => {
+      Reflect.set(p, 'c', 1)
+    }).toThrowError()
+  })
+
   test(`Map object`, () => {
     const m = new Map([[1, 2]])
     let a = 1

@@ -11,17 +11,22 @@ import {
   useStyle,
   css,
   suspense,
-  portal
+  portal,
+  createContext,
+  useContext
 } from '@gallop/gallop'
 
 import './styles/index'
 
-export const [global, globalContext] = Context.initGlobal({ data: 1 })
+export const [global] = Context.initGlobal({ data: 1 })
+const [data, context] = createContext({ tt: 1 })
 
 component('test-app', function (
   this: ReactiveElement,
   { name = 'test-app-0' }: { name: string }
 ) {
+  useContext([context])
+
   const [state] = useState({
     tick: 0,
     tok: 0,
@@ -83,6 +88,18 @@ component('test-app', function (
     </button>
     <hr />
     <div>${state.tick}</div>
+    <hr />
+    <button
+      @click="${() => {
+        data.tt++
+      }}"
+    >
+      add normal context
+    </button>
+    <div>${data.tt}</div>
+    <hr />
+    <button @click="${() => global.data++}">add global context</button>
+    <div>${global.data}</div>
     <hr />
     <button @click="${() => state.tok++}">add tok</button>
     <hr />

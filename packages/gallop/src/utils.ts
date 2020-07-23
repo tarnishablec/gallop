@@ -109,13 +109,13 @@ export type DeleteItem<T extends MapTypes | SetTypes> = T extends WeakTypes
   ? object
   : unknown
 
-export function forceGet<T extends MapTypes, V>(
-  map: T,
-  key: MapKey<T>,
+export function forceGet<V>(
+  map: MapTypes<V>,
+  key: MapKey<MapTypes<V>>,
   func: () => V
 ): V {
   const v = map.get(key)
-  if (v) return v as V
+  if (v) return v
   const val = func()
   map.set(key, val)
   return val
