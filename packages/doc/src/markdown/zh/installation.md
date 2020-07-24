@@ -11,5 +11,5 @@
 或者
 
 <!-- esm -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/@gallop/gallop"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@gallop/gallop/dist/index.esm.js"></script>
 ```
