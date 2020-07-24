@@ -1,9 +1,6 @@
-const req = require.context('.', false, /\.json$/, 'sync')
+import { suspense } from '@gallop/gallop'
 
-export const lang = (key: string, locale: string = 'zh') => {
-  try {
-    return Reflect.get(req(`./${locale}.json`), key) ?? key
-  } catch (error) {
-    return key
-  }
-}
+export const lang = (key: string, locale: string = 'zh') =>
+  suspense(async () => Reflect.get(await import(`./${locale}.json`), key), {
+    fallback: key
+  })

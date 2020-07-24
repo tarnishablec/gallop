@@ -16,7 +16,7 @@ export const suspense = directive(function <T>(
 ) {
   return (part) => {
     if (!ensurePartType(part, NodePart)) return
-    if (once) {
+    if (once && pending !== undefined) {
       if (!onceSet.has(part)) {
         part.setValue(pending)
         onceSet.add(part)
@@ -27,11 +27,11 @@ export const suspense = directive(function <T>(
     wish()
       .then((res) => {
         setTimeout(() => {
-          part.setValue(res)
+          res !== undefined && part.setValue(res)
         }, delay)
       })
       .catch(() => {
-        part.setValue(fallback)
+        fallback !== undefined && part.setValue(fallback)
         onceSet.delete(part)
       })
   }

@@ -11,26 +11,28 @@ if (self.workbox) {
 const { workbox } = self
 
 workbox.routing.registerRoute(
-  /\.js(\?\w*)?$/,
-  new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'js-cache',
-    plugins: [
-      new workbox.expiration.ExpirationPlugin({
-        maxEntries: 30
-      })
-    ]
-  })
-)
-
-workbox.routing.registerRoute(
-  /^\/$/,
+  /index.html/,
   new workbox.strategies.NetworkFirst({
     cacheName: 'html-cache'
   })
 )
 
 workbox.routing.registerRoute(
-  /\.css(\?\w*)?$/,
+  /\/md\/.*.md.js(\?\w*)?$/,
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: 'md-cache'
+  })
+)
+
+workbox.routing.registerRoute(
+  /\/js\/.*.js(\?\w*)?$/,
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: 'js-cache'
+  })
+)
+
+workbox.routing.registerRoute(
+  /\/css\/.*.css(\?\w*)?$/,
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'css-cache'
   })

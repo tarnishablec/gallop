@@ -7,8 +7,14 @@ component(
     html`<div>
         ${lazy(
           async () => {
-            const content = (await import(`../../markdown/${locale}/${filename}`))
-              .default
+            const content = (
+              await import(
+                /* webpackInclude: /\.md$/ */
+                /* webpackChunkName: "md/[request]" */
+                /* webpackMode: "lazy" */
+                `../../markdown/${locale}/${filename}`
+              )
+            ).default
             const worker = new MarkDownWoker()
             worker.postMessage(content)
             return new Promise((resolve) => {

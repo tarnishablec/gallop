@@ -2,9 +2,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-// const CompressionPlugin = require('compression-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const path = require('path')
 const { DefinePlugin } = require('webpack')
 const chalk = require('chalk')
@@ -27,7 +27,8 @@ module.exports = (dir) => {
     output: {
       filename: 'js/[name].js',
       path: path.resolve(dir, './dist'),
-      libraryTarget: 'umd'
+      libraryTarget: 'umd',
+      chunkFilename: '[name].js?[contenthash]'
     },
 
     // watch: true,
@@ -75,7 +76,7 @@ module.exports = (dir) => {
                 {
                   loader: 'file-loader',
                   options: {
-                    name: 'css/[hash:10].css'
+                    name: 'css/[contenthash:10].css'
                   }
                 },
                 { loader: 'extract-loader' },
@@ -139,7 +140,7 @@ module.exports = (dir) => {
           ]
         },
         {
-          test: /\.md(\?.*)?$/,
+          test: /\.md$/,
           use: 'raw-loader'
         }
       ]
@@ -178,9 +179,7 @@ module.exports = (dir) => {
       }),
       new ScriptExtHtmlWebpackPlugin({}),
       new DefinePlugin({
-        'process.env': {
-          BASE_URL: '""'
-        }
+        __prod__
       }),
       new CopyWebpackPlugin({
         patterns: [
@@ -189,7 +188,7 @@ module.exports = (dir) => {
             to: path.resolve(dir, 'dist'),
             toType: 'dir',
             globOptions: {
-              ignore: ['index.ejs']
+              ignore: ['**/index.ejs']
             }
           }
         ]
