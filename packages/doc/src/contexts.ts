@@ -5,5 +5,6 @@ export const [{ menu }, menuContext] = createContext({
 })
 
 export const [localeData, localeContext] = createContext({
-  locale: 'zh'
+  locale: 'e',
+  list: ['zh']
 })

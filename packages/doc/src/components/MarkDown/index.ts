@@ -7,14 +7,26 @@ component(
     html`<div>
         ${lazy(
           async () => {
-            const content = (
-              await import(
-                /* webpackInclude: /\.md$/ */
-                /* webpackChunkName: "md/[request]" */
-                /* webpackMode: "lazy" */
-                `../../markdown/${locale}/${filename}`
-              )
-            ).default
+            let content: string
+            try {
+              content = (
+                await import(
+                  /* webpackInclude: /\.md$/ */
+                  /* webpackChunkName: "md/[request]" */
+                  /* webpackMode: "lazy" */
+                  `../../markdown/${locale}/${filename}`
+                )
+              ).default
+            } catch (e) {
+              content = (
+                await import(
+                  /* webpackInclude: /\.md$/ */
+                  /* webpackChunkName: "md/[request]" */
+                  /* webpackMode: "lazy" */
+                  `../../markdown/zh/${filename}`
+                )
+              ).default
+            }
             const worker = new MarkDownWoker()
             worker.postMessage(content)
             return new Promise((resolve) => {
@@ -28,7 +40,7 @@ component(
           },
           {
             pending: html` <skele-ton></skele-ton> `,
-            delay: 600
+            delay: 100
           }
         )}
       </div>
