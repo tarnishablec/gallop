@@ -39,8 +39,12 @@ nav {
   }
 }
 
-h2,
-h3 {
+h2.primary-title {
+  color: var(--title-color);
+}
+
+h2.primary-title,
+h3.sub-title {
   position: relative;
   cursor: pointer;
 

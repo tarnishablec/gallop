@@ -1,11 +1,11 @@
-# `@gallop/doc`
+与其说 `gallop` 是一个用于构建用户界面的框架，不如说它只是一个工具库。
 
-> TODO: description
+`gallop` 利用 `web-components` 作为组件化基础，并做了一点小小的工作，让所有的组件兼具了声明式和响应式的能力。
 
-## Usage
+在 `gallop` 中高效地编写组件只需要原生的 `JavaScript/TypeScript`，无需 `JSX` 或者引入其他的预编译库，更不会污染全局，这让 `gallop` 能以最小的成本为任何框架的 web 项目提供出色的组件。当然，当你把 `gallop` 与现有的社区库和工具链组合起来时，`gallop` 也完全能够单独高效地为 web 应用提供驱动。
 
 ```
-const doc = require('@gallop/doc');
-
-// TODO: DEMONSTRATE API
+此文档假设你已了解关于 HTML、CSS 和 JavaScript 的中级知识。
+如果你刚开始学习前端开发，将框架作为你的第一步可能不是最好的主意——掌握好基础知识再来吧！
+之前有其它框架的使用经验会有帮助，但这不是必需的
 ```

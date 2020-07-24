@@ -4,7 +4,7 @@ import MarkDownWoker from 'worker-loader!@gallop/doc/worker/markdown.worker'
 component(
   'mark-down',
   ({ filename, locale = 'zh' }: { filename: string; locale?: string }) =>
-    html`<div>
+    html`<div class="markdown-body">
         ${lazy(
           async () => {
             let content: string
@@ -39,12 +39,16 @@ component(
             })
           },
           {
-            pending: html` <skele-ton></skele-ton> `,
-            delay: 100
+            pending: html` <skele-ton :title="${false}"></skele-ton> `,
+            delay: 0
           }
         )}
       </div>
       <style>
         @import '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.1/build/styles/default.min.css';
+        @import 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css';
+        p {
+          color: var(--text-color);
+        }
       </style>`
 )

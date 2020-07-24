@@ -27,13 +27,13 @@ component('app-main', () => {
           menu,
           (m) => m.name,
           (m) => html`
-            <h2 .id="${m.name}">${lang(m.name, locale)}</h2>
+            <h2 class="primary-title" .id="${m.name}">${lang(m.name, locale)}</h2>
             <hr />
             ${repeat(
               m.children,
               (c) => c,
               (c) =>
-                html`<h3 .id="${c}">${lang(c, locale)}</h3>
+                html`<h3 class="sub-title" .id="${c}">${lang(c, locale)}</h3>
                   <mark-down
                     :locale="${locale}"
                     :filename="${c.toLowerCase() + '.md'}"

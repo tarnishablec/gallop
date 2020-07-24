@@ -3,7 +3,6 @@ const fse = require('fs-extra')
 const path = require('path')
 const { scope, projectName, auther, gitUrl } = require('./setting')
 
-const baseVersion = require('../lerna.json').version
 const packagesDir = path.resolve(__dirname, '../packages')
 const targets = require('./utils').resolveTargets(args._)
 const execa = require('execa')
@@ -51,7 +50,8 @@ function initPkg(filePath, longName, shortName, _args) {
     'dependencies',
     'private',
     'buildOptions',
-    'gitHead'
+    'gitHead',
+    'version'
   ]
 
   const pkgCache = {}
@@ -71,13 +71,12 @@ function initPkg(filePath, longName, shortName, _args) {
   if (_args.force || !pkgExists) {
     const pkgJson = {
       name: longName,
-      version: baseVersion,
       description: shortName,
       main: `src/index.ts`,
       module: `dist/index.esm.js`,
       files: ['dist', 'src'],
       unpkg: `dist/index.umd.js`,
-      jsdelivr: `dist/index.umd.js`,
+      jsdelivr: `dist/index.esm.js`,
       types: `dist/index.d.ts`,
       repository: {
         type: 'git',

@@ -6,10 +6,12 @@ component(
   ({
     active = true,
     avatar = false,
+    title = true,
     line = 4,
     color
   }: {
     active?: boolean
+    title?: boolean
     avatar?: boolean
     color?: string
     line?: number
@@ -51,7 +53,7 @@ component(
       <div class="skeleton">
         ${avatar ? SkeletonAvatar() : null}
         <div>
-          ${SkeletonTitle()} ${SkeletonParagraph({ line })}
+          ${title ? SkeletonTitle() : null} ${SkeletonParagraph({ line })}
         </div>
       </div>
     `

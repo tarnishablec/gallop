@@ -1,6 +1,5 @@
 {
   "name": "@gallop/router",
-  "version": "0.0.2-alpha.0",
   "description": "router",
   "main": "src/index.ts",
   "module": "dist/index.esm.js",
@@ -9,7 +8,7 @@
     "src"
   ],
   "unpkg": "dist/index.umd.js",
-  "jsdelivr": "dist/index.umd.js",
+  "jsdelivr": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
@@ -30,10 +29,11 @@
   "publishConfig": {
     "access": "public"
   },
+  "peerDependencies": {
+    "@gallop/gallop": "^0.9.19"
+  },
   "dependencies": {
     "path-to-regexp": "^6.1.0"
   },
-  "peerDependencies": {
-    "@gallop/gallop": "^0.9.19"
-  }
+  "version": "0.0.1"
 }
