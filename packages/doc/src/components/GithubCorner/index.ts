@@ -27,6 +27,9 @@ export const GithubCorner = () => html`
     </svg>
   </a>
   <style>
+    .github-corner {
+      z-index: 999;
+    }
     .github-corner:hover .octo-arm {
       animation: octocat-wave 560ms ease-in-out;
     }

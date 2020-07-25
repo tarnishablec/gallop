@@ -9,3 +9,5 @@ yarn-error.log
 
 .coveralls.yml
 .travis.yml
+
+yarn.lock
