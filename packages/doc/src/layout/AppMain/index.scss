@@ -1,20 +1,47 @@
 :host {
   height: 100vh;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
+  position: relative;
+
+  --header-height: 3.6rem;
+}
+
+.markdown-wrapper {
+  padding-left: 1rem;
 }
 
 nav {
-  height: 3.6rem;
+  height: var(--header-height);
   font-size: 1.1rem;
   background: white;
   box-shadow: 0 2px 2px -2px gray;
   display: grid;
-  place-items: center end;
+  width: 100%;
+  place-items: center;
   justify-content: end;
-  grid-template-columns: repeat(4, auto);
-  padding: 0 3rem;
+  grid-template-columns: 1fr repeat(2, auto);
+  padding: 0 4rem;
   column-gap: 0.5rem;
+  box-sizing: border-box;
+  z-index: 4;
+
+  & > svg {
+    justify-self: start;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    height: 1.5rem;
+    width: 1.5rem;
+
+    &:hover,
+    &.active {
+      fill: var(--active-color);
+    }
+
+    &.active {
+      transform: rotate(60deg) scale(1.5);
+    }
+  }
 
   a {
     text-decoration: none;
@@ -25,6 +52,7 @@ nav {
 .app-main-wrapper {
   overflow-y: auto;
   overflow-x: hidden;
+  padding-bottom: 1rem;
 
   .app-main-content {
     width: 100%;
@@ -58,5 +86,18 @@ h3.sub-title {
 
   &:hover::before {
     visibility: unset;
+  }
+}
+
+play-ground {
+  position: absolute;
+  width: 100%;
+  top: var(--header-height);
+  z-index: 1;
+  transform: translateY(-100%);
+  transition: transform 0.2s ease-in-out;
+
+  &.visible {
+    transform: unset;
   }
 }

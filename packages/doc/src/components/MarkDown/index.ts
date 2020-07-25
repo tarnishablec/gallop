@@ -47,8 +47,8 @@ component(
       <style>
         @import '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.1/build/styles/default.min.css';
         @import 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css';
-        p {
-          color: var(--text-color);
+        a {
+          color: var(--active-color) !important;
         }
       </style>`
 )
