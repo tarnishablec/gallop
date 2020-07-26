@@ -1,6 +1,6 @@
-gallop 以 `es6` 的 [标签模板字符串](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) 作为模板编写的基础，并得以在运行时确定模板内部动态和静态的代码部分，从而以较小的成本确定 `在哪、何时、如何` 去更新 `dom`，这同样借鉴了`Lit-html`。例外，在`gallop`的模板中**没有根节点必须只有一个的限制**。
+gallop 以 `es6` 的 [标签模板字符串](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) 作为模板编写的基础，并得以在运行时确定模板内部动态和静态的代码部分，从而以较小的成本确定 `在哪、何时、如何` 去更新 `dom`，这同样借鉴了`Lit-html`。另外，在`gallop`的模板中**没有根节点必须只有一个的限制**。
 
-🔌 _另外，你不必担心在模板字符串中书写`html`会很麻烦，`vscode`社区已经有很好的插件支持，我个人推荐的方法是在`vscode`中安装`lit-html`和`vscode-styled-components`插件，然后设置`vscode`的`.ts`文件解析规则为`typescript-react`，也许未来会开发自己的插件。_
+🔌 _幸运的是，你不必担心在模板字符串中书写`html`会很麻烦，`vscode`社区已经有很好的插件支持，我个人推荐的方法是在`vscode`中安装`lit-html`和`vscode-styled-components`插件，然后设置`vscode`的`.ts`文件解析规则为`typescript-react`，也许未来会开发自己的插件。_
 
 <iframe height="265" style="width: 100%;" scrolling="no" title="template-start" src="https://codepen.io/tarnishablec/embed/KKVYaeN?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href='https://codepen.io/tarnishablec/pen/KKVYaeN'>template-start</a> by tarnishablec

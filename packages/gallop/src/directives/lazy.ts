@@ -5,7 +5,9 @@ import { suspense, SuspenseOption } from './suspense'
 const anchorCbMap = new WeakMap<Element, () => unknown>()
 
 const interObs = new IntersectionObserver((entries) =>
-  entries.forEach((entry) => anchorCbMap.get(entry.target)?.())
+  entries.forEach(
+    (entry) => entry.isIntersecting && anchorCbMap.get(entry.target)?.()
+  )
 )
 
 const __loaded__ = Symbol('__loaded__')
@@ -16,8 +18,8 @@ export const lazy = directive(function (
     pending,
     fallback,
     delay,
-    minHeight = 0
-  }: Omit<SuspenseOption, 'once'> & { minHeight?: number | string } = {}
+    minHeight = '0px'
+  }: Omit<SuspenseOption, 'once'> & { minHeight?: string } = {}
 ) {
   return (part) => {
     if (!ensurePartType(part, NodePart)) return

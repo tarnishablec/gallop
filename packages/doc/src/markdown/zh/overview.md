@@ -2,7 +2,7 @@
 
 `gallop`利用[Web Components](https://developer.mozilla.org/docs/Web/Web_Components)作为组件化基础，并借鉴了`React Hooks`的设计思想，让编写**声明式**、**响应式**、**函数式**的组件变得非常简单。同时，托[shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)的福，`gallop`天然支持`样式隔离`，`插槽 <slot>`等特性。
 
-`gallop`的高度可扩展性体现在它的大部分的特性都像**插件**一样，例如`列表渲染`，`动态组件`，`传送门`，`异步渲染`等，都遵循`单一职责原则`。当内置的这些特性没有被使用时，打包器的`tree-shaking`在打包时会将这些代码剔除，取而代之，你可以自己实现这些特性或者扩展新的特性然后在`gallop`中使用，这都归功于`Lit-html`[函数指令](/#)的设计思想。
+`gallop`的高度可扩展性体现在它的大部分的特性都像**插件**一样。例如`列表渲染`，`动态组件`，`传送门`，`异步渲染`等特性的实现，都遵循[**SOLID 原则**](https://en.wikipedia.org/wiki/SOLID)。当内置的这些特性没有被使用时，打包器的`tree-shaking`在打包时会将这些代码剔除，取而代之，你可以自己实现这些特性或者扩展新的特性然后在`gallop`中使用，这都归功于`Lit-html`[函数指令](/#)的设计思想。
 
 `gallop`的响应式核心借鉴了`Vue3`，相比于`React`所提倡的`Immutable`，`Mutable Proxy`的设计不仅直接从根本上避免了`React Hooks`中臭名昭著的**闭包问题**，而且让数据的传递与组件的通信变得灵活而高效。
 
