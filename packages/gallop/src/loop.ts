@@ -19,7 +19,7 @@ export class Looper {
   static flush() {
     if (Looper.dirty) return
     Looper.dirty = true
-    Promise.resolve().then(() => {
+    requestAnimationFrame(() => {
       Looper.updateQueue.forEach((instance) => {
         Looper.setCurrent(instance)
         instance.dispatchUpdate()

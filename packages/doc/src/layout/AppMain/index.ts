@@ -14,6 +14,11 @@ import { lang } from '@doc/language'
 import url from './index.scss?url'
 import { CodeSandboxIcon } from '@doc/components/Icons/CodeSandbox'
 
+window.addEventListener(
+  'hashchange',
+  () => (menuData.current = window.location.hash.slice(1).split('?')[0])
+)
+
 component('app-main', function (this: ReactiveElement) {
   const [state] = useState({
     playgroundVisible: false
@@ -23,36 +28,28 @@ component('app-main', function (this: ReactiveElement) {
   const { menu } = menuData
 
   useEffect(() => {
-    window.addEventListener(
-      'hashchange',
-      () => (menuData.current = window.location.hash.slice(1).split('?')[0])
-    )
     const obs = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const { target, isIntersecting } = entry
-          const name = target.id
-          if (isIntersecting) {
-            if (name === menuData.current) menuData.dead = false
-            menuData.dead ||
-              menu.map((v) => v.name).includes(name) ||
-              (menuData.current = name)
-          }
+          if (isIntersecting) window.location.hash = `#${target.id}`
         })
       },
-      { root: this }
+      { root: this, rootMargin: '-40px 0% -90% 0%' }
     )
+
     setTimeout(() => {
-      this.$root.querySelectorAll('.primary-title').forEach((el) => obs.observe(el))
       this.$root.querySelectorAll('.sub-title').forEach((el) => obs.observe(el))
-    }, 1000)
+    }, 3000)
   }, [])
 
   useEffect(() => {
-    window.location.hash = `#${menuData.current}`
-    this.$root
-      .querySelector(`#${menuData.current ?? ''}`)
-      ?.scrollIntoView({ behavior: 'smooth' })
+    if (menuData.current) {
+      window.location.hash = `#${menuData.current}`
+      this.$root
+        .querySelector(`#${menuData.current}`)
+        ?.scrollIntoView({ behavior: 'auto' })
+    }
   }, [menuData.current])
 
   useContext([menuContext, localeContext])

@@ -35,10 +35,7 @@ component('side-menu', function (this: ReactiveElement) {
           const { target } = e
           if (target instanceof HTMLAnchorElement) {
             const href = target.getAttribute('href')
-            if (href) {
-              menuData.current = href.slice(1)
-              menuData.dead = true
-            }
+            if (href) menuData.current = href.slice(1)
           }
         }}"
       >
