@@ -20,7 +20,7 @@ nav {
   width: 100%;
   place-items: center;
   justify-content: end;
-  grid-template-columns: 1fr repeat(2, auto);
+  grid-template-columns: 1fr repeat(3, auto);
   padding: 0 4rem;
   column-gap: 0.5rem;
   box-sizing: border-box;
@@ -39,7 +39,7 @@ nav {
     }
 
     &.active {
-      transform: rotate(60deg) scale(1.5);
+      transform: rotate(180deg) scale(1.5);
     }
   }
 

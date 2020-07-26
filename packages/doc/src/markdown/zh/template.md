@@ -1,12 +1,15 @@
-gallop 以 `es6` 的 [标签模板字符串](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) 作为模板编写的基础，并得以在运行时确定模板内部动态和静态的代码部分，从而以较小的成本确定 `在哪、何时、如何` 去更新 `dom`。
+gallop 以 `es6` 的 [标签模板字符串](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) 作为模板编写的基础，并得以在运行时确定模板内部动态和静态的代码部分，从而以较小的成本确定 `在哪、何时、如何` 去更新 `dom`，这同样借鉴了`Lit-html`。例外，在`gallop`的模板中**没有根节点必须只有一个的限制**。
 
 ```ts
 import { html } from '@gallop/gallop'
 const name = 'alex'
-const template = html` <div>${name}</div> `
+const template = html`
+  <div>${name}</div>
+  <div>good</div>
+`
 ```
 
-与其他基于 `虚拟dom` 的框架不同，`gallop`提倡 `所写即所得`，你在模板里写的每一个 `dom节点` 都会被渲染出来，同时也 `只会` 渲染出你写出来的 `dom结构`，这么做可以非常有效地让 `dom层级` 变得清晰。具体来说，在 `React` 和 `Vue` 里的 `抽象组件` 在 `gallop` 里并不提倡，`gallop` 提供了远比抽象组件更强大且更易扩展的方式 (详情请见 [函数指令](/#))。
+与其他基于`虚拟dom`的框架不同`gallop`提倡`所写即所得`，你在模板里写的每一个 `dom节点`都会被渲染出来，同时也**只会**渲染出你写出来的`dom结构`，这么做可以非常有效地让`dom层级`变得清晰。具体来说，在`React`和`Vue`里的`抽象组件`在`gallop`里并**不提倡**，`gallop`提供了远比抽象组件更强大且更易扩展的方式 (详情请见 [函数指令](/#directives))。
 
 `gallop` 只额外定义了三种简单的作用于 dom 标签上的模板语法
 
@@ -61,6 +64,21 @@ const template = html` <input
 />` // ❗ 请注意 .style="background: ${color}" 这样的写法是不允许的
 ```
 
-> ❗❗❗ **需要注意的是，每次在 dom 标签里进行绑定时，都要在 `${}` 外面带上引号 `""`，否则会引发严重的编译错误，可能会让浏览器陷入死循环**
+❗❗❗ **需要注意的是，每次在 dom 标签里进行绑定时，都必须要在 `${}` 外面带上引号 `""`，否则会引发严重的编译错误，可能会让浏览器陷入死循环**
 
-从整体上来看，`gallop`的模板编写方式更加贴近`React`的`JSX`，`gallop`不希望引入过多的语法，不希望依靠 dom 标签做过多的逻辑处理。
+从整体上来看，`gallop`的模板编写方式更加贴近`React`的`JSX`，同时`gallop`不希望引入过多的模板语法，不希望依靠 dom 标签做过多的逻辑处理。
+
+- 条件渲染
+
+  ```ts
+  const visible = Math.random() > 0.5
+  const template = html`
+    <div>
+      ${visible ? html` <span>hello!</span> ` : null /* 条件渲染 */}
+    </div>
+  `
+  ```
+
+- 列表渲染
+
+  `gallop`中不支持像`React`中那样的通过`map`来进行列表渲染。取而代之，内置了一个`repeat()`指令，和`vue`一样，依靠[snabbdom](https://github.com/snabbdom/snabbdom)的`Array Diff算法`，使用`key`来优化列表变更时的 dom 更新(详情请见[repeat()](/#repeat))。

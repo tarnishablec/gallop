@@ -6,17 +6,16 @@ import {
   ReactiveElement,
   queryShadow,
   useStyle,
-  useState,
   css
 } from '@gallop/gallop'
-import { localeContext, localeData, menuContext, menu } from '../../contexts'
+import { localeContext, localeData, menuContext, menuData } from '../../contexts'
 import { lang } from '../../language'
 import url from './index.scss?url'
 
 component('side-menu', function (this: ReactiveElement) {
   useContext([menuContext, localeContext])
 
-  const [state] = useState({ active: menu[0]?.name ?? '' })
+  const { menu, current } = menuData
 
   const { locale } = localeData
 
@@ -37,10 +36,13 @@ component('side-menu', function (this: ReactiveElement) {
           const { target } = e
           if (target instanceof HTMLAnchorElement) {
             const href = target.getAttribute('href')
-            href && (state.active = href.slice(1))
-            queryShadow('app-main')
-              ?.$root.querySelector(href ?? '#')
-              ?.scrollIntoView({ behavior: 'smooth' })
+            if (href) {
+              menuData.current = href.slice(1)
+              menuData.dead = true
+              queryShadow('app-main')
+                ?.$root.querySelector(href ?? '#')
+                ?.scrollIntoView({ behavior: 'smooth' })
+            }
           }
         }}"
       >
@@ -51,7 +53,7 @@ component('side-menu', function (this: ReactiveElement) {
             <li class="primary-menu">
               <a
                 .href="${`#${m.name}`}"
-                .class="${state.active === m.name ? 'active' : ''}"
+                .class="${current === m.name ? 'active' : ''}"
                 >${lang(m.name, locale)}</a
               >
               ${m.children
@@ -63,7 +65,7 @@ component('side-menu', function (this: ReactiveElement) {
                         <li class="child-menu">
                           <a
                             .href="${`#${n}`}"
-                            .class="${state.active === n ? 'active' : ''}"
+                            .class="${current === n ? 'active' : ''}"
                             >${lang(n, locale)}</a
                           >
                         </li>
