@@ -48,6 +48,13 @@ component('app-main', function (this: ReactiveElement) {
     }, 1000)
   }, [])
 
+  useEffect(() => {
+    window.location.hash = `#${menuData.current}`
+    this.$root
+      .querySelector(`#${menuData.current ?? ''}`)
+      ?.scrollIntoView({ behavior: 'smooth' })
+  }, [menuData.current])
+
   useContext([menuContext, localeContext])
 
   useStyle(

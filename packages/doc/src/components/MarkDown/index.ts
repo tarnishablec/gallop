@@ -40,7 +40,8 @@ component(
           },
           {
             pending: html` <skele-ton :title="${false}"></skele-ton> `,
-            delay: 0
+            delay: 0,
+            minHeight: `600px`
           }
         )}
       </div>

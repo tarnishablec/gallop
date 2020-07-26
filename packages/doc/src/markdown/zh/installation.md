@@ -17,16 +17,21 @@ render(html` <div>Hello Gallop!</div> `)
 ```html
 <!-- umd -->
 <script src="https://unpkg.com/@gallop/gallop"></script>
+<script>
+  const { html, render } = window['@gallop/gallop']
+  /* code */
+</script>
+```
 
 或者
 
+```html
 <!-- esm -->
-<script
-  type="module"
-  src="https://unpkg.com/@gallop/gallop@latest/dist/index.esm.js"
-></script>
-<script
-  type="module"
-  src="https://unpkg.com/@gallop/gallop@latest/dist/index.esm.min.js"
-></script>
+<script type="module">
+  import {
+    html,
+    render
+  } from 'https://unpkg.com/@gallop/gallop@latest/dist/index.esm.js'
+  /* code */
+</script>
 ```

@@ -89,6 +89,10 @@ h3.sub-title {
   }
 }
 
+h3.sub-title {
+  transform: translateX(-1rem);
+}
+
 play-ground {
   position: absolute;
   width: 100%;

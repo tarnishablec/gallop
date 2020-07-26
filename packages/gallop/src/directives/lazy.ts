@@ -17,7 +17,7 @@ export const lazy = directive(function (
     fallback,
     delay,
     minHeight = 0
-  }: Omit<SuspenseOption, 'once'> & { minHeight?: number } = {}
+  }: Omit<SuspenseOption, 'once'> & { minHeight?: number | string } = {}
 ) {
   return (part) => {
     if (!ensurePartType(part, NodePart)) return
@@ -29,7 +29,7 @@ export const lazy = directive(function (
 
     const { endNode } = part.location
     const div = document.createElement('div')
-    div.style.height = String(minHeight)
+    div.style.minHeight = String(minHeight)
     endNode.parentNode!.insertBefore(div, endNode)
 
     anchorCbMap.set(div, () => {
@@ -37,13 +37,11 @@ export const lazy = directive(function (
       interObs.unobserve(div)
       part.clear()
       part.setValue(
-        suspense(
-          () =>
-            new Promise((resolve) => {
-              resolve(wish())
-            }),
-          { pending, fallback, delay }
-        )
+        suspense(() => new Promise((resolve) => resolve(wish())), {
+          pending,
+          fallback,
+          delay
+        })
       )
     })
     interObs.observe(div)

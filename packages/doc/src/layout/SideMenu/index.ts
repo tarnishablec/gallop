@@ -4,7 +4,6 @@ import {
   repeat,
   useContext,
   ReactiveElement,
-  queryShadow,
   useStyle,
   css
 } from '@gallop/gallop'
@@ -39,9 +38,6 @@ component('side-menu', function (this: ReactiveElement) {
             if (href) {
               menuData.current = href.slice(1)
               menuData.dead = true
-              queryShadow('app-main')
-                ?.$root.querySelector(href ?? '#')
-                ?.scrollIntoView({ behavior: 'smooth' })
             }
           }
         }}"
