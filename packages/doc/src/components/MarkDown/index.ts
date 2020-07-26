@@ -49,7 +49,7 @@ component('mark-down', function (
           })
         },
         {
-          pending: html` <skele-ton :title="${false}"></skele-ton> `,
+          pending: html` <skele-ton :title="${false}" :line="${6}"></skele-ton> `,
           delay: 300
         }
       )}

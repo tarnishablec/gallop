@@ -81,10 +81,11 @@ export function resolveEffects(el: ReactiveElement) {
       else {
         resList = []
         disconnectEffectMap.set(el, resList)
-        observeDisconnect(el, () => {
-          resList.forEach((fn) => fn())
-          disconnectEffectMap.delete(el)
-        })
+        resList.filter(Boolean).length &&
+          observeDisconnect(el, () => {
+            resList.forEach((fn) => fn())
+            disconnectEffectMap.delete(el)
+          })
       }
       setTimeout(() => {
         effects.forEach((e, i) => {

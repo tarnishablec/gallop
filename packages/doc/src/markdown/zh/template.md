@@ -7,7 +7,7 @@ gallop 以 `es6` 的 [标签模板字符串](https://developer.mozilla.org/en-US
   (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
-与其他基于`虚拟dom`的框架不同，`gallop`提倡**所写即所得**，你在模板里写的每一个 `dom节点`都会被渲染出来，同时也**只会**渲染出你写出来的`dom结构`，这么做可以非常有效地让`dom层级`变得清晰。具体来说，在`React`和`Vue`里的`抽象组件`在`gallop`里并**不提倡**，`gallop`提供了远比抽象组件更强大且更易扩展的方式 (详情请见 [函数指令](/#directives))。
+与其他基于`虚拟dom`的框架不同，`gallop`提倡**所写即所得**，你在模板里写的每一个 `dom节点`都会被渲染出来，同时也**只会**渲染出你写出来的`dom结构`，这么做可以非常有效地让`dom层级`变得清晰。具体来说，`React`和`Vue`里的`抽象组件`在`gallop`里并**不提倡**，`gallop`提供了远比抽象组件更强大且更易扩展的方式 (详情请见 [函数指令](/#directives))。
 
 `gallop` 只额外定义了三种简单的作用于 dom 标签上的模板语法
 
@@ -27,8 +27,8 @@ gallop 以 `es6` 的 [标签模板字符串](https://developer.mozilla.org/en-US
 
 - `.` 表示为 dom 元素绑定一个原生的`attribute`或`style`或`class`或`value`。当绑定的对象是`value`时，`gallop`会直接对这个 dom 原生的属性`value`设置值，这意味着可以通过此来实现数据的**双向绑定**。**另外值得一提的是，`gallop`支持动态绑定行内样式的做法，但是`gallop`也内置了更好的解决方案，通过`useStyle()`来更加高效的绑定动态样式，所以大部分情况下，我并不提倡使用`.style`动态绑定。**
 
-  <iframe height="300" style="width: 100%;" scrolling="no" title="QWyPpEg" src="https://codepen.io/tarnishablec/embed/QWyPpEg?height=300&theme-id=dark&default-tab=result" frameborder="no" allowtransparency="true" allowfullscreen="true">
-    See the Pen <a href='https://codepen.io/tarnishablec/pen/QWyPpEg'>QWyPpEg</a> by tarnishablec
+  <iframe height="265" style="width: 100%;" scrolling="no" title="template-attr" src="https://codepen.io/tarnishablec/embed/QWyPpEg?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+    See the Pen <a href='https://codepen.io/tarnishablec/pen/QWyPpEg'>template-attr</a> by tarnishablec
     (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
   </iframe>
 
@@ -38,15 +38,11 @@ _从整体上来看，`gallop`的模板编写方式更加贴近`React`的`JSX`�
 
 - 条件渲染
 
-  ```ts
-  const visible = Math.random() > 0.5
-  const template = html`
-    <div>
-      ${visible ? html` <span>hello!</span> ` : null /* 条件渲染 */}
-    </div>
-  `
-  ```
+  <iframe height="265" style="width: 100%;" scrolling="no" title="template-if" src="https://codepen.io/tarnishablec/embed/WNrWjMP?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+    See the Pen <a href='https://codepen.io/tarnishablec/pen/WNrWjMP'>template-if</a> by tarnishablec
+    (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
+  </iframe>
 
 - 列表渲染
 
-  `gallop`中不支持像`React`中那样的通过`map`来进行列表渲染。取而代之，内置了一个`repeat()`指令，和`vue`一样，依靠[snabbdom](https://github.com/snabbdom/snabbdom)的`Array Diff算法`，使用`key`来优化列表变更时的 dom 更新(详情请见[repeat()](/#repeat))。
+  `gallop`中不支持像`React`中那样的通过`map`来进行列表渲染。取而代之，内置了一个[repeat](/#repeat)指令。和`vue`一样，`gallop`借鉴了[snabbdom](https://github.com/snabbdom/snabbdom)的`Array Diff算法`，使用`key`来优化列表变更时的 dom 更新。
