@@ -1,7 +1,5 @@
 export const cleanDomStr = (str: string) =>
-  ~navigator.userAgent.toLowerCase().indexOf('safari/') // for retarded safari
-    ? str
-    : str.replace(/((?<=>|^)\s+)|(\s+(?=<|$))/g, '')
+  str.replace(/((?<=>|^)\s+)|(\s+(?=<|$))/g, '')
 
 export const insertAfter = (
   container: Node,
