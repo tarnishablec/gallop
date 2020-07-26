@@ -38,9 +38,7 @@ component('app-main', function (this: ReactiveElement) {
       { root: this, rootMargin: '-40px 0% -90% 0%' }
     )
 
-    setTimeout(() => {
-      this.$root.querySelectorAll('.sub-title').forEach((el) => obs.observe(el))
-    }, 3000)
+    this.$root.querySelectorAll('.sub-title').forEach((el) => obs.observe(el))
   }, [])
 
   useEffect(() => {
