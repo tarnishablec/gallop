@@ -1,4 +1,4 @@
-gallop 以 `es6` 的 [标签模板字符串](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) 作为模板编写的基础，并得以在运行时确定模板内部动态和静态的代码部分，从而以较小的成本确定 `在哪、何时、如何` 去更新 `dom`，这同样借鉴了`Lit-html`。另外，在`gallop`的模板中**没有根节点必须只有一个的限制**。
+`gallop`以`es6`的[标签模板字符串](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)作为模板编写的基础，并得以在运行时确定模板内部动态和静态的代码部分，从而以较小的成本确定`在哪、何时、如何`去更新 dom，这同样借鉴了`Lit-html`。另外，在`gallop`的模板中**没有根节点必须只有一个的限制**。
 
 🔌 _幸运的是，你不必担心在模板字符串中书写`html`会很麻烦，`vscode`社区已经有很好的插件支持，我个人推荐的方法是在`vscode`中安装`lit-html`和`vscode-styled-components`插件，然后设置`vscode`的`.ts`文件解析规则为`typescript-react`，也许未来会开发自己的插件。_
 
@@ -7,11 +7,11 @@ gallop 以 `es6` 的 [标签模板字符串](https://developer.mozilla.org/en-US
   (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
-与其他基于`虚拟dom`的框架不同，`gallop`提倡**所写即所得**，你在模板里写的每一个 `dom节点`都会被渲染出来，同时也**只会**渲染出你写出来的`dom结构`，这么做可以非常有效地让`dom层级`变得清晰。具体来说，`React`和`Vue`里的`抽象组件`在`gallop`里并**不提倡**，`gallop`提供了远比抽象组件更强大且更易扩展的方式 (详情请见 [函数指令](/#directives))。
+与其他基于`虚拟dom`的框架不同，`gallop`提倡**所写即所得**，你在模板里写的每一个 `dom节点`都会被渲染出来，同时也**只会**渲染出你写出来的`dom结构`，这么做可以非常有效地让`dom层级`变得清晰。具体来说，`React`和`Vue`里的`抽象组件`在`gallop`里并**不提倡**，`gallop`提供了远比抽象组件更强大且更易扩展的方式 (详情请见[函数指令](/#directives))。
 
 `gallop` 只额外定义了三种简单的作用于 dom 标签上的模板语法
 
-- `@` 表示 dom 元素绑定了一个事件，可以是原生的 dom 事件或者是 [自定义事件](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)。(详情请见 [事件](/#event))
+- `@` 表示 dom 元素绑定了一个事件，可以是原生的 dom 事件或者是[自定义事件](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)。(详情请见[事件](/#event))
 
   <iframe height="300" style="width: 100%;" scrolling="no" title="template-event" src="https://codepen.io/tarnishablec/embed/preview/abdxpea?height=300&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
     See the Pen <a href='https://codepen.io/tarnishablec/pen/abdxpea'>template-event</a> by tarnishablec
@@ -45,4 +45,4 @@ _从整体上来看，`gallop`的模板编写方式更加贴近`React`的`JSX`�
 
 - 列表渲染
 
-  `gallop`中不支持像`React`中那样的通过`map`来进行列表渲染。取而代之，内置了一个[repeat](/#repeat)指令。和`vue`一样，`gallop`借鉴了[snabbdom](https://github.com/snabbdom/snabbdom)的`Array Diff算法`，使用`key`来优化列表变更时的 dom 更新。
+  `gallop`中不支持像`React`中那样的通过`map`来进行列表渲染。取而代之，内置了一个[repeat](/#repeat)指令。和`Vue`一样，`gallop`借鉴了[snabbdom](https://github.com/snabbdom/snabbdom)的`Array Diff算法`，使用`key`来优化列表变更时的 dom 更新。

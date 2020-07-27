@@ -109,13 +109,13 @@ module.exports = (dir) => {
           ]
         },
         {
-          test: /\.ico$/,
+          test: /\.(ico|woff|ttf)$/,
           use: [
             {
               loader: 'file-loader',
               options: {
                 outputPath: '/assets/',
-                name: 'icon/[name].[ext]'
+                name: '[name].[ext]'
               }
             }
           ]

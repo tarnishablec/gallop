@@ -1,4 +1,4 @@
-尝试 gallop 最简单的方法就是使用`npm/yarn`安装`@gallop/gallop`。
+尝试`gallop`最简单的方法就是使用`npm/yarn`安装`@gallop/gallop`。
 
 ```shell
 yarn add @gallop/gallop
@@ -12,7 +12,7 @@ render(html` <div>Hello Gallop!</div> `)
 
 它就像是一个普通的`npm`库一样，甚至更小，在开启`gzip`的情况全部引入下只有`5KB`大小。
 
-或者通过`cdn`直接引入
+或者通过`cdn`引入
 
 ```html
 <!-- umd -->
@@ -21,11 +21,7 @@ render(html` <div>Hello Gallop!</div> `)
   const { html, render } = window['@gallop/gallop']
   /* code */
 </script>
-```
 
-或者
-
-```html
 <!-- esm -->
 <script type="module">
   import {

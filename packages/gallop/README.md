@@ -14,9 +14,9 @@
 
 ## Features
 
-- gallop is `non-intrusive` so technically you can use it in any framework like vue or react
+- gallop is `non-intrusive` so technically you can use it in any framework like Vue or react
 
-- gallop is inspired by many frameworks such as `lit-html, vue, react, cyclejs`
+- gallop is inspired by many frameworks such as `lit-html, Vue, react, cyclejs`
 
 - use `template literals` to auto detect dynamic & static code
 
@@ -50,7 +50,7 @@
 
 - `:` to bind props of component  
   `.` to bind attributes / value / style / class  
-  `@` to bind events, support `@click.once.capture.passive` like vue
+  `@` to bind events, support `@click.once.capture.passive` like Vue
 
 - auto `minimize` update
 

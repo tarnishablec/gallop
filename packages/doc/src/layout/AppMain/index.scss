@@ -25,6 +25,7 @@ nav {
   column-gap: 0.5rem;
   box-sizing: border-box;
   z-index: 4;
+  user-select: none;
 
   & > svg {
     justify-self: start;

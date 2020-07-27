@@ -9,7 +9,6 @@
 a {
   color: inherit;
   text-decoration: none;
-  cursor: pointer;
 }
 
 header {
@@ -42,15 +41,14 @@ li.primary-menu::before {
 }
 
 li.primary-menu > a {
-  font-size: 1.1rem;
   color: #333;
 }
 
 li.child-menu > a {
   color: #666;
+  font-size: 0.9rem;
 }
 
-.menu-list-container a.active::before,
 .menu-list-container a:hover::before {
   content: '';
   display: inline-block;
@@ -65,11 +63,6 @@ li.child-menu > a {
 .menu-list-container a:hover::before {
   background: var(--active-color);
   opacity: 0.4;
-}
-
-.menu-list-container a.active::before {
-  background: var(--active-color);
-  opacity: 1;
 }
 
 header span {

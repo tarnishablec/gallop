@@ -7,12 +7,12 @@ import {
   useStyle,
   css
 } from '@gallop/gallop'
-import { localeContext, localeData, menuContext, menuData } from '../../contexts'
-import { lang } from '../../language'
+import { localeContext, localeData, menuData } from '../../contexts'
+import { lang } from '@doc/language'
 import url from './index.scss?url'
 
 component('side-menu', function (this: ReactiveElement) {
-  useContext([menuContext, localeContext])
+  useContext([localeContext])
 
   const { menu } = menuData
 
