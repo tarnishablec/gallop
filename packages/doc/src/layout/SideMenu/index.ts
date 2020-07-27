@@ -33,10 +33,10 @@ component('side-menu', function (this: ReactiveElement) {
       <ul
         @click="${(e: Event) => {
           const { target } = e
-          if (target instanceof HTMLAnchorElement)
-            (this.nextElementSibling as ReactiveElement).$root
-              .querySelector(target.getAttribute('href') ?? '#none')
-              ?.scrollIntoView({ behavior: 'smooth' })
+          if (target instanceof HTMLAnchorElement) {
+            const href = target.getAttribute('href') ?? '#none'
+            window.location.hash = href.slice()
+          }
         }}"
       >
         ${repeat(

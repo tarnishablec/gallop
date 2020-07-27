@@ -23,6 +23,7 @@ function createParts(patcher: Patcher) {
       const { attributes: attrs } = cur
       const { length } = attrs
 
+      const trash: string[] = []
       for (let i = 0; i < length; i++) {
         let { name } = attrs[i]
         const prefix = name[0]
@@ -43,9 +44,11 @@ function createParts(patcher: Patcher) {
               result.push(new EventPart({ node: cur, name }))
               break
           }
+          trash.push(`${prefix}${name}`)
           count++
         }
       }
+      window.requestIdleCallback(() => trash.forEach((t) => cur.removeAttribute(t)))
     } else if (isMarker(cur)) {
       // const parent = cur.parentNode!
       // const index = Array.prototype.indexOf.call(parent.childNodes, cur)

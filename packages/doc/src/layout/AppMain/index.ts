@@ -6,7 +6,8 @@ import {
   useStyle,
   css,
   useState,
-  ReactiveElement
+  ReactiveElement,
+  useEffect
 } from '@gallop/gallop'
 import { menuData, localeContext, localeData } from '../../contexts'
 import { lang } from '@doc/language'
@@ -20,6 +21,15 @@ component('app-main', function (this: ReactiveElement) {
 
   const { locale } = localeData
   const { menu } = menuData
+
+  useEffect(() => {
+    const handler = () => {
+      const hash = window.location.hash
+      this.$root.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' })
+    }
+    window.addEventListener('hashchange', handler)
+    return () => window.removeEventListener('hashchange', handler)
+  }, [])
 
   useContext([localeContext])
 

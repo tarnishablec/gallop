@@ -1,8 +1,8 @@
 `gallop`中的组件大致分为两种：`无状态组件`和`有状态组件`
 
-- `无状态组件`或者称为`PureComponent`说白了就是一个返回`模板(HTMLClip)`的**函数**。
+- `无状态组件`或者称为`函数组件`说白了就是一个返回[模板](/#Template)的**函数**。
 
-  这个函数等待被调用，然后被渲染到指定的地方。**没有任何的生命周期，也不能使用`Hooks`，但是依然可以使用[函数指令](/#directives)**
+  这个函数等待被调用，然后被渲染到指定的地方。**没有任何的生命周期，也不能使用`Hooks`，但是依然可以使用[函数指令](/#Directives)**
 
   <iframe height="265" style="width: 100%;" scrolling="no" title="template-pure" src="https://codepen.io/tarnishablec/embed/preview/KKVYmXY?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
     See the Pen <a href='https://codepen.io/tarnishablec/pen/KKVYmXY'>template-pure</a> by tarnishablec
