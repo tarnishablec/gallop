@@ -1,8 +1,10 @@
 {
-  "Essentials": "起步",
+  "Introduction": "起步",
   "Overview": "概览",
   "Installation": "安装",
   "Main-Concepts": "核心概念",
   "Template": "模板",
-  "Component": "组件"
+  "Component": "组件基础",
+  "Event": "事件处理",
+  "Component-In-Depth": "深入理解组件"
 }

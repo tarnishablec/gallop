@@ -12,7 +12,10 @@ import url from './github.css?url'
 
 component('mark-down', function (
   this: ReactiveElement,
-  { filename, locale = 'zh' }: { filename: string; locale?: string }
+  {
+    filename,
+    locale = 'zh'
+  }: { filename: string; locale?: string } /* filename do not need .md extension */
 ) {
   useStyle(
     () => css`
@@ -33,19 +36,17 @@ component('mark-down', function (
         try {
           content = (
             await import(
-              /* webpackInclude: /\.md$/ */
               /* webpackChunkName: "md/[request]" */
               /* webpackMode: "lazy" */
-              `../../markdown/${locale}/${filename}`
+              `../../markdown/${locale}/${filename}.md`
             )
           ).default
         } catch (e) {
           content = (
             await import(
-              /* webpackInclude: /\.md$/ */
               /* webpackChunkName: "md/[request]" */
               /* webpackMode: "lazy" */
-              `../../markdown/zh/${filename}`
+              `../../markdown/zh/${filename}.md`
             )
           ).default
         }

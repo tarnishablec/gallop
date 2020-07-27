@@ -11,8 +11,8 @@ import {
 import { menuData, localeContext, localeData } from '../../contexts'
 import { lang } from '@doc/language'
 import raw from './index.scss?raw'
-import { CodeSandboxIcon } from '@doc/components/Icons/CodeSandbox'
-import { LanguageIcon } from '@doc/components/LanguageIcon'
+import { CodeSandboxIcon } from '@doc/components/Icons/CodeSandboxIcon'
+import { LanguageIcon } from '@doc/components/Icons/LanguageIcon'
 
 component('app-main', function (this: ReactiveElement) {
   const [state] = useState({
@@ -55,22 +55,17 @@ component('app-main', function (this: ReactiveElement) {
           (m) => html`
             <h2 class="primary-title" .id="${m.name}">${lang(m.name, locale)}</h2>
             <hr />
-            ${repeat(
-              m.children,
-              (c) => c,
-              (c) =>
-                html`<div class="markdown-wrapper">
-                  <h3 class="sub-title" .id="${c}">${lang(c, locale)}</h3>
-                  <mark-down
-                    :locale="${locale}"
-                    :filename="${c
-                      .toLowerCase()
-                      .split(' ')
-                      .filter(Boolean)
-                      .join('-') + '.md'}"
-                  ></mark-down>
-                </div> `
-            )}
+            ${m.children?.length
+              ? repeat(
+                  m.children,
+                  (c) => c,
+                  (c) =>
+                    html`<div class="markdown-wrapper">
+                      <h3 class="sub-title" .id="${c}">${lang(c, locale)}</h3>
+                      <mark-down :locale="${locale}" :filename="${c}"></mark-down>
+                    </div> `
+                )
+              : null}
           `
         )}
       </div>

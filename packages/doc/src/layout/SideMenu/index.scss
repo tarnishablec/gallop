@@ -42,11 +42,11 @@ li.primary-menu::before {
 
 li.primary-menu > a {
   color: #333;
+  font-weight: bolder;
 }
 
 li.child-menu > a {
   color: #666;
-  font-size: 0.9rem;
 }
 
 .menu-list-container a:hover::before {

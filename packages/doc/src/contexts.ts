@@ -2,8 +2,9 @@ import { createContext } from '@gallop/gallop'
 
 export const menuData = {
   menu: [
-    { name: 'Essentials', children: ['Overview', 'Installation'] },
-    { name: 'Main-Concepts', children: ['Template', 'Component'] }
+    { name: 'Introduction', children: ['Overview', 'Installation'] },
+    { name: 'Main-Concepts', children: ['Template', 'Component', 'Event'] },
+    { name: 'Component-In-Depth' }
   ]
 }
 

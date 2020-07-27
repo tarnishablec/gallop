@@ -59,7 +59,13 @@ export class AttrPart implements Part {
     if (resolveDirective(val, this)) return
     if (this.value === val) return
     const { node, name } = this.location
-    if (name === 'value') {
+
+    if (
+      (name === 'checked' &&
+        node instanceof HTMLInputElement &&
+        ['checkbox', 'radio'].includes(node.type)) ||
+      name === 'value'
+    ) {
       Reflect.set(node, name, val)
       this.value = val
       return
