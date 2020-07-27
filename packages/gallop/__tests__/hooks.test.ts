@@ -6,7 +6,8 @@ import {
   useEffect,
   Looper,
   useStyle,
-  css
+  css,
+  useMemo
 } from '../src'
 import { ReactiveElement } from '../src/component'
 
@@ -126,7 +127,7 @@ describe('hooks', () => {
       return html` <div>111</div> `
     })
 
-    render(html`<test-s></test-s>`)
+    const remove = render(html`<test-s></test-s>`)
 
     const el = document.querySelector('test-s') as ReactiveElement
 
@@ -134,15 +135,65 @@ describe('hooks', () => {
       const div = el.$root.querySelector('div')!
       expect(div).toBeInstanceOf(HTMLDivElement)
       color = window.getComputedStyle(div).getPropertyValue('background-color')
-    }, 500)
+    }, 1000)
 
     setTimeout(() => {
       try {
         expect(color).toBe('rgb(255, 0, 0)')
+        remove()
         done()
       } catch (error) {
         done(error)
       }
-    }, 600)
+    }, 2000)
+  })
+
+  test('useMemo', (done) => {
+    component('test-m', function (this: ReactiveElement) {
+      const [state] = useState({ a: 1, b: 2 })
+
+      const { a, b } = state
+      const memo = useMemo(() => a + b, [a, b])
+
+      useEffect(() => {
+        setTimeout(() => {
+          this.$root.querySelector('button')?.dispatchEvent(new Event('click'))
+        }, 1000)
+      }, [])
+
+      return html` <div>${memo}</div>
+        <button
+          @click="${() => {
+            state.a++
+            state.b++
+          }}"
+        ></button>`
+    })
+
+    render(html` <test-m></test-m> `)
+
+    setTimeout(() => {
+      const el = document.querySelector('test-m') as ReactiveElement
+      try {
+        expect(el.$state?.a).toBe(1)
+        expect(el.$state?.b).toBe(2)
+      } catch (error) {
+        console.log(error)
+      }
+    }, 800)
+
+    setTimeout(() => {
+      const el = document.querySelector('test-m') as ReactiveElement
+      try {
+        expect(el.$state?.a).toBe(2)
+        expect(el.$state?.b).toBe(3)
+        expect(
+          el.$root.querySelector('div')?.childNodes[1].textContent === '5'
+        ).toBe(true)
+        done()
+      } catch (error) {
+        done(error)
+      }
+    }, 1500)
   })
 })

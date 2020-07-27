@@ -92,6 +92,20 @@ module.exports = (dir) => {
               ]
             },
             {
+              resourceQuery: /raw/,
+              rules: [
+                { loader: 'to-string-loader' },
+                { loader: 'css-loader' },
+                {
+                  loader: 'postcss-loader',
+                  options: {
+                    plugins: [require('autoprefixer')]
+                  }
+                },
+                { loader: 'sass-loader' }
+              ]
+            },
+            {
               rules: [
                 __prod__
                   ? { loader: MiniCssExtractPlugin.loader }

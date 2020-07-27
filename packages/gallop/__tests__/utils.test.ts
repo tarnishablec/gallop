@@ -1,6 +1,7 @@
-import { extractProps, shallowEqual } from '../src/utils'
+import { extractProps, shallowEqual, hashify } from '../src/utils'
 import { html } from '../src/parse'
 import { getShaHtml } from '../src/clip'
+import { cleanDomStr } from '../src/dom'
 
 describe('utils', () => {
   test('extractProp', () => {
@@ -53,5 +54,58 @@ describe('utils', () => {
     expect(shallowEqual(undefined, undefined)).toBe(true)
     expect(shallowEqual(null, null)).toBe(true)
     expect(shallowEqual(func, () => console.log(1))).toBe(false)
+  })
+
+  test('hashify', () => {
+    const domStr1 = cleanDomStr(`
+    <div>
+      <span>this is span</span>
+      <p>this is p</p>
+      <!--comment1-->
+      <!--comment2-->
+      <div>this is child</div>
+      <div>
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+        </ul>
+      </div>
+    </div>
+  `)
+    const domStr2 = cleanDomStr(`
+    <div>
+      <span>this is span</span>
+      <p>this is p</p>
+      <!--comment1-->
+      <!--comment2-->
+      <div>this is child</div>
+      <div>
+        <ul>
+          <li>2</li>
+          <li>2</li>
+          <li>3</li>
+        </ul>
+      </div>
+    </div>
+  `)
+    const domStr3 = cleanDomStr(`
+    <div>
+      <span>this is span</span>
+      <p>this is p</p>
+      <!--comment1-->
+      <!--comment2-->
+      <div>this is child</div>
+      <div>
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+        </ul>
+      </div>
+    </div>
+  `)
+    expect(hashify(domStr1) === hashify(domStr2)).toBe(false)
+    expect(hashify(domStr1) === hashify(domStr3)).toBe(true)
   })
 })

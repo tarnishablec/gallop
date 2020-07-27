@@ -26,16 +26,14 @@ export let lastDepEl: ReactiveElement | undefined
 export const resetLastDepEl = () => (lastDepEl = undefined)
 let depCount: number
 const depCountMap = new WeakMap<ReactiveElement, Map<number, unknown[]>>()
-export function useDepends(depends?: unknown[]): [boolean, boolean, number] {
+export function useDepends(depends?: unknown[]): [boolean, number] {
   const current = Looper.resolveCurrent()
-  let diff: boolean = false
   if (current !== lastDepEl) {
     depCount = 0
-    diff = true
   }
   if (!depends) {
     depCount++
-    return [true, diff, depCount - 1]
+    return [true, depCount - 1]
   }
   const oldVals = depCountMap.get(current)?.get(depCount)
   let dirty = false
@@ -57,7 +55,7 @@ export function useDepends(depends?: unknown[]): [boolean, boolean, number] {
   forceGet(depCountMap, current, () => new Map()).set(depCount, depends)
   lastDepEl = current
   depCount++
-  return [dirty, diff, depCount - 1]
+  return [dirty, depCount - 1]
 }
 
 type Effect = () => void | (() => void)
@@ -66,9 +64,8 @@ const effectQueueMap = new WeakMap<ReactiveElement, (Effect | undefined)[]>()
 const disconnectEffectMap = new WeakMap<ReactiveElement, DisconnectEffect[]>()
 export function useEffect(effect: Effect, depends?: unknown[]) {
   const current = Looper.resolveCurrent()
-  const [dirty, diff, count] = useDepends(depends)
-  diff && effectQueueMap.set(current, [])
-  dirty && (forceGet(effectQueueMap, current, () => [])[count] = effect)
+  const [dirty, count] = useDepends(depends)
+  forceGet(effectQueueMap, current, () => [])[count] = dirty ? effect : undefined
 }
 export function resolveEffects(el: ReactiveElement) {
   const effects = effectQueueMap.get(el)
@@ -101,7 +98,7 @@ export function resolveEffects(el: ReactiveElement) {
 const memoMap = new WeakMap<ReactiveElement, unknown[]>()
 export function useMemo<T>(func: () => T, depends?: unknown[]): T {
   const current = Looper.resolveCurrent()
-  const [dirty, , count] = useDepends(depends)
+  const [dirty, count] = useDepends(depends)
   const vals = forceGet(memoMap, current, () => [])
   if (dirty) {
     const result = func()

@@ -4,15 +4,15 @@ import {
   repeat,
   useContext,
   useStyle,
-  css,
   useState,
   ReactiveElement,
   useEffect
 } from '@gallop/gallop'
 import { menuData, localeContext, localeData } from '../../contexts'
 import { lang } from '@doc/language'
-import url from './index.scss?url'
+import raw from './index.scss?raw'
 import { CodeSandboxIcon } from '@doc/components/Icons/CodeSandbox'
+import { LanguageIcon } from '@doc/components/LanguageIcon'
 
 component('app-main', function (this: ReactiveElement) {
   const [state] = useState({
@@ -33,16 +33,11 @@ component('app-main', function (this: ReactiveElement) {
 
   useContext([localeContext])
 
-  useStyle(
-    () =>
-      css`
-        @import '${url}';
-      `,
-    []
-  )
+  useStyle(() => raw, [])
 
   return html`
     <nav>
+      ${LanguageIcon()}
       ${CodeSandboxIcon({
         onClick: () => (state.playgroundVisible = !state.playgroundVisible),
         active: state.playgroundVisible
