@@ -2,7 +2,7 @@ gallop 以 `es6` 的 [标签模板字符串](https://developer.mozilla.org/en-US
 
 🔌 _幸运的是，你不必担心在模板字符串中书写`html`会很麻烦，`vscode`社区已经有很好的插件支持，我个人推荐的方法是在`vscode`中安装`lit-html`和`vscode-styled-components`插件，然后设置`vscode`的`.ts`文件解析规则为`typescript-react`，也许未来会开发自己的插件。_
 
-<iframe height="265" style="width: 100%;" scrolling="no" title="template-start" src="https://codepen.io/tarnishablec/embed/KKVYaeN?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+<iframe height="265" style="width: 100%;" scrolling="no" title="template-start" src="https://codepen.io/tarnishablec/embed/preview/KKVYaeN?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href='https://codepen.io/tarnishablec/pen/KKVYaeN'>template-start</a> by tarnishablec
   (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
@@ -13,21 +13,21 @@ gallop 以 `es6` 的 [标签模板字符串](https://developer.mozilla.org/en-US
 
 - `@` 表示 dom 元素绑定了一个事件，可以是原生的 dom 事件或者是 [自定义事件](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)。(详情请见 [事件](/#event))
 
-  <iframe height="300" style="width: 100%;" scrolling="no" title="template-event" src="https://codepen.io/tarnishablec/embed/abdxpea?height=300&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  <iframe height="300" style="width: 100%;" scrolling="no" title="template-event" src="https://codepen.io/tarnishablec/embed/preview/abdxpea?height=300&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
     See the Pen <a href='https://codepen.io/tarnishablec/pen/abdxpea'>template-event</a> by tarnishablec
     (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
   </iframe>
 
 - `:` 表示为 dom 元素绑定一个`prop`。这意味着这个 dom 元素一定是个调用`gallop`的`component`方法定义出的`ReactiveElement`。和`Vue`不一样的是，不管绑定对象的值是静态的或是动态的，都需要在`prop`名字之前指定`:`，因为`gallop`在模板解析时是以`dom attribute`前是否加`:`来判断这是否是一个`prop`。同时不能用`:`去绑定`attribute`、`class`、`style`、`value`，取而代之需要用到下面的`.`。
 
-  <iframe height="320" style="width: 100%;" scrolling="no" title="template-prop" src="https://codepen.io/tarnishablec/embed/jOWRBOm?height=320&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  <iframe height="320" style="width: 100%;" scrolling="no" title="template-prop" src="https://codepen.io/tarnishablec/embed/preview/jOWRBOm?height=320&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href='https://codepen.io/tarnishablec/pen/jOWRBOm'>template-prop</a> by tarnishablec
   (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
   </iframe>
 
 - `.` 表示为 dom 元素绑定一个原生的`attribute`或`style`或`class`或`value`。当绑定的对象是`value`时，`gallop`会直接对这个 dom 原生的属性`value`设置值，这意味着可以通过此来实现数据的**双向绑定**。**另外值得一提的是，`gallop`支持动态绑定行内样式的做法，但是`gallop`也内置了更好的解决方案，通过`useStyle()`来更加高效的绑定动态样式，所以大部分情况下，我并不提倡使用`.style`动态绑定。**
 
-  <iframe height="265" style="width: 100%;" scrolling="no" title="template-attr" src="https://codepen.io/tarnishablec/embed/QWyPpEg?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  <iframe height="265" style="width: 100%;" scrolling="no" title="template-attr" src="https://codepen.io/tarnishablec/embed/preview/QWyPpEg?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
     See the Pen <a href='https://codepen.io/tarnishablec/pen/QWyPpEg'>template-attr</a> by tarnishablec
     (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
   </iframe>
@@ -38,7 +38,7 @@ _从整体上来看，`gallop`的模板编写方式更加贴近`React`的`JSX`�
 
 - 条件渲染
 
-  <iframe height="265" style="width: 100%;" scrolling="no" title="template-if" src="https://codepen.io/tarnishablec/embed/WNrWjMP?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  <iframe height="265" style="width: 100%;" scrolling="no" title="template-if" src="https://codepen.io/tarnishablec/embed/preview/WNrWjMP?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
     See the Pen <a href='https://codepen.io/tarnishablec/pen/WNrWjMP'>template-if</a> by tarnishablec
     (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
   </iframe>

@@ -14,7 +14,7 @@ import url from './index.scss?url'
 component('side-menu', function (this: ReactiveElement) {
   useContext([menuContext, localeContext])
 
-  const { menu, current } = menuData
+  const { menu } = menuData
 
   const { locale } = localeData
 
@@ -33,10 +33,10 @@ component('side-menu', function (this: ReactiveElement) {
       <ul
         @click="${(e: Event) => {
           const { target } = e
-          if (target instanceof HTMLAnchorElement) {
-            const href = target.getAttribute('href')
-            if (href) menuData.current = href.slice(1)
-          }
+          if (target instanceof HTMLAnchorElement)
+            (this.nextElementSibling as ReactiveElement).$root
+              .querySelector(target.getAttribute('href') ?? '#none')
+              ?.scrollIntoView({ behavior: 'smooth' })
         }}"
       >
         ${repeat(
@@ -44,11 +44,7 @@ component('side-menu', function (this: ReactiveElement) {
           (m) => m.name,
           (m) => html`
             <li class="primary-menu">
-              <a
-                .href="${`#${m.name}`}"
-                .class="${current === m.name ? 'active' : ''}"
-                >${lang(m.name, locale)}</a
-              >
+              <a .href="${`#${m.name}`}">${lang(m.name, locale)}</a>
               ${m.children
                 ? html`<ul>
                     ${repeat(
@@ -56,11 +52,7 @@ component('side-menu', function (this: ReactiveElement) {
                       (n) => n,
                       (n) => html`
                         <li class="child-menu">
-                          <a
-                            .href="${`#${n}`}"
-                            .class="${current === n ? 'active' : ''}"
-                            >${lang(n, locale)}</a
-                          >
+                          <a .href="${`#${n}`}">${lang(n, locale)}</a>
                         </li>
                       `
                     )}

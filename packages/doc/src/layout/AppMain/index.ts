@@ -6,18 +6,12 @@ import {
   useStyle,
   css,
   useState,
-  useEffect,
   ReactiveElement
 } from '@gallop/gallop'
-import { menuData, menuContext, localeContext, localeData } from '../../contexts'
+import { menuData, localeContext, localeData } from '../../contexts'
 import { lang } from '@doc/language'
 import url from './index.scss?url'
 import { CodeSandboxIcon } from '@doc/components/Icons/CodeSandbox'
-
-window.addEventListener(
-  'hashchange',
-  () => (menuData.current = window.location.hash.slice(1).split('?')[0])
-)
 
 component('app-main', function (this: ReactiveElement) {
   const [state] = useState({
@@ -27,30 +21,7 @@ component('app-main', function (this: ReactiveElement) {
   const { locale } = localeData
   const { menu } = menuData
 
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const { target, isIntersecting } = entry
-          if (isIntersecting) window.location.hash = `#${target.id}`
-        })
-      },
-      { root: this, rootMargin: '-40px 0% -90% 0%' }
-    )
-
-    this.$root.querySelectorAll('.sub-title').forEach((el) => obs.observe(el))
-  }, [])
-
-  useEffect(() => {
-    if (menuData.current) {
-      window.location.hash = `#${menuData.current}`
-      this.$root
-        .querySelector(`#${menuData.current}`)
-        ?.scrollIntoView({ behavior: 'auto' })
-    }
-  }, [menuData.current])
-
-  useContext([menuContext, localeContext])
+  useContext([localeContext])
 
   useStyle(
     () =>
