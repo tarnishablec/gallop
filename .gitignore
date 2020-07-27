@@ -7,7 +7,6 @@ coverage
 lerna-debug.log
 yarn-error.log
 
-.coveralls.yml
 .travis.yml
 
 yarn.lock

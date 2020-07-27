@@ -1,7 +1,8 @@
-import { extractProps, shallowEqual, hashify } from '../src/utils'
+import { extractProps, shallowEqual, hashify, tryParseToString } from '../src/utils'
 import { html } from '../src/parse'
 import { getShaHtml } from '../src/clip'
 import { cleanDomStr } from '../src/dom'
+import { createProxy } from '../src/reactive'
 
 describe('utils', () => {
   test('extractProp', () => {
@@ -107,5 +108,10 @@ describe('utils', () => {
   `)
     expect(hashify(domStr1) === hashify(domStr2)).toBe(false)
     expect(hashify(domStr1) === hashify(domStr3)).toBe(true)
+  })
+
+  test('tryParseToString', () => {
+    const p = createProxy({ a: 1 })
+    expect(tryParseToString(p)).toBe('{"a":1}')
   })
 })

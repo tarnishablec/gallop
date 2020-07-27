@@ -149,7 +149,7 @@ describe('hooks', () => {
   })
 
   test('useMemo', (done) => {
-    component('test-m', function (this: ReactiveElement) {
+    component('test-memo', function (this: ReactiveElement) {
       const [state] = useState({ a: 1, b: 2 })
 
       const { a, b } = state
@@ -170,30 +170,31 @@ describe('hooks', () => {
         ></button>`
     })
 
-    render(html` <test-m></test-m> `)
+    const remove = render(html` <test-memo></test-memo> `)
 
     setTimeout(() => {
-      const el = document.querySelector('test-m') as ReactiveElement
+      const el = document.querySelector('test-memo') as ReactiveElement
       try {
         expect(el.$state?.a).toBe(1)
         expect(el.$state?.b).toBe(2)
       } catch (error) {
-        console.log(error)
+        //
       }
-    }, 800)
+    }, 500)
 
     setTimeout(() => {
-      const el = document.querySelector('test-m') as ReactiveElement
+      const el = document.querySelector('test-memo') as ReactiveElement
       try {
         expect(el.$state?.a).toBe(2)
         expect(el.$state?.b).toBe(3)
         expect(
           el.$root.querySelector('div')?.childNodes[1].textContent === '5'
         ).toBe(true)
+        remove()
         done()
       } catch (error) {
         done(error)
       }
-    }, 1500)
+    }, 2000)
   })
 })
