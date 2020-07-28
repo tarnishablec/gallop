@@ -1,3 +1,0 @@
-[0728/041619.725:ERROR:minidumpwritedump_with_crashpad_info.cc(435)] Failed to call MiniDumpWriteDump: ²ÎÊý´íÎó¡£ (0x80070057)
-[0728/041619.725:ERROR:minidumpwritedump_with_crashpad_info.cc(592)] Failed to write minidump file
-[0728/041619.725:ERROR:crash_report_exception_handler.cc(132)] TryMiniDumpWriteDumpWithCrashpadInfo failed

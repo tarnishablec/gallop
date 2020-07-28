@@ -99,6 +99,7 @@ play-ground {
   width: 100%;
   top: var(--header-height);
   z-index: 1;
+  background: rgba(100, 100, 100, 0.6);
   transform: translateY(-100%);
   transition: transform 0.2s ease-in-out;
 

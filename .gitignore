@@ -6,6 +6,7 @@ coverage
 
 lerna-debug.log
 yarn-error.log
+debug.log
 
 .travis.yml
 
