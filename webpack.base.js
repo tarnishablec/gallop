@@ -17,7 +17,8 @@ console.log(
   `🔧 production : ${__prod__ ? chalk.green(__prod__) : chalk.red(__prod__)}`
 )
 
-module.exports = (dir) => {
+/** @type {(dir: string) => import("webpack").Configuration} */
+const config = (dir) => {
   return {
     mode: 'development',
 
@@ -217,3 +218,5 @@ module.exports = (dir) => {
     ]
   }
 }
+
+module.exports = config
