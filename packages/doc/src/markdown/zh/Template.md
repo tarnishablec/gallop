@@ -7,7 +7,7 @@
   (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
-与其他基于`虚拟dom`的框架不同，`gallop`提倡**所写即所得**，你在模板里写的每一个 `dom节点`都会被渲染出来，同时也**只会**渲染出你写出来的`dom结构`，这么做可以非常有效地让`dom层级`变得清晰。具体来说，`React`和`Vue`里的`抽象组件`在`gallop`里并**不提倡**，`gallop`提供了远比抽象组件更强大且更易扩展的方式 (详情请见[函数指令](/#directives))。
+与其他基于`虚拟dom`的框架不同，`gallop`提倡**所写即所得**，你在模板里写的每一个`dom节点`都会被渲染出来，同时也**只会**渲染出你写出来的`dom结构`，这么做可以非常有效地让`dom层级`变得清晰。具体来说，`React`和`Vue`里的`抽象组件`在`gallop`里并**不提倡**，`gallop`提供了远比抽象组件更强大且更易扩展的方式 (详情请见[函数指令](/#directives))。
 
 `gallop` 只额外定义了三种简单的作用于 dom 标签上的模板语法
 
