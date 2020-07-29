@@ -3,6 +3,7 @@
   display: grid;
   grid-template-rows: auto 1fr auto;
   position: relative;
+  box-sizing: border-box;
 
   --header-height: 3.6rem;
 }
@@ -21,11 +22,12 @@ nav {
   place-items: center;
   justify-content: end;
   grid-template-columns: auto 1fr repeat(3, auto);
-  padding: 0 4rem;
-  column-gap: 0.5rem;
+  padding: 0 6rem 0 4rem;
+  column-gap: 0.75rem;
   box-sizing: border-box;
   z-index: 4;
   user-select: none;
+  white-space: nowrap;
 
   & > svg {
     justify-self: start;
@@ -54,18 +56,6 @@ nav {
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: 1rem;
-
-  .app-main-content {
-    width: 100%;
-    max-width: 900px;
-    padding: 0 1rem 0 2rem;
-    margin: 0 auto;
-    box-sizing: border-box;
-
-    hr {
-      border: 1px solid var(--active-color);
-    }
-  }
 }
 
 h2.primary-title {
@@ -96,12 +86,15 @@ h3.sub-title {
 
 play-ground {
   position: absolute;
-  width: 100%;
+  width: calc(100% - 1rem);
   top: var(--header-height);
   z-index: 1;
   background: rgba(100, 100, 100, 0.6);
   transform: translateY(-100%);
   transition: transform 0.2s ease-in-out;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  box-sizing: border-box;
 
   &.visible {
     transform: unset;

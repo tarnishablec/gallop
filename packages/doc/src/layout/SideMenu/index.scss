@@ -1,9 +1,22 @@
 :host {
-  background: rgba(0, 0, 0, 0.2);
+  z-index: 5;
+  height: 100vh;
+  overflow-x: hidden;
+  transition: transform 0.2s;
+  filter: drop-shadow(2px 0px 1px gray);
+}
+
+.side-menu-wrapper {
+  background: rgb(181, 181, 181);
   display: grid;
   grid-auto-rows: min-content 1fr;
-  box-shadow: 0 0 3px 1px gray;
-  z-index: 5;
+  height: 100%;
+  clip-path: url(#side-path);
+}
+
+.t-svg {
+  position: absolute;
+  z-index: -1;
 }
 
 a {

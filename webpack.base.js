@@ -20,8 +20,6 @@ console.log(
 /** @type {(dir: string) => import("webpack").Configuration} */
 const config = (dir) => {
   return {
-    mode: 'development',
-
     entry: {
       main: path.resolve(dir, './src/App.ts')
     },
@@ -96,7 +94,7 @@ const config = (dir) => {
               resourceQuery: /raw/,
               rules: [
                 {
-                  loader: path.resolve(__dirname, 'packages/doc/loader/to-string.js')
+                  loader: path.resolve(__dirname, './loaders/to-string.js')
                 },
                 { loader: 'css-loader' },
                 {

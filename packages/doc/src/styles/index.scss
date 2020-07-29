@@ -9,11 +9,3 @@ body {
   margin: 0;
   font-family: 'Noto Sans SC', sans-serif;
 }
-
-app-root {
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: minmax(180px, auto) 1fr;
-}
