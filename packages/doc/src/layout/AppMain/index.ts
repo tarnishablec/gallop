@@ -14,6 +14,8 @@ import raw from './index.scss?raw'
 import { CodeSandboxIcon } from '@doc/components/Icons/CodeSandboxIcon'
 import { LanguageIcon } from '@doc/components/Icons/LanguageIcon'
 
+console.log(raw)
+
 component('app-main', function (this: ReactiveElement) {
   const [state] = useState({
     playgroundVisible: false

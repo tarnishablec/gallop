@@ -95,7 +95,9 @@ const config = (dir) => {
             {
               resourceQuery: /raw/,
               rules: [
-                { loader: 'to-string-loader' },
+                {
+                  loader: path.resolve(__dirname, 'packages/doc/loader/to-string.js')
+                },
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
