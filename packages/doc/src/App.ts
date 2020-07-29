@@ -5,13 +5,6 @@ import './registry'
 import './styles'
 import { GithubCorner } from './components/GithubCorner'
 
-if (__prod__)
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/workbox-sw.js').catch((err) => {
-      console.error('Unable to register service worker.', err)
-    })
-  }
-
 component(
   'app-root',
   () =>

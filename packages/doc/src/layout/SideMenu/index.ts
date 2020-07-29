@@ -33,10 +33,8 @@ component('side-menu', function (this: ReactiveElement) {
         <ul
           @click="${(e: Event) => {
             const { target } = e
-            if (target instanceof HTMLAnchorElement) {
-              const href = target.getAttribute('href') ?? '#none'
-              window.location.hash = href.slice()
-            }
+            if (target instanceof HTMLAnchorElement)
+              window.location.hash = (target.getAttribute('href') ?? '#none').slice()
           }}"
         >
           ${repeat(
@@ -63,10 +61,11 @@ component('side-menu', function (this: ReactiveElement) {
           )}
         </ul>
       </div>
-      <svg class="t-svg" width="100%" height="100%" viewBox="0 0 100 100">
+      <svg class="t-svg" width="100%" height="100%">
         <defs>
           <clipPath id="side-path" clipPathUnits="objectBoundingBox">
-            <path d="M 0 0 h 100 v 100 h -100 z"></path>
+            <!-- TODO -->
+            <path d="M 0 0 h 1 v 0.4 v 0.6 v 1 h -1 z"></path>
           </clipPath>
         </defs>
       </svg>

@@ -20,6 +20,8 @@ console.log(
 /** @type {(dir: string) => import("webpack").Configuration} */
 const config = (dir) => {
   return {
+    mode: 'development',
+
     entry: {
       main: path.resolve(dir, './src/App.ts')
     },
