@@ -8,5 +8,7 @@
   "Event": "事件处理",
   "Hooks": "Hooks",
   "Directives": "函数指令",
+  "Context": "Context",
+  "Style": "样式",
   "Component-In-Depth": "深入理解组件"
 }

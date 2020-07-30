@@ -10,7 +10,7 @@ import { insertAfter } from './dom'
 function createParts(patcher: Patcher) {
   const result: Part[] = []
   const { dof, size } = patcher
-  const walker = document.createTreeWalker(dof)
+  const walker = document.createTreeWalker(dof, 133)
   let count = 0
   while (count < size) {
     walker.nextNode()
@@ -25,14 +25,14 @@ function createParts(patcher: Patcher) {
 
       const trash: string[] = []
       for (let i = 0; i < length; i++) {
-        let { name } = attrs[i]
-        const prefix = name[0]
+        const { name: n } = attrs[i]
+        const prefix = n[0]
         if (
           prefix === '.' ||
           prefix === '@' ||
           (prefix === ':' && marker === attrs[i].value)
         ) {
-          name = name.slice(1)
+          const name = n.slice(1)
           switch (prefix) {
             case '.':
               result.push(new AttrPart({ node: cur, name }))
@@ -44,22 +44,12 @@ function createParts(patcher: Patcher) {
               result.push(new EventPart({ node: cur, name }))
               break
           }
-          trash.push(`${prefix}${name}`)
+          trash.push(n)
           count++
         }
       }
       window.requestIdleCallback(() => trash.forEach((t) => cur.removeAttribute(t)))
     } else if (isMarker(cur)) {
-      // const parent = cur.parentNode!
-      // const index = Array.prototype.indexOf.call(parent.childNodes, cur)
-      // debugger
-      // const range = new StaticRange({
-      //   startContainer: parent,
-      //   endContainer: parent,
-      //   startOffset: index,
-      //   endOffset: index + 1
-      // })
-      // console.log(range)
       const tail = new Comment(markerIndex)
       insertAfter(cur.parentNode!, tail, cur)
       result.push(new NodePart({ startNode: cur, endNode: tail }))

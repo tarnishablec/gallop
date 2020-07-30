@@ -13,6 +13,7 @@ import { LockedProxyError } from './error'
 import { Recycler } from './dirty'
 
 const rawProxyMap = new WeakMap()
+const collections = [Map, Set, WeakMap, WeakSet]
 
 const __raw__ = '__raw__'
 
@@ -42,7 +43,7 @@ export const createProxy = <T extends object>(
         )
       : target
 
-  if ([Map, Set, WeakMap, WeakSet].some((v) => raw instanceof v)) {
+  if (collections.some((v) => raw instanceof v)) {
     const delegator = {
       get: function <T extends MapTypes>(this: MapTypes, key: MapKey<T>) {
         const r = Reflect.get(this, __raw__)

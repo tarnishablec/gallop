@@ -8,7 +8,15 @@ export const menuData: { menu: { name: Name; children?: Name[] }[] } = {
     { name: 'Introduction', children: ['Overview', 'Installation'] },
     {
       name: 'Main-Concepts',
-      children: ['Template', 'Component', 'Event', 'Hooks', 'Directives']
+      children: [
+        'Template',
+        'Component',
+        'Event',
+        'Style',
+        'Hooks',
+        'Directives',
+        'Context'
+      ]
     },
     { name: 'Component-In-Depth' }
   ]

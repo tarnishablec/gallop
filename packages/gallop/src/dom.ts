@@ -1,5 +1,8 @@
 export const cleanDomStr = (str: string) =>
-  str.replace(/((?<=>|^)\s+)|(\s+(?=<|$))/g, '')
+  str
+    // .replace(/((?<=>|^)\s+)|(\s+(?=<|$))/g, '') // do not support safari
+    .replace(/(>|^)(\s+)/g, '$1')
+    .replace(/(\s+(?=<|$))/g, '')
 
 export const insertAfter = (
   container: Node,
