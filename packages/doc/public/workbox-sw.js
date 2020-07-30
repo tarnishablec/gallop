@@ -48,21 +48,21 @@ const { workbox } = self
 
 workbox.routing.registerRoute(
   /\/md\/.*.md.js(\?\w*)?$/,
-  new workbox.strategies.StaleWhileRevalidate({
+  new workbox.strategies.NetworkFirst({
     cacheName: 'md-cache'
   })
 )
 
 workbox.routing.registerRoute(
   /\/js\/.*.js(\?\w*)?$/,
-  new workbox.strategies.StaleWhileRevalidate({
+  new workbox.strategies.NetworkFirst({
     cacheName: 'js-cache'
   })
 )
 
 workbox.routing.registerRoute(
   /\/css\/.*.css(\?\w*)?$/,
-  new workbox.strategies.StaleWhileRevalidate({
+  new workbox.strategies.NetworkFirst({
     cacheName: 'css-cache'
   })
 )

@@ -1,9 +1,19 @@
+@import '@doc/styles/variables';
+
 :host {
   z-index: 5;
   height: 100vh;
   overflow-x: hidden;
   transition: transform 0.2s;
-  filter: drop-shadow(2px 0px 1px gray);
+  position: relative;
+  box-shadow: 0 0 3px 1px gray;
+}
+
+@media screen and (max-width: $mobileWidth) {
+  :host {
+    box-shadow: unset;
+    filter: drop-shadow(1px 0px 1px rgb(88, 88, 88));
+  }
 }
 
 .side-menu-wrapper {
@@ -11,7 +21,11 @@
   display: grid;
   grid-auto-rows: min-content 1fr;
   height: 100%;
-  clip-path: url(#side-path);
+
+  @media screen and (max-width: $mobileWidth) {
+    padding-right: 10%;
+    clip-path: url(#side-path);
+  }
 }
 
 .t-svg {

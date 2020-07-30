@@ -7,7 +7,7 @@ export const CodeSandboxIcon = ({
   <svg
     @click="${onClick}"
     t="1595692530090"
-    class="icon"
+    class="icon playground-icon"
     viewBox="0 0 1024 1024"
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"

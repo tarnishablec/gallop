@@ -4,14 +4,24 @@ import {
   repeat,
   useContext,
   useEffect,
-  ReactiveElement
+  ReactiveElement,
+  useStyle,
+  css
 } from '@gallop/gallop'
 import { lang } from '@doc/language'
 import { menuData, localeContext, localeData } from '@doc/contexts'
+import url from './index.scss?url'
 
 component('doc-guide', function (this: ReactiveElement) {
   const { locale } = localeData
   const { menu } = menuData
+
+  useStyle(
+    () => css`
+      @import '${url}';
+    `,
+    []
+  )
 
   useEffect(() => {
     const handler = () => {
@@ -45,17 +55,5 @@ component('doc-guide', function (this: ReactiveElement) {
         `
       )}
     </div>
-    <style>
-      :host {
-        display: block;
-        width: 100%;
-        max-width: 900px;
-        padding: 0 1rem 0 1.5rem;
-        margin: 0 auto;
-        box-sizing: border-box;
-      }
-      hr {
-        border: 1px solid var(--active-color);
-      }
-    </style> `
+    <style></style> `
 })

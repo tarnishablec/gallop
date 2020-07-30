@@ -1,35 +1,21 @@
-import { html, render, component } from '@gallop/gallop'
+import { html, render, component, useStyle, css } from '@gallop/gallop'
 import './layout/AppMain'
 import './layout/SideMenu'
 import './registry'
 import './styles'
 import { GithubCorner } from './components/GithubCorner'
+import raw from './app.scss?raw'
 
-component(
-  'app-root',
-  () =>
-    html`<side-menu></side-menu> <app-main></app-main> ${GithubCorner()}
-      <style>
-        :host {
-          height: 100vh;
-          width: 100vw;
-          overflow: hidden;
-          display: grid;
-          grid-template-columns: minmax(180px, auto) 1fr auto;
-        }
+component('app-root', () => {
+  useStyle(
+    () =>
+      css`
+        ${raw}
+      `,
+    []
+  )
 
-        @media screen and (max-width: 600px) {
-          :host {
-            grid-template-columns: 1fr auto;
-          }
-
-          side-menu {
-            position: absolute;
-            transform: translateX(-120%);
-            min-width: 180px;
-          }
-        }
-      </style>`
-)
+  return html`<side-menu></side-menu> <app-main></app-main> ${GithubCorner()} `
+})
 
 render(html` <app-root></app-root> `)

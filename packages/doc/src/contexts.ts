@@ -6,8 +6,10 @@ type Name = keyof typeof json
 export const menuData: { menu: { name: Name; children?: Name[] }[] } = {
   menu: [
     { name: 'Introduction', children: ['Overview', 'Installation'] },
-    { name: 'Main-Concepts', children: ['Template', 'Component', 'Event'] },
-    { name: 'Template-In-Depth' },
+    {
+      name: 'Main-Concepts',
+      children: ['Template', 'Component', 'Event', 'Hooks', 'Directives']
+    },
     { name: 'Component-In-Depth' }
   ]
 }

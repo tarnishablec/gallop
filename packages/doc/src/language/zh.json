@@ -6,6 +6,7 @@
   "Template": "模板",
   "Component": "组件基础",
   "Event": "事件处理",
-  "Template-In-Depth": "深入理解模板",
+  "Hooks": "Hooks",
+  "Directives": "函数指令",
   "Component-In-Depth": "深入理解组件"
 }
