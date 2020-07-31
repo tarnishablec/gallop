@@ -5,23 +5,17 @@ import {
   useContext,
   useEffect,
   ReactiveElement,
-  useStyle,
-  css
+  useStyle
 } from '@gallop/gallop'
 import { lang } from '@doc/language'
 import { menuData, localeContext, localeData } from '@doc/contexts'
-import url from './index.scss?url'
+import raw from './index.scss?raw'
 
 component('doc-guide', function (this: ReactiveElement) {
   const { locale } = localeData
   const { menu } = menuData
 
-  useStyle(
-    () => css`
-      @import '${url}';
-    `,
-    []
-  )
+  useStyle(() => raw, [])
 
   useEffect(() => {
     const handler = () => {

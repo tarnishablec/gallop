@@ -4,12 +4,11 @@ import {
   repeat,
   useContext,
   ReactiveElement,
-  useStyle,
-  css
+  useStyle
 } from '@gallop/gallop'
 import { localeContext, localeData, menuData } from '../../contexts'
 import { lang } from '@doc/language'
-import url from './index.scss?url'
+import raw from './index.scss?raw'
 
 component('side-menu', function (this: ReactiveElement) {
   useContext([localeContext])
@@ -17,12 +16,7 @@ component('side-menu', function (this: ReactiveElement) {
   const { menu } = menuData
   const { locale } = localeData
 
-  useStyle(
-    () => css`
-      @import '${url}';
-    `,
-    []
-  )
+  useStyle(() => raw, [])
 
   return html`
     <div class="side-menu-wrapper">
