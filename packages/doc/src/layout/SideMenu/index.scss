@@ -3,7 +3,7 @@
 :host {
   z-index: 5;
   height: 100vh;
-  overflow-x: hidden;
+  overflow: hidden;
   transition: transform 0.2s;
   position: relative;
   box-shadow: 0 0 3px 1px gray;
@@ -48,6 +48,8 @@ header {
 
 .menu-list-container {
   padding: 0.5rem 1rem;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .menu-list-container ul {
