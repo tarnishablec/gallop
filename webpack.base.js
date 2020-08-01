@@ -80,7 +80,7 @@ const config = (dir) => {
                   }
                 },
                 { loader: 'extract-loader' },
-                { loader: 'to-string-loader' },
+                { loader: path.resolve(__dirname, './loaders/to-string.js') },
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
@@ -97,7 +97,7 @@ const config = (dir) => {
                 {
                   loader: path.resolve(__dirname, './loaders/to-string.js')
                 },
-                { loader: 'css-loader' },
+                { loader: 'css-loader', options: { sourceMap: false } },
                 {
                   loader: 'postcss-loader',
                   options: {
