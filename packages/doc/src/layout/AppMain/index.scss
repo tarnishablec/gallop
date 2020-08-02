@@ -23,7 +23,7 @@ nav {
   padding: 0 4rem 0 6rem;
   column-gap: 0.55rem;
   box-sizing: border-box;
-  z-index: 4;
+  z-index: 6;
   user-select: none;
   white-space: nowrap;
 
@@ -47,20 +47,24 @@ nav {
   a {
     text-decoration: none;
     color: grey;
+    cursor: pointer;
   }
 }
 
 .app-main-wrapper {
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-bottom: 1rem;
+  position: relative;
+  background: white;
+  overflow: hidden;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(2, 100%);
 }
 
 play-ground {
   position: absolute;
   width: 100%;
   top: var(--header-height);
-  z-index: 1;
+  z-index: 5;
   background: rgba(100, 100, 100, 0.6);
   transform: translateY(-100%);
   transition: transform 0.2s ease-in-out;
@@ -69,6 +73,11 @@ play-ground {
   &.visible {
     transform: unset;
   }
+}
+
+language-selector {
+  position: absolute;
+  top: var(--header-height);
 }
 
 @media screen and (max-width: $mobileWidth) {

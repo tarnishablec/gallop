@@ -134,14 +134,12 @@ export class EventPart implements Part {
     if (resolveDirective(val, this)) return
 
     if (!Array.isArray(val)) val = [val]
-    if (val.join('') !== Array.from(this.cache.keys()).join('')) {
-      this.clear()
-      const { node } = this.location
-      val.forEach((e) => {
-        node.addEventListener(this.eventName, e, this.options)
-        this.cache.set(e.toString(), e)
-      })
-    }
+    this.clear()
+    const { node } = this.location
+    val.forEach((e) => {
+      node.addEventListener(this.eventName, e, this.options)
+      this.cache.set(e.toString(), e)
+    })
   }
   clear(): void {
     this.cache.forEach((e) => {

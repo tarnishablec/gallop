@@ -27,6 +27,7 @@
   },
   "gitHead": "2cd70b5cd29cec83256f2881d98666af4c73afdb",
   "dependencies": {
-    "@gallop/gallop": "^0.9.38"
+    "@gallop/gallop": "^0.9.38",
+    "gsap": "^3.4.2"
   }
 }

@@ -33,4 +33,5 @@ export { directive, directives, resolveDirective, ensurePartType } from './direc
 export { repeat, dynamic, suspense, portal, raw, lazy } from './directives'
 
 export type { Component, ReactiveElement } from './component'
+export type { ContextOptions } from './context'
 export type { Part } from './part'

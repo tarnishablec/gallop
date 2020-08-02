@@ -5,7 +5,7 @@
   width: 100vw;
   overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(180px, auto) 1fr auto;
+  grid-template-columns: minmax(180px, auto) 1fr;
 }
 
 @media screen and (max-width: $mobileWidth) {

@@ -28,26 +28,25 @@ component('doc-guide', function (this: ReactiveElement) {
 
   useContext([localeContext])
 
-  return html`<div class="app-main-content">
-      ${repeat(
-        menu,
-        (m) => m.name,
-        (m) => html`
-          <h2 class="primary-title" .id="${m.name}">${lang(m.name, locale)}</h2>
-          <hr />
-          ${m.children?.length
-            ? repeat(
-                m.children,
-                (c) => c,
-                (c) =>
-                  html`<div class="markdown-wrapper">
-                    <h3 class="sub-title" .id="${c}">${lang(c, locale)}</h3>
-                    <mark-down :locale="${locale}" :filename="${c}"></mark-down>
-                  </div> `
-              )
-            : null}
-        `
-      )}
-    </div>
-    <style></style> `
+  return html`<div class="doc-guide-main">
+    ${repeat(
+      menu,
+      (m) => m.name,
+      (m) => html`
+        <h2 class="primary-title" .id="${m.name}">${lang(m.name, locale)}</h2>
+        <hr />
+        ${m.children?.length
+          ? repeat(
+              m.children,
+              (c) => c,
+              (c) =>
+                html`<div class="markdown-wrapper">
+                  <h3 class="sub-title" .id="${c}">${lang(c, locale)}</h3>
+                  <mark-down :locale="${locale}" :filename="${c}"></mark-down>
+                </div> `
+            )
+          : null}
+      `
+    )}
+  </div> `
 })
