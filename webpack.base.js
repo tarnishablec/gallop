@@ -165,10 +165,11 @@ const config = (dir) => {
     // devtool: false,
     devServer: {
       contentBase: './dist',
-      open: `http://localhost:8080`,
+      open: true,
       stats: 'errors-only',
-      compress: true,
       host: '0.0.0.0',
+      compress: true,
+      useLocalIp: true,
       watchOptions: {
         ignored: /__tests__/
       }
