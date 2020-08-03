@@ -123,7 +123,7 @@ export class EventPart implements Part {
   value: unknown
   options: AddEventListenerOptions
   eventName: string
-  cache: Map<string, EventInstance> = new Map()
+  cache: EventInstance[] = []
   constructor(public location: AttrPartLocation) {
     const [eventName, ...opts] = location.name.split('.')
     this.options = generateEventOptions(new Set(opts))
@@ -133,19 +133,27 @@ export class EventPart implements Part {
   setValue(val: EventInstance | EventInstance[]): void {
     if (resolveDirective(val, this)) return
 
-    if (!Array.isArray(val)) val = [val]
-    this.clear()
+    let temp: EventInstance[]
+    if (Array.isArray(val)) temp = val
+    else temp = [val]
     const { node } = this.location
-    val.forEach((e) => {
-      node.addEventListener(this.eventName, e, this.options)
-      this.cache.set(e.toString(), e)
-    })
+    const { cache, eventName, options } = this
+    const len = Math.max(temp.length, cache.length)
+    for (let i = 0; i < len; i++) {
+      const v = temp[i]
+      const old = cache[i]
+      if (!Object.is(old, v)) {
+        old && node.removeEventListener(eventName, old, options)
+        v && node.addEventListener(eventName, v, options)
+        cache[i] = v
+      }
+    }
   }
   clear(): void {
-    this.cache.forEach((e) => {
+    this.cache.forEach((e) =>
       this.location.node.removeEventListener(this.eventName, e, this.options)
-    })
-    this.cache.clear()
+    )
+    this.cache.length = 0
   }
 }
 
