@@ -2,12 +2,15 @@
 
 :host {
   display: block;
-  padding: 0 1rem 1rem 1.5rem;
   box-sizing: border-box;
   height: 100%;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.doc-guide-main {
+  padding: 0 1rem 1rem 1.5rem;
 }
 
 .markdown-wrapper {
