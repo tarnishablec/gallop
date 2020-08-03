@@ -18,7 +18,6 @@ component('app-root', function (this: ReactiveElement) {
 
   useEffect(() => {
     const sidemenu = this.$root.querySelector('side-menu')!
-    sidemenu.classList.add('shaped')
     this.addEventListener('click', (e) => {
       if (e.composedPath().includes(sidemenu)) {
         sidemenu?.classList.add('active')
@@ -30,7 +29,8 @@ component('app-root', function (this: ReactiveElement) {
     })
   }, [])
 
-  return html`<side-menu></side-menu> <app-main></app-main> ${GithubCorner()} `
+  return html`<side-menu class="shaped"></side-menu>
+    <app-main></app-main> ${GithubCorner()} `
 })
 
 render(html` <app-root></app-root> `)
