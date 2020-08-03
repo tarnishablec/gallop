@@ -25,7 +25,6 @@ component('app-main', function (this: ReactiveElement) {
       css`
         ${raw}
         .app-main-wrapper {
-          position: relative;
           transition: transform 0.2s;
           transform: translateY(${state.languageSelectVisible ? '60px' : '0'});
         }

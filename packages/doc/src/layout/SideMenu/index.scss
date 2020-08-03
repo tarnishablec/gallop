@@ -5,7 +5,6 @@
   height: 100vh;
   overflow: hidden;
   transition: transform 0.2s;
-  position: relative;
   box-shadow: 0 0 3px 1px gray;
 }
 
@@ -24,13 +23,8 @@
 
   @media screen and (max-width: $mobileWidth) {
     padding-right: 10%;
-    clip-path: url(#side-path);
+    clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
   }
-}
-
-.t-svg {
-  position: absolute;
-  z-index: -1;
 }
 
 a {

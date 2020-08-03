@@ -55,14 +55,6 @@ component('side-menu', function (this: ReactiveElement) {
           )}
         </ul>
       </div>
-      <svg class="t-svg">
-        <defs>
-          <clipPath id="side-path" clipPathUnits="objectBoundingBox">
-            <!-- TODO -->
-            <path d="M 0 0, H 0.9, L 1 0.5, L 0.9 1 ,h -1, z"></path>
-          </clipPath>
-        </defs>
-      </svg>
     </div>
   `
 })

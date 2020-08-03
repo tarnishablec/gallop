@@ -1,4 +1,4 @@
-import { html, render, component, useStyle, css } from '@gallop/gallop'
+import { html, render, component, useStyle } from '@gallop/gallop'
 import './layout/AppMain'
 import './layout/SideMenu'
 import './registry'
@@ -7,13 +7,7 @@ import { GithubCorner } from './components/GithubCorner'
 import raw from './app.scss?raw'
 
 component('app-root', () => {
-  useStyle(
-    () =>
-      css`
-        ${raw}
-      `,
-    []
-  )
+  useStyle(() => raw, [])
 
   return html`<side-menu></side-menu> <app-main></app-main> ${GithubCorner()} `
 })

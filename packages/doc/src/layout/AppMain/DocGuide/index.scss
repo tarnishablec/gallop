@@ -6,6 +6,7 @@
   box-sizing: border-box;
   height: 100%;
   overflow-y: auto;
+  -webkit-overflow-scrolling: auto;
   overflow-x: hidden;
 }
 
