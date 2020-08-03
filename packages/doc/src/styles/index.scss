@@ -4,9 +4,11 @@
 :root {
   scroll-behavior: smooth;
   overflow: hidden;
+  position: fixed;
 }
 
 body {
+  position: fixed;
   margin: 0;
   font-family: 'Noto Sans SC', sans-serif;
 }

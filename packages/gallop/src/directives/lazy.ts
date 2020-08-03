@@ -12,6 +12,9 @@ const interObs = new IntersectionObserver((entries) =>
 
 const __loaded__ = Symbol('__loaded__')
 
+/**
+ * @unstable
+ */
 export const lazy = directive(function (
   wish: () => unknown,
   {

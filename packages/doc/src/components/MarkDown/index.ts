@@ -2,10 +2,10 @@ import {
   component,
   html,
   raw,
-  lazy,
   ReactiveElement,
   useStyle,
-  css
+  css,
+  suspense
 } from '@gallop/gallop'
 import MarkDownWoker from 'worker-loader!@gallop/doc/worker/markdown.worker'
 import url from './github.css?url'
@@ -30,7 +30,7 @@ component('mark-down', function (
   )
 
   return html`<div class="markdown-body">
-    ${lazy(
+    ${suspense(
       async () => {
         let content: string
         try {
@@ -62,9 +62,9 @@ component('mark-down', function (
         })
       },
       {
-        pending: html` <skele-ton :title="${false}" :line="${6}"></skele-ton> `,
-        delay: 300,
-        minHeight: '600px'
+        pending: html` <skele-ton :title="${false}" :line="${6}"></skele-ton> `
+        // delay: 100,
+        // minHeight: '300px'
       }
     )}
   </div>`

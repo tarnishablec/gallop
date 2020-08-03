@@ -3,8 +3,7 @@
 :host {
   height: 100vh;
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  position: relative;
+  grid-template-rows: auto 1fr;
   box-sizing: border-box;
 
   --header-height: 3.6rem;
@@ -57,6 +56,13 @@ nav {
   z-index: 4;
   display: grid;
   grid-template-columns: repeat(2, 100%);
+  box-sizing: border-box;
+
+  & > * {
+    height: calc(100vh - var(--header-height) + 1px);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 play-ground {

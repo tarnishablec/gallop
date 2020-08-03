@@ -17,5 +17,9 @@
     position: absolute;
     transform: translateX(-90%);
     min-width: 180px;
+
+    &.active {
+      transform: unset;
+    }
   }
 }

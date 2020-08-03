@@ -25,9 +25,6 @@ export interface ReactiveElement extends HTMLElement {
   $state?: Obj
   $contexts: Set<Context<Obj>>
 
-  $emit: InstanceType<typeof EventTarget>['dispatchEvent']
-  $on: InstanceType<typeof EventTarget>['addEventListener']
-
   requestUpdate(): void
   dispatchUpdate(): void
 }
@@ -48,9 +45,6 @@ export function component<F extends Component>(
       }
     )
     $contexts = new Set<Context<Obj>>()
-
-    $emit = this.dispatchEvent
-    $on = this.addEventListener
 
     $isReactive = true
 

@@ -18,9 +18,16 @@ component('doc-guide', function (this: ReactiveElement) {
   useStyle(() => raw, [])
 
   useEffect(() => {
-    const handler = () => {
-      const hash = window.location.hash
-      this.$root.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' })
+    let timeout: ReturnType<typeof setTimeout>
+    const handler = (e: HashChangeEvent) => {
+      const newHash = `#` + e.newURL.split('#').pop()
+      if (newHash === '#') return
+      clearTimeout(timeout)
+      const el = this.$root.querySelector(newHash)
+      el?.scrollIntoView({ behavior: 'smooth' })
+      timeout = setTimeout(() => {
+        window.location.hash = ''
+      }, 2500)
     }
     window.addEventListener('hashchange', handler)
     return () => window.removeEventListener('hashchange', handler)
