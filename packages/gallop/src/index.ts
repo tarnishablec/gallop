@@ -30,7 +30,7 @@ export {
 export { NodePart, AttrPart, PropPart, EventPart } from './part'
 
 export { directive, directives, resolveDirective, ensurePartType } from './directive'
-export { repeat, dynamic, suspense, portal, raw, lazy } from './directives'
+export { repeat, dynamic, suspense, portal, raw } from './directives'
 
 export type { Component, ReactiveElement } from './component'
 export type { ContextOptions } from './context'
