@@ -45,11 +45,11 @@ type RequestIdleCallbackDeadline = {
 }
 
 interface Window {
-  requestIdleCallback: (
+  requestIdleCallback?: (
     callback: (deadline: RequestIdleCallbackDeadline) => void,
     opts?: RequestIdleCallbackOptions
   ) => RequestIdleCallbackHandle
-  cancelIdleCallback: (handle: RequestIdleCallbackHandle) => void
+  cancelIdleCallback?: (handle: RequestIdleCallbackHandle) => void
 }
 
 interface ImportMeta {}

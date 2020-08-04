@@ -48,7 +48,9 @@ function createParts(patcher: Patcher) {
           count++
         }
       }
-      window.requestIdleCallback(() => trash.forEach((t) => cur.removeAttribute(t)))
+      window.requestIdleCallback?.(() =>
+        trash.forEach((t) => cur.removeAttribute(t))
+      )
     } else if (isMarker(cur)) {
       const tail = new Comment(markerIndex)
       insertAfter(cur.parentNode!, tail, cur)
