@@ -105,11 +105,7 @@ export class PropPart implements Part {
 
     const { name, node } = this.location
     if (!isReactive(node)) throw NotReactiveElementError(name)
-    if (name === '$props') {
-      mergeProps(node, val)
-    } else {
-      mergeProp(node, name, val)
-    }
+    name === '$props' ? mergeProps(node, val) : mergeProp(node, name, val)
     this.value = val
   }
   clear(): void {
