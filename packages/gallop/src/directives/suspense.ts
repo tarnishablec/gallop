@@ -16,16 +16,20 @@ export const suspense = directive(function <T>(
 ) {
   return (part) => {
     if (!ensurePartType(part, NodePart)) return
-    if (once && pending !== void 0 && !onceSet.has(part)) {
-      part.setValue(pending())
-      onceSet.add(part)
-    } else {
-      part.setValue(pending?.())
+    if (pending !== void 0) {
+      if (once) {
+        if (!onceSet.has(part)) {
+          part.setValue(pending())
+          onceSet.add(part)
+        }
+      } else {
+        part.setValue(pending())
+      }
     }
     wish()
       .then((res) => setTimeout(() => part.setValue(res), delay))
       .catch(() => {
-        fallback !== undefined && part.setValue(fallback())
+        part.setValue(fallback?.())
         onceSet.delete(part)
       })
   }
