@@ -25,6 +25,11 @@ export class NodePart implements Part {
   setValue(val: unknown): void {
     if (resolveDirective(val, this)) return
 
+    if (val === void 0 || val === null) {
+      this.clear()
+      this.value = val
+      return
+    }
     const [result, init] = tryUpdateEntry(this.value, val)
     if (init === 2) {
       const { endNode } = this.location
