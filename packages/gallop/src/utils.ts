@@ -54,9 +54,8 @@ export function shallowEqual(objA: unknown, objB: unknown) {
   if (keysA.length !== keysB.length) return false
 
   for (let i = 0; i < keysA.length; i++) {
-    if (!(keysA[i] in objB) || !Object.is(objA[keysA[i]], objB[keysA[i]])) {
+    if (!(keysA[i] in objB) || !Object.is(objA[keysA[i]], objB[keysA[i]]))
       return false
-    }
   }
   return true
 }

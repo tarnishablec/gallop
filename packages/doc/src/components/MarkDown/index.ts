@@ -15,7 +15,10 @@ component('mark-down', function (
   {
     filename,
     locale = 'zh'
-  }: { filename: string; locale?: string } /* filename do not need .md extension */
+  }: {
+    filename: string
+    locale?: string
+  } /* filename do not need .md extension */
 ) {
   useStyle(
     () => css`
@@ -36,16 +39,16 @@ component('mark-down', function (
         try {
           content = (
             await import(
-              /* webpackChunkName: "md/[request]" */
-              /* webpackMode: "lazy" */
+              /* webpackChunkName: "md/mdcontents" */
+              /* webpackMode: "lazy-once" */
               `../../markdown/${locale}/${filename}.md`
             )
           ).default
         } catch (e) {
           content = (
             await import(
-              /* webpackChunkName: "md/[request]" */
-              /* webpackMode: "lazy" */
+              /* webpackChunkName: "md/mdcontents" */
+              /* webpackMode: "lazy-once" */
               `../../markdown/zh/${filename}.md`
             )
           ).default
@@ -62,9 +65,9 @@ component('mark-down', function (
         })
       },
       {
-        pending: () => html` <skele-ton :title="${false}" :line="${6}"></skele-ton> `
-        // delay: 100,
-        // minHeight: '300px'
+        pending: () =>
+          html` <skele-ton :title="${false}" :line="${6}"></skele-ton> `,
+        depends: []
       }
     )}
   </div>`

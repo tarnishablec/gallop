@@ -1,5 +1,6 @@
 import { Part } from './part'
 import { DirectivePartTypeError } from './error'
+import { Recycler } from './dirty'
 
 export const directives = new WeakSet()
 
@@ -33,4 +34,13 @@ export function ensurePartType<T extends Part>(
   if (!(part instanceof partCtor))
     throw DirectivePartTypeError(part.constructor.name)
   return true
+}
+
+const partDependsCache = new WeakMap<Part, undefined | unknown[]>()
+export function checkDependsDirty(part: Part, depends?: unknown[]): boolean {
+  if (!depends) return true
+  const oldDeps = partDependsCache.get(part)
+  partDependsCache.set(part, depends)
+  if (oldDeps === void 0) return true
+  return Recycler.compareDepends(oldDeps, depends)
 }

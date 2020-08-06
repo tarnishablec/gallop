@@ -1,4 +1,4 @@
-import { Obj, isObject, forceGet } from './utils'
+import { Obj, forceGet } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
 import { Context } from './context'
@@ -35,31 +35,16 @@ export function useDepends(depends?: unknown[]): [boolean, number] {
     depCount++
     return [true, depCount - 1]
   }
-  const oldVals = depCountMap.get(current)?.get(depCount)
-  let dirty = false
-  if (!oldVals) {
-    dirty = true
-  } else {
-    for (let i = 0; i < depends.length; i++) {
-      const dep = depends[i]
-      if (
-        (isObject(dep) &&
-          (!Object.is(dep, oldVals[i]) || Recycler.checkDirty(dep))) ||
-        !Object.is(dep, oldVals[i])
-      ) {
-        dirty = true
-        break
-      }
-    }
-  }
+  const oldDeps = depCountMap.get(current)?.get(depCount)
+  const dirty = Recycler.compareDepends(oldDeps, depends)
   forceGet(depCountMap, current, () => new Map()).set(depCount, depends)
   lastDepEl = current
   depCount++
   return [dirty, depCount - 1]
 }
 
-type Effect = () => void | (() => void)
 type DisconnectEffect = () => unknown
+type Effect = () => void | DisconnectEffect
 const effectQueueMap = new WeakMap<ReactiveElement, (Effect | undefined)[]>()
 const disconnectEffectMap = new WeakMap<ReactiveElement, DisconnectEffect[]>()
 export function useEffect(effect: Effect, depends?: unknown[]) {

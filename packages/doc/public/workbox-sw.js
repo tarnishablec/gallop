@@ -47,7 +47,7 @@ if (self.workbox) {
 const { workbox } = self
 
 workbox.routing.registerRoute(
-  /\/md\/.*.md.js(\?\w*)?$/,
+  /\/md\//,
   new workbox.strategies.NetworkFirst({
     cacheName: 'md-cache'
   })
