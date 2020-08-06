@@ -67,7 +67,7 @@ component('mark-down', function (
       {
         pending: () =>
           html` <skele-ton :title="${false}" :line="${6}"></skele-ton> `,
-        depends: []
+        depends: [filename, locale]
       }
     )}
   </div>`
