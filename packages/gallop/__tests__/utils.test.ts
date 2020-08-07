@@ -23,10 +23,10 @@ describe('utils', () => {
   })
 
   test('shallowEqual', () => {
-    const testA = { a: 'this is a', b: () => console.log(1), c: null }
-    const testB = { a: 'this is a', b: () => console.log(1), c: null }
+    const testA = { a: 'this is a', b: () => Math.random() + 1, c: null }
+    const testB = { a: 'this is a', b: () => Math.random() + 1, c: null }
 
-    const func = () => console.log(1)
+    const func = () => 1 + 1
 
     const testC = { a: 'this is a', b: func, c: null }
     const testD = { a: 'this is a ', b: func, c: null }
@@ -54,7 +54,7 @@ describe('utils', () => {
     expect(shallowEqual(tt, new Test(1, 2))).toBe(true)
     expect(shallowEqual(undefined, undefined)).toBe(true)
     expect(shallowEqual(null, null)).toBe(true)
-    expect(shallowEqual(func, () => console.log(1))).toBe(false)
+    expect(shallowEqual(func, () => Math.random() + 1)).toBe(false)
   })
 
   test('hashify', () => {

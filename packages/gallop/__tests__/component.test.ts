@@ -44,12 +44,10 @@ describe('component', () => {
           <div>${data.tik}</div>
           <div>${state.tok}</div>
           <button
-            @click="${(e: Event) => {
+            @click="${() => {
               data.tik += 1
               state.tok += 1
               b += 2
-              console.log(data.tik)
-              console.log(e)
             }}"
           ></button>
         </div>

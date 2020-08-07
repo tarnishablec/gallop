@@ -167,7 +167,7 @@ export const repeat = directive(function <T>(
     }
 
     const diffRes = listKeyDiff(oldKeys, newKeys)
-    console.log(diffRes)
+    // console.log(diffRes)
 
     diffRes.forEach((change) => {
       const { key } = change

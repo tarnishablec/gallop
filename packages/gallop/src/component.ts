@@ -15,18 +15,23 @@ type RegisterOption = {
 
 export const componentPool = new Set<string>()
 export const elementPool = new Map<string, Set<ReactiveElement>>()
-export interface ReactiveElement extends HTMLElement {
+export interface ReactiveElement<
+  P extends Obj = Obj,
+  S extends Obj | undefined = undefined
+> extends HTMLElement {
   $builder: Component
   $root: ReactiveElement | ShadowRoot
   $patcher?: Patcher
   $isReactive: boolean
 
-  $props: Obj
-  $state?: Obj
+  $props: P
+  $state?: S
   $contexts: Set<Context<Obj>>
 
   requestUpdate(): void
   dispatchUpdate(): void
+
+  queryRoot<T>(selector: string): T
 }
 
 export function component<F extends Component>(
@@ -81,6 +86,12 @@ export function component<F extends Component>(
       mergeProps(this, staticProps)
       this.requestUpdate()
     }
+
+    queryRoot<T = ReactiveElement>(selectors: string) {
+      const res = this.$root.querySelector(selectors)
+      if (res) return (res as unknown) as T
+      throw new Error(``)
+    }
   }
   customElements.define(name, clazz, { extends: extend })
   componentPool.add(name)
@@ -93,8 +104,8 @@ export const observeDisconnect = (
   el.addEventListener('$disconnected$', cb)
 }
 
-export const isReactive = (node: Node): node is ReactiveElement =>
-  !!Reflect.get(node, '$isReactive')
+export const isReactive = (node: Node | null): node is ReactiveElement =>
+  !!(node && Reflect.get(node, '$isReactive'))
 
 export const mergeProp = (node: ReactiveElement, name: string, value: unknown) =>
   Reflect.set(node.$props, name, value)

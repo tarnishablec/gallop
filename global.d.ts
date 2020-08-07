@@ -47,7 +47,7 @@ type RequestIdleCallbackDeadline = {
 interface Window {
   requestIdleCallback?: (
     callback: (deadline: RequestIdleCallbackDeadline) => void,
-    opts?: RequestIdleCallbackOptions
+    options?: RequestIdleCallbackOptions
   ) => RequestIdleCallbackHandle
   cancelIdleCallback?: (handle: RequestIdleCallbackHandle) => void
 }
