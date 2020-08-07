@@ -22,6 +22,14 @@ export class NodePart implements Part {
 
   constructor(public location: NodePartLocation) {}
 
+  static create() {
+    const dof = new DocumentFragment()
+    const startNode = new Comment()
+    const endNode = new Comment()
+    dof.append(startNode, endNode)
+    return new NodePart({ startNode, endNode })
+  }
+
   setValue(val: unknown): void {
     if (resolveDirective(val, this)) return
 
@@ -47,7 +55,11 @@ export class NodePart implements Part {
 
   destroy() {
     const { startNode, endNode } = this.location
-    removeNodes(startNode, endNode, true)
+    return removeNodes(startNode, endNode, true)
+  }
+
+  moveInto(container: Node, before?: Node | null) {
+    container.insertBefore(this.destroy(), before ?? null)
   }
 }
 

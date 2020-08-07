@@ -2,7 +2,6 @@ import { Key, forceGet } from '../utils'
 import { directive, ensurePartType } from '../directive'
 import { NodePart } from '../part'
 import { DuplicatedKeyError } from '../error'
-import { removeNodes, insertAfter } from '../dom'
 
 type DiffKey = Key | null
 type Change =
@@ -102,37 +101,26 @@ class ArrayPart extends NodePart {
   keys: DiffKey[] = []
 
   createPartAfter(key: DiffKey, after: DiffKey) {
-    const [startNode, endNode] = [new Comment(String(key)), new Comment(String(key))]
-    const parent = this.location.endNode.parentNode!
-    if (after !== null) {
-      const end = this.keyPartMap.get(after)?.location.endNode
-      insertAfter(parent, startNode, end)
-      insertAfter(parent, endNode, startNode)
-    } else {
-      insertAfter(parent, startNode, this.location.startNode)
-      insertAfter(parent, endNode, startNode)
-    }
-    const part = new NodePart({ startNode, endNode })
+    const end = this.keyPartMap.get(after)?.location.endNode
+    const part = NodePart.create()
+    const start = this.location.startNode
+    part.moveInto(
+      this.location.endNode.parentNode!,
+      end?.nextSibling ?? start.nextSibling
+    )
     this.keyPartMap.set(key, part)
   }
 
   moveBefore(part: NodePart, before: DiffKey) {
-    const { startNode, endNode } = part.location
-    const nodes = removeNodes(startNode, endNode, true)
-    const { startNode: start } = this.keyPartMap.get(before)!.location
-    start.parentNode!.insertBefore(nodes, startNode)
+    const startNode = this.keyPartMap.get(before)?.location.startNode
+    const end = this.location.endNode
+    part.moveInto(end.parentNode!, startNode ?? end)
   }
 
   moveAfter(part: NodePart, after: DiffKey) {
-    const { startNode, endNode } = part.location
-    const nodes = removeNodes(startNode, endNode, true)
-    if (after !== null) {
-      const { endNode: end } = this.keyPartMap.get(after)!.location
-      insertAfter(end.parentNode!, nodes, end)
-    } else {
-      const parent = this.location.startNode.parentNode!
-      insertAfter(parent, nodes, this.location.startNode)
-    }
+    const endNode = this.keyPartMap.get(after)?.location.endNode
+    const start = this.location.startNode
+    part.moveInto(start.parentNode!, endNode?.nextSibling ?? start.nextSibling)
   }
 
   remove(key: DiffKey) {
@@ -179,6 +167,7 @@ export const repeat = directive(function <T>(
     }
 
     const diffRes = listKeyDiff(oldKeys, newKeys)
+    console.log(diffRes)
 
     diffRes.forEach((change) => {
       const { key } = change
