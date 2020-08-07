@@ -40,5 +40,15 @@
         "types": { "object": false, "{}": false }
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "packages/sandbox/**",
+        "webpack.base.js",
+        "packages/doc/public/*.js"
+      ],
+      "rules": { "no-console": "off" }
+    }
+  ]
 }
