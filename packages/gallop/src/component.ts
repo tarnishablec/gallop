@@ -31,7 +31,7 @@ export interface ReactiveElement<
   requestUpdate(): void
   dispatchUpdate(): void
 
-  queryRoot<T = ReactiveElement>(selector: string): T | undefined
+  queryRoot<T extends Element>(selector: string): T | null
 }
 
 export function component<F extends Component>(
@@ -85,8 +85,8 @@ export function component<F extends Component>(
       this.requestUpdate()
     }
 
-    queryRoot<T = ReactiveElement>(selectors: string): T | undefined {
-      return (this.$root.querySelector(selectors) as unknown) as T
+    queryRoot<T extends Element>(selectors: string): T | null {
+      return this.$root.querySelector(selectors) as T | null
     }
   }
   customElements.define(name, clazz, { extends: extend })
