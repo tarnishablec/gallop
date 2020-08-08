@@ -22,10 +22,10 @@ export class NodePart implements Part {
 
   constructor(public location: NodePartLocation) {}
 
-  static create() {
+  static create(marker?: string) {
     const dof = new DocumentFragment()
-    const startNode = new Comment()
-    const endNode = new Comment()
+    const startNode = new Comment(marker)
+    const endNode = new Comment(marker)
     dof.append(startNode, endNode)
     return new NodePart({ startNode, endNode })
   }

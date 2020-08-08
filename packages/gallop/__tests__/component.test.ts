@@ -103,7 +103,10 @@ describe('component', () => {
   })
 
   test('map funtion should prompt error', () => {
-    component('test-dispatch', (num: number) => html` <div>dispatch${num}</div> `)
+    component(
+      'test-dispatch',
+      ({ num }: { num: number }) => html` <div>dispatch${num}</div> `
+    )
     expect(() =>
       render(
         html`

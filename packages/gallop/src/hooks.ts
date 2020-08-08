@@ -6,10 +6,10 @@ import { ReactiveElement, observeDisconnect } from './component'
 import { Recycler } from './dirty'
 
 export function useState<T extends Obj>(raw: T): [T] {
-  const current = (Looper.resolveCurrent() as unknown) as ReactiveElement<{}, T>
+  const current = Looper.resolveCurrent<Obj, T>()
   return [
     current.$state
-      ? (current.$state as T)
+      ? current.$state
       : (current.$state = createProxy(raw, {
           onMut: () => current.requestUpdate()
         }))
