@@ -8,8 +8,8 @@ export {
   component,
   mergeProp,
   mergeProps,
-  queryShadowAll,
-  queryShadow,
+  queryPoolAll,
+  queryPool,
   componentPool,
   elementPool,
   observeDisconnect

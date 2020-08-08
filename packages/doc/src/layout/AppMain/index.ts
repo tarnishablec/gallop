@@ -48,7 +48,7 @@ component('app-main', function (this: ReactiveElement) {
       ${CodeSandboxIcon({
         onClick: () => {
           state.playgroundVisible = !state.playgroundVisible
-          loadPlayground.call(this.queryRoot('play-ground'))
+          loadPlayground.call(this.queryRoot('play-ground')!)
         },
         active: state.playgroundVisible
       })}

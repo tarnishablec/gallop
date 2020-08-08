@@ -16,22 +16,22 @@ type RegisterOption = {
 export const componentPool = new Set<string>()
 export const elementPool = new Map<string, Set<ReactiveElement>>()
 export interface ReactiveElement<
-  P extends Obj = Obj,
-  S extends Obj | undefined = undefined
+  Props extends Obj = Obj,
+  State extends Obj | undefined = undefined
 > extends HTMLElement {
   $builder: Component
   $root: ReactiveElement | ShadowRoot
   $patcher?: Patcher
   $isReactive: boolean
 
-  $props: P
-  $state?: S
+  $props: Props
+  $state?: State
   $contexts: Set<Context<Obj>>
 
   requestUpdate(): void
   dispatchUpdate(): void
 
-  queryRoot<T>(selector: string): T
+  queryRoot<T = ReactiveElement>(selector: string): T | undefined
 }
 
 export function component<F extends Component>(
@@ -66,7 +66,6 @@ export function component<F extends Component>(
     }
 
     connectedCallback() {
-      Context.globalContext && Context.globalContext.watch(this)
       if (elementPool.has(name)) elementPool.get(name)!.add(this)
       else {
         const set = new Set<ReactiveElement>()
@@ -82,15 +81,12 @@ export function component<F extends Component>(
 
     constructor() {
       super()
-      const staticProps = extractProps(this.attributes)
-      mergeProps(this, staticProps)
+      mergeProps(this, extractProps(this.attributes))
       this.requestUpdate()
     }
 
-    queryRoot<T = ReactiveElement>(selectors: string) {
-      const res = this.$root.querySelector(selectors)
-      if (res) return (res as unknown) as T
-      throw new Error(``)
+    queryRoot<T = ReactiveElement>(selectors: string): T | undefined {
+      return (this.$root.querySelector(selectors) as unknown) as T
     }
   }
   customElements.define(name, clazz, { extends: extend })
@@ -99,9 +95,9 @@ export function component<F extends Component>(
 
 export const observeDisconnect = (
   el: ReactiveElement,
-  cb: EventListenerOrEventListenerObject
+  callback: EventListenerOrEventListenerObject
 ) => {
-  el.addEventListener('$disconnected$', cb)
+  el.addEventListener('$disconnected$', callback)
 }
 
 export const isReactive = (node: Node | null): node is ReactiveElement =>
@@ -113,11 +109,23 @@ export const mergeProp = (node: ReactiveElement, name: string, value: unknown) =
 export const mergeProps = (node: ReactiveElement, value: unknown) =>
   Object.assign(node.$props, value)
 
-export const queryShadowAll = (name: string) =>
-  Array.from(elementPool.get(name) ?? [])
-
-export const queryShadow = (
-  name: string,
+export const queryPoolAll = ({
+  name,
+  id,
+  classnames
+}: {
+  name: string
   id?: string
-): ReactiveElement | undefined =>
-  queryShadowAll(name).find((v) => id === undefined || v.id === id)
+  classnames?: string[]
+}) =>
+  Array.from(elementPool.get(name) ?? []).filter(
+    (v) =>
+      (id === void 0 || v.id === id) &&
+      (classnames === void 0 ||
+        new Set([...classnames, ...Array.from(v.classList)]).size ===
+          v.classList.length)
+  )
+
+export const queryPool = (
+  ...selector: Parameters<typeof queryPoolAll>
+): ReactiveElement | undefined => queryPoolAll(...selector)[0]

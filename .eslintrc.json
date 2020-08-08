@@ -46,7 +46,9 @@
       "files": [
         "packages/sandbox/**",
         "webpack.base.js",
-        "packages/doc/public/*.js"
+        "packages/doc/public/*.js",
+        "rollup.config.js",
+        "scripts/**"
       ],
       "rules": { "no-console": "off" }
     }

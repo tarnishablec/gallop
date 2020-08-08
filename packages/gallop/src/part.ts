@@ -58,6 +58,10 @@ export class NodePart implements Part {
     return removeNodes(startNode, endNode, true)
   }
 
+  /**
+   * @param container
+   * @param before
+   */
   moveInto(container: Node, before?: Node | null) {
     container.insertBefore(this.destroy(), before ?? null)
   }
