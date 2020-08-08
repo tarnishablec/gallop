@@ -27,10 +27,7 @@ component('test-mmm', function (this: ReactiveElement) {
   const memo = useMemo(() => a + b, [a, b])
 
   useEffect(() => {
-    setTimeout(
-      () => this.$root.querySelector('button')?.dispatchEvent(new Event('click')),
-      1000
-    )
+    setTimeout(() => this.queryRoot<HTMLButtonElement>('button').click(), 1000)
   }, [])
 
   return html` <div>${memo}</div>

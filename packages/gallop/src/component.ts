@@ -20,7 +20,7 @@ export interface ReactiveElement<
   State extends Obj | undefined = undefined
 > extends HTMLElement {
   $builder: Component
-  $root: ReactiveElement | ShadowRoot
+  $root: ReactiveElement<Props, State> | ShadowRoot
   $patcher?: Patcher
   $isReactive: boolean
 
@@ -31,7 +31,7 @@ export interface ReactiveElement<
   requestUpdate(): void
   dispatchUpdate(): void
 
-  queryRoot<T extends Element>(selector: string): T | null
+  queryRoot<T extends Element | null = Element | null>(selector: string): T
 }
 
 export function component<F extends Component>(
@@ -85,8 +85,8 @@ export function component<F extends Component>(
       this.requestUpdate()
     }
 
-    queryRoot<T extends Element>(selectors: string): T | null {
-      return this.$root.querySelector(selectors) as T | null
+    queryRoot<T extends Element | null = Element | null>(selectors: string): T {
+      return this.$root.querySelector(selectors) as T
     }
   }
   customElements.define(name, clazz, { extends: extend })
