@@ -5,6 +5,8 @@ export { Patcher } from './patcher'
 export { Looper } from './loop'
 
 export {
+  ReactiveElement,
+  Component,
   component,
   mergeProp,
   mergeProps,
@@ -15,7 +17,7 @@ export {
   observeDisconnect
 } from './component'
 
-export { Context, createContext } from './context'
+export { Context, createContext, ContextOptions } from './context'
 
 export {
   useState,
@@ -27,7 +29,7 @@ export {
   useCache
 } from './hooks'
 
-export { NodePart, AttrPart, PropPart, EventPart } from './part'
+export { NodePart, AttrPart, PropPart, EventPart, Part } from './part'
 
 export {
   directive,
@@ -37,7 +39,3 @@ export {
   checkDependsDirty
 } from './directive'
 export { repeat, dynamic, suspense, portal, raw } from './directives'
-
-export type { Component, ReactiveElement } from './component'
-export type { ContextOptions } from './context'
-export type { Part } from './part'

@@ -7,7 +7,6 @@ export type SuspenseOption = {
   once?: boolean
   delay?: number
   depends?: unknown[]
-  forceUpdate?: boolean
 }
 
 const onceSet = new WeakSet<NodePart>()

@@ -98,7 +98,7 @@ export function useStyle(css: () => string, depends: unknown[]) {
   const current = Looper.resolveCurrent()
   const [dirty] = useDepends(depends)
   if (dirty) {
-    let styleEl = current.queryRoot<HTMLStyleElement>('style.hook-style')
+    let styleEl = current.queryRoot<HTMLStyleElement | null>('style.hook-style')
     if (!styleEl) {
       styleEl = document.createElement('style')
       styleEl.classList.add('hook-style')
