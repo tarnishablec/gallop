@@ -3,7 +3,7 @@ import { Patcher } from './patcher'
 import { Obj, extractProps } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
-import { Context } from './context'
+import type { Context } from './context'
 
 export type Component = (...args: any[]) => HTMLClip
 
@@ -26,7 +26,7 @@ export interface ReactiveElement<
 
   $props: Props
   $state?: State
-  $contexts: Set<Context<Obj>>
+  $contexts: Set<Context>
 
   requestUpdate(): void
   dispatchUpdate(): void
@@ -49,7 +49,7 @@ export function component<F extends Component>(
         onMut: () => this.requestUpdate()
       }
     )
-    $contexts = new Set<Context<Obj>>()
+    $contexts = new Set<Context>()
 
     $isReactive = true
 

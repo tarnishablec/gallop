@@ -16,9 +16,12 @@ console.log(
   `🔧 production : ${__prod__ ? chalk.green(__prod__) : chalk.red(__prod__)}`
 )
 
-/** @returns {import("webpack").Configuration}
- *  @param dir {string}
- * */
+console.log(chalk.bgGreen(`Gallop version: ${version}`))
+
+/**
+ * @param {string} dir
+ * @returns {import('webpack').Configuration}
+ */
 const config = (dir) => {
   return {
     mode: 'development',

@@ -28,7 +28,7 @@ export class Context<T extends Obj = Obj> {
 
   watch(el: ReactiveElement) {
     this.watchList.add(el)
-    el.$contexts.add(this as Context<Obj>)
+    el.$contexts.add(this as Context)
     this.options?.forEach((v) => v.onWatch?.(this, el))
   }
 
