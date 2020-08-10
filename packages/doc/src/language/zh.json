@@ -5,11 +5,12 @@
   "No-Silver-Bullet": "没有银弹",
   "Main-Concepts": "核心概念",
   "Template": "模板",
+  "Part": "Part",
   "Component": "组件基础",
   "Event": "事件处理",
   "Hooks": "Hooks",
   "Directives": "函数指令",
-  "Context": "Context",
+  "State-Management": "状态管理",
   "Style": "样式",
   "Component-In-Depth": "深入理解组件"
 }

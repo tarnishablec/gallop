@@ -1,7 +1,7 @@
 import { createContext, ContextOptions } from '@gallop/gallop'
 import type json from '@doc/language/zh.json'
 
-type Name = keyof typeof json
+export type Name = keyof typeof json
 
 export const syncLocalStorage: <T extends Record<string, unknown>>(
   name: string
@@ -39,12 +39,13 @@ export const menuData: { menu: { name: Name; children?: Name[] }[] } = {
       name: 'Main-Concepts',
       children: [
         'Template',
+        'Part',
         'Component',
         'Event',
         'Style',
         'Hooks',
         'Directives',
-        'Context'
+        'State-Management'
       ]
     },
     { name: 'Component-In-Depth' }

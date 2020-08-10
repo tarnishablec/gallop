@@ -1,7 +1,7 @@
 const args = require('minimist')(process.argv.slice(2))
 const fse = require('fs-extra')
 const path = require('path')
-const { scope, projectName, auther, gitUrl } = require('./setting')
+const { scope, projectName, author, gitUrl } = require('./setting')
 
 const packagesDir = path.resolve(__dirname, '../packages')
 const targets = require('./utils').resolveTargets(args._)
@@ -88,7 +88,7 @@ function initPkg(filePath, longName, shortName, _args) {
         test: '__tests__'
       },
       sideEffects: false,
-      author: auther,
+      author,
       license: 'MIT',
       homepage: '',
       publishConfig: {
@@ -102,6 +102,7 @@ function initPkg(filePath, longName, shortName, _args) {
     )
   }
 }
+
 function main() {
   targets.forEach((shortName) => {
     const packageDir = path.join(packagesDir, shortName)

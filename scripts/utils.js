@@ -13,10 +13,7 @@ const resolveTargets = (argsTargets, all = false) =>
         return false
       }
       const pkg = require(`../packages/${f}/package.json`)
-      if (pkg.private) {
-        return false
-      }
-      return true
+      return !pkg.private
     }
   )
 
