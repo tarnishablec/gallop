@@ -1,4 +1,6 @@
 @import '@doc/styles/variables';
+@import '@doc/components/MarkDown/github.css';
+@import '@doc/components/MarkDown/highlight.css';
 
 :host {
   display: block;
@@ -52,5 +54,12 @@ h3.sub-title {
 
   h3.sub-title {
     transform: unset;
+  }
+}
+
+.markdown-body {
+  a {
+    color: var(--active-color) !important;
+    margin: 0 0.2rem;
   }
 }
