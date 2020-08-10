@@ -16,7 +16,9 @@ console.log(
   `🔧 production : ${__prod__ ? chalk.green(__prod__) : chalk.red(__prod__)}`
 )
 
-/** @type {(dir: string) => import("webpack").Configuration} */
+/** @returns {import("webpack").Configuration}
+ *  @param dir {string}
+ * */
 const config = (dir) => {
   return {
     mode: 'development',
@@ -54,7 +56,7 @@ const config = (dir) => {
     module: {
       rules: [
         {
-          test: /\.(j|t)sx?$/,
+          test: /\.[jt]sx?$/,
           use: [
             {
               loader: 'ts-loader',
