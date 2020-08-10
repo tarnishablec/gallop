@@ -102,7 +102,7 @@ class ArrayPart extends NodePart {
 
   createPartAfter(key: DiffKey, after: DiffKey) {
     const end = this.keyPartMap.get(after)?.location.endNode
-    const part = NodePart.create()
+    const part = NodePart.create(String(key))
     const start = this.location.startNode
     part.moveInto(
       this.location.endNode.parentNode!,
@@ -167,7 +167,7 @@ export const repeat = directive(function <T>(
     }
 
     const diffRes = listKeyDiff(oldKeys, newKeys)
-    console.log(diffRes)
+    // console.log(diffRes)
 
     diffRes.forEach((change) => {
       const { key } = change

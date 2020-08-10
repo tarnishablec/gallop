@@ -1,12 +1,16 @@
 import { ReactiveElement } from './component'
 import { resolveEffects, resetLastDepEl } from './hooks'
 import { Recycler } from './dirty'
+import { Obj } from './utils'
 
 export class Looper {
   private constructor() {}
 
   protected static current?: ReactiveElement
-  static resolveCurrent = () => Looper.current!
+  static resolveCurrent = <
+    Props extends Obj = Obj,
+    State extends Obj | undefined = undefined
+  >() => Looper.current as ReactiveElement<Props, State>
   static setCurrent = (el: ReactiveElement | undefined) => (Looper.current = el)
   static enUpdateQueue = (el: ReactiveElement) =>
     Looper.updateQueue.add(el) && Looper.flush()

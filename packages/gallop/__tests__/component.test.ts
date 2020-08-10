@@ -44,12 +44,10 @@ describe('component', () => {
           <div>${data.tik}</div>
           <div>${state.tok}</div>
           <button
-            @click="${(e: Event) => {
+            @click="${() => {
               data.tik += 1
               state.tok += 1
               b += 2
-              console.log(data.tik)
-              console.log(e)
             }}"
           ></button>
         </div>
@@ -105,7 +103,10 @@ describe('component', () => {
   })
 
   test('map funtion should prompt error', () => {
-    component('test-dispatch', (num: number) => html` <div>dispatch${num}</div> `)
+    component(
+      'test-dispatch',
+      ({ num }: { num: number }) => html` <div>dispatch${num}</div> `
+    )
     expect(() =>
       render(
         html`

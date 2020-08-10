@@ -6,10 +6,10 @@ import { ReactiveElement, observeDisconnect } from './component'
 import { Recycler } from './dirty'
 
 export function useState<T extends Obj>(raw: T): [T] {
-  const current = Looper.resolveCurrent()
+  const current = Looper.resolveCurrent<Obj, T>()
   return [
     current.$state
-      ? (current.$state as T)
+      ? current.$state
       : (current.$state = createProxy(raw, {
           onMut: () => current.requestUpdate()
         }))
@@ -98,7 +98,7 @@ export function useStyle(css: () => string, depends: unknown[]) {
   const current = Looper.resolveCurrent()
   const [dirty] = useDepends(depends)
   if (dirty) {
-    let styleEl = current.$root.querySelector('.hook-style')
+    let styleEl = current.queryRoot<HTMLStyleElement | null>('style.hook-style')
     if (!styleEl) {
       styleEl = document.createElement('style')
       styleEl.classList.add('hook-style')

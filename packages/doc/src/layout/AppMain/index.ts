@@ -13,6 +13,7 @@ import { LanguageIcon } from '@doc/components/Icons/LanguageIcon'
 import './DocGuide'
 import './DocApi'
 import './LanguageSelector'
+import { loadPlayground } from '@doc/components/Playground'
 
 component('app-main', function (this: ReactiveElement) {
   const [state] = useState({
@@ -45,7 +46,10 @@ component('app-main', function (this: ReactiveElement) {
         onClick: () => (state.languageSelectVisible = !state.languageSelectVisible)
       })}
       ${CodeSandboxIcon({
-        onClick: () => (state.playgroundVisible = !state.playgroundVisible),
+        onClick: () => {
+          state.playgroundVisible = !state.playgroundVisible
+          loadPlayground.call(this.queryRoot<ReactiveElement>('play-ground')!)
+        },
         active: state.playgroundVisible
       })}
       <a style="color: black"><strong>guide</strong></a>

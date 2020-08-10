@@ -175,8 +175,8 @@ describe('hooks', () => {
     setTimeout(() => {
       const el = document.querySelector('test-memo') as ReactiveElement
       try {
-        expect(el.$state?.a).toBe(1)
-        expect(el.$state?.b).toBe(2)
+        expect(Reflect.get(el.$state!, 'a')).toBe(1)
+        expect(Reflect.get(el.$state!, 'b')).toBe(2)
       } catch (error) {
         //
       }
@@ -185,8 +185,8 @@ describe('hooks', () => {
     setTimeout(() => {
       const el = document.querySelector('test-memo') as ReactiveElement
       try {
-        expect(el.$state?.a).toBe(2)
-        expect(el.$state?.b).toBe(3)
+        expect(Reflect.get(el.$state!, 'a')).toBe(2)
+        expect(Reflect.get(el.$state!, 'b')).toBe(3)
         expect(
           el.$root.querySelector('div')?.childNodes[1].textContent === '5'
         ).toBe(true)

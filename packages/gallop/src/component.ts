@@ -15,18 +15,23 @@ type RegisterOption = {
 
 export const componentPool = new Set<string>()
 export const elementPool = new Map<string, Set<ReactiveElement>>()
-export interface ReactiveElement extends HTMLElement {
+export interface ReactiveElement<
+  Props extends Obj = Obj,
+  State extends Obj | undefined = undefined
+> extends HTMLElement {
   $builder: Component
-  $root: ReactiveElement | ShadowRoot
+  $root: ReactiveElement<Props, State> | ShadowRoot
   $patcher?: Patcher
   $isReactive: boolean
 
-  $props: Obj
-  $state?: Obj
+  $props: Props
+  $state?: State
   $contexts: Set<Context<Obj>>
 
   requestUpdate(): void
   dispatchUpdate(): void
+
+  queryRoot<T extends Element | null = Element | null>(selector: string): T
 }
 
 export function component<F extends Component>(
@@ -61,7 +66,6 @@ export function component<F extends Component>(
     }
 
     connectedCallback() {
-      Context.globalContext && Context.globalContext.watch(this)
       if (elementPool.has(name)) elementPool.get(name)!.add(this)
       else {
         const set = new Set<ReactiveElement>()
@@ -77,9 +81,12 @@ export function component<F extends Component>(
 
     constructor() {
       super()
-      const staticProps = extractProps(this.attributes)
-      mergeProps(this, staticProps)
+      mergeProps(this, extractProps(this.attributes))
       this.requestUpdate()
+    }
+
+    queryRoot<T extends Element | null = Element | null>(selectors: string): T {
+      return this.$root.querySelector(selectors) as T
     }
   }
   customElements.define(name, clazz, { extends: extend })
@@ -88,13 +95,13 @@ export function component<F extends Component>(
 
 export const observeDisconnect = (
   el: ReactiveElement,
-  cb: EventListenerOrEventListenerObject
+  callback: EventListenerOrEventListenerObject
 ) => {
-  el.addEventListener('$disconnected$', cb)
+  el.addEventListener('$disconnected$', callback)
 }
 
-export const isReactive = (node: Node): node is ReactiveElement =>
-  !!Reflect.get(node, '$isReactive')
+export const isReactive = (node: Node | null): node is ReactiveElement =>
+  !!(node && Reflect.get(node, '$isReactive'))
 
 export const mergeProp = (node: ReactiveElement, name: string, value: unknown) =>
   Reflect.set(node.$props, name, value)
@@ -102,11 +109,23 @@ export const mergeProp = (node: ReactiveElement, name: string, value: unknown) =
 export const mergeProps = (node: ReactiveElement, value: unknown) =>
   Object.assign(node.$props, value)
 
-export const queryShadowAll = (name: string) =>
-  Array.from(elementPool.get(name) ?? [])
-
-export const queryShadow = (
-  name: string,
+export const queryPoolAll = ({
+  name,
+  id,
+  classnames
+}: {
+  name: string
   id?: string
-): ReactiveElement | undefined =>
-  queryShadowAll(name).find((v) => id === undefined || v.id === id)
+  classnames?: string[]
+}) =>
+  Array.from(elementPool.get(name) ?? []).filter(
+    (v) =>
+      (id === void 0 || v.id === id) &&
+      (classnames === void 0 ||
+        new Set([...classnames, ...Array.from(v.classList)]).size ===
+          v.classList.length)
+  )
+
+export const queryPool = (
+  ...selector: Parameters<typeof queryPoolAll>
+): ReactiveElement | undefined => queryPoolAll(...selector)[0]

@@ -26,15 +26,6 @@ export class Context<T extends Obj = Obj> {
     this.options?.forEach((v) => v.onUpdate?.(this))
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static globalContext?: Context<any>
-  static global?: Obj
-  static initGlobal<G extends Obj>(init: G, options?: ContextOptions<G>[]) {
-    if (Context.globalContext || Context.global)
-      throw new Error(`Can not init global context twice.`)
-    return ([Context.global, Context.globalContext] = createContext(init, options))
-  }
-
   watch(el: ReactiveElement) {
     this.watchList.add(el)
     el.$contexts.add(this as Context<Obj>)

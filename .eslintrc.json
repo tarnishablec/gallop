@@ -19,6 +19,7 @@
   "rules": {
     "no-unused-vars": "off",
     "no-debugger": "warn",
+    "no-console": "warn",
     "no-empty": "warn",
     "prefer-const": "warn",
     "max-params": ["warn", { "max": 4 }],
@@ -36,8 +37,20 @@
     "@typescript-eslint/ban-types": [
       "warn",
       {
-        "types": { "object": false }
+        "types": { "object": false, "{}": false }
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "packages/sandbox/**",
+        "webpack.base.js",
+        "packages/doc/public/*.js",
+        "rollup.config.js",
+        "scripts/**"
+      ],
+      "rules": { "no-console": "off" }
+    }
+  ]
 }
