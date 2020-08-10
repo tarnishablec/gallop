@@ -7,7 +7,7 @@ import {
   css,
   suspense
 } from '@gallop/gallop'
-import MarkDownWoker from 'worker-loader!@gallop/doc/worker/markdown.worker'
+import MarkDownWorker from 'worker-loader!@gallop/doc/worker/markdown.worker'
 import url from './github.css?url'
 
 component('mark-down', function (
@@ -40,7 +40,7 @@ component('mark-down', function (
           content = (
             await import(
               /* webpackChunkName: "md/mdcontents" */
-              /* webpackMode: "lazy-once" */
+              /* webpackMode: "eager" */
               `../../markdown/${locale}/${filename}.md`
             )
           ).default
@@ -48,12 +48,12 @@ component('mark-down', function (
           content = (
             await import(
               /* webpackChunkName: "md/mdcontents" */
-              /* webpackMode: "lazy-once" */
+              /* webpackMode: "eager" */
               `../../markdown/zh/${filename}.md`
             )
           ).default
         }
-        const worker = new MarkDownWoker()
+        const worker = new MarkDownWorker()
         worker.postMessage(content)
         return new Promise((resolve) => {
           const handler = (e: MessageEvent) => {

@@ -39,12 +39,13 @@ export const menuData: { menu: { name: Name; children?: Name[] }[] } = {
       name: 'Main-Concepts',
       children: [
         'Template',
+        'Part',
         'Component',
         'Event',
         'Style',
         'Hooks',
         'Directives',
-        'Context'
+        'State-Management'
       ]
     },
     { name: 'Component-In-Depth' }
