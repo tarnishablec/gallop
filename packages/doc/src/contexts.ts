@@ -1,7 +1,7 @@
 import { createContext, ContextOptions } from '@gallop/gallop'
 import type json from '@doc/language/zh.json'
 
-type Name = keyof typeof json
+export type Name = keyof typeof json
 
 export const syncLocalStorage: <T extends Record<string, unknown>>(
   name: string

@@ -28,6 +28,8 @@
   "gitHead": "2cd70b5cd29cec83256f2881d98666af4c73afdb",
   "dependencies": {
     "@gallop/gallop": "^0.9.54",
-    "gsap": "^3.4.2"
+    "gsap": "^3.4.2",
+    "highlight.js": "^10.1.2",
+    "marked": "^1.1.1"
   }
 }
