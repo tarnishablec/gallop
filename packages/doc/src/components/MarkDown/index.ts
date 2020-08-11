@@ -1,6 +1,8 @@
-import { html, raw } from '@gallop/gallop'
+import { html, raw, component } from '@gallop/gallop'
 import marked from 'marked'
 import type { Name } from '@doc/contexts'
+import githubUrl from './github.css?url'
+import highlightUrl from './highlight.css?url'
 
 const req = require.context('@doc/markdown', true, /\.md$/, 'sync')
 
@@ -15,12 +17,19 @@ const importMd: (filename: Name, locale?: string) => { default: string } = (
   }
 }
 
-export const MarkDown = ({
-  filename,
-  locale = 'zh'
-}: {
-  filename: Name
-  locale?: string
-}) => html`<div class="markdown-body">
-  ${raw(marked(importMd(filename, locale).default))}
-</div>`
+component(
+  'mark-down',
+  ({ filename, locale = 'zh' }: { filename: Name; locale?: string }) => html`
+    <link rel="stylesheet" .href="${highlightUrl}" />
+    <link rel="stylesheet" .href="${githubUrl}" />
+    <div class="markdown-body">
+      ${raw(marked(importMd(filename, locale).default))}
+    </div>
+    <style>
+      a {
+        color: var(--active-color) !important;
+        margin: 0 0.2rem;
+      }
+    </style>
+  `
+)

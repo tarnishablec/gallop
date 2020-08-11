@@ -10,6 +10,8 @@ const chalk = require('chalk')
 
 const version = require('./packages/gallop/package.json').version.replace(/^\^/, '')
 
+const instrumentsPath = path.resolve(__dirname, './instruments')
+
 const __prod__ = process.env.NODE_ENV === 'production'
 
 console.log(
@@ -85,7 +87,7 @@ const config = (dir) => {
                   }
                 },
                 { loader: 'extract-loader' },
-                { loader: path.resolve(__dirname, './loaders/to-string.js') },
+                { loader: path.resolve(instrumentsPath, './loaders/to-string.js') },
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
@@ -100,7 +102,7 @@ const config = (dir) => {
               resourceQuery: /raw/,
               rules: [
                 {
-                  loader: path.resolve(__dirname, './loaders/to-string.js')
+                  loader: path.resolve(instrumentsPath, './loaders/to-string.js')
                 },
                 { loader: 'css-loader', options: { sourceMap: false } },
                 {
