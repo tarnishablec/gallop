@@ -8,6 +8,8 @@ const path = require('path')
 const { DefinePlugin } = require('webpack')
 const chalk = require('chalk')
 
+const LinkStylePlugin = require('./instruments/plugins/LinkStylePlugin')
+
 const version = require('./packages/gallop/package.json').version.replace(/^\^/, '')
 
 const instrumentsPath = path.resolve(__dirname, './instruments')
@@ -88,6 +90,7 @@ const config = (dir) => {
                 },
                 { loader: 'extract-loader' },
                 { loader: path.resolve(instrumentsPath, './loaders/to-string.js') },
+
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
@@ -101,9 +104,30 @@ const config = (dir) => {
             {
               resourceQuery: /raw/,
               rules: [
+                { loader: path.resolve(instrumentsPath, './loaders/to-string.js') },
+                { loader: 'css-loader', options: { sourceMap: false } },
                 {
-                  loader: path.resolve(instrumentsPath, './loaders/to-string.js')
+                  loader: 'postcss-loader',
+                  options: {
+                    plugins: [require('autoprefixer')]
+                  }
                 },
+                { loader: 'sass-loader' }
+              ]
+            },
+            {
+              resourceQuery: /link/,
+              rules: [
+                { loader: LinkStylePlugin.loader },
+                // { loader: MiniCssExtractPlugin.loader },
+                {
+                  loader: 'file-loader',
+                  options: {
+                    name: 'css/[contenthash:10].css'
+                  }
+                },
+                { loader: 'extract-loader' },
+                { loader: path.resolve(instrumentsPath, './loaders/to-string.js') },
                 { loader: 'css-loader', options: { sourceMap: false } },
                 {
                   loader: 'postcss-loader',
@@ -172,7 +196,7 @@ const config = (dir) => {
     // devtool: false,
     devServer: {
       contentBase: './dist',
-      open: true,
+      open: false,
       stats: 'errors-only',
       host: '0.0.0.0',
       compress: true,
@@ -220,6 +244,7 @@ const config = (dir) => {
       new MiniCssExtractPlugin({
         filename: 'css/[name].css'
       })
+      // new LinkStylePlugin()
       // new CompressionPlugin({
       //   include: /\.js$/,
       //   filename: '[path].gz',

@@ -1,4 +1,10 @@
 /**
  * @param {{toString:() => string}} content
+ * @this {import('webpack').loader.LoaderContext}
  */
-module.exports = (content) => content.toString()
+function loader(content) {
+  this.callback(null, content.toString())
+  return
+}
+
+module.exports = loader
