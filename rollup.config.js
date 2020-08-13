@@ -50,6 +50,9 @@ fs.readdirSync(packagesDir).forEach((dir) => {
   }
 })
 
+/**
+ * @type {import('rollup').RollupOptions}
+ */
 const CONFIG = [
   {
     input: resolve(`src/index.ts`),

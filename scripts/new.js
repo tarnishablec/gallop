@@ -6,15 +6,21 @@ main()
 
 async function main() {
   const cache = [...args._]
-  await createPackages(args._)
-  await run(`yarn run boot ${resolveTargets(cache).join(' ')} --init --force`)
+  const noscope = args.noscope
+  await createPackages(args._, noscope)
+  await run(
+    `yarn run boot ${resolveTargets(cache).join(' ')} --init --force ${
+      noscope ? '--noscope' : ''
+    }`
+  )
 }
 
-async function createPackages(names) {
+async function createPackages(names, noscope = false) {
   if (names.length === 0) {
     return
   } else {
-    await run(`lerna create @${scope}/${names.shift()} --yes`)
+    const fullname = `${noscope ? `@${scope}/` : ''}${names.shift()}`
+    await run(`lerna create ${fullname} --yes`)
     await createPackages(names)
   }
 }

@@ -4,11 +4,10 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const LinkCssPlugin = require('link-css-plugin')
 const path = require('path')
 const { DefinePlugin } = require('webpack')
 const chalk = require('chalk')
-
-const ShadowStylePlugin = require('./instruments/plugins/ShadowStylePlugin')
 
 const version = require('./packages/gallop/package.json').version.replace(/^\^/, '')
 
@@ -118,7 +117,7 @@ const config = (dir) => {
             {
               resourceQuery: /link/,
               rules: [
-                { loader: ShadowStylePlugin.loader },
+                { loader: LinkCssPlugin.loader },
                 // { loader: MiniCssExtractPlugin.loader },
                 {
                   loader: 'file-loader',
@@ -244,7 +243,7 @@ const config = (dir) => {
       new MiniCssExtractPlugin({
         filename: 'css/[name].css'
       }),
-      new ShadowStylePlugin()
+      new LinkCssPlugin()
       // new CompressionPlugin({
       //   include: /\.js$/,
       //   filename: '[path].gz',

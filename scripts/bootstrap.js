@@ -7,6 +7,8 @@ const packagesDir = path.resolve(__dirname, '../packages')
 const targets = require('./utils').resolveTargets(args._)
 const execa = require('execa')
 
+const noscope = args.noscope
+
 function initIndexTs(filePath) {
   const exists = fse.existsSync(filePath)
 
@@ -38,7 +40,6 @@ describe('test', () => {
   }
 }
 
-// eslint-disable-next-line max-params
 function initPkg(filePath, longName, shortName, _args) {
   const pkgExists = fse.existsSync(filePath)
 
@@ -121,7 +122,7 @@ function main() {
     const longName = `@${scope}/${shortName}`
     const pkgPath = path.join(packageDir, 'package.json')
 
-    initPkg(pkgPath, longName, shortName, args)
+    initPkg(pkgPath, noscope ? shortName : longName, shortName, args)
   })
   execa.commandSync('lerna bootstrap', {
     stdio: 'inherit'
