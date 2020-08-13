@@ -1,7 +1,7 @@
 const base = require('../../webpack.base.js')(__dirname)
-const ProdMode = process.env.NODE_ENV === 'production'
+const __prod__ = process.env.NODE_ENV === 'production'
 
 module.exports = {
   ...base,
-  externals: ProdMode ? ['@gallop/gallop'] : []
+  externals: __prod__ ? ['@gallop/gallop'] : []
 }
