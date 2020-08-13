@@ -8,7 +8,7 @@ const path = require('path')
 const { DefinePlugin } = require('webpack')
 const chalk = require('chalk')
 
-const LinkStylePlugin = require('./instruments/plugins/LinkStylePlugin')
+const ShadowStylePlugin = require('./instruments/plugins/ShadowStylePlugin')
 
 const version = require('./packages/gallop/package.json').version.replace(/^\^/, '')
 
@@ -118,7 +118,7 @@ const config = (dir) => {
             {
               resourceQuery: /link/,
               rules: [
-                { loader: LinkStylePlugin.loader },
+                { loader: ShadowStylePlugin.loader },
                 // { loader: MiniCssExtractPlugin.loader },
                 {
                   loader: 'file-loader',
@@ -243,8 +243,8 @@ const config = (dir) => {
       }),
       new MiniCssExtractPlugin({
         filename: 'css/[name].css'
-      })
-      // new LinkStylePlugin()
+      }),
+      new ShadowStylePlugin()
       // new CompressionPlugin({
       //   include: /\.js$/,
       //   filename: '[path].gz',
