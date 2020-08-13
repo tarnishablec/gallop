@@ -28,16 +28,17 @@ let depCount: number
 const depCountMap = new WeakMap<ReactiveElement, Map<number, unknown[]>>()
 export function useDepends(depends?: unknown[]): [boolean, number] {
   const current = Looper.resolveCurrent()
-  if (current !== lastDepEl) {
-    depCount = 0
-  }
+  if (current !== lastDepEl) depCount = 0
   if (!depends) {
     depCount++
     return [true, depCount - 1]
   }
   const oldDeps = depCountMap.get(current)?.get(depCount)
   const dirty = Recycler.compareDepends(oldDeps, depends)
-  forceGet(depCountMap, current, () => new Map()).set(depCount, depends)
+  forceGet(depCountMap, current, () => new Map<number, unknown[]>()).set(
+    depCount,
+    depends
+  )
   lastDepEl = current
   depCount++
   return [dirty, depCount - 1]
