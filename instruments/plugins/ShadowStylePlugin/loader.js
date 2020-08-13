@@ -18,7 +18,6 @@ function loader(content) {
    * @type {Compilation}
    */
   const compilation = this._compilation
-  // const path = loaderUtils.getCurrentRequest(this)
   compilation.hooks.linkShadow.call(url)
   this.callback(null, content)
   return
