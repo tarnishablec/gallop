@@ -1,5 +1,5 @@
 @import './variables.scss';
-
+@import './font.scss';
 :root {
   scroll-behavior: smooth;
   overflow: hidden;
@@ -9,5 +9,6 @@
 body {
   position: fixed;
   margin: 0;
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Hiragino Sans GB',
+    'WenQuanYi Micro Hei', 'Microsoft Yahei', sans-serif;
 }

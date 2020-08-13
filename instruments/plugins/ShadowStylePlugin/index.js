@@ -54,9 +54,11 @@ class ShadowStylePlugin {
             const { html } = htmlPluginData
             const $ = cheerio.load(html, { decodeEntities: false })
             this.links.forEach((link) => {
+              $('head').append(`<link rel="preload" href="${link}" as="style">`)
               $('head').append(`<link rel="stylesheet" href="${link}">`)
             })
             htmlPluginData.html = $.html()
+            // debugger
           }
         )
       }
