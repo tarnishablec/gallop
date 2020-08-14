@@ -35,7 +35,7 @@ component('doc-guide', function (this: ReactiveElement) {
 
   useContext([localeContext])
 
-  return html`<div class="doc-guide-main">
+  return html`<article class="doc-guide-main">
     ${repeat(
       menu,
       (m) => m.name,
@@ -49,12 +49,11 @@ component('doc-guide', function (this: ReactiveElement) {
               (c) =>
                 html`<div class="markdown-wrapper">
                   <h3 class="sub-title" .id="${c}">${lang(c, locale)}</h3>
-                  <!-- {MarkDown({ filename: c, locale })} -->
                   <mark-down :locale="${locale}" :filename="${c}"></mark-down>
                 </div> `
             )
           : null}
       `
     )}
-  </div> `
+  </article> `
 })

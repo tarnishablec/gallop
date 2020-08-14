@@ -1,3 +1,4 @@
+// @ts-check
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
@@ -243,7 +244,7 @@ const config = (dir) => {
       new MiniCssExtractPlugin({
         filename: 'css/[name].css'
       }),
-      new LinkCssPlugin()
+      new LinkCssPlugin({ link: false })
       // new CompressionPlugin({
       //   include: /\.js$/,
       //   filename: '[path].gz',
