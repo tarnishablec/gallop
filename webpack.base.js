@@ -94,7 +94,6 @@ const config = (dir) => (env, args) => {
                 },
                 { loader: 'extract-loader' },
                 { loader: path.resolve(instrumentsPath, './loaders/to-string.js') },
-
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
@@ -122,7 +121,7 @@ const config = (dir) => (env, args) => {
             {
               resourceQuery: /link/,
               rules: [
-                { loader: LinkCssPlugin.loader },
+                { loader: LinkCssPlugin.loader, options: { link: false } },
                 // { loader: MiniCssExtractPlugin.loader },
                 {
                   loader: 'file-loader',
@@ -144,9 +143,21 @@ const config = (dir) => (env, args) => {
             },
             {
               rules: [
-                __prod__
-                  ? { loader: MiniCssExtractPlugin.loader }
-                  : { loader: 'style-loader' },
+                // __prod__
+                //   ? { loader: MiniCssExtractPlugin.loader }
+                //   : { loader: 'style-loader' },
+                {
+                  loader: LinkCssPlugin.loader,
+                  options: { link: true, preload: false }
+                },
+                {
+                  loader: 'file-loader',
+                  options: {
+                    name: 'css/[contenthash:10].css'
+                  }
+                },
+                { loader: 'extract-loader' },
+                { loader: path.resolve(instrumentsPath, './loaders/to-string.js') },
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
@@ -223,7 +234,7 @@ const config = (dir) => (env, args) => {
         },
         hash: true,
         templateParameters: {
-          env: JSON.stringify(process.env),
+          env: JSON.stringify(env),
           gallopCdn: __prod__
             ? `<script src="https://unpkg.com/@gallop/gallop"></script>`
             : ''
@@ -248,7 +259,7 @@ const config = (dir) => (env, args) => {
       new MiniCssExtractPlugin({
         filename: 'css/[name].css'
       }),
-      new LinkCssPlugin({ link: false })
+      new LinkCssPlugin()
       // new CompressionPlugin({
       //   include: /\.js$/,
       //   filename: '[path].gz',

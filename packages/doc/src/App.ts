@@ -9,7 +9,7 @@ import {
 import './layout/AppMain'
 import './layout/SideMenu'
 import './registry'
-import './styles'
+import './styles/index.scss'
 import { GithubCorner } from './components/GithubCorner'
 import raw from './app.scss?raw'
 

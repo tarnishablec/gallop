@@ -1,3 +1,3 @@
 const { run } = require('./utils')
 
-run('yarn run doc')
+run('yarn run build:doc')
