@@ -57,7 +57,6 @@
     "compression-webpack-plugin": "^4.0.1",
     "copy-webpack-plugin": "^6.0.3",
     "coveralls": "^3.1.0",
-    "cross-env": "^7.0.2",
     "css-loader": "^4.2.1",
     "electron": "^9.2.0",
     "eslint": "^7.6.0",

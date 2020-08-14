@@ -14,21 +14,25 @@ const version = require('./packages/gallop/package.json').version.replace(/^\^/,
 
 const instrumentsPath = path.resolve(__dirname, './instruments')
 
-const __prod__ = process.env.NODE_ENV === 'production'
-
-console.log(
-  `🔧 production : ${__prod__ ? chalk.green(__prod__) : chalk.red(__prod__)}`
-)
-
-console.log(chalk.bgGreen(`Gallop version: ${version}`))
-
 /**
  * @param {string} dir
- * @returns {import('webpack').Configuration}
+ * @returns {import('webpack').ConfigurationFactory}
  */
-const config = (dir) => {
+const config = (dir) => (env, args) => {
+  const __prod__ = args.mode === 'production'
+
+  console.log(`=== args ===`)
+  for (const key in args) {
+    console.log(chalk.yellowBright(`${key}: ${JSON.stringify(args[key])}`))
+  }
+  console.log(
+    `=== production : ${__prod__ ? chalk.green(__prod__) : chalk.red(__prod__)} ===`
+  )
+
+  console.log(chalk.greenBright(`Gallop version: ${version}`))
+
   return {
-    mode: 'development',
+    mode: args.mode,
 
     entry: {
       main: path.resolve(dir, './src/App.ts')
