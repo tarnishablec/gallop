@@ -1,3 +1,9 @@
+// @ts-check
+
+/**
+ * @typedef {import('rollup').RollupOptions} RollupOptions
+ */
+
 import fs from 'fs'
 import path from 'path'
 import typescript from '@wessberg/rollup-plugin-ts'
@@ -21,7 +27,11 @@ const pkg = require(resolve(`package.json`))
 
 const peers = pkg.peerDependencies && Object.keys(pkg.peerDependencies)
 
-console.log(peers)
+const defaultFormats = ['esm', 'esmmin', 'umd']
+const inlineFormats = process.env.FORMATS && process.env.FORMATS.split(',')
+const packageFormats = inlineFormats || defaultFormats
+
+// console.log(peers)
 
 const formats = {
   esm: {
@@ -51,35 +61,28 @@ fs.readdirSync(packagesDir).forEach((dir) => {
 })
 
 /**
- * @type {import('rollup').RollupOptions}
+ * @type {RollupOptions}
  */
-const CONFIG = [
-  {
-    input: resolve(`src/index.ts`),
-    output: [],
-    plugins: [
-      cleanup({
-        extensions: ['ts', 'tsx', 'js', 'jsx']
-      }),
-      typescript({
-        tsconfig: path.resolve(__dirname, 'tsconfig.json')
-      }),
-      json(),
-      alias(aliasOptions)
-    ],
-    external: peers
-  }
-]
+const config = {
+  input: resolve(`src/index.ts`),
+  output: packageFormats.reduce((acc, cur) => {
+    console.log(formats[cur])
+    acc.push(
+      Object.assign(formats[cur], { name: `@${scope}/${name}`, extend: true })
+    )
+    return acc
+  }, []),
+  plugins: [
+    cleanup({
+      extensions: ['ts', 'tsx', 'js', 'jsx']
+    }),
+    typescript({
+      tsconfig: path.resolve(__dirname, 'tsconfig.json')
+    }),
+    json(),
+    alias(aliasOptions)
+  ],
+  external: peers
+}
 
-const defaultFormats = ['esm', 'esmmin', 'umd']
-const inlineFormats = process.env.FORMATS && process.env.FORMATS.split(',')
-const packageFormats = inlineFormats || defaultFormats
-
-packageFormats.forEach((format) => {
-  console.log(formats[format])
-  CONFIG[0].output.push(
-    Object.assign(formats[format], { name: `@${scope}/${name}`, extend: true })
-  )
-})
-
-export default CONFIG
+export default config

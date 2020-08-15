@@ -26,11 +26,8 @@ component(
       ${raw(
         marked(importMd(filename, locale).default, {
           highlight: (code, lang) => {
-            if (Prism.languages[lang]) {
-              return Prism.highlight(code, Prism.languages[lang], lang)
-            } else {
-              return code
-            }
+            const grammar = Prism.languages[lang]
+            return grammar ? Prism.highlight(code, grammar, lang) : code
           }
         })
       )}

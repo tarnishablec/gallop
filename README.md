@@ -39,12 +39,12 @@
 
 - directives
 
-  |             |     |
-  | ----------- | --- |
-  | repeat()    | ✅  |
-  | dynamic()   | ✅  |
-  | suspense()  | ✅  |
-  | portal()    | ✅  |
+  |            |     |
+  | ---------- | --- |
+  | repeat()   | ✅  |
+  | dynamic()  | ✅  |
+  | suspense() | ✅  |
+  | portal()   | ✅  |
 
 - support `<slot>` by web components, also `named slot`
 
@@ -74,7 +74,7 @@
 
 ## Simple use case
 
-```typescript
+```ts
 import {
   createContext,
   useState,
