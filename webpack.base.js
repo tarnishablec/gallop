@@ -236,7 +236,7 @@ const config = (dir) => (env, args) => {
         templateParameters: {
           env: JSON.stringify(env),
           gallopCdn: __prod__
-            ? `<script src="https://unpkg.com/@gallop/gallop"></script>`
+            ? `<script src="https://unpkg.com/@gallop/gallop@${version}/dist/index.umd.js"></script>`
             : ''
         }
       }),
