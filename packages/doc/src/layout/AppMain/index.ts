@@ -21,10 +21,11 @@ component('app-main', function (this: ReactiveElement) {
     languageSelectVisible: false
   })
 
+  useStyle(() => raw, [])
+
   useStyle(
     () =>
       css`
-        ${raw}
         .app-main-wrapper {
           transition: transform 0.2s;
           transform: translateY(${state.languageSelectVisible ? '60px' : '0'});

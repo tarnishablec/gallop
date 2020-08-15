@@ -97,12 +97,14 @@ export function useMemo<T>(func: () => T, depends?: unknown[]): T {
 
 export function useStyle(css: () => string, depends: unknown[]) {
   const current = Looper.resolveCurrent()
-  const [dirty] = useDepends(depends)
+  const [dirty, count] = useDepends(depends)
   if (dirty) {
-    let styleEl = current.queryRoot<HTMLStyleElement | null>('style.hook-style')
+    let styleEl = current.queryRoot<HTMLStyleElement | null>(
+      `style.hook-style-${count}`
+    )
     if (!styleEl) {
       styleEl = document.createElement('style')
-      styleEl.classList.add('hook-style')
+      styleEl.classList.add(`hook-style-${count}`)
       current.$root.append(styleEl)
     }
     styleEl.innerHTML = css()
