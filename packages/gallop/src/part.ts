@@ -43,7 +43,11 @@ export class NodePart implements Part {
       const { endNode } = this.location
       const parent = endNode.parentNode!
       this.clear()
-      parent.insertBefore(extractDof(result), endNode)
+      if (result instanceof Patcher) {
+        result.appendTo(parent, endNode)
+      } else {
+        parent.insertBefore(new Text(tryParseToString(val)), endNode)
+      }
     }
 
     this.value = result
@@ -195,8 +199,4 @@ export function tryUpdateEntry(pre: unknown, val: unknown): [unknown, 0 | 1 | 2]
   )
     return [pre.patch(val.do(getVals)), 1]
   return [initEntry(val), 2]
-}
-
-export function extractDof(val: unknown) {
-  return val instanceof Patcher ? val.dof : new Text(tryParseToString(val))
 }

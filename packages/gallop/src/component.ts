@@ -60,7 +60,7 @@ export function component<F extends Component>(
       const clip = this.$builder.call(this, this.$props)
       if (!this.$patcher) {
         this.$patcher = clip.do(createPatcher)
-        this.$root.append(this.$patcher.dof)
+        this.$patcher.appendTo(this.$root)
       }
       this.$patcher.patch(clip.do(getVals))
     }

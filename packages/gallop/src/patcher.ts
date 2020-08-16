@@ -77,4 +77,13 @@ export class Patcher {
     this.parts.forEach((p, i) => p.setValue(vals[i]))
     return this
   }
+
+  appendTo(container: Node, before?: Node) {
+    if (before) {
+      container.insertBefore(this.dof, before)
+    } else {
+      container.appendChild(this.dof)
+    }
+    Reflect.set(this, 'dof', undefined)
+  }
 }
