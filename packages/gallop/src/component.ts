@@ -126,6 +126,10 @@ export const queryPoolAll = ({
           v.classList.length)
   )
 
-export const queryPool = (
+export const queryPool = <
+  Props extends Obj = Obj,
+  State extends Obj | undefined = undefined
+>(
   ...selector: Parameters<typeof queryPoolAll>
-): ReactiveElement | undefined => queryPoolAll(...selector)[0]
+): ReactiveElement<Props, State> | undefined =>
+  queryPoolAll(...selector)[0] as ReactiveElement<Props, State> | undefined

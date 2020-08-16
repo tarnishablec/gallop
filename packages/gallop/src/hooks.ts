@@ -45,7 +45,7 @@ export function useDepends(depends?: unknown[]): [boolean, number] {
 }
 
 type DisconnectEffect = () => unknown
-type Effect = () => void | DisconnectEffect
+type Effect = () => void | DisconnectEffect | Promise<void | DisconnectEffect>
 const effectQueueMap = new WeakMap<ReactiveElement, (Effect | undefined)[]>()
 const disconnectEffectMap = new WeakMap<ReactiveElement, DisconnectEffect[]>()
 export function useEffect(effect: Effect, depends?: unknown[]) {
@@ -57,27 +57,28 @@ export function resolveEffects(el: ReactiveElement) {
   const effects = effectQueueMap.get(el)
   return (
     effects &&
-    new Promise<DisconnectEffect[]>((resolve) => {
-      let resList: DisconnectEffect[]
-      const temp = disconnectEffectMap.get(el)
-      if (temp) resList = temp
-      else {
-        resList = []
-        disconnectEffectMap.set(el, resList)
-        resList.filter(Boolean).length &&
-          observeDisconnect(el, () => {
-            resList.forEach((fn) => fn())
-            disconnectEffectMap.delete(el)
-          })
-      }
-      setTimeout(() => {
-        effects.forEach((e, i) => {
-          const res = e?.()
-          res && (resList[i] = res)
-        })
-        resolve(resList)
-      }, 0)
-    })
+    setTimeout(() => {
+      const { length } = effects
+      if (length === 0) return
+      effects.forEach(async (e, i) => {
+        const res = await e?.()
+        if (res) {
+          let resList: DisconnectEffect[]
+          const temp = disconnectEffectMap.get(el)
+          if (temp) resList = temp
+          else {
+            resList = []
+            disconnectEffectMap.set(el, resList)
+            effects.filter(Boolean).length &&
+              observeDisconnect(el, () => {
+                resList.forEach((fn) => fn())
+                disconnectEffectMap.delete(el)
+              })
+          }
+          resList[i] = res
+        }
+      })
+    }, 0)
   )
 }
 

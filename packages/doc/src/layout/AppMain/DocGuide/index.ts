@@ -5,7 +5,8 @@ import {
   useContext,
   useEffect,
   ReactiveElement,
-  useStyle
+  useStyle,
+  queryPool
 } from '@gallop/gallop'
 import { lang } from '@doc/language'
 import { menuData, localeContext, localeData } from '@doc/contexts'
@@ -19,18 +20,31 @@ component('doc-guide', function (this: ReactiveElement) {
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>
-    const handler = (e: HashChangeEvent) => {
+    const handler = async (e: HashChangeEvent) => {
       const newHash = `#` + e.newURL.split('#').pop()
       if (newHash === '#') return
       clearTimeout(timeout)
       const el = this.$root.querySelector(newHash)
+
+      const appMainState = queryPool<{}, { languageSelectVisible: boolean }>({
+        name: 'app-main'
+      })?.$state!
+
+      await new Promise((res) => {
+        if (appMainState.languageSelectVisible) {
+          appMainState.languageSelectVisible = false
+          setTimeout(() => res(), 201)
+        } else res()
+      })
       el?.scrollIntoView({ behavior: 'smooth' })
       timeout = setTimeout(() => {
         window.location.hash = ''
       }, 2500)
     }
     window.addEventListener('hashchange', handler)
-    return () => window.removeEventListener('hashchange', handler)
+    return () => {
+      window.removeEventListener('hashchange', handler)
+    }
   }, [])
 
   useContext([localeContext])
