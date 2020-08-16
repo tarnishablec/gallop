@@ -1,4 +1,9 @@
-import { extractProps, shallowEqual, hashify, tryParseToString } from '../src/utils'
+import {
+  extractProps,
+  shallowEqual,
+  hashify,
+  tryParseToString
+} from '../src/utils'
 import { html } from '../src/parse'
 import { getShaHtml } from '../src/clip'
 import { cleanDomStr } from '../src/dom'

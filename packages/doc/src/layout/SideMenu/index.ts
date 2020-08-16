@@ -28,7 +28,9 @@ component('side-menu', function (this: ReactiveElement) {
           @click="${(e: Event) => {
             const { target } = e
             if (target instanceof HTMLAnchorElement)
-              window.location.hash = (target.getAttribute('href') ?? '#none').slice()
+              window.location.hash = (
+                target.getAttribute('href') ?? '#none'
+              ).slice()
           }}"
         >
           ${repeat(

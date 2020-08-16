@@ -44,7 +44,8 @@ component('app-main', function (this: ReactiveElement) {
   return html`
     <nav>
       ${LanguageIcon({
-        onClick: () => (state.languageSelectVisible = !state.languageSelectVisible)
+        onClick: () =>
+          (state.languageSelectVisible = !state.languageSelectVisible)
       })}
       ${CodeSandboxIcon({
         onClick: () => {
@@ -57,7 +58,9 @@ component('app-main', function (this: ReactiveElement) {
       <a>/ api</a>
       <a href="https://gitter.im/gallopweb/community">/ chat</a>
     </nav>
-    <play-ground .class="${state.playgroundVisible ? 'visible' : ''}"></play-ground>
+    <play-ground
+      .class="${state.playgroundVisible ? 'visible' : ''}"
+    ></play-ground>
     <language-selector></language-selector>
     <div
       class="app-main-wrapper"

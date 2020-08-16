@@ -24,10 +24,7 @@ render(html` <div>Hello Gallop!</div> `)
 
 <!-- esm -->
 <script type="module">
-  import {
-    html,
-    render
-  } from 'https://cdn.jsdelivr.net/npm/@gallop/gallop'
+  import { html, render } from 'https://cdn.jsdelivr.net/npm/@gallop/gallop'
   /* code */
 </script>
 ```

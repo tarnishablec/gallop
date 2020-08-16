@@ -15,7 +15,10 @@ export class Looper {
   static enUpdateQueue = (el: ReactiveElement) =>
     Looper.updateQueue.add(el) && Looper.flush()
 
-  static loopEachCallbacks = new Map<string, (current: ReactiveElement) => unknown>()
+  static loopEachCallbacks = new Map<
+    string,
+    (current: ReactiveElement) => unknown
+  >()
   static loopEndCallbacks = new Map<string, () => void>()
 
   protected static updateQueue = new Set<ReactiveElement>()
@@ -45,4 +48,6 @@ Looper.loopEndCallbacks.set(
 )
 
 // Loop each
-Looper.loopEachCallbacks.set('resolveEffects', (current) => resolveEffects(current))
+Looper.loopEachCallbacks.set('resolveEffects', (current) =>
+  resolveEffects(current)
+)

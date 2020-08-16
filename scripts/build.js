@@ -53,9 +53,11 @@ async function cleanDts(target) {
     fse.remove(`${distDir}/index.umd.d.ts`)
     fse.remove(`${distDir}/index.esm.min.d.ts`)
     fse.remove(`${distDir}/index.umd.min.d.ts`)
-    fse.rename(`${distDir}/index.esm.d.ts`, `${distDir}/index.d.ts`).then(() => {
-      console.log(chalk.blueBright('d.ts file generated'))
-    })
+    fse
+      .rename(`${distDir}/index.esm.d.ts`, `${distDir}/index.d.ts`)
+      .then(() => {
+        console.log(chalk.blueBright('d.ts file generated'))
+      })
   })
 }
 
@@ -75,7 +77,11 @@ async function build(target) {
     [
       '-c',
       '--environment',
-      [`TARGET:${target}`, `NODE_ENV:${env}`, formats ? `FORMATS:${formats}` : '']
+      [
+        `TARGET:${target}`,
+        `NODE_ENV:${env}`,
+        formats ? `FORMATS:${formats}` : ''
+      ]
         .filter(Boolean)
         .join(`,`)
     ],

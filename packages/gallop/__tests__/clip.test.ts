@@ -18,6 +18,8 @@ describe('clip', () => {
   test('createPatcher', () => {
     const clip = shaClip.do(createPatcher)
     expect(shaClip.do(getVals)).toEqual([1, 1, click, 1, 'color:red'])
-    expect(clip.dof.firstChild?.childNodes[1].nodeType).toEqual(Node.COMMENT_NODE)
+    expect(clip.dof.firstChild?.childNodes[1].nodeType).toEqual(
+      Node.COMMENT_NODE
+    )
   })
 })

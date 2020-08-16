@@ -51,7 +51,9 @@ const disconnectEffectMap = new WeakMap<ReactiveElement, DisconnectEffect[]>()
 export function useEffect(effect: Effect, depends?: unknown[]) {
   const current = Looper.resolveCurrent()
   const [dirty, count] = useDepends(depends)
-  forceGet(effectQueueMap, current, () => [])[count] = dirty ? effect : undefined
+  forceGet(effectQueueMap, current, () => [])[count] = dirty
+    ? effect
+    : undefined
 }
 export function resolveEffects(el: ReactiveElement) {
   const effects = effectQueueMap.get(el)

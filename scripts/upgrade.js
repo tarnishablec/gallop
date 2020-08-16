@@ -39,9 +39,12 @@ console.log(depFields)
 function upgrade() {
   for (const dep in depFields) {
     if (!target.length) {
-      execa.commandSync(`yarn add ${depFields[dep].data} ${depFields[dep].tag} -W`, {
-        stdio: 'inherit'
-      })
+      execa.commandSync(
+        `yarn add ${depFields[dep].data} ${depFields[dep].tag} -W`,
+        {
+          stdio: 'inherit'
+        }
+      )
     } else {
       execa.commandSync(
         `lerna add ${depFields[dep].tag} ${depFields[dep].data} --scope @${scope}/${target}`,

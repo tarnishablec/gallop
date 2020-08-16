@@ -130,7 +130,9 @@ class ArrayPart extends NodePart {
 
   update(keys: DiffKey[], vals: unknown[]) {
     this.keys = keys
-    this.keys.forEach((k, index) => this.keyPartMap.get(k)!.setValue(vals[index]))
+    this.keys.forEach((k, index) =>
+      this.keyPartMap.get(k)!.setValue(vals[index])
+    )
   }
 }
 

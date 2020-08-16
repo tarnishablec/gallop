@@ -37,7 +37,11 @@ export interface ReactiveElement<
 export function component<F extends Component>(
   name: string,
   builder: F,
-  { shadow = true, extend = undefined, Inherit = HTMLElement }: RegisterOption = {}
+  {
+    shadow = true,
+    extend = undefined,
+    Inherit = HTMLElement
+  }: RegisterOption = {}
 ) {
   const clazz = class extends Inherit implements ReactiveElement {
     $builder = builder
@@ -103,8 +107,11 @@ export const observeDisconnect = (
 export const isReactive = (node: Node | null): node is ReactiveElement =>
   !!(node && Reflect.get(node, '$isReactive'))
 
-export const mergeProp = (node: ReactiveElement, name: string, value: unknown) =>
-  Reflect.set(node.$props, name, value)
+export const mergeProp = (
+  node: ReactiveElement,
+  name: string,
+  value: unknown
+) => Reflect.set(node.$props, name, value)
 
 export const mergeProps = (node: ReactiveElement, value: unknown) =>
   Object.assign(node.$props, value)

@@ -1,5 +1,12 @@
 import { component, ReactiveElement, isReactive } from '../src/component'
-import { html, createContext, useEffect, render, useState, useContext } from '../src'
+import {
+  html,
+  createContext,
+  useEffect,
+  render,
+  useState,
+  useContext
+} from '../src'
 import { createPatcher } from '../src/clip'
 import { marker } from '../src/marker'
 
@@ -54,13 +61,17 @@ describe('component', () => {
       `
 
       expect(
-        sha.do(createPatcher).dof.querySelector('#root')?.getAttribute('.class') ===
-          marker
+        sha
+          .do(createPatcher)
+          .dof.querySelector('#root')
+          ?.getAttribute('.class') === marker
       ).toBe(true)
 
       expect(
-        sha.do(createPatcher).dof.querySelector('#root')?.getAttribute('style') ==
-          marker
+        sha
+          .do(createPatcher)
+          .dof.querySelector('#root')
+          ?.getAttribute('style') == marker
       ).toBe(false)
 
       return sha
@@ -77,7 +88,8 @@ describe('component', () => {
       expect(!!instance.shadowRoot).toBe(true)
       expect(instance.shadowRoot?.childNodes.length).toBe(1)
       expect(
-        instance!.shadowRoot?.firstChild?.childNodes[6] instanceof HTMLButtonElement
+        instance!.shadowRoot?.firstChild?.childNodes[6] instanceof
+          HTMLButtonElement
       ).toBe(true)
       expect(
         (instance!.shadowRoot?.firstChild?.childNodes[6] as HTMLDivElement)
@@ -111,7 +123,9 @@ describe('component', () => {
       render(
         html`
           ${[1, 2, 3].map((n) =>
-            n % 2 ? html` <test-dispatch :num="${n}"></test-dispatch> ` : 'hello'
+            n % 2
+              ? html` <test-dispatch :num="${n}"></test-dispatch> `
+              : 'hello'
           )}
         `
       )

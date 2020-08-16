@@ -1,8 +1,6 @@
 // @ts-check
 
-/**
- * @typedef {import('rollup').RollupOptions} RollupOptions
- */
+/** @typedef {import('rollup').RollupOptions} RollupOptions */
 
 import fs from 'fs'
 import path from 'path'
@@ -60,9 +58,7 @@ fs.readdirSync(packagesDir).forEach((dir) => {
   }
 })
 
-/**
- * @type {RollupOptions}
- */
+/** @type {RollupOptions} */
 const config = {
   input: resolve(`src/index.ts`),
   output: packageFormats.reduce((acc, cur) => {

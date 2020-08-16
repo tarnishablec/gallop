@@ -10,7 +10,10 @@ const path = require('path')
 const { DefinePlugin } = require('webpack')
 const chalk = require('chalk')
 
-const version = require('./packages/gallop/package.json').version.replace(/^\^/, '')
+const version = require('./packages/gallop/package.json').version.replace(
+  /^\^/,
+  ''
+)
 
 const instrumentsPath = path.resolve(__dirname, './instruments')
 
@@ -26,7 +29,9 @@ const config = (dir) => (env, args) => {
     console.log(chalk.yellowBright(`${key}: ${JSON.stringify(args[key])}`))
   }
   console.log(
-    `=== production : ${__prod__ ? chalk.green(__prod__) : chalk.red(__prod__)} ===`
+    `=== production : ${
+      __prod__ ? chalk.green(__prod__) : chalk.red(__prod__)
+    } ===`
   )
 
   console.log(chalk.greenBright(`Gallop version: ${version}`))
@@ -93,7 +98,12 @@ const config = (dir) => (env, args) => {
                   }
                 },
                 { loader: 'extract-loader' },
-                { loader: path.resolve(instrumentsPath, './loaders/to-string.js') },
+                {
+                  loader: path.resolve(
+                    instrumentsPath,
+                    './loaders/to-string.js'
+                  )
+                },
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
@@ -107,7 +117,12 @@ const config = (dir) => (env, args) => {
             {
               resourceQuery: /raw/,
               rules: [
-                { loader: path.resolve(instrumentsPath, './loaders/to-string.js') },
+                {
+                  loader: path.resolve(
+                    instrumentsPath,
+                    './loaders/to-string.js'
+                  )
+                },
                 { loader: 'css-loader', options: { sourceMap: false } },
                 {
                   loader: 'postcss-loader',
@@ -133,7 +148,12 @@ const config = (dir) => (env, args) => {
                   }
                 },
                 { loader: 'extract-loader' },
-                { loader: path.resolve(instrumentsPath, './loaders/to-string.js') },
+                {
+                  loader: path.resolve(
+                    instrumentsPath,
+                    './loaders/to-string.js'
+                  )
+                },
                 { loader: 'css-loader', options: { sourceMap: false } },
                 {
                   loader: 'postcss-loader',

@@ -109,7 +109,9 @@ export const createProxy = <T extends object>(
         if (prop === __raw__) return target
         const value = Reflect.get(target, prop, receiver)
         if (typeof value === 'function')
-          return Reflect.get(delegator, prop)?.bind(receiver) ?? value.bind(target)
+          return (
+            Reflect.get(delegator, prop)?.bind(receiver) ?? value.bind(target)
+          )
         return value
       }
     })

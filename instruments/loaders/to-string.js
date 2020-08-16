@@ -1,5 +1,5 @@
 /**
- * @param {{toString:() => string}} content
+ * @param {{ toString: () => string }} content
  * @this {import('webpack').loader.LoaderContext}
  */
 function loader(content) {

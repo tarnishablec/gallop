@@ -18,7 +18,9 @@ export function removeNodes(
   return range.extractContents()
 }
 
-export const generateEventOptions = (set: Set<string>): AddEventListenerOptions => ({
+export const generateEventOptions = (
+  set: Set<string>
+): AddEventListenerOptions => ({
   capture: set.has('capture'),
   once: set.has('once'),
   passive: set.has('passive')

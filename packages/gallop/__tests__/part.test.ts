@@ -8,9 +8,9 @@ describe('part', () => {
     `
     const remove = render(div)
 
-    expect(document.querySelector('#test-class')?.classList.contains('active')).toBe(
-      true
-    )
+    expect(
+      document.querySelector('#test-class')?.classList.contains('active')
+    ).toBe(true)
     remove()
   })
 

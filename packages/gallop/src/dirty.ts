@@ -5,7 +5,8 @@ export class Recycler {
 
   static markDirty = (target: object) => Recycler.dirtyCollectionSet.add(target)
 
-  static checkDirty = (target: object) => Recycler.dirtyCollectionSet.has(target)
+  static checkDirty = (target: object) =>
+    Recycler.dirtyCollectionSet.has(target)
 
   static resetDirtyCollectionSet = () =>
     (Recycler.dirtyCollectionSet = new WeakSet())

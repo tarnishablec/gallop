@@ -24,9 +24,9 @@ describe('hooks', () => {
 
     render(html` <test-state></test-state> `)
     setTimeout(() => {
-      expect((document.querySelector('test-state') as ReactiveElement).$state).toBe(
-        temp
-      )
+      expect(
+        (document.querySelector('test-state') as ReactiveElement).$state
+      ).toBe(temp)
     }, 0)
 
     setTimeout(() => {
@@ -96,7 +96,9 @@ describe('hooks', () => {
         expect(
           (c.shadowRoot?.firstChild as HTMLDivElement).getAttribute('style')
         ).toBe(`color:red;background:white`)
-        const button = c.shadowRoot?.querySelector('button') as HTMLButtonElement
+        const button = c.shadowRoot?.querySelector(
+          'button'
+        ) as HTMLButtonElement
         button.dispatchEvent(new Event('click'))
         resolve()
       }, 500)
