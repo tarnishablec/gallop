@@ -29,11 +29,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "peerDependencies": {
-    "@gallop/gallop": "^0.9.19"
-  },
   "dependencies": {
     "path-to-regexp": "^6.1.0"
   },
-  "version": "0.0.3"
+  "version": "0.0.3",
+  "peerDependencies": {
+    "@gallop/gallop": ">=0.9.56"
+  }
 }

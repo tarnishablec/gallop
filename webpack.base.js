@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const LinkCssPlugin = require('link-css-plugin')
+const LinkFilePlugin = require('link-file-plugin')
 const path = require('path')
 const { DefinePlugin } = require('webpack')
 const chalk = require('chalk')
@@ -121,7 +121,10 @@ const config = (dir) => (env, args) => {
             {
               resourceQuery: /link/,
               rules: [
-                { loader: LinkCssPlugin.loader, options: { link: false } },
+                {
+                  loader: LinkFilePlugin.loader,
+                  options: { rels: ['preload'], as: 'style', slient: true }
+                },
                 // { loader: MiniCssExtractPlugin.loader },
                 {
                   loader: 'file-loader',
@@ -218,7 +221,8 @@ const config = (dir) => (env, args) => {
       useLocalIp: true,
       watchOptions: {
         ignored: /__tests__/
-      }
+      },
+      hot: true
     },
     plugins: [
       new CleanWebpackPlugin({
@@ -259,7 +263,7 @@ const config = (dir) => (env, args) => {
       new MiniCssExtractPlugin({
         filename: 'css/[name].css'
       }),
-      new LinkCssPlugin()
+      new LinkFilePlugin()
       // new CompressionPlugin({
       //   include: /\.js$/,
       //   filename: '[path].gz',

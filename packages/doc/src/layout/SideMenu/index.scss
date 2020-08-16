@@ -73,6 +73,7 @@ li {
 li.primary-menu::before {
   content: '»';
   position: absolute;
+  display: inline-block;
   left: 1rem;
   color: rgba(0, 0, 0, 0.5);
 }
