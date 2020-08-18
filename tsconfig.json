@@ -57,7 +57,6 @@
       "node",
       "jest",
       "marked",
-      "highlight.js",
       "webpack-env",
       "prismjs"
     ] /* Type declaration files to be included in compilation. */,
