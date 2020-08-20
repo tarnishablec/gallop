@@ -12,11 +12,11 @@ const filesNeedReplace = [
 main()
 
 async function main() {
-  await run(
+  run(
     `git remote add template https://github.com/tarnishablec/typescript-monorepo-template.git`
   )
-  await run(`git fetch template`)
-  await run(`git merge template/master --allow-unrelated-histories`)
+  run(`git fetch template`)
+  run(`git merge template/master --allow-unrelated-histories`)
 
   filesNeedReplace.forEach((f) => {
     const filePath = path.resolve(__dirname, '..', f)
@@ -28,5 +28,5 @@ async function main() {
 
   fse.removeSync(path.resolve(__dirname, '../packages/oruo'))
   const name = require('../package.json').name
-  await run(`yarn run new ${name}`)
+  run(`yarn run new ${name}`)
 }

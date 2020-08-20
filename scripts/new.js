@@ -8,7 +8,7 @@ async function main() {
   const cache = [...args._]
   const noscope = args.noscope
   await createPackages(args._, noscope)
-  await run(
+  run(
     `yarn run boot ${resolveTargets(cache).join(' ')} --init --force ${
       noscope ? '--noscope' : ''
     }`
@@ -20,7 +20,7 @@ async function createPackages(names, noscope = false) {
     return
   } else {
     const fullname = `${noscope ? `@${scope}/` : ''}${names.shift()}`
-    await run(`lerna create ${fullname} --yes`)
-    await createPackages(names)
+    run(`lerna create ${fullname} --yes`)
+    createPackages(names)
   }
 }

@@ -18,6 +18,6 @@ const resolveTargets = (argsTargets, all = false) =>
   )
 
 const run = (command, ...opts) =>
-  execa.command(command, { stdio: 'inherit', ...opts })
+  execa.commandSync(command, { stdio: 'inherit', ...opts })
 
 module.exports = { excludes, resolveTargets, run }

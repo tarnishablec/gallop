@@ -3,13 +3,13 @@ const { run } = require('./utils')
 main()
 
 async function main() {
-  await run(`yarn run build`)
-  await run(`git add .`)
+  run(`yarn run build`)
+  run(`git add .`)
   try {
-    await run(`git commit`)
+    run(`git commit`)
   } catch (error) {
     console.log(error)
   }
-  await run(`lerna publish`)
-  await run('yarn run clean')
+  run(`lerna publish`)
+  run('yarn run clean')
 }

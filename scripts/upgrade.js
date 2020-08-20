@@ -1,62 +1,31 @@
-const execa = require('execa')
-const target = require('minimist')(process.argv.slice(2))._
-const { scope } = require('../scripts/setting')
+const { run } = require('./utils')
+const { cyan } = require('chalk')
+const ncu = require('npm-check-updates')
+const { _: targets, y } = require('minimist')(process.argv.slice(2))
 
-if (Array.isArray(target) && target.length > 1) {
-  throw new Error('can only upgrade at most one package')
-}
-
-const pkg =
-  target.length !== 0
-    ? require(`../packages/${target}/package.json`)
-    : require('../package.json')
-
-const options = {
-  devDependencies: {
-    tag: '-D'
-  },
-  peerDependencies: {
-    tag: '-P'
-  },
-  dependencies: {
-    tag: ''
-  }
-}
-
-const depFields = {}
-
-for (const opt in options) {
-  if (pkg[opt]) {
-    depFields[opt] = {
-      ...options[opt],
-      data: Object.keys(pkg[opt]).join(' ')
+async function upgrade() {
+  if (!targets.length) {
+    await ncu.run({
+      packageManager: 'yarn',
+      upgrade: !!y
+    })
+  } else {
+    for (let i = 0; i < targets.length; i++) {
+      const target = targets[i]
+      await ncu
+        .run({
+          silent: true,
+          upgrade: !!y,
+          packageFile: `./packages/${target.split('/').pop()}/package.json`
+        })
+        .then((res) =>
+          console.log(
+            cyan(`[${target}] dependencies to upgrade: ${JSON.stringify(res)}`)
+          )
+        )
     }
   }
-}
-
-console.log(depFields)
-
-function upgrade() {
-  for (const dep in depFields) {
-    if (!target.length) {
-      execa.commandSync(
-        `yarn add ${depFields[dep].data} ${depFields[dep].tag} -W`,
-        {
-          stdio: 'inherit'
-        }
-      )
-    } else {
-      execa.commandSync(
-        `lerna add ${depFields[dep].tag} ${depFields[dep].data} --scope @${scope}/${target}`,
-        {
-          stdio: 'inherit'
-        }
-      )
-    }
-  }
+  !!y && run(`lerna bootstrap`)
 }
 
 upgrade()
-execa.commandSync(`lerna bootstrap`, {
-  stdio: 'inherit'
-})
