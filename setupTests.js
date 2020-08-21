@@ -12,7 +12,7 @@ global.Range = function Range() {}
  * https://stackoverflow.com/questions/42213522/mocking-document-createrange-for-j
  * st watch out ❗
  *
- * @param html String}
+ * @param {string} html
  * @returns {DocumentFragment}
  */
 const createContextualFragment = (html) => {

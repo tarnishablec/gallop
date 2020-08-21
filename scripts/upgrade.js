@@ -1,14 +1,11 @@
 const { run } = require('./utils')
 const { cyan } = require('chalk')
 const ncu = require('npm-check-updates')
-const { _: targets, y } = require('minimist')(process.argv.slice(2))
+const { _: targets, y, i } = require('minimist')(process.argv.slice(2))
 
 async function upgrade() {
   if (!targets.length) {
-    await ncu.run({
-      packageManager: 'yarn',
-      upgrade: !!y
-    })
+    run(`ncu ${y ? '-u' : ''} ${i ? '-i' : ''} -p yarn`)
   } else {
     for (let i = 0; i < targets.length; i++) {
       const target = targets[i]
@@ -16,6 +13,7 @@ async function upgrade() {
         .run({
           silent: true,
           upgrade: !!y,
+          interactive: true,
           packageFile: `./packages/${target.split('/').pop()}/package.json`
         })
         .then((res) =>

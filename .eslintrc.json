@@ -18,7 +18,7 @@
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "jsdoc"],
   "rules": {
     "no-unused-vars": "off",
     "no-debugger": "warn",

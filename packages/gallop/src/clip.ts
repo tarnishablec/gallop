@@ -7,6 +7,7 @@ import { hashify } from './utils'
 const range = new Range()
 
 export class HTMLClip extends DoAble(Object) {
+  [key: string]: unknown
   constructor(
     protected strs: TemplateStringsArray,
     protected vals: ReadonlyArray<unknown>

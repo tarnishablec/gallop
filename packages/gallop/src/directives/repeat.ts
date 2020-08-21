@@ -149,7 +149,7 @@ export const repeat = directive(function <T>(
     const arrPart = forceGet(
       arrPartMap,
       part,
-      () => new ArrayPart({ ...part.location })
+      () => new ArrayPart(part.location)
     )
     const arrPartKeyPartMap = arrPart.keyPartMap
     const oldKeys = arrPart.keys

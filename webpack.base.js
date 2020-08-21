@@ -56,7 +56,7 @@ const config = (dir) => (env, args) => {
     //   ignored: /node_modules/,
     // },
     resolve: {
-      extensions: ['.ts', '.js', '.scss'],
+      extensions: ['.ts', '.js', '.scss', 'css'],
       alias: {
         '@doc': path.resolve(__dirname, 'packages/doc/src')
       }

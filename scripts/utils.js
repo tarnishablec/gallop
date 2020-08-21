@@ -17,7 +17,8 @@ const resolveTargets = (argsTargets, all = false) =>
     }
   )
 
-const run = (command, ...opts) =>
+/** @param {import('execa').SyncOptions} opts */
+const run = (command, opts) =>
   execa.commandSync(command, { stdio: 'inherit', ...opts })
 
 module.exports = { excludes, resolveTargets, run }

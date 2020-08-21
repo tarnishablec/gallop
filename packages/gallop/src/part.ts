@@ -13,8 +13,8 @@ export type PartLocation = AttrPartLocation | NodePartLocation
 export interface Part {
   value: unknown
   location: PartLocation
-  setValue(val: unknown): void
-  clear(): void
+  setValue(val: unknown): unknown
+  clear(): unknown
 }
 
 export class NodePart implements Part {
@@ -30,7 +30,9 @@ export class NodePart implements Part {
     return new NodePart({ startNode, endNode })
   }
 
-  setValue(val: unknown): void {
+  setValue(val: HTMLClip): Patcher
+  setValue(val: unknown): unknown
+  setValue(val: unknown) {
     if (resolveDirective(val, this)) return
 
     if (val === void 0 || val === null) {
@@ -51,10 +53,11 @@ export class NodePart implements Part {
     }
 
     this.value = result
+    return this.value
   }
-  clear(): void {
+  clear() {
     const { startNode, endNode } = this.location
-    removeNodes(startNode, endNode)
+    return removeNodes(startNode, endNode)
   }
 
   destroy() {
