@@ -14,6 +14,7 @@ async function upgrade() {
           silent: true,
           upgrade: !!y,
           interactive: true,
+          packageManager: 'yarn',
           packageFile: `./packages/${target.split('/').pop()}/package.json`
         })
         .then((res) =>

@@ -24,9 +24,8 @@ export const keep = directive((view: unknown) => (part) => {
   )
 
   if (view instanceof HTMLClip) {
-    const _key = Reflect.get(view, __key__)
-    if (_key) {
-      const key = _key as Key
+    const key = Reflect.get(view, __key__) as Key | undefined
+    if (key) {
       const { now, cache } = alivePart
       if (now === key) {
         part.setValue(view)
