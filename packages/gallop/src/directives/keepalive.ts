@@ -26,36 +26,32 @@ export const keep = directive((view: unknown) => (part) => {
   const oldPatcher = part.value
   const { cache, now } = alivePart
 
-  const nodes = part.clear()
+  let key: Key | undefined
+
+  if (view instanceof HTMLClip) key = Reflect.get(view, __key__)
+
+  if (key === now) return part.setValue(view)
 
   if (now && oldPatcher instanceof Patcher) {
-    oldPatcher.dof = nodes
+    oldPatcher.dof = part.clear()
+    cache.set(now, oldPatcher)
   }
 
+  alivePart.now = key
 
-  if (view instanceof HTMLClip) {
-    const key = Reflect.get(view, __key__) as Key | undefined
-
-    if (key) {
-      const p = cache.get(key)
-      alivePart.now = key
-      if (p) {
-        p.patch(view.do(getVals))
-        const { endNode } = part.location
-        const parentNode = endNode.parentNode!
-        p.appendTo(parentNode, endNode)
-        part.value = p
-        return
-      } else {
-        const patcher = part.setValue(view)
-        cache.set(key, patcher)
-        return
-      }
+  if (key !== void 0) {
+    const patcher = cache.get(key)
+    const { endNode } = part.location
+    if (patcher) {
+      patcher.patch((view as HTMLClip).do(getVals))
+      patcher.appendTo(endNode.parentNode!, endNode)
+      part.value = patcher
+    } else {
+      cache.set(key, part.setValue(view as HTMLClip))
     }
+  } else {
+    part.setValue(view)
   }
-
-  alivePart.now = undefined
-  part.setValue(view)
 })
 
 export const alive = (key: Key) => (

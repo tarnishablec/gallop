@@ -48,10 +48,16 @@ component('test-mmm', function (this: ReactiveElement) {
     <button
       @click="${() => {
         state.a++
+      }}"
+    >
+      a ++
+    </button>
+    <button
+      @click="${() => {
         state.b++
       }}"
     >
-      aaa
+      b ++
     </button>
     <div>
       ${dynamic({
@@ -101,7 +107,7 @@ component('test-mmm', function (this: ReactiveElement) {
           ? alive(+true)`
         <test-b :text="${state.a}"></test-b>
         <hr>
-        <test-b></test-b>
+        <test-b :text="${state.b}"></test-b>
       `
           : null
       )}
