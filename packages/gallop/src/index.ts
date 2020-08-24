@@ -38,4 +38,12 @@ export {
   ensurePartType,
   checkDependsDirty
 } from './directive'
-export { repeat, dynamic, suspense, portal, raw } from './directives'
+export {
+  repeat,
+  dynamic,
+  suspense,
+  portal,
+  raw,
+  keep,
+  alive
+} from './directives'

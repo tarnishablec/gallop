@@ -7,18 +7,26 @@ import {
   useMemo,
   ReactiveElement,
   dynamic,
-  repeat
+  repeat,
+  keep,
+  alive
 } from '@gallop/gallop'
 
-component(
-  'test-a',
-  ({ text }: { text: string }) => html`<div>
-    this is test a&nbsp;${text}
+component('test-b', ({ text }: { text: string }) => {
+  const [state] = useState({ b: 1 })
+
+  return html`<div>
+    this is test b&nbsp;${text}
+    <br/>
+    state is ${state.b}
     <div>
       <slot>
     </div>
+    <div>
+      <button @click="${() => state.b++}">state ++</button>
+    </div>
   </div>`
-)
+})
 
 component('test-mmm', function (this: ReactiveElement) {
   const [state] = useState({
@@ -47,9 +55,9 @@ component('test-mmm', function (this: ReactiveElement) {
     </button>
     <div>
       ${dynamic({
-        name: 'test-a',
+        name: 'test-b',
         props: { text: 'haha' },
-        inner: html` <div>${memo} in test-a slot</div> `
+        inner: html` <div>${memo} in test-b slot</div> `
       })}
     </div>
     <hr />
@@ -61,24 +69,6 @@ component('test-mmm', function (this: ReactiveElement) {
         }}"
       >
         circle move to start
-      </button>
-    </div>
-    <div>
-      ${repeat(
-        state.arr,
-        (item) => item,
-        (item) => html` <div @click="${() => console.log(item)}">${item}</div>`
-      )}
-    </div>
-    <hr />
-    <div>
-      <button
-        @click="${() => {
-          state.arr.push(state.arr.shift()!)
-          console.log(state.arr)
-        }}"
-      >
-        circle move to end
       </button>
     </div>
     <div>
@@ -102,6 +92,19 @@ component('test-mmm', function (this: ReactiveElement) {
       <button @click="${() => (state.checked = !state.checked)}">
         toggle checked
       </button>
+    </div>
+    <hr />
+    <div>
+      <div>keepalive</div>
+      ${keep(
+        a % 2
+          ? alive(+true)`
+        <test-b :text="${state.a}"></test-b>
+        <hr>
+        <test-b></test-b>
+      `
+          : null
+      )}
     </div>
   `
 })
