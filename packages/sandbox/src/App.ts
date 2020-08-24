@@ -9,7 +9,7 @@ import {
   dynamic,
   repeat,
   keep,
-  alive
+  setAlive
 } from '@gallop/gallop'
 
 component('test-b', ({ text }: { text: string }) => {
@@ -104,11 +104,11 @@ component('test-mmm', function (this: ReactiveElement) {
       <div>keepalive</div>
       ${keep(
         a % 2
-          ? alive(+true)`
-        <test-b :text="${state.a}"></test-b>
-        <hr>
-        <test-b :text="${state.b}"></test-b>
-      `
+          ? html`
+              <test-b :text="${state.a}"></test-b>
+              <hr />
+              <test-b :text="${state.b}"></test-b>
+            `.do(setAlive, +true)
           : null
       )}
     </div>

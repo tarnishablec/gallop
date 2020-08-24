@@ -5,7 +5,7 @@ import { HTMLClip, getVals } from '../clip'
 import { NodePart } from '../part'
 import { Patcher } from '../patcher'
 
-const __key__ = Symbol('key')
+const __key__ = Symbol('alive')
 
 const alivePartMap = new WeakMap<NodePart, AlivePart>()
 
@@ -61,4 +61,9 @@ export const alive = (key: Key) => (
   const clip = html(strs, ...vals)
   Reflect.set(clip, __key__, key)
   return clip
+}
+
+export function setAlive(this: HTMLClip, key: Key) {
+  Reflect.set(this, __key__, key)
+  return this
 }

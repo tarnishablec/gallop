@@ -38,6 +38,7 @@ export {
   ensurePartType,
   checkDependsDirty
 } from './directive'
+
 export {
   repeat,
   dynamic,
@@ -45,5 +46,6 @@ export {
   portal,
   raw,
   keep,
-  alive
+  alive,
+  setAlive
 } from './directives'
