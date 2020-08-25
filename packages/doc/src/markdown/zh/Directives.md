@@ -14,7 +14,7 @@ const countPlusOne = directive((count: number) => (part: Part) => {
   /**
    * do something to part or view
    */
-  part.setValue(count + 1) // use `setValue` api to render
+  part.setValue(count + 1) // use `setValue` api to call gallop renderer
 })
 
 const template = html`<div>${countPlusOne(1)}</div>` // render 2

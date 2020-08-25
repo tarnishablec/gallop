@@ -2,7 +2,6 @@ packages/doc/public/prism.js
 node_modules
 .idea
 
-dist
 coverage
 
 lerna-debug.log
