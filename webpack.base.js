@@ -1,6 +1,6 @@
 // @ts-check
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
+// const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -15,7 +15,7 @@ const version = require('./packages/gallop/package.json').version.replace(
   ''
 )
 
-const instrumentsPath = path.resolve(__dirname, './instruments')
+// const instrumentsPath = path.resolve(__dirname, './instruments')
 
 /**
  * @param {string} dir
@@ -98,12 +98,7 @@ const config = (dir) => (env, args) => {
                   }
                 },
                 { loader: 'extract-loader' },
-                {
-                  loader: path.resolve(
-                    instrumentsPath,
-                    './loaders/to-string.js'
-                  )
-                },
+                { loader: '2string-loader' },
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
@@ -117,12 +112,7 @@ const config = (dir) => (env, args) => {
             {
               resourceQuery: /raw/,
               rules: [
-                {
-                  loader: path.resolve(
-                    instrumentsPath,
-                    './loaders/to-string.js'
-                  )
-                },
+                { loader: '2string-loader' },
                 { loader: 'css-loader', options: { sourceMap: false } },
                 {
                   loader: 'postcss-loader',
@@ -147,12 +137,7 @@ const config = (dir) => (env, args) => {
                   }
                 },
                 { loader: 'extract-loader' },
-                {
-                  loader: path.resolve(
-                    instrumentsPath,
-                    './loaders/to-string.js'
-                  )
-                },
+                { loader: '2string-loader' },
                 { loader: 'css-loader', options: { sourceMap: false } },
                 {
                   loader: 'postcss-loader',
@@ -251,7 +236,7 @@ const config = (dir) => (env, args) => {
             : ''
         }
       }),
-      new ScriptExtHtmlWebpackPlugin({}),
+      // new ScriptExtHtmlWebpackPlugin({}),
       new DefinePlugin({
         __prod__
       }),
