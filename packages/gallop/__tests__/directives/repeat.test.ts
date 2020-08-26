@@ -1,4 +1,4 @@
-import { render, html, repeat } from '@gallop/gallop/src'
+import { render, html, repeat } from '../../src'
 
 describe('repeat', () => {
   test('should not have duplicated key', () => {
