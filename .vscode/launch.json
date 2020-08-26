@@ -10,7 +10,7 @@
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true,
-      "program": "${file}"
+      "program": "${workspaceFolder}\\scripts\\debug.js"
     }
   ]
 }
