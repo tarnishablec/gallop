@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 // const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const LinkFilePlugin = require('link-file-plugin')
 const path = require('path')
@@ -150,9 +150,18 @@ const config = (dir) => (env, args) => {
             },
             {
               rules: [
-                __prod__
-                  ? { loader: MiniCssExtractPlugin.loader }
-                  : { loader: 'style-loader' },
+                {
+                  loader: LinkFilePlugin.loader,
+                  options: { rels: ['stylesheet'], slient: false }
+                },
+                {
+                  loader: 'file-loader',
+                  options: {
+                    name: 'css/[contenthash:10].css'
+                  }
+                },
+                { loader: 'extract-loader' },
+                { loader: '2string-loader' },
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
@@ -252,9 +261,9 @@ const config = (dir) => (env, args) => {
           }
         ]
       }),
-      new MiniCssExtractPlugin({
-        filename: 'css/[name].css'
-      }),
+      // new MiniCssExtractPlugin({
+      //   filename: 'css/[name].css'
+      // }),
       new LinkFilePlugin()
       // new CompressionPlugin({
       //   include: /\.js$/,

@@ -34,7 +34,8 @@
     ]
   },
   "eslintIgnore": [
-    "packages/*/dist/*"
+    "packages/*/dist/*",
+    "node_modules"
   ],
   "devDependencies": {
     "2string-loader": "^1.0.0",
@@ -69,14 +70,14 @@
     "husky": "^4.2.5",
     "jest": "^26.4.2",
     "lerna": "^3.22.1",
-    "link-file-plugin": "^0.0.13",
+    "link-file-plugin": "^0.0.14",
     "lint-staged": "^10.2.13",
     "loader-utils": "^2.0.0",
     "mini-css-extract-plugin": "^0.10.0",
     "minimist": "^1.2.5",
     "npm-check-updates": "^7.1.1",
     "postcss-loader": "^3.0.0",
-    "prettier": "^2.1.0",
+    "prettier": "^2.1.1",
     "prettier-plugin-jsdoc": "^0.0.26",
     "raw-loader": "^4.0.1",
     "rollup": "^2.26.5",
@@ -87,7 +88,7 @@
     "script-ext-html-webpack-plugin": "^2.1.4",
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^4.1.0",
-    "ts-jest": "^26.2.0",
+    "ts-jest": "^26.3.0",
     "ts-loader": "^8.0.3",
     "typescript": "^4.0.2",
     "url-loader": "^4.1.0",
