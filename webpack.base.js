@@ -140,7 +140,6 @@ const config = (dir) => (env, args) => {
                   loader: LinkFilePlugin.loader,
                   options: { rels: ['preload'], as: 'style', slient: true }
                 },
-                // { loader: MiniCssExtractPlugin.loader },
                 {
                   loader: 'file-loader',
                   options: {
@@ -169,18 +168,6 @@ const config = (dir) => (env, args) => {
                 __prod__
                   ? { loader: MiniCssExtractPlugin.loader }
                   : { loader: 'style-loader' },
-                // {
-                //   loader: LinkCssPlugin.loader,
-                //   options: { link: true, preload: false }
-                // },
-                // {
-                //   loader: 'file-loader',
-                //   options: {
-                //     name: 'css/[contenthash:10].css'
-                //   }
-                // },
-                // { loader: 'extract-loader' },
-                // { loader: path.resolve(instrumentsPath, './loaders/to-string.js') },
                 { loader: 'css-loader' },
                 {
                   loader: 'postcss-loader',
