@@ -70,4 +70,4 @@ component(`test-style`, () => {
 
 上面的代码用到了两个常用的用于`sass`处理的`webpack loader`，如果你不太了解`webpack`的`loader`，请阅读[sass-loader](https://webpack.js.org/loaders/sass-loader/)/[css-loader](https://webpack.js.org/loaders/css-loader/)。
 
-但是上述的方法并非所情况下的最佳实践，如果你想进一步了解具体如何处理，也可以阅读此文档的[源码](https://github.com/tarnishablec/gallop/blob/master/packages/doc/src/layout/AppMain/index.ts)。
+但是上述的方法并非所情况下的最佳实践，如果你想进一步了解具体如何处理，也可以阅读此文档的[源码](https://github.com/tarnishablec/gallop/blob/master/packages/doc/src/components/MarkDown/index.ts)。
