@@ -12,5 +12,6 @@
   "Directives": "函数指令",
   "State-Management": "状态管理",
   "Style": "样式",
-  "Component-In-Depth": "深入理解组件"
+  "Component-In-Depth": "深入理解组件",
+  "Component-Update": "组件更新"
 }

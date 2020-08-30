@@ -48,7 +48,7 @@ export const menuData: { menu: { name: Name; children?: Name[] }[] } = {
         'State-Management'
       ]
     },
-    { name: 'Component-In-Depth' }
+    { name: 'Component-In-Depth', children: ['Component-Update'] }
   ]
 }
 
