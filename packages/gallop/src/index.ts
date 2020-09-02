@@ -12,7 +12,6 @@ export {
   mergeProps,
   queryPoolAll,
   queryPool,
-  componentPool,
   elementPool,
   observeDisconnect
 } from './component'
