@@ -4,6 +4,8 @@ export { HTMLClip } from './clip'
 export { Patcher } from './patcher'
 export { Looper } from './loop'
 
+export { createProxy } from './reactive'
+
 export {
   ReactiveElement,
   Component,
