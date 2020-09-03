@@ -15,6 +15,7 @@ export {
   queryPoolAll,
   queryPool,
   elementPool,
+  componentPool,
   observeDisconnect
 } from './component'
 

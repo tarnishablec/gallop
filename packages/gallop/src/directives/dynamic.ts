@@ -1,6 +1,6 @@
 import { directive, ensurePartType } from '../directive'
 import { NodePart } from '../part'
-import { ReactiveElement, mergeProps, elementPool } from '../component'
+import { ReactiveElement, mergeProps, componentPool } from '../component'
 import { Obj } from '../utils'
 import { HTMLClip } from '../clip'
 
@@ -20,7 +20,7 @@ export const dynamic = directive(
       mergeProps(el, props)
     } else {
       elChanged = true
-      if (!elementPool.has(name))
+      if (!componentPool.has(name))
         throw new SyntaxError(`[${name}] is not a ReactiveElement`)
       part.clear()
       el = document.createElement(name) as ReactiveElement

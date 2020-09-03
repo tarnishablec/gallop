@@ -13,6 +13,7 @@ type RegisterOption = {
   shadow?: boolean
 }
 
+export const componentPool = new Set<string>()
 export const elementPool = new Map<string, Set<ReactiveElement>>()
 export interface ReactiveElement<
   Props extends Obj = Obj,
@@ -92,6 +93,7 @@ export function component<F extends Component>(
       return this.$root.querySelector(selectors) as T
     }
   }
+  componentPool.add(name)
   customElements.define(name, clazz, { extends: extend })
 }
 
