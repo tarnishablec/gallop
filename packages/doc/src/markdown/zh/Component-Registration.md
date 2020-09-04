@@ -4,12 +4,13 @@
 import { component, html } from '@gallop/gallop'
 
 component(
-  'component-name', // component-name
-  () => {
-    // render function
+  'hello-world', // component name
+  ({ name, age }: { name: string; age: number } /* props */) => {
+    /* render function */
     return html`...`
   },
   {
+    shadow: true
     /* component options */
   }
 )
@@ -21,4 +22,8 @@ component(
 
 - 渲染函数
 
-  这个函数必须返回一个[HTMLClip](/#HTMLClip)。
+  渲染函数必须返回一个[HTMLClip](/#HTMLClip)，这个函数的第一个参数可以传入一个对象，这个对象就对应了组件的`props`，这和`react`里的函数式组件大概一致。
+
+- 注册选项(可选)
+
+  这个参数暴露了一些选项，假如你想要注册不附带`shadowroot`的组件，可以将`shadow`设置为`false`，默认为`true`。

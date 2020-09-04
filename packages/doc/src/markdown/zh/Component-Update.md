@@ -12,7 +12,7 @@
 
 - 异步更新队列
 
-  假设我们有这么一个组件，他有一个`state`，我们在一个循环里`同步地`对状态改变了 10000 次，这是否意味着我们要对这个组件做`更新执行`10000 次呢，显然这是不需要的，我们只需要看到最后那一次更新的视图结果就够了。`异步更新队列`就是为了**去除不必要的计算**而存在的，这个队列听上去非常的棒，实际上它在`gallop`里的实现也是**非常非常的简单**，如果有兴趣可以阅读下[源码](https://github.com/tarnishablec/gallop/blob/master/packages/gallop/src/loop.ts)，在这里不做赘述。在下面的例子里，你可以看到在每一次对`state`进行 10000 遍跟新时，实际只执行了一次模板的计算。
+  假设我们有这么一个组件，他有一个`state`，我们在一个循环里`同步地`对状态改变了 10000 次，这是否意味着我们要对这个组件做`更新执行`10000 次呢，显然这是不需要的，我们只需要看到最后那一次更新的视图结果就够了。`异步更新队列`就是为了**去除不必要的计算**而存在的，这个队列听上去非常的棒，实际上它在`gallop`里的实现也是**非常非常的简单**，如果有兴趣可以阅读下[源码](https://github.com/tarnishablec/gallop/blob/master/packages/gallop/src/loop.ts)，在这里不做赘述。在下面的例子里，你可以看到在每一次对`state`进行 10000 遍更新时，实际只执行了一次模板的计算。
 
   <iframe height="465" style="width: 100%;" scrolling="no" title="Component-Update" src="https://codepen.io/tarnishablec/embed/preview/qBZVbzz?height=265&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
     See the Pen <a href='https://codepen.io/tarnishablec/pen/qBZVbzz'>Component-Update</a> by tarnishablec
