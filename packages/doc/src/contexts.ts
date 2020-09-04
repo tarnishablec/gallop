@@ -1,5 +1,5 @@
 import { createContext, ContextOptions } from '@gallop/gallop'
-import type json from '@doc/language/zh.json'
+import json from '@doc/language/zh.json'
 
 export type Name = keyof typeof json
 
@@ -48,7 +48,10 @@ export const menuData: { menu: { name: Name; children?: Name[] }[] } = {
         'State-Management'
       ]
     },
-    { name: 'Component-In-Depth', children: ['Component-Update'] }
+    {
+      name: 'Component-In-Depth',
+      children: ['Component-Registration', 'Component-Update', 'Access-Dom']
+    }
   ]
 }
 

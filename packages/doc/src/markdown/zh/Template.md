@@ -1,6 +1,8 @@
 `gallop`以`es6`的[标签模板字符串](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)作为模板编写的基础，并得以在运行时确定模板内部静态的[动态部分](/#Part)，从而以较小的成本确定`在哪、何时、如何`去更新 dom，这同样借鉴了`Lit-html`。另外，在`gallop`的模板中**没有根节点必须只有一个的限制**。
 
-`gallop`初始提供了两个`标签`对模板进行解析，它们分别是`html`和`css`，用来处理 html 模板和样式，它们的实现非常简单，你可以进一步扩展自定义的标签去对模板字符串进行定制化的解析或者为模板附加`meta data`，在[keepalive](/#keepalive)的实现中就利用了这一技巧。
+`gallop`初始提供了两个`标签`对模板进行解析，它们分别是`html`和`css`，用来处理 html 模板和样式。`html`标签返回一个[HTMLClip](/#HTMLClip)，`css`标签返回一个字符串。
+
+值得一提的是，你并不是一定要使用`html`标签来书写模板，`gallop`接收任何类型是[HTMLClip](/#HTMLClip)的内容来进行渲染。你可以进一步扩展自定义的标签去对模板字符串进行定制化的解析或者为模板附加`meta data`，在[keepalive](/#keepalive)的实现中就利用了这一技巧。
 
 🔌 _幸运的是，你不必担心在模板字符串中书写`html`会很麻烦，`vscode`社区已经有很好的插件支持，我个人推荐的方法是在`vscode`中安装`lit-html`和`vscode-styled-components`插件，然后设置`vscode`的`.ts`文件解析规则为`typescript-react`，也许未来会开发自己的插件。_
 
