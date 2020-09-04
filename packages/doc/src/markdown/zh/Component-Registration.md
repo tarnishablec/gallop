@@ -5,7 +5,17 @@ import { component, html } from '@gallop/gallop'
 
 component(
   'hello-world', // component name
-  ({ name, age }: { name: string; age: number } /* props */) => {
+  (
+    {
+      name = 'wukong' /* prop default value */,
+      age,
+      male
+    }: {
+      name: string
+      age: number
+      male?: boolean /* optional prop */
+    } /* props */
+  ) => {
     /* render function */
     return html`...`
   },
