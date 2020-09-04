@@ -39,7 +39,7 @@ component('doc-guide', function (this: ReactiveElement) {
       el?.scrollIntoView({ behavior: 'smooth' })
       timeout = setTimeout(() => {
         window.location.hash = ''
-      }, 2500)
+      }, 1750)
     }
     window.addEventListener('hashchange', handler)
     return () => {
