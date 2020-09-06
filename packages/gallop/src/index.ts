@@ -36,6 +36,7 @@ export { NodePart, AttrPart, PropPart, EventPart, Part } from './part'
 export {
   directive,
   directives,
+  DirectiveFn,
   resolveDirective,
   ensurePartType,
   checkDependsDirty

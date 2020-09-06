@@ -37,22 +37,17 @@ export const menuData: { menu: { name: Name; children?: Name[] }[] } = {
     },
     {
       name: 'Main-Concepts',
-      children: [
-        'Template',
-        'Part',
-        'Component',
-        'Event',
-        'Style',
-        'Hooks',
-        'Directives',
-        'State-Management'
-      ]
+      children: ['Template', 'Part', 'Component', 'Event', 'Style']
     },
     {
       name: 'Component-In-Depth',
       children: ['Component-Registration', 'Component-Update', 'Access-Dom']
     },
-    { name: 'Extensibility' }
+    {
+      name: 'Extensibility',
+      children: ['Hooks', 'Directives', 'Template-Tag']
+    },
+    { name: 'State-Management', children: ['Context'] }
   ]
 }
 
