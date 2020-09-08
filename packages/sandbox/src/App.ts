@@ -112,6 +112,12 @@ component('test-mmm', function (this: ReactiveElement) {
           : null
       )}
     </div>
+    <hr />
+    ${html`<table>
+      ${html`<tr>
+        ${html`<td>1</td>`}
+      </tr>`}
+    </table>`}
   `
 })
 

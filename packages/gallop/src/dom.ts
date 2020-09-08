@@ -25,3 +25,36 @@ export const generateEventOptions = (
   once: set.has('once'),
   passive: set.has('passive')
 })
+
+const range = new Range()
+const tableRange = new Range()
+
+const table = document.createElement('table')
+const tbody = document.createElement('tbody')
+const tr = document.createElement('tr')
+tbody.append(tr)
+table.append(tbody)
+
+/**
+ * https://stackoverflow.com/questions/43102944/cannot-create-documentfragment-storing-td-tr-or-th
+ */
+export function createFragment(str: string) {
+  const firstTag = str.match(/^<(\S+?)>/)?.[1]
+  if (firstTag && ['tbody', 'tr', 'td'].includes(firstTag)) {
+    switch (firstTag) {
+      case 'tbody':
+        tableRange.selectNodeContents(table)
+        break
+      case 'tr':
+        tableRange.selectNodeContents(tbody)
+        break
+      case 'td':
+        tableRange.selectNodeContents(tr)
+        break
+      default:
+        break
+    }
+    return tableRange.createContextualFragment(str)
+  }
+  return range.createContextualFragment(str)
+}
