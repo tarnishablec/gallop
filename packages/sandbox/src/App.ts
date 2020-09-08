@@ -114,9 +114,23 @@ component('test-mmm', function (this: ReactiveElement) {
     </div>
     <hr />
     ${html`<table>
-      ${html`<tr>
-        ${html`<td>1</td>`}
-      </tr>`}
+      ${html`<caption style="caption-side: bottom;">
+        caption
+      </caption>`}
+      ${html`<colgroup>
+        ${html`<col />`}
+      </colgroup>`}
+      ${html`<thead></thead>`}
+      ${html`<tbody>
+        ${html`<tr>
+          ${html`<td>1</td>`}
+        </tr>`}
+      </tbody>`}
+      ${html`<tfoot>
+        <tr>
+          <td>foot</td>
+        </tr>
+      </tfoot>`}
     </table>`}
   `
 })

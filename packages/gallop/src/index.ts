@@ -52,3 +52,5 @@ export {
   alive,
   setAlive
 } from './directives'
+
+export { createFragment, insertAfter, cleanDomStr, removeNodes } from './dom'
