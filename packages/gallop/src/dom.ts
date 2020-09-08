@@ -35,25 +35,26 @@ const tr = document.createElement('tr')
 const colgroup = document.createElement('colgroup')
 
 /**
- * https://stackoverflow.com/questions/43102944/cannot-create-documentfragment-storing-td-tr-or-th
  * https://developer.mozilla.org/en-US/docs/Web/HTML/Element#Table_content
  */
+const tableTags = [
+  'tbody',
+  'thead',
+  'tfoot',
+  'caption',
+  'colgroup',
+  'col',
+  'tr',
+  'td',
+  'th'
+]
+
+/**
+ * https://stackoverflow.com/questions/43102944/cannot-create-documentfragment-storing-td-tr-or-th
+ */
 export function createFragment(str: string) {
-  const firstTag = str.match(/^<([a-z]+)/)?.[1]
-  if (
-    firstTag &&
-    [
-      'tbody',
-      'thead',
-      'tfoot',
-      'caption',
-      'colgroup',
-      'col',
-      'tr',
-      'td',
-      'th'
-    ].includes(firstTag)
-  ) {
+  const firstTag = str.match(/^<(([a-z]|-)+)/)?.[1]
+  if (firstTag && tableTags.includes(firstTag)) {
     switch (firstTag) {
       case 'tbody':
       case 'thead':
