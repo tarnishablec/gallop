@@ -7,7 +7,6 @@ import {
   useState,
   useContext
 } from '../src'
-import { createPatcher } from '../src/clip'
 import { marker } from '../src/marker'
 
 describe('component', () => {
@@ -62,14 +61,14 @@ describe('component', () => {
 
       expect(
         sha
-          .do(createPatcher)
+          .createPatcher()
           .dof.querySelector('#root')
           ?.getAttribute('.class') === marker
       ).toBe(true)
 
       expect(
         sha
-          .do(createPatcher)
+          .createPatcher()
           .dof.querySelector('#root')
           ?.getAttribute('style') == marker
       ).toBe(false)

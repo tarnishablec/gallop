@@ -1,5 +1,5 @@
 import { html, createContext, component } from '../src'
-import { getVals, createPatcher } from '../src/clip'
+import { getVals } from '../src/clip'
 
 component('test-test', ({ name }: { name: string }) => html`<div>${name}</div>`)
 
@@ -16,7 +16,7 @@ describe('clip', () => {
   `
 
   test('createPatcher', () => {
-    const clip = shaClip.do(createPatcher)
+    const clip = shaClip.createPatcher()
     expect(shaClip.do(getVals)).toEqual([1, 1, click, 1, 'color:red'])
     expect(clip.dof.firstChild?.childNodes[1].nodeType).toEqual(
       Node.COMMENT_NODE

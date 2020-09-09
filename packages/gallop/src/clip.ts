@@ -11,6 +11,15 @@ export class HTMLClip extends DoAble(Object) {
   ) {
     super()
   }
+
+  createPatcher() {
+    const shaHtml = this.do(getShaHtml)
+    return new Patcher(
+      createFragment(shaHtml),
+      this.vals.length,
+      hashify(shaHtml)
+    )
+  }
 }
 
 export function getVals(this: HTMLClip) {
@@ -19,13 +28,4 @@ export function getVals(this: HTMLClip) {
 
 export function getShaHtml(this: HTMLClip) {
   return cleanDomStr(this.strs.join(marker))
-}
-
-export function createPatcher(this: HTMLClip) {
-  const shaHtml = this.do(getShaHtml)
-  return new Patcher(
-    createFragment(shaHtml),
-    this.vals.length,
-    hashify(shaHtml)
-  )
 }

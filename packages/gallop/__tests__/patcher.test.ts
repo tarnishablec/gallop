@@ -1,5 +1,4 @@
 import { html } from '../src'
-import { createPatcher } from '../src/clip'
 
 describe('patcher', () => {
   test('style should not in template', () => {
@@ -8,7 +7,7 @@ describe('patcher', () => {
       <style>
         ${a}
       </style>`
-    expect(() => template.do(createPatcher)).toThrowError(
+    expect(() => template.createPatcher()).toThrowError(
       /Can not put dynamic part inside or after/
     )
   })

@@ -4,7 +4,7 @@ import { tryParseToString, hashify } from './utils'
 import { resolveDirective } from './directive'
 import { generateEventOptions, removeNodes } from './dom'
 import { Patcher } from './patcher'
-import { HTMLClip, getShaHtml, getVals, createPatcher } from './clip'
+import { HTMLClip, getShaHtml, getVals } from './clip'
 
 export type AttrPartLocation = { node: Element; name: string }
 export type NodePartLocation = { startNode: Comment; endNode: Comment }
@@ -184,8 +184,7 @@ export class EventPart implements Part {
 //
 export function initEntry(val: unknown): unknown {
   if (Array.isArray(val)) throw new SyntaxError(`use repeat() directive`)
-  if (val instanceof HTMLClip)
-    return val.do(createPatcher).patch(val.do(getVals))
+  if (val instanceof HTMLClip) return val.createPatcher().patch(val.do(getVals))
   return val
 }
 

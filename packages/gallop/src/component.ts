@@ -1,4 +1,4 @@
-import { HTMLClip, createPatcher, getVals } from './clip'
+import { HTMLClip, getVals } from './clip'
 import { Patcher } from './patcher'
 import { Obj, extractProps } from './utils'
 import { Looper } from './loop'
@@ -63,7 +63,7 @@ export function component<F extends Component>(
     dispatchUpdate() {
       const clip = this.$builder.call(this, this.$props)
       if (!this.$patcher) {
-        this.$patcher = clip.do(createPatcher)
+        this.$patcher = clip.createPatcher()
         this.$patcher.appendTo(this.$root)
       }
       this.$patcher.patch(clip.do(getVals))
