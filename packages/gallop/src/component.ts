@@ -113,7 +113,7 @@ export const mergeProp = (
   value: unknown
 ) => Reflect.set(node.$props, name, value)
 
-export const mergeProps = (node: ReactiveElement, value: unknown) =>
+export const mergeProps = <T extends Obj>(node: ReactiveElement, value: T) =>
   Object.assign(node.$props, value)
 
 export const queryPoolAll = ({
