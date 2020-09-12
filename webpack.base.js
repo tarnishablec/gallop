@@ -103,7 +103,9 @@ const config = (dir) => (env, args) => {
                 {
                   loader: 'postcss-loader',
                   options: {
-                    plugins: [require('autoprefixer')]
+                    postcssOptions: {
+                      plugins: [require('autoprefixer')]
+                    }
                   }
                 },
                 { loader: 'sass-loader' }
@@ -117,7 +119,9 @@ const config = (dir) => (env, args) => {
                 {
                   loader: 'postcss-loader',
                   options: {
-                    plugins: [require('autoprefixer')]
+                    postcssOptions: {
+                      plugins: [require('autoprefixer')]
+                    }
                   }
                 },
                 { loader: 'sass-loader' }
@@ -142,7 +146,9 @@ const config = (dir) => (env, args) => {
                 {
                   loader: 'postcss-loader',
                   options: {
-                    plugins: [require('autoprefixer')]
+                    postcssOptions: {
+                      plugins: [require('autoprefixer')]
+                    }
                   }
                 },
                 { loader: 'sass-loader' }
@@ -167,7 +173,9 @@ const config = (dir) => (env, args) => {
                 {
                   loader: 'postcss-loader',
                   options: {
-                    plugins: [require('autoprefixer')]
+                    postcssOptions: {
+                      plugins: [require('autoprefixer')]
+                    }
                   }
                 },
                 { loader: 'sass-loader' }

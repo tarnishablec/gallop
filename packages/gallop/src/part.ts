@@ -1,6 +1,6 @@
 import { isReactive, mergeProps, mergeProp } from './component'
 import { NotReactiveElementError } from './error'
-import { tryParseToString, hashify } from './utils'
+import { tryParseToString, hashify, isObject, Obj } from './utils'
 import { resolveDirective } from './directive'
 import { generateEventOptions, removeNodes } from './dom'
 import { Patcher } from './patcher'
@@ -133,7 +133,12 @@ export class PropPart implements Part {
 
     const { name, node } = this.location
     if (!isReactive(node)) throw NotReactiveElementError(name)
-    name === '$props' ? mergeProps(node, val) : mergeProp(node, name, val)
+    if (name === '$props') {
+      if (isObject<Obj>(val)) mergeProps(node, val)
+      else throw new SyntaxError(`$props must bind a {key:value} object`)
+    } else {
+      mergeProp(node, name, val)
+    }
     this.value = val
   }
   clear(): void {

@@ -17,14 +17,14 @@ export const dynamic = directive(
     let el = partElCache.get(part)
     let elChanged = false
     if (el?.localName === name) {
-      mergeProps(el, props)
+      props && mergeProps(el, props)
     } else {
       elChanged = true
       if (!componentPool.has(name))
         throw new SyntaxError(`[${name}] is not a ReactiveElement`)
       part.clear()
       el = document.createElement(name) as ReactiveElement
-      mergeProps(el, props)
+      props && mergeProps(el, props)
       endNode.parentNode!.insertBefore(el, endNode)
       partElCache.set(part, el)
     }
