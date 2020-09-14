@@ -124,14 +124,14 @@ export class AttrPart implements Part {
 }
 
 export class BoolPart implements Part<boolean> {
-  value?: boolean
+  value: boolean = false
   constructor(public location: AttrPartLocation) {}
 
   setValue(val: unknown): unknown {
     if (resolveDirective(val, this)) return
     const v = !!val
     const { name, node } = this.location
-    v ? node.setAttribute(name, 'true') : node.removeAttribute(name)
+    this.value !== v ? node.toggleAttribute(name) : null
     this.value = v
   }
   clear(): unknown {

@@ -91,6 +91,7 @@ component('test-mmm', function (
     <hr />
     <div>
       <input
+        ?required="${state.a % 2}"
         type="checkbox"
         .checked="${state.checked}"
         @input="${(e: Event) => {
