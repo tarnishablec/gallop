@@ -1,7 +1,29 @@
-import { Part, AttrPart, PropPart, EventPart, NodePart } from './part'
+import { Part, AttrPart, PropPart, EventPart, NodePart, BoolPart } from './part'
 import { StyleInTemplateError } from './error'
 import { marker, markerIndex, isMarker } from './marker'
 import { insertAfter } from './dom'
+import { keysOf } from './utils'
+
+type SyntaxMap = {
+  [key: string]: (location: { node: Element; name: string }) => Part
+}
+
+export const rawAttrSyntaxMap: SyntaxMap = {
+  '.': ({ node, name }: { node: Element; name: string }) =>
+    new AttrPart({ node, name }),
+  ':': ({ node, name }: { node: Element; name: string }) =>
+    new PropPart({ node, name }),
+  '@': ({ node, name }: { node: Element; name: string }) =>
+    new EventPart({ node, name }),
+  '?': ({ node, name }: { node: Element; name: string }) =>
+    new BoolPart({ node, name })
+}
+
+let mergedSyntaxMap: SyntaxMap = rawAttrSyntaxMap
+
+export const mergeSyntax = (syntaxMap: SyntaxMap) => {
+  mergedSyntaxMap = { ...mergedSyntaxMap, ...syntaxMap }
+}
 
 /**
  * createTreeWalker vs createNodeIterator
@@ -12,6 +34,7 @@ function createParts(patcher: Patcher) {
   const { dof, size } = patcher
   const walker = document.createTreeWalker(dof, 133)
   let count = 0
+  const syntaxKeys = keysOf(mergedSyntaxMap)
   while (count < size) {
     walker.nextNode()
     const { currentNode: cur } = walker
@@ -28,22 +51,11 @@ function createParts(patcher: Patcher) {
         const { name: n } = attrs[i]
         const prefix = n[0]
         if (
-          prefix === '.' ||
-          prefix === '@' ||
-          (prefix === ':' && marker === attrs[i].value)
+          syntaxKeys.includes(prefix) &&
+          (prefix !== ':' || attrs[i].value === marker)
         ) {
           const name = n.slice(1)
-          switch (prefix) {
-            case '.':
-              result.push(new AttrPart({ node: cur, name }))
-              break
-            case ':':
-              result.push(new PropPart({ node: cur, name }))
-              break
-            case '@':
-              result.push(new EventPart({ node: cur, name }))
-              break
-          }
+          result.push(mergedSyntaxMap[prefix]({ node: cur, name }))
           trash.push(n)
           count++
         }

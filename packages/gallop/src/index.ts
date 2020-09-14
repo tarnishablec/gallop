@@ -1,7 +1,7 @@
 export { html, css } from './parse'
 export { render } from './render'
 export { HTMLClip } from './clip'
-export { Patcher } from './patcher'
+export { Patcher, mergeSyntax } from './patcher'
 export { Looper } from './loop'
 
 export { createProxy } from './reactive'
@@ -31,7 +31,7 @@ export {
   useCache
 } from './hooks'
 
-export { NodePart, AttrPart, PropPart, EventPart, Part } from './part'
+export { NodePart, AttrPart, PropPart, EventPart, BoolPart, Part } from './part'
 
 export {
   directive,

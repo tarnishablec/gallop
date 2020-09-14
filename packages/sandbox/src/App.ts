@@ -28,7 +28,10 @@ component('test-b', ({ text }: { text: string }) => {
   </div>`
 })
 
-component('test-mmm', function (this: ReactiveElement) {
+component('test-mmm', function (
+  this: ReactiveElement,
+  { name }: { name?: string } = {}
+) {
   const [state] = useState({
     a: 1,
     b: 2,
@@ -44,6 +47,7 @@ component('test-mmm', function (this: ReactiveElement) {
   }, [])
 
   return html`
+    <div>${name}</div>
     <div>${memo}</div>
     <button
       @click="${() => {
@@ -135,4 +139,4 @@ component('test-mmm', function (this: ReactiveElement) {
   `
 })
 
-render(html` <test-mmm></test-mmm> `)
+render(html` <test-mmm :name="hello mmm"></test-mmm> `)

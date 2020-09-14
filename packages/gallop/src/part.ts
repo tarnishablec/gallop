@@ -10,8 +10,8 @@ export type AttrPartLocation = { node: Element; name: string }
 export type NodePartLocation = { startNode: Comment; endNode: Comment }
 export type PartLocation = AttrPartLocation | NodePartLocation
 
-export interface Part {
-  value: unknown
+export interface Part<T = unknown> {
+  value?: T
   location: PartLocation
   setValue(val: unknown): unknown
   clear(): unknown
@@ -123,6 +123,22 @@ export class AttrPart implements Part {
   }
 }
 
+export class BoolPart implements Part<boolean> {
+  value?: boolean
+  constructor(public location: AttrPartLocation) {}
+
+  setValue(val: unknown): unknown {
+    if (resolveDirective(val, this)) return
+    const v = !!val
+    const { name, node } = this.location
+    v ? node.setAttribute(name, 'true') : node.removeAttribute(name)
+    this.value = v
+  }
+  clear(): unknown {
+    throw new Error('Method not implemented.')
+  }
+}
+
 export class PropPart implements Part {
   value: unknown
 
@@ -148,8 +164,8 @@ export class PropPart implements Part {
 
 type EventInstance = (e: Event) => void
 
-export class EventPart implements Part {
-  value: unknown
+export class EventPart implements Part<EventInstance[]> {
+  value?: EventInstance[]
   options: AddEventListenerOptions
   eventName: string
   cache: EventInstance[] = []
@@ -177,6 +193,7 @@ export class EventPart implements Part {
         cache[i] = v
       }
     }
+    this.value = temp
   }
   clear(): void {
     this.cache.forEach((e) =>
