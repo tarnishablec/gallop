@@ -19,7 +19,7 @@ const countPlusOne = directive((count: number) => (part) => {
   // to ensure this part is a NodePart, otherwise, gallop will prompt an error
   if (!ensurePartType(part, NodePart)) return
 
-  console.log(part) // get current Part infomation
+  console.log(part) // get current Part information
   /**
    * do something to part or view
    */
