@@ -6,7 +6,7 @@ async function main() {
   run(`yarn run build`)
   run(`git add .`)
   try {
-    run(`git commit`)
+    run(`cz`)
   } catch (error) {
     console.log(error)
   }
