@@ -25,7 +25,7 @@ export interface ReactiveElement<
   $isReactive: boolean
 
   $props: Props
-  $state?: State
+  $state: State
   $contexts: Set<Context>
 
   requestUpdate(): void
@@ -51,6 +51,7 @@ export function component<F extends Component>(
         onMut: () => this.requestUpdate()
       }
     )
+    $state = undefined
     $contexts = new Set<Context>()
 
     $isReactive = true

@@ -1,7 +1,7 @@
 import { component, html, ReactiveElement, useState } from '@gallop/gallop'
 
-export function loadPlayground(this: ReactiveElement) {
-  Reflect.set(this.$state!, 'active', true)
+export function loadPlayground(this: ReactiveElement<{}, { active: boolean }>) {
+  this.$state.active = true
 }
 
 component(`play-ground`, function (this: ReactiveElement) {
