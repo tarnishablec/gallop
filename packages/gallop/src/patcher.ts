@@ -4,22 +4,18 @@ import { marker, markerIndex, isMarker } from './marker'
 import { insertAfter } from './dom'
 import { keysOf } from './utils'
 
-type SyntaxMap = {
-  [key: string]: (location: { node: Element; name: string }) => Part
+export type SyntaxMap = {
+  [k: string]: new ({ node, name }: { node: Element; name: string }) => Part
 }
 
 export const rawAttrSyntaxMap: SyntaxMap = {
-  '.': ({ node, name }: { node: Element; name: string }) =>
-    new AttrPart({ node, name }),
-  ':': ({ node, name }: { node: Element; name: string }) =>
-    new PropPart({ node, name }),
-  '@': ({ node, name }: { node: Element; name: string }) =>
-    new EventPart({ node, name }),
-  '?': ({ node, name }: { node: Element; name: string }) =>
-    new BoolPart({ node, name })
+  '.': AttrPart,
+  ':': PropPart,
+  '@': EventPart,
+  '?': BoolPart
 }
 
-let mergedSyntaxMap: SyntaxMap = rawAttrSyntaxMap
+let mergedSyntaxMap = rawAttrSyntaxMap
 
 export const mergeSyntax = (syntaxMap: SyntaxMap) => {
   mergedSyntaxMap = { ...mergedSyntaxMap, ...syntaxMap }
@@ -27,7 +23,7 @@ export const mergeSyntax = (syntaxMap: SyntaxMap) => {
 
 /**
  * CreateTreeWalker vs createNodeIterator
- * 
+ *
  * Https://jsperf.com/getcomments/6
  */
 function createParts(patcher: Patcher) {
@@ -56,7 +52,7 @@ function createParts(patcher: Patcher) {
           (prefix !== ':' || attrs[i].value === marker)
         ) {
           const name = n.slice(1)
-          result.push(mergedSyntaxMap[prefix]({ node: cur, name }))
+          result.push(new mergedSyntaxMap[prefix]({ node: cur, name }))
           trash.push(n)
           count++
         }

@@ -1,7 +1,7 @@
 export { html, css } from './parse'
 export { render } from './render'
 export { HTMLClip } from './clip'
-export { Patcher, mergeSyntax } from './patcher'
+export { Patcher, mergeSyntax, SyntaxMap } from './patcher'
 export { Looper } from './loop'
 
 export { createProxy } from './reactive'
