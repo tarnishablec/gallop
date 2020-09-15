@@ -51,7 +51,9 @@ component('app-main', function (this: ReactiveElement) {
         onClick: () => {
           state.playgroundVisible = !state.playgroundVisible
           loadPlayground.call(
-            this.$root.querySelector<ReactiveElement>('play-ground')!
+            this.$root.querySelector<ReactiveElement<{}, { active: boolean }>>(
+              'play-ground'
+            )!
           )
         },
         active: state.playgroundVisible
