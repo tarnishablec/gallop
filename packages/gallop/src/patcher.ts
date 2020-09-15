@@ -26,8 +26,9 @@ export const mergeSyntax = (syntaxMap: SyntaxMap) => {
 }
 
 /**
- * createTreeWalker vs createNodeIterator
- * https://jsperf.com/getcomments/6
+ * CreateTreeWalker vs createNodeIterator
+ * 
+ * Https://jsperf.com/getcomments/6
  */
 function createParts(patcher: Patcher) {
   const result: Part[] = []
