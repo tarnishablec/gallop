@@ -66,11 +66,11 @@ const SkeletonTitle = () =>
 const SkeletonParagraph = ({ line = 4 }: { line?: number } = {}) =>
   html`<ul class="skeleton-paragraph">
     ${repeat(
-      new Array(line).fill(1),
+      new Array(line).fill(void 0),
       (_, index) => index,
       (_, index) =>
-        html`${index + 1 === line
+        index + 1 === line
           ? html`<li style="width: 61%"></li>`
-          : html`<li></li>`}`
+          : html`<li></li>`
     )}
   </ul>`

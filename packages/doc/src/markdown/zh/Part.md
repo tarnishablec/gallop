@@ -6,13 +6,13 @@
 
 在`gallop`中定义了的几种基本的`Part`类，它们分别对应了几种不同的模板语法，同时它们都接收不同类型的内容。
 
-| Part      | Syntax | Accept Type | Example                                                                                                                      |
-| --------- | :----: | :---------: | ---------------------------------------------------------------------------------------------------------------------------- |
-| NodePart  | `节点` |  `unknown`  | <pre lang="ts" style="margin-bottom:0">html`<div>${...}</div>`</pre>                                                         |
-| AttrPart  |  `.`   |  `string`   | <pre lang="ts" style="margin-bottom:0;background:rgba(27, 31, 35, 0.05)">html`<div .class="${...}"></div>`</pre>             |
-| BoolPart  |  `?`   |  `boolean`  | <pre lang="ts" style="margin-bottom:0;background:rgba(27, 31, 35, 0.05)">html`<input ?required="${...}"></div>`</pre>        |
-| PropPart  |  `:`   |  `unknown`  | <pre lang="ts" style="margin-bottom:0">html`<some-component :prop="${...}"></some-component>`</pre>                          |
-| EventPart |  `@`   | `function`  | <pre lang="ts" style="margin-bottom:0;background:rgba(27, 31, 35, 0.05)">html`<button @click="${...}">button</button>`</pre> |
+| Part      | Syntax | Accept Type | Example                                                                                                                           |
+| --------- | :----: | :---------: | --------------------------------------------------------------------------------------------------------------------------------- |
+| NodePart  | `节点` |  `unknown`  | <pre lang="ts" style="margin-bottom:0">`<div>${...}</div>`</pre>                                                                  |
+| AttrPart  |  `.`   |  `string`   | <pre lang="ts" style="margin-bottom:0;background:rgba(27, 31, 35, 0.05)">`<div .class="${...}"></div>`</pre>                      |
+| BoolPart  |  `?`   |  `boolean`  | <pre lang="ts" style="margin-bottom:0">`<input ?required="${...}"></div>`</pre>                                                   |
+| PropPart  |  `:`   |  `unknown`  | <pre lang="ts" style="margin-bottom:0;background:rgba(27, 31, 35, 0.05)">`<some-component :prop="${...}"></some-component>`</pre> |
+| EventPart |  `@`   | `function`  | <pre lang="ts" style="margin-bottom:0">`<button @click="${...}">button</button>`</pre>                                            |
 
 另外，所有的`Part`都可以接收一个`directive`，详情请见[函数指令](/#Directives)。
 

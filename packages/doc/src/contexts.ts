@@ -50,7 +50,12 @@ export const menuData: { menu: { name: Name; children?: Name[] }[] } = {
     },
     {
       name: 'Extensibility',
-      children: ['Hooks', 'Directives', 'Template-Customization']
+      children: [
+        'Hooks',
+        'Directives',
+        'Template-Customization',
+        'Custom-Syntax'
+      ]
     },
     { name: 'State-Management', children: ['Context', 'Context-Lifecycle'] },
     { name: 'Cross-Frameworks', children: ['With-React'] },

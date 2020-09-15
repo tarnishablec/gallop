@@ -16,7 +16,7 @@ const importMd: (filename: Name, locale?: string) => { default: string } = (
     try {
       return req(`./zh/${filename}.md`)
     } catch (e) {
-      return { default: '' }
+      return { default: '`/** TODO **/`' }
     }
   }
 }

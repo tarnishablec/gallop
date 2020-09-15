@@ -31,7 +31,7 @@
 
 - `.` 表示为 dom 元素绑定一个原生的`attribute`或`style`或`class`或`value`。当绑定的对象是`value`时，`gallop`会直接对这个 dom 原生的属性`value`设置值，这意味着可以通过此来实现数据的**双向绑定**。**另外值得一提的是，`gallop`支持动态绑定行内样式的做法，但是也针对[复杂组件](/#Component)内置了更好的解决方案，通过[useStyle()](/#useStyle)可以更加高效地为复杂组件绑定动态样式，所以绝大部分情况下，我并不提倡使用`.style`为复杂组件动态绑定样式。**
 
-- `?` 表示为 dom 元素并定一个原生的[Boolean attribute](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes)。
+- `?` 表示为 dom 元素绑定一个原生的[Boolean attribute](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes)。
 
   <iframe height="265" style="width: 100%;" scrolling="no" title="template-attr" src="https://codepen.io/tarnishablec/embed/preview/QWyPpEg?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
     See the Pen <a href='https://codepen.io/tarnishablec/pen/QWyPpEg'>template-attr</a> by tarnishablec
