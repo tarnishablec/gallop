@@ -102,7 +102,7 @@ export function useStyle(css: () => string, depends: unknown[]) {
   const current = Looper.resolveCurrent()
   const [dirty, count] = useDepends(depends)
   if (dirty) {
-    let styleEl = current.queryRoot<HTMLStyleElement | null>(
+    let styleEl = current.$root.querySelector<HTMLStyleElement>(
       `style.hook-style-${count}`
     )
     if (!styleEl) {

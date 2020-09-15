@@ -30,8 +30,6 @@ export interface ReactiveElement<
 
   requestUpdate(): void
   dispatchUpdate(): void
-
-  queryRoot<T extends Element | null = Element | null>(selector: string): T
 }
 
 export function component<F extends Component>(
@@ -87,10 +85,6 @@ export function component<F extends Component>(
       super()
       mergeProps(this, extractProps(this.attributes))
       this.requestUpdate()
-    }
-
-    queryRoot<T extends Element | null = Element | null>(selectors: string): T {
-      return this.$root.querySelector(selectors) as T
     }
   }
   componentPool.add(name)

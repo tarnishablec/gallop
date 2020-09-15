@@ -43,7 +43,8 @@ component('test-mmm', function (
   const memo = useMemo(() => a + b, [a, b])
 
   useEffect(() => {
-    setTimeout(() => this.queryRoot<HTMLButtonElement>('button').click(), 1000)
+    const button = this.$root.querySelector('button')
+    setTimeout(() => button?.click(), 1000)
   }, [])
 
   return html`
