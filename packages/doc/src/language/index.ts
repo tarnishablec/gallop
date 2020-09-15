@@ -4,10 +4,13 @@ const importLang: (locale: string) => Record<string, string> = (locale) =>
 
 export const lang = (key: string, locale: string = 'zh') => {
   let map: Record<string, string>
+  let ok: boolean
   try {
     map = importLang(locale)
+    ok = true
   } catch (error) {
     map = importLang('zh')
+    ok = false
   }
-  return Reflect.get(map, key)
+  return (!ok ? key : Reflect.get(map, key)).replace(/-/g, ' ')
 }

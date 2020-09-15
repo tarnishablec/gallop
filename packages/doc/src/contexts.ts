@@ -1,5 +1,5 @@
 import { createContext, ContextOptions } from '@gallop/gallop'
-import json from '@doc/language/zh.json'
+import type json from '@doc/language/zh.json'
 
 export type Name = keyof typeof json
 
@@ -41,20 +41,27 @@ export const menuData: { menu: { name: Name; children?: Name[] }[] } = {
     },
     {
       name: 'Component-In-Depth',
-      children: ['Component-Registration', 'Component-Update', 'Access-Dom']
+      children: [
+        'Component-Registration',
+        'Component-Update',
+        'Component-Lifecycle',
+        'Access-Dom'
+      ]
     },
     {
       name: 'Extensibility',
-      children: ['Hooks', 'Directives', 'Template-Tag']
+      children: ['Hooks', 'Directives', 'Template-Customization']
     },
-    { name: 'State-Management', children: ['Context'] }
+    { name: 'State-Management', children: ['Context', 'Context-Lifecycle'] },
+    { name: 'Cross-Frameworks', children: ['With-React'] },
+    { name: 'Some-Thougth' }
   ]
 }
 
 export const [localeData, localeContext] = createContext(
   {
     locale: 'zh',
-    list: ['zh']
-  },
-  [syncLocalStorage('localeContext')]
+    list: ['zh', 'en']
+  }
+  // [syncLocalStorage('localeContext')]
 )

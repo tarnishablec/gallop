@@ -13,7 +13,11 @@ const importMd: (filename: Name, locale?: string) => { default: string } = (
   try {
     return req(`./${locale}/${filename}.md`)
   } catch (error) {
-    return { default: '' }
+    try {
+      return req(`./zh/${filename}.md`)
+    } catch (e) {
+      return { default: '' }
+    }
   }
 }
 

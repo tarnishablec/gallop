@@ -15,8 +15,13 @@
   "Component-In-Depth": "深入理解组件",
   "Component-Registration": "组件注册",
   "Component-Update": "组件更新",
+  "Component-Lifecycle": "组件生命周期",
   "Access-Dom": "获取Dom元素",
   "Extensibility": "可扩展性",
-  "Template-Tag": "模板标签",
-  "Context": "Context"
+  "Template-Customization": "定制化模板",
+  "Context": "Context",
+  "Context-Lifecycle": "Context生命周期",
+  "Cross-Frameworks": "与其他框架通信",
+  "With-React": "与React交互",
+  "Some-Thougth": "一些思考"
 }

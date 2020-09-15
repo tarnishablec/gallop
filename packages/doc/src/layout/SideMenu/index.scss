@@ -70,39 +70,44 @@ li {
   margin: 0.4rem 0;
 }
 
-li.primary-menu::before {
-  content: '»';
-  position: absolute;
-  display: inline-block;
-  left: 1rem;
-  color: rgba(0, 0, 0, 0.5);
-}
-
 li.primary-menu > a {
   color: #333;
   font-weight: bolder;
+
+  &::before {
+    content: '»';
+    position: absolute;
+    line-height: 1.3rem;
+    left: -1rem;
+    display: inline-block;
+    color: rgba(0, 0, 0, 0.5);
+  }
 }
 
 li.child-menu > a {
   color: #666;
 }
 
-.menu-list-container a:hover::before {
-  content: '';
-  display: inline-block;
-  height: 1.5rem;
-  width: 2px;
-  vertical-align: middle;
-  position: absolute;
-  line-height: normal;
-  left: 0;
-}
-
-.menu-list-container a:hover::before {
-  background: var(--active-color);
-  opacity: 0.4;
+.menu-list-container {
+  a {
+    display: inline-block;
+    position: relative;
+    &:hover {
+      color: var(--active-color);
+      opacity: 0.8;
+    }
+  }
 }
 
 header span {
   cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
 }
