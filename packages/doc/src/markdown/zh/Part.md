@@ -10,6 +10,7 @@
 | --------- | :----: | :---------: | ---------------------------------------------------------------------------------------------------------------------------- |
 | NodePart  | `节点` |  `unknown`  | <pre lang="ts" style="margin-bottom:0">html`<div>${...}</div>`</pre>                                                         |
 | AttrPart  |  `.`   |  `string`   | <pre lang="ts" style="margin-bottom:0;background:rgba(27, 31, 35, 0.05)">html`<div .class="${...}"></div>`</pre>             |
+| BoolPart  |  `?`   |  `boolean`  | <pre lang="ts" style="margin-bottom:0;background:rgba(27, 31, 35, 0.05)">html`<input ?required="${...}"></div>`</pre>        |
 | PropPart  |  `:`   |  `unknown`  | <pre lang="ts" style="margin-bottom:0">html`<some-component :prop="${...}"></some-component>`</pre>                          |
 | EventPart |  `@`   | `function`  | <pre lang="ts" style="margin-bottom:0;background:rgba(27, 31, 35, 0.05)">html`<button @click="${...}">button</button>`</pre> |
 

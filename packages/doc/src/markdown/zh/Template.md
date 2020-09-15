@@ -13,7 +13,7 @@
 
 与其他基于`虚拟dom`的框架不同，`gallop`提倡**所写即所得**，你在模板里写的每一个`dom节点`都会被渲染出来，同时也**只会**渲染出你写出来的`dom结构`，这么做可以非常有效地让`dom层级`变得清晰。具体来说，`React`和`Vue`里的`抽象组件`在`gallop`里并**不提倡**，`gallop`提供了远比抽象组件更强大且更易扩展的方式 (详情请见[函数指令](/#Directives))。
 
-`gallop` 只额外定义了三种简单的作用于 dom 标签上的模板语法
+`gallop` 只额外定义了四种简单的作用于 dom 标签上的模板语法
 
 - `@` 表示 dom 元素绑定了一个事件，可以是原生的 dom 事件或者是[自定义事件](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)。另外，`gallop`支持 **@click.passive.once.capture** 的写法来指定[AddEventListenerOptions](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)。(详情请见[事件](/#Event))
 
@@ -29,14 +29,16 @@
   (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
   </iframe>
 
-- `.` 表示为 dom 元素绑定一个原生的`attribute`或`style`或`class`或`value`。当绑定的对象是`value`时，`gallop`会直接对这个 dom 原生的属性`value`设置值，这意味着可以通过此来实现数据的**双向绑定**。还有一种特殊情况是`checkbox`和`radio`的`checked`，也可以通过`.`绑定。**另外值得一提的是，`gallop`支持动态绑定行内样式的做法，但是也针对[复杂组件](/#Component)内置了更好的解决方案，通过[useStyle()](/#useStyle)可以更加高效地为复杂组件绑定动态样式，所以绝大部分情况下，我并不提倡使用`.style`为复杂组件动态绑定样式。**
+- `.` 表示为 dom 元素绑定一个原生的`attribute`或`style`或`class`或`value`。当绑定的对象是`value`时，`gallop`会直接对这个 dom 原生的属性`value`设置值，这意味着可以通过此来实现数据的**双向绑定**。**另外值得一提的是，`gallop`支持动态绑定行内样式的做法，但是也针对[复杂组件](/#Component)内置了更好的解决方案，通过[useStyle()](/#useStyle)可以更加高效地为复杂组件绑定动态样式，所以绝大部分情况下，我并不提倡使用`.style`为复杂组件动态绑定样式。**
+
+- `?` 表示为 dom 元素并定一个原生的[Boolean attribute](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes)。
 
   <iframe height="265" style="width: 100%;" scrolling="no" title="template-attr" src="https://codepen.io/tarnishablec/embed/preview/QWyPpEg?height=265&theme-id=dark&default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
     See the Pen <a href='https://codepen.io/tarnishablec/pen/QWyPpEg'>template-attr</a> by tarnishablec
     (<a href='https://codepen.io/tarnishablec'>@tarnishablec</a>) on <a href='https://codepen.io'>CodePen</a>.
   </iframe>
 
-❗❗❗ **需要注意的是，每次在 dom 标签里进行绑定时，都必须要在 `${}` 外面带上引号 `""`，否则会引发严重的编译错误，可能会让浏览器陷入死循环**
+  ❗❗❗ **需要注意的是，每次在 dom 标签里进行绑定时，都必须要在 `${}` 外面带上引号 `""`，否则会引发严重的编译错误，可能会让浏览器陷入死循环**
 
 _从整体上来看，`gallop`的模板编写方式更加贴近`React`的`JSX`，同时`gallop`不希望引入过多的模板语法，不希望依靠 dom 标签做过多的逻辑处理。_
 
