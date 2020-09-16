@@ -81,64 +81,69 @@ describe('repeat', () => {
     const o = generateRandomList()
     const n = generateRandomList()
     expect(o).not.toEqual(n)
-    const res = listKeyDiff(o, n)
     const temp = [...o]
-    patch(temp, res)
-    expect(temp).toEqual(n)
+    const res = listKeyDiff(temp, n)
+    // console.log(res)
+    patch(o, res)
+    expect(o).toEqual(n)
   })
 
   test('two single item list key diff', () => {
     const o = [1]
     const n = [2]
-    const res = listKeyDiff(o, n)
     const temp = [...o]
-    patch(temp, res)
-    expect(temp).toEqual(n)
+    const res = listKeyDiff(temp, n)
+    // console.log(res)
+    patch(o, res)
+    expect(o).toEqual(n)
   })
 
   test('one single item list key diff', () => {
     const o = [1, 23, 4]
     const n = [23]
-    const res = listKeyDiff(o, n)
     const temp = [...o]
-    patch(temp, res)
-    expect(temp).toEqual(n)
+    const res = listKeyDiff(temp, n)
+    // console.log(res)
+    patch(o, res)
+    expect(o).toEqual(n)
   })
 
   test('two custom item list1 key diff', () => {
     const o = [1, 5, 6, 7]
     const n = [7, 2, 1, 6]
-    const res = listKeyDiff(o, n)
     const temp = [...o]
-    patch(temp, res)
-    expect(temp).toEqual(n)
+    const res = listKeyDiff(temp, n)
+    // console.log(res)
+    patch(o, res)
+    expect(o).toEqual(n)
   })
 
   test('two custom item list2 key diff', () => {
     const o = [1, 5, 6, 2, 7]
     const n = [7, 2, 1, 6, 8]
-    const res = listKeyDiff(o, n)
     const temp = [...o]
-    patch(temp, res)
-    expect(temp).toEqual(n)
+    const res = listKeyDiff(temp, n)
+    // console.log(res)
+    patch(o, res)
+    expect(o).toEqual(n)
   })
 
   test('two custom item list3 key diff', () => {
     const o = [8, 1]
     const n = [7, 2, 1, 6, 8]
-    const res = listKeyDiff(o, n)
-    // console.log(res)
     const temp = [...o]
-    patch(temp, res)
-    expect(temp).toEqual(n)
+    const res = listKeyDiff(temp, n)
+    // console.log(res)
+    patch(o, res)
+    expect(o).toEqual(n)
   })
 
   test('two custom item list4 key diff', () => {
     const o = [8, 2, 3, 7, 4, 1]
     const n = [7, 2, 1, 6, 8]
-    // console.log(res)
     const temp = [...o]
     const res = listKeyDiff(temp, n)
+    // console.log(res)
     patch(o, res)
     expect(o).toEqual(n)
   })
