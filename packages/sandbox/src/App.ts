@@ -36,7 +36,8 @@ component('test-mmm', function (
     a: 1,
     b: 2,
     arr: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    checked: false
+    checked: false,
+    rand: [1]
   })
 
   const { a, b } = state
@@ -80,6 +81,42 @@ component('test-mmm', function (
         }}"
       >
         circle move to start
+      </button>
+    </div>
+    <div>
+      ${repeat(
+        state.arr,
+        (item) => item,
+        (item) => html` <div @click="${() => console.log(item)}">${item}</div>`
+      )}
+    </div>
+    <hr />
+    <div>
+      <button
+        @click="${() => {
+          state.rand[0] = Math.random()
+          console.log(state.arr)
+        }}"
+      >
+        rand
+      </button>
+    </div>
+    <div>
+      ${repeat(
+        state.rand,
+        (item) => item,
+        (item) => html` <div @click="${() => console.log(item)}">${item}</div>`
+      )}
+    </div>
+    <hr />
+    <div>
+      <button
+        @click="${() => {
+          state.arr.push(state.arr.shift()!)
+          console.log(state.arr)
+        }}"
+      >
+        circle move to end
       </button>
     </div>
     <div>

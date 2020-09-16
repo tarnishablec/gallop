@@ -104,7 +104,7 @@ const config = (dir) => (env, args) => {
                   loader: 'postcss-loader',
                   options: {
                     postcssOptions: {
-                      plugins: [require('autoprefixer')]
+                      plugins: [['postcss-preset-env', {}]]
                     }
                   }
                 },
@@ -120,7 +120,7 @@ const config = (dir) => (env, args) => {
                   loader: 'postcss-loader',
                   options: {
                     postcssOptions: {
-                      plugins: [require('autoprefixer')]
+                      plugins: [['postcss-preset-env', {}]]
                     }
                   }
                 },
@@ -147,7 +147,7 @@ const config = (dir) => (env, args) => {
                   loader: 'postcss-loader',
                   options: {
                     postcssOptions: {
-                      plugins: [require('autoprefixer')]
+                      plugins: [['postcss-preset-env', {}]]
                     }
                   }
                 },
@@ -174,7 +174,7 @@ const config = (dir) => (env, args) => {
                   loader: 'postcss-loader',
                   options: {
                     postcssOptions: {
-                      plugins: [require('autoprefixer')]
+                      plugins: [['postcss-preset-env', {}]]
                     }
                   }
                 },

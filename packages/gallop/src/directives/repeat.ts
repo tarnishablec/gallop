@@ -3,8 +3,8 @@ import { directive, ensurePartType } from '../directive'
 import { NodePart } from '../part'
 import { DuplicatedKeyError } from '../error'
 
-type DiffKey = Key | null
-type Change =
+export type DiffKey = Key | null
+export type Change =
   | {
       type: 'insert'
       key: DiffKey
@@ -27,7 +27,7 @@ type Change =
 
 const nul = Symbol(0)
 
-export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
+export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]): Change[] {
   let oldHead = 0
   let newHead = 0
   let oldTail = oldList.length - 1
@@ -76,15 +76,15 @@ export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]) {
       }
     }
   }
-  if (newHead < newTail || newHead > oldTail) {
+  if (newHead <= newTail) {
     for (; newHead <= newTail; newHead++) {
       if (!oldList.includes(newList[newHead])) {
         res.push({ type: 'insert', key: newList[newHead], after: lastHead })
       }
       lastHead = newList[newHead]
     }
-  }
-  if (oldHead < oldTail || oldHead > newTail) {
+  } 
+  if (oldHead <= oldTail) {
     for (; oldHead <= oldTail; oldHead++) {
       if (oldList[oldHead] !== nul) {
         if (!newList.includes(oldList[oldHead])) {

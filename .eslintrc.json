@@ -48,6 +48,7 @@
     {
       "files": [
         "packages/sandbox/**",
+        // "**.test.ts",
         "webpack.base.js",
         "packages/doc/public/*.js",
         "rollup.config.js",
