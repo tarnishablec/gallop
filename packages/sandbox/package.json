@@ -1,6 +1,6 @@
 {
   "name": "@gallop/sandbox",
-  "version": "0.9.34",
+  "version": "0.9.35",
   "description": "sandbox",
   "main": "./src/App.ts",
   "files": [
