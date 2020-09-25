@@ -83,7 +83,8 @@ export class Patcher {
   }
 
   patch(vals: ReadonlyArray<unknown>) {
-    this.parts.forEach((p, i) => p.setValue(vals[i]))
+    const temp = [...this.parts].reverse()
+    temp.forEach((p, i) => p.setValue(vals[vals.length - 1 - i]))
     return this
   }
 
