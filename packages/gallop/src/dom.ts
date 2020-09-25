@@ -51,7 +51,7 @@ const range = new Range()
  * Https://stackoverflow.com/questions/43102944/cannot-create-documentfragment-s
  * oring-td-tr-or-th
  */
-export function createFragment(str: string, contextNode?: Node) {
+export function createFragment(str: string, contextNode?: Node | null) {
   // const firstTag = str.match(/^<(([a-z]|-)+)/)?.[1]
   // if (firstTag && tableTags.includes(firstTag)) {
   //   switch (firstTag) {
@@ -77,6 +77,8 @@ export function createFragment(str: string, contextNode?: Node) {
   //   }
   //   return tableRange.createContextualFragment(str)
   // }
-  range.selectNodeContents(contextNode ?? document.body)
+  contextNode instanceof DocumentFragment || !contextNode
+    ? range.selectNodeContents(document.body)
+    : range.selectNodeContents(contextNode)
   return range.createContextualFragment(str)
 }

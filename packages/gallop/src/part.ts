@@ -19,12 +19,11 @@ export interface Part<T = unknown> {
 
 export class NodePart implements Part {
   value: unknown
-  contextNode?: Node
+  contextNode?: Node | null
 
   constructor(public location: NodePartLocation) {
     const parent = location.startNode.parentNode
-    parent instanceof DocumentFragment ||
-      (this.contextNode = parent ?? undefined)
+    this.contextNode = parent
   }
 
   static create(marker?: string) {
@@ -207,7 +206,7 @@ export class EventPart implements Part<EventInstance[]> {
 }
 
 //
-export function initEntry(val: unknown, contextNode?: Node): unknown {
+export function initEntry(val: unknown, contextNode?: Node | null): unknown {
   if (Array.isArray(val)) throw new SyntaxError(`use repeat() directive`)
   if (val instanceof HTMLClip)
     return val.createPatcher(contextNode).patch(val.do(getVals))
@@ -222,7 +221,7 @@ export function initEntry(val: unknown, contextNode?: Node): unknown {
 export function tryUpdateEntry(
   pre: unknown,
   val: unknown,
-  contextNode?: Node
+  contextNode?: Node | null
 ): [unknown, 0 | 1 | 2] {
   if (Object.is(pre, val)) return [pre, 0]
   if (
