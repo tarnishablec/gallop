@@ -19,8 +19,13 @@ export interface Part<T = unknown> {
 
 export class NodePart implements Part {
   value: unknown
+  contextNode?: Node
 
-  constructor(public location: NodePartLocation) {}
+  constructor(public location: NodePartLocation) {
+    const parent = location.startNode.parentNode
+    parent instanceof DocumentFragment ||
+      (this.contextNode = parent ?? undefined)
+  }
 
   static create(marker?: string) {
     const dof = new DocumentFragment()
@@ -40,7 +45,8 @@ export class NodePart implements Part {
       this.value = val
       return
     }
-    const [result, init] = tryUpdateEntry(this.value, val)
+
+    const [result, init] = tryUpdateEntry(this.value, val, this.contextNode)
     if (init === 2) {
       const { endNode } = this.location
       const parent = endNode.parentNode!
@@ -67,6 +73,7 @@ export class NodePart implements Part {
 
   moveInto(container: Node, before?: Node | null) {
     container.insertBefore(this.destroy(), before ?? null)
+    this.contextNode = container
   }
 }
 
@@ -200,9 +207,10 @@ export class EventPart implements Part<EventInstance[]> {
 }
 
 //
-export function initEntry(val: unknown): unknown {
+export function initEntry(val: unknown, contextNode?: Node): unknown {
   if (Array.isArray(val)) throw new SyntaxError(`use repeat() directive`)
-  if (val instanceof HTMLClip) return val.createPatcher().patch(val.do(getVals))
+  if (val instanceof HTMLClip)
+    return val.createPatcher(contextNode).patch(val.do(getVals))
   return val
 }
 
@@ -213,7 +221,8 @@ export function initEntry(val: unknown): unknown {
  */
 export function tryUpdateEntry(
   pre: unknown,
-  val: unknown
+  val: unknown,
+  contextNode?: Node
 ): [unknown, 0 | 1 | 2] {
   if (Object.is(pre, val)) return [pre, 0]
   if (
@@ -222,5 +231,5 @@ export function tryUpdateEntry(
     pre.hash === hashify(val.do(getShaHtml))
   )
     return [pre.patch(val.do(getVals)), 1]
-  return [initEntry(val), 2]
+  return [initEntry(val, contextNode), 2]
 }

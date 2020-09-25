@@ -62,7 +62,7 @@ export function component<F extends Component>(
     dispatchUpdate() {
       const clip = this.$builder.call(this, this.$props)
       if (!this.$patcher) {
-        this.$patcher = clip.createPatcher()
+        this.$patcher = clip.createPatcher(this)
         this.$patcher.appendTo(this.$root)
       }
       this.$patcher.patch(clip.do(getVals))

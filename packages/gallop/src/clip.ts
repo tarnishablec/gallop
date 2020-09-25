@@ -12,10 +12,10 @@ export class HTMLClip extends DoAble(Object) {
     super()
   }
 
-  createPatcher() {
+  createPatcher(contextNode?: Node) {
     const shaHtml = this.do(getShaHtml)
     return new Patcher(
-      createFragment(shaHtml),
+      createFragment(shaHtml, contextNode),
       this.vals.length,
       hashify(shaHtml)
     )

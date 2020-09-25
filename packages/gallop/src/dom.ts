@@ -27,56 +27,56 @@ export const generateEventOptions = (
 })
 
 const range = new Range()
-const tableRange = new Range()
+// const tableRange = new Range()
 
-const table = document.createElement('table')
-const tbody = document.createElement('tbody')
-const tr = document.createElement('tr')
-const colgroup = document.createElement('colgroup')
+// const table = document.createElement('table')
+// const tbody = document.createElement('tbody')
+// const tr = document.createElement('tr')
+// const colgroup = document.createElement('colgroup')
 
-/**
- * https://developer.mozilla.org/en-US/docs/Web/HTML/Element#Table_content
- */
-const tableTags = [
-  'tbody',
-  'thead',
-  'tfoot',
-  'caption',
-  'colgroup',
-  'col',
-  'tr',
-  'td',
-  'th'
-]
+// /** Https://developer.mozilla.org/en-US/docs/Web/HTML/Element#Table_content */
+// const tableTags = [
+//   'tbody',
+//   'thead',
+//   'tfoot',
+//   'caption',
+//   'colgroup',
+//   'col',
+//   'tr',
+//   'td',
+//   'th'
+// ]
 
 /**
- * https://stackoverflow.com/questions/43102944/cannot-create-documentfragment-storing-td-tr-or-th
+ * Https://stackoverflow.com/questions/43102944/cannot-create-documentfragment-s
+ * oring-td-tr-or-th
  */
-export function createFragment(str: string) {
-  const firstTag = str.match(/^<(([a-z]|-)+)/)?.[1]
-  if (firstTag && tableTags.includes(firstTag)) {
-    switch (firstTag) {
-      case 'tbody':
-      case 'thead':
-      case 'tfoot':
-      case 'caption':
-      case 'colgroup':
-        tableRange.selectNodeContents(table)
-        break
-      case 'tr':
-        tableRange.selectNodeContents(tbody)
-        break
-      case 'td':
-      case 'th':
-        tableRange.selectNodeContents(tr)
-        break
-      case 'col':
-        tableRange.selectNodeContents(colgroup)
-        break
-      default:
-        break
-    }
-    return tableRange.createContextualFragment(str)
-  }
+export function createFragment(str: string, contextNode?: Node) {
+  // const firstTag = str.match(/^<(([a-z]|-)+)/)?.[1]
+  // if (firstTag && tableTags.includes(firstTag)) {
+  //   switch (firstTag) {
+  //     case 'tbody':
+  //     case 'thead':
+  //     case 'tfoot':
+  //     case 'caption':
+  //     case 'colgroup':
+  //       tableRange.selectNodeContents(table)
+  //       break
+  //     case 'tr':
+  //       tableRange.selectNodeContents(tbody)
+  //       break
+  //     case 'td':
+  //     case 'th':
+  //       tableRange.selectNodeContents(tr)
+  //       break
+  //     case 'col':
+  //       tableRange.selectNodeContents(colgroup)
+  //       break
+  //     default:
+  //       break
+  //   }
+  //   return tableRange.createContextualFragment(str)
+  // }
+  range.selectNodeContents(contextNode ?? document.body)
   return range.createContextualFragment(str)
 }
