@@ -69,6 +69,9 @@ declare namespace Reflect {
     target: T,
     propertyKey: P,
     receiver?: T
-  ): P extends '__raw__' ? T : P extends keyof T ? T[P] : undefined
-  // ): P extends '__raw__' ? T : T[keyof T]
+  ): P extends typeof import('@gallop/gallop/src/reactive').__raw__
+    ? T
+    : P extends keyof T
+    ? T[P]
+    : undefined
 }

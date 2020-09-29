@@ -15,7 +15,7 @@ import { Recycler } from './dirty'
 const rawProxyMap = new WeakMap()
 const collections = [Map, Set, WeakMap, WeakSet]
 
-const __raw__ = '__raw__'
+export const __raw__ = Symbol('__raw__')
 
 export const createProxy = <T extends object>(
   raw: T,
@@ -99,7 +99,7 @@ export const createProxy = <T extends object>(
       get: (
         target,
         prop:
-          | '__raw__'
+          | typeof __raw__
           | keyof Map<unknown, unknown>
           | keyof WeakMap<object, unknown>
           | keyof Set<unknown>
