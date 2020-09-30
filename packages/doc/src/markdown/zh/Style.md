@@ -51,8 +51,10 @@ component(`test-style`, () => {
 
   useStyle(
     () => css`
-      font-size: ${size}rem;
-      ${style.toString()}
+      div.test {
+        font-size: ${size}rem;
+        ${style.toString()}
+      }
     `,
     [size]
   )

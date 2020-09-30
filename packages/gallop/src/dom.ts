@@ -77,8 +77,11 @@ export function createFragment(str: string, contextNode?: Node | null) {
   //   }
   //   return tableRange.createContextualFragment(str)
   // }
-  contextNode instanceof DocumentFragment || !contextNode
-    ? range.selectNodeContents(document.body)
-    : range.selectNodeContents(contextNode)
+
+  range.selectNodeContents(
+    contextNode instanceof DocumentFragment || !contextNode
+      ? document.body
+      : contextNode
+  )
   return range.createContextualFragment(str)
 }
