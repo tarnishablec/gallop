@@ -8,7 +8,7 @@
     "src"
   ],
   "scripts": {
-    "start": "webpack-dev-server --mode development --config webpack.config.js",
+    "start": "webpack serve --mode development --config webpack.config.js",
     "build": "webpack --mode production --config webpack.config.js"
   },
   "repository": {

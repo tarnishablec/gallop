@@ -19,8 +19,9 @@ const version = require('./packages/gallop/package.json').version.replace(
 
 /**
  * @param {string} dir
- * @returns {import('webpack').ConfigurationFactory}
+ * @returns {(env, args) => import('webpack').Configuration}
  */
+// @ts-ignore
 const config = (dir) => (env, args) => {
   const __prod__ = args.mode === 'production'
 
@@ -35,6 +36,8 @@ const config = (dir) => (env, args) => {
   )
 
   console.log(chalk.greenBright(`Gallop version: ${version}`))
+
+  console.log(chalk.underline(dir))
 
   return {
     mode: args.mode,
@@ -241,7 +244,8 @@ const config = (dir) => (env, args) => {
       new HtmlWebpackPlugin({
         template: './public/index.ejs',
         inject: true,
-        favicon: './public/favicon.ico',
+        chunks: ['main'],
+        // favicon: './public/favicon.ico',
         minify: {
           collapseWhitespace: __prod__,
           removeComments: true
@@ -255,9 +259,6 @@ const config = (dir) => (env, args) => {
         }
       }),
       // new ScriptExtHtmlWebpackPlugin({}),
-      new DefinePlugin({
-        __prod__
-      }),
       new CopyWebpackPlugin({
         patterns: [
           {
@@ -269,6 +270,9 @@ const config = (dir) => (env, args) => {
             }
           }
         ]
+      }),
+      new DefinePlugin({
+        __prod__
       }),
       new MiniCssExtractPlugin({
         filename: 'css/[name].css'
