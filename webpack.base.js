@@ -9,6 +9,7 @@ const { LinkFilePlugin } = require('link-file-plugin')
 const path = require('path')
 const { DefinePlugin } = require('webpack')
 const chalk = require('chalk')
+// const webpack = require('webpack')
 
 const version = require('./packages/gallop/package.json').version.replace(
   /^\^/,
@@ -19,7 +20,7 @@ const version = require('./packages/gallop/package.json').version.replace(
 
 /**
  * @param {string} dir
- * @returns {(env, args) => import('webpack').Configuration}
+ * @returns {() => import('webpack').Configuration}
  */
 // @ts-ignore
 const config = (dir) => (env, args) => {
