@@ -37,19 +37,19 @@ describe('hooks', () => {
   test('useEffect mount', (done: () => unknown) => {
     let testres = 1
 
-    component('test-a', function (
-      this: ReactiveElement,
-      { name = 'yihan' }: { name: string }
-    ) {
-      const [state] = useState({ tik: 1, children: [2, 3, 4] })
+    component(
+      'test-a',
+      function (this: ReactiveElement, { name = 'yihan' }: { name: string }) {
+        const [state] = useState({ tik: 1, children: [2, 3, 4] })
 
-      useEffect(() => {
-        testres += 1
-        expect(testres).toBe(2)
-      }, [])
-      return html` <div>${state.children[0]}</div>
-        <div>${name}</div>`
-    })
+        useEffect(() => {
+          testres += 1
+          expect(testres).toBe(2)
+        }, [])
+        return html` <div>${state.children[0]}</div>
+          <div>${name}</div>`
+      }
+    )
     render(html` <test-a></test-a> `)
     setTimeout(() => {
       done()
@@ -90,7 +90,7 @@ describe('hooks', () => {
 
     render(html` <test-c></test-c> `)
 
-    new Promise((resolve) => {
+    new Promise<void>((resolve) => {
       setTimeout(() => {
         const c = document.querySelector('test-c')!
         expect(

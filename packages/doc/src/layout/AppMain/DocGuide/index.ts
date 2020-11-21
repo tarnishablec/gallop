@@ -36,11 +36,13 @@ component('doc-guide', function (this: ReactiveElement) {
         name: 'app-main'
       })?.$state!
 
-      await new Promise((res) => {
+      await new Promise<void>((res) => {
         if (appMainState.languageSelectVisible) {
           appMainState.languageSelectVisible = false
           setTimeout(() => res(), 201)
-        } else res()
+        } else {
+          res()
+        }
       })
       el?.scrollIntoView({ behavior: 'smooth' })
       timeout = setTimeout(() => {

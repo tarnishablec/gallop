@@ -245,6 +245,7 @@ const config = (dir) => (env, args) => {
       new HtmlWebpackPlugin({
         template: './public/index.ejs',
         inject: true,
+        filename: 'index.html',
         chunks: ['main'],
         // favicon: './public/favicon.ico',
         minify: {
