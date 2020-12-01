@@ -4,7 +4,7 @@ export { HTMLClip } from './clip'
 export { Patcher, mergeSyntax, SyntaxMap } from './patcher'
 export { Looper } from './loop'
 
-export { createProxy } from './reactive'
+export { createProxy, __raw__ } from './reactive'
 
 export {
   ReactiveElement,

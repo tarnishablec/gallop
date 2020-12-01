@@ -1,6 +1,6 @@
-import { HTMLClip, getVals } from './clip'
+import { HTMLClip, getVals, getShaHtml } from './clip'
 import { Patcher } from './patcher'
-import { Obj, extractProps } from './utils'
+import { Obj, extractProps, hashify } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
 import type { Context } from './context'
@@ -11,6 +11,7 @@ type RegisterOption = {
   extend?: keyof HTMLElementTagNameMap
   Inherit?: new () => HTMLElement
   shadow?: boolean
+  stable?: boolean
 }
 
 export const componentPool = new Set<string>()
@@ -23,6 +24,8 @@ export interface ReactiveElement<
   $root: ReactiveElement<Props, State> | ShadowRoot
   $patcher?: Patcher
   $isReactive: boolean
+
+  $stable: boolean
 
   $props: Props
   $state: State
@@ -38,7 +41,8 @@ export function component<F extends Component>(
   {
     shadow = true,
     extend = undefined,
-    Inherit = HTMLElement
+    Inherit = HTMLElement,
+    stable = true
   }: RegisterOption = {}
 ) {
   const clazz = class extends Inherit implements ReactiveElement {
@@ -54,6 +58,8 @@ export function component<F extends Component>(
     $state = undefined
     $contexts = new Set<Context>()
 
+    $stable = stable
+
     $isReactive = true
 
     requestUpdate() {
@@ -65,6 +71,17 @@ export function component<F extends Component>(
         this.$patcher = clip.createPatcher(this)
         this.$patcher.appendTo(this.$root)
       }
+
+      if (
+        !this.$stable &&
+        this.$patcher &&
+        this.$patcher.hash !== hashify(clip.do(getShaHtml))
+      ) {
+        this.$root.innerHTML = ''
+        this.$patcher = clip.createPatcher(this)
+        this.$patcher.appendTo(this.$root)
+      }
+
       this.$patcher.patch(clip.do(getVals))
     }
 
