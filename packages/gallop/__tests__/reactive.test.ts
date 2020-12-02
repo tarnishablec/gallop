@@ -22,7 +22,7 @@ describe('reactive', () => {
     const a = { a: { b: 1 } }
     const p = createProxy(a, { lock: true })
     expect(() => {
-      Reflect.set(p, 'c', 1)
+      Reflect.set(p, 'c ', 1)
     }).toThrowError()
   })
 
