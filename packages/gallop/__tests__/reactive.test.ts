@@ -1,13 +1,13 @@
-import { createProxy } from '../src/reactive'
+import { createProxy, __raw__ } from '../src/reactive'
 
 describe('reactive', () => {
   test('normal object', () => {
     const a = { a: { b: 1 } }
     const pa = createProxy(a)
-    expect(Reflect.get(pa, '__raw__')).toBe(a)
+    expect(Reflect.get(pa, __raw__)).toBe(a)
     const b = { x: { y: '🏀' } }
     const pb = createProxy(b)
-    expect(Reflect.get(pb.x, '__raw__')).toBe(b.x)
+    expect(Reflect.get(pb.x, __raw__)).toBe(b.x)
   })
 
   test('createProxy of nested object', () => {
@@ -90,7 +90,7 @@ describe('reactive', () => {
     let a = 1
     const m = new Map<object, object>([[aa, bb]])
     const mp = createProxy(m, { onMut: () => a++ })
-    expect(Reflect.get(mp.get(aa)!, '__raw__')).toBe(bb)
+    expect(Reflect.get(mp.get(aa)!, __raw__)).toBe(bb)
     const res = mp.get(aa)!
     Reflect.set(res, 'b', 2)
     expect(a).toBe(2)
