@@ -90,6 +90,8 @@ export class AttrPart implements Part {
     if (this.value === val) return
     const { node, name } = this.location
 
+    // $attrs batch binding?
+
     if (
       (name === 'checked' &&
         node instanceof HTMLInputElement &&
