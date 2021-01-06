@@ -8,11 +8,10 @@ import { Recycler } from './dirty'
 export function useState<T extends Obj>(raw: T): [T] {
   const current = Looper.resolveCurrent<Obj, T>()
   return [
-    current.$state
-      ? current.$state
-      : (current.$state = createProxy(raw, {
-          onMut: () => current.requestUpdate()
-        }))
+    current.$state ??
+      (current.$state = createProxy(raw, {
+        onMut: () => current.requestUpdate()
+      }))
   ]
 }
 
