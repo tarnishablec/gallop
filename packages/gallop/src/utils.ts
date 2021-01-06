@@ -9,9 +9,7 @@ export type Primitive =
   | boolean
   | bigint
 
-/**
- * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof#null
- */
+/** Https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof#null */
 export function isObject<T extends object = object>(
   target: unknown
 ): target is T & object {
@@ -77,22 +75,24 @@ export function extractProps(attrs: NamedNodeMap) {
     }, {} as Obj)
 }
 
-/**
- * https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
- */
+/** Https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript */
 export const hashify = (str: string) =>
   [...str].reduce((a, b) => {
     a = (a << 5) - a + b.charCodeAt(0)
     return a & a
   }, 0)
 
-export type MapTypes<V = unknown> = Map<unknown, V> | WeakMap<object, V>
-export type MapKey<T extends MapTypes> = T extends WeakMap<infer WK, unknown>
-  ? WK
-  : T extends Map<infer K, unknown>
+export type MapTypes<K = unknown, V = unknown> =
+  | Map<K, V>
+  | (K extends object ? WeakMap<K, V> : never)
+
+export type MapKey<T extends MapTypes> = T extends
+  | Map<infer K, unknown>
+  | WeakMap<infer K, unknown>
   ? K
   : never
-export type MapValue<T> = T extends MapTypes<infer V> ? V : never
+
+export type MapValue<T> = T extends MapTypes<unknown, infer V> ? V : never
 
 export type SetTypes = Set<unknown> | WeakSet<object>
 export type SetItem<T extends SetTypes> = T extends WeakSet<infer WV>
@@ -108,11 +108,7 @@ export type DeleteItem<T extends MapTypes | SetTypes> = T extends WeakTypes
   ? object
   : unknown
 
-export function forceGet<V>(
-  map: MapTypes<V>,
-  key: MapKey<MapTypes<V>>,
-  func: () => V
-): V {
+export function forceGet<K, V>(map: MapTypes<K, V>, key: K, func: () => V): V {
   const v = map.get(key)
   if (v) return v
   const val = func()
