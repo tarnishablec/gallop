@@ -29,15 +29,16 @@ export function useHookCount() {
   return hookCount
 }
 
-const extendStateMap = new Map<number, Obj>()
-export function useExtendState<T extends Obj, P extends Obj, S extends Obj>(
-  raw: T
-): [T] {
-  const current = Looper.resolveCurrent<P, S>()
+const extendStateMap = new Map<ReactiveElement, Map<number, Obj>>()
+export function useExtendState<T extends Obj>(raw: T): [T] {
+  const current = Looper.resolveCurrent()
   const count = useHookCount()
+  // const map = forceGet(extendStateMap, current, () => new Map<number, Obj>())
   return [
-    forceGet(extendStateMap, count, () =>
-      createProxy(raw, { onMut: () => current.requestUpdate() })
+    forceGet(
+      forceGet(extendStateMap, current, () => new Map<number, Obj>()),
+      count,
+      () => createProxy(raw, { onMut: () => current.requestUpdate() })
     ) as T
   ]
 }
