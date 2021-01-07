@@ -8,11 +8,38 @@ import { Recycler } from './dirty'
 export function useState<T extends Obj>(raw: T): [T] {
   const current = Looper.resolveCurrent<Obj, T>()
   return [
-    current.$state
-      ? current.$state
-      : (current.$state = createProxy(raw, {
-          onMut: () => current.requestUpdate()
-        }))
+    current.$state ??
+      (current.$state = createProxy(raw, {
+        onMut: () => current.requestUpdate()
+      }))
+  ]
+}
+
+let lastHookEl: ReactiveElement | undefined
+export const resetLastHookEl = () => (lastHookEl = undefined)
+export function useLastHookEl(el = Looper.resolveCurrent()) {
+  return (lastHookEl = el)
+}
+
+let hookCount: number
+export function useHookCount() {
+  const current = Looper.resolveCurrent()
+  hookCount = current !== lastHookEl ? 0 : hookCount + 1
+  useLastHookEl()
+  return hookCount
+}
+
+const extendStateMap = new Map<ReactiveElement, Map<number, Obj>>()
+export function useExtendState<T extends Obj>(raw: T): [T] {
+  const current = Looper.resolveCurrent()
+  const count = useHookCount()
+  // const map = forceGet(extendStateMap, current, () => new Map<number, Obj>())
+  return [
+    forceGet(
+      forceGet(extendStateMap, current, () => new Map<number, Obj>()),
+      count,
+      () => createProxy(raw, { onMut: () => current.requestUpdate() })
+    ) as T
   ]
 }
 
@@ -22,26 +49,20 @@ export function useContext(contexts: Context<any>[]) {
   contexts.forEach((ctx) => ctx.watch(current))
 }
 
-export let lastDepEl: ReactiveElement | undefined
-export const resetLastDepEl = () => (lastDepEl = undefined)
-let depCount: number
 const depCountMap = new WeakMap<ReactiveElement, Map<number, unknown[]>>()
 export function useDepends(depends?: unknown[]): [boolean, number] {
   const current = Looper.resolveCurrent()
-  if (current !== lastDepEl) depCount = 0
+  const count = useHookCount()
   if (!depends) {
-    depCount++
-    return [true, depCount - 1]
+    return [true, count]
   }
-  const oldDeps = depCountMap.get(current)?.get(depCount)
+  const oldDeps = depCountMap.get(current)?.get(count)
   const dirty = Recycler.compareDepends(oldDeps, depends)
   forceGet(depCountMap, current, () => new Map<number, unknown[]>()).set(
-    depCount,
+    count,
     depends
   )
-  lastDepEl = current
-  depCount++
-  return [dirty, depCount - 1]
+  return [dirty, count]
 }
 
 type DisconnectEffect = () => unknown

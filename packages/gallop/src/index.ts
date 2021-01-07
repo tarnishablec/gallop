@@ -24,11 +24,14 @@ export { Context, createContext, ContextOptions } from './context'
 export {
   useState,
   useContext,
-  useDepends,
   useEffect,
   useMemo,
   useStyle,
-  useCache
+  useCache,
+  // advanced hooks
+  useDepends,
+  useHookCount,
+  useLastHookEl
 } from './hooks'
 
 export { NodePart, AttrPart, PropPart, EventPart, BoolPart, Part } from './part'
