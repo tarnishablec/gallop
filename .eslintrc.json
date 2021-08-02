@@ -3,12 +3,20 @@
     "browser": true,
     "es6": true,
     "node": true,
+    "jest": true,
     "worker": true
   },
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended"
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:@typescript-eslint/recommended"
   ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -18,8 +26,13 @@
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "jsdoc"],
+  "plugins": ["@typescript-eslint", "jsdoc", "import"],
   "rules": {
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      { "ts": "never", "tsx": "never" }
+    ],
     "no-unused-vars": "off",
     "no-debugger": "warn",
     "no-console": "warn",
@@ -42,7 +55,11 @@
       {
         "types": { "object": false, "{}": false }
       }
-    ]
+    ],
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/ban-ts-comment": "off"
   },
   "overrides": [
     {
@@ -52,7 +69,8 @@
         "webpack.base.js",
         "packages/doc/public/*.js",
         "rollup.config.js",
-        "scripts/**"
+        "scripts/**",
+        "instruments/**"
       ],
       "rules": { "no-console": "off" }
     }

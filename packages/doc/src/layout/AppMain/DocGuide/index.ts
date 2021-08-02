@@ -8,15 +8,15 @@ import {
   useStyle,
   queryPool
 } from '@gallop/gallop'
-import { lang } from '@doc/language'
-import { menuData, localeContext, localeData } from '@doc/contexts'
-import raw from './index.scss?raw'
+import { lang } from '../../../language'
+import { menuData, localeContext, localeData } from '../../../contexts'
+// import raw from './index.scss?raw'
 
 component('doc-guide', function (this: ReactiveElement) {
   const { locale } = localeData
   const { menu } = menuData
 
-  useStyle(() => raw, [])
+  // useStyle(() => raw, [])
 
   useEffect(() => {
     const startHash = window.location.hash
@@ -34,10 +34,10 @@ component('doc-guide', function (this: ReactiveElement) {
 
       const appMainState = queryPool<{}, { languageSelectVisible: boolean }>({
         name: 'app-main'
-      })?.$state!
+      })?.$state
 
       await new Promise<void>((res) => {
-        if (appMainState.languageSelectVisible) {
+        if (appMainState?.languageSelectVisible) {
           appMainState.languageSelectVisible = false
           setTimeout(() => res(), 201)
         } else {

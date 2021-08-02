@@ -50,16 +50,12 @@ export class Looper {
   static setLoopEachCallBack(
     name: string,
     cb: (current: ReactiveElement) => unknown,
-    priority: number = 0
+    priority = 0
   ) {
     this.setLoopCallback(Looper.loopEachCallbacks, name, cb, priority)
   }
 
-  static setLoopEndCallBack(
-    name: string,
-    cb: () => void,
-    priority: number = 0
-  ) {
+  static setLoopEndCallBack(name: string, cb: () => void, priority = 0) {
     this.setLoopCallback(Looper.loopEndCallbacks, name, cb, priority)
   }
 
@@ -67,7 +63,7 @@ export class Looper {
     callbackArray: LoopEachCallback[] | LoopEndCallback[],
     name: string,
     cb: (current: ReactiveElement) => unknown,
-    priority: number = 0
+    priority = 0
   ) {
     for (let i = 0; i <= callbackArray.length; i++) {
       const entry = callbackArray[i]

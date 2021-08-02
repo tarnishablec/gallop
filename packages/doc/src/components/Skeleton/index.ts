@@ -1,5 +1,5 @@
 import { html, component, useStyle, css, repeat } from '@gallop/gallop'
-import raw from './index.scss?raw'
+import raw from './index.scss?inline'
 
 component(
   'skele-ton',
@@ -19,7 +19,6 @@ component(
     useStyle(
       () => css`
         ${raw}
-
         :host {
           --skeleton-color: ${color ?? 'rgb(242,242,242)'};
         }

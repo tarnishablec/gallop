@@ -1,0 +1,25 @@
+@import './styles/variables';
+
+:host {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(180px, auto) 1fr;
+}
+
+@media screen and (max-width: 650px) {
+  :host {
+    grid-template-columns: 1fr auto;
+  }
+
+  side-menu {
+    position: absolute;
+    transform: translateX(-90%);
+    min-width: 180px;
+
+    &.active {
+      transform: unset;
+    }
+  }
+}

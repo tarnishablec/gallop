@@ -1,2 +1,2 @@
 import './components/Skeleton'
-import '@doc/components/MarkDown'
+import './components/MarkDown'

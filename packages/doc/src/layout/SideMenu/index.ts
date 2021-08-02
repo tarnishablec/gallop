@@ -6,15 +6,16 @@ import {
   ReactiveElement,
   useStyle
 } from '@gallop/gallop'
-import { localeContext, localeData, menuData } from '../../contexts'
-import { lang } from '@doc/language'
-import raw from './index.scss?raw'
+import { localeContext, menuData } from '../../contexts'
+import raw from './index.scss?inline'
 
 component('side-menu', function (this: ReactiveElement) {
   useContext([localeContext])
 
+  useStyle(() => raw, [])
+
   const { menu } = menuData
-  const { locale } = localeData
+  // const { locale } = localeData
 
   useStyle(() => raw, [])
 
@@ -38,7 +39,7 @@ component('side-menu', function (this: ReactiveElement) {
             (m) => m.name,
             (m) => html`
               <li class="primary-menu">
-                <a .href="${`#${m.name}`}">${lang(m.name, locale)}</a>
+                <a .href="${`#${m.name}`}">${m.name}</a>
                 ${m.children
                   ? html`<ul>
                       ${repeat(
@@ -46,7 +47,7 @@ component('side-menu', function (this: ReactiveElement) {
                         (n) => n,
                         (n) => html`
                           <li class="child-menu">
-                            <a .href="${`#${n}`}">${lang(n, locale)}</a>
+                            <a .href="${`#${n}`}">${n}</a>
                           </li>
                         `
                       )}

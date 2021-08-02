@@ -57,7 +57,7 @@ h3.sub-title {
   }
 }
 
-@media screen and (max-width: $mobileWidth) {
+@media screen and (max-width: 650px) {
   .markdown-wrapper {
     padding-left: unset;
   }

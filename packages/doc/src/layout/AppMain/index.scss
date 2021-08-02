@@ -1,4 +1,4 @@
-@import '@doc/styles/variables';
+@import '../../styles/variables';
 
 :host {
   height: 100vh;
@@ -24,6 +24,9 @@ nav {
   column-gap: 0.55rem;
   box-sizing: border-box;
   z-index: 10;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
   white-space: nowrap;
 
@@ -86,9 +89,3 @@ language-selector {
   top: var(--header-height);
 }
 
-@media screen and (max-width: $mobileWidth) {
-  .playground-icon {
-    visibility: hidden;
-    pointer-events: none;
-  }
-}
