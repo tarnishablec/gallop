@@ -63,6 +63,15 @@ interface Window {
   cancelIdleCallback?: (handle: RequestIdleCallbackHandle) => void
 }
 
+declare interface ImportMeta {
+  env: {
+    MODE: string
+    BASE_URL: string
+    PROD: boolean
+    DEV: boolean
+  }
+}
+
 declare namespace Reflect {
   function get<T extends object, P extends PropertyKey>(
     target: T,

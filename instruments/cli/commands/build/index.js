@@ -12,18 +12,19 @@ import _ from 'lodash'
 /** @param {string} packageName */
 export const build = async (
   packageName,
-  /** @type {{ ignoreExternal?: boolean; bundler?: 'rollup' | 'esbuild' }} */ {
-    ignoreExternal = false,
-    bundler = 'rollup',
-    page = false,
-    ...rest
-  } = {}
+  /**
+   * @type {{
+   *   ignoreExternal?: boolean
+   *   bundler?: 'rollup' | 'esbuild' | 'vite'
+   *   page?: boolean
+   * }}
+   */ { ignoreExternal = false, bundler = 'rollup', page = false, ...rest } = {}
 ) => {
   clean(packageName)
 
   if (
     page ||
-    _.get(resolvePackageJsonObj(packageName), 'keywords').includes('page')
+    _.get(resolvePackageJsonObj(packageName), 'keywords')?.includes('page')
   )
     return viteBuild(packageName)
 
@@ -33,6 +34,9 @@ export const build = async (
     }
     case 'rollup': {
       return rollupBundle(packageName, { ignoreExternal, ...rest })
+    }
+    case 'vite': {
+      return viteBuild(packageName)
     }
   }
 }

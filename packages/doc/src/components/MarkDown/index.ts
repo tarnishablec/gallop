@@ -4,9 +4,10 @@ import { html, raw, component } from '@gallop/gallop'
 import marked from 'marked'
 import type { Name } from '../../contexts'
 // import githubUrl from './github.css?link'
-import prismUrl from './prism.css?preload'
+import prismUrl from './prism.scss?preload'
 
 console.log(prismUrl)
+// console.log(import.meta)
 
 component(
   'mark-down',

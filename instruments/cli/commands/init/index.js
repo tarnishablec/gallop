@@ -125,6 +125,7 @@ describe('test', () => {
  *   email?: string
  *   url?: string
  *   registry?: string
+ *   page?: boolean
  * }} option
  * @param {object} [pkgJsonCacheObj] Default is `{}`
  */

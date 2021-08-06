@@ -1,6 +1,7 @@
 import path from 'path'
 import vite from 'vite'
 import { resolvePackageDir } from '../../../utils.js'
+import { VitePluginPreloadCss } from '../../../plugins/vite-plugin-preload/index.js'
 
 /** @param {string} packageName */
 export const viteBuild = (packageName) => {
@@ -11,6 +12,6 @@ export const viteBuild = (packageName) => {
       outDir: path.resolve(packageDir, 'dist')
     },
     base: './',
-    plugins: [].filter(Boolean)
+    plugins: [VitePluginPreloadCss({ mode: 'build' })].filter(Boolean)
   })
 }

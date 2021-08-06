@@ -31,7 +31,6 @@ export const viteDev = (
   removeCache && removeNodeModules(packageName)
   createServer({
     root: path.resolve(packageDir, root),
-    mode: 'dev',
     define: { 'process.env': {}, global: 'window' },
     server: {
       hmr: { host: '127.0.0.1', protocol: 'ws', overlay: false },
@@ -49,7 +48,7 @@ export const viteDev = (
         scss: {}
       }
     },
-    plugins: [VitePluginPreloadCss()]
+    plugins: [VitePluginPreloadCss({ mode: 'serve' })]
   }).then((server) => {
     server.listen()
   })
