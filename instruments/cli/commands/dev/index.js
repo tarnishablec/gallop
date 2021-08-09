@@ -8,7 +8,6 @@ import { clean } from '../clean/index.js'
 import { fixTslib } from '../build/rollup.js'
 // import sass from 'sass'
 // import { VitePluginResourceQuery } from '../../../plugins/vite-plugin-resource-query/index.js'
-import { VitePluginPreloadCss } from '../../../plugins/vite-plugin-preload/index.js'
 
 /**
  * @param {string} packageName
@@ -48,7 +47,7 @@ export const viteDev = (
         scss: {}
       }
     },
-    plugins: [VitePluginPreloadCss({ mode: 'serve' })]
+    plugins: []
   }).then((server) => {
     server.listen()
   })

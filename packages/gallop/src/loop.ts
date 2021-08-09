@@ -1,4 +1,4 @@
-import { ReactiveElement } from './component'
+import type { ReactiveElement } from './component'
 import { resolveEffects, resetLastHookEl } from './hooks'
 import { Recycler } from './dirty'
 import { Obj } from './utils'
