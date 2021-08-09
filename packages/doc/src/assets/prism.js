@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 /* PrismJS 1.21.0
 https://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascript+scss+typescript */
 var _self =

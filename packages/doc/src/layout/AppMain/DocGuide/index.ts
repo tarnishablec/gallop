@@ -10,13 +10,13 @@ import {
 } from '@gallop/gallop'
 import { lang } from '../../../language'
 import { menuData, localeContext, localeData } from '../../../contexts'
-// import raw from './index.scss?raw'
+import raw from './index.scss?inline'
 
 component('doc-guide', function (this: ReactiveElement) {
   const { locale } = localeData
   const { menu } = menuData
 
-  // useStyle(() => raw, [])
+  useStyle(() => raw, [])
 
   useEffect(() => {
     const startHash = window.location.hash
@@ -62,7 +62,7 @@ component('doc-guide', function (this: ReactiveElement) {
       menu,
       (m) => m.name,
       (m) => html`
-        <h2 class="primary-title" .id="${m.name}">${lang(m.name, locale)}</h2>
+        <h2 class="primary-title" .id="${m.name}">${m.name}</h2>
         <hr />
         ${m.children?.length
           ? repeat(
@@ -70,7 +70,7 @@ component('doc-guide', function (this: ReactiveElement) {
               (c) => c,
               (c) =>
                 html`<div class="markdown-wrapper">
-                  <h3 class="sub-title" .id="${c}">${lang(c, locale)}</h3>
+                  <h3 class="sub-title" .id="${c}">${c}</h3>
                   <mark-down :locale="${locale}" :filename="${c}"></mark-down>
                 </div> `
             )

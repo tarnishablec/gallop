@@ -26,6 +26,6 @@
   "gitHead": "2cd70b5cd29cec83256f2881d98666af4c73afdb",
   "dependencies": {
     "@gallop/gallop": "^0.12.0",
-    "marked": "^1.1.1"
+    "marked": "^2.1.3"
   }
 }

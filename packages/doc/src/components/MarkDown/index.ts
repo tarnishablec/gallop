@@ -1,18 +1,31 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-import { html, raw, component } from '@gallop/gallop'
+import { html, raw, component, suspense } from '@gallop/gallop'
 import marked from 'marked'
 import type { Name } from '../../contexts'
-// import githubUrl from './github.css?link'
-import prismUrl from './prism.scss?preload'
-
-console.log(prismUrl)
-// console.log(import.meta)
 
 component(
   'mark-down',
   ({ filename, locale = 'zh' }: { filename: Name; locale?: string }) => html`
-    <div class="markdown-body"></div>
+    <link rel="stylesheet" href="assets/github.css" />
+    <link rel="stylesheet" href="assets/prism.css" />
+    <div class="markdown-body">
+      ${suspense(async () => {
+        try {
+          const res = (
+            await import(`../../markdown/${locale}/${filename}.md?raw`)
+          ).default
+          return raw(
+            marked(res, {
+              highlight: (code, lang) => {
+                const grammar = Prism.languages[lang]
+                return grammar ? Prism.highlight(code, grammar, lang) : code
+              }
+            })
+          )
+        } catch (error) {
+          return '** WIP **'
+        }
+      })}
+    </div>
     <style>
       a {
         color: var(--active-color) !important;

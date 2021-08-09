@@ -47,6 +47,7 @@ export const viteDev = (
         scss: {}
       }
     },
+    // assetsInclude: ['md'],
     plugins: []
   }).then((server) => {
     server.listen()
