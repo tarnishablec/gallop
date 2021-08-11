@@ -1,9 +1,7 @@
 import { HTMLClip } from './clip'
 import { NodePart } from './part'
 
-/**
- * @returns ununmout function
- */
+/** @returns Ununmout function */
 export function render(
   view: HTMLClip,
   {
@@ -14,5 +12,5 @@ export function render(
   const part = NodePart.create()
   part.setValue(view)
   part.moveInto(container, before)
-  return () => part.destroy()
+  return { destroy: () => part.destroy() }
 }

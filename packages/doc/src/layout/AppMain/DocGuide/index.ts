@@ -8,9 +8,9 @@ import {
   useStyle,
   queryPool
 } from '@gallop/gallop'
-import { lang } from '@doc/language'
-import { menuData, localeContext, localeData } from '@doc/contexts'
-import raw from './index.scss?raw'
+import { localize } from '../../../language'
+import { menuData, localeContext, localeData } from '../../../contexts'
+import raw from './index.scss?inline'
 
 component('doc-guide', function (this: ReactiveElement) {
   const { locale } = localeData
@@ -34,10 +34,10 @@ component('doc-guide', function (this: ReactiveElement) {
 
       const appMainState = queryPool<{}, { languageSelectVisible: boolean }>({
         name: 'app-main'
-      })?.$state!
+      })?.$state
 
       await new Promise<void>((res) => {
-        if (appMainState.languageSelectVisible) {
+        if (appMainState?.languageSelectVisible) {
           appMainState.languageSelectVisible = false
           setTimeout(() => res(), 201)
         } else {
@@ -62,7 +62,9 @@ component('doc-guide', function (this: ReactiveElement) {
       menu,
       (m) => m.name,
       (m) => html`
-        <h2 class="primary-title" .id="${m.name}">${lang(m.name, locale)}</h2>
+        <h2 class="primary-title" .id="${m.name}">
+          ${localize(m.name, locale)}
+        </h2>
         <hr />
         ${m.children?.length
           ? repeat(
@@ -70,7 +72,7 @@ component('doc-guide', function (this: ReactiveElement) {
               (c) => c,
               (c) =>
                 html`<div class="markdown-wrapper">
-                  <h3 class="sub-title" .id="${c}">${lang(c, locale)}</h3>
+                  <h3 class="sub-title" .id="${c}">${c}</h3>
                   <mark-down :locale="${locale}" :filename="${c}"></mark-down>
                 </div> `
             )

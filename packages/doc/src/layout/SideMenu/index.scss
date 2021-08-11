@@ -1,4 +1,4 @@
-@import '@doc/styles/variables';
+@import '../../styles/variables';
 
 :host {
   z-index: 20;
@@ -8,7 +8,7 @@
   box-shadow: 0 0 3px 1px gray;
 }
 
-@media screen and (max-width: $mobileWidth) {
+@media screen and (max-width: 650px) {
   :host {
     box-shadow: unset;
     filter: drop-shadow(1px 0px 1px rgb(88, 88, 88));
@@ -22,12 +22,12 @@
   height: 100%;
   transition: all 0.3s;
 
-  @media screen and (max-width: $mobileWidth) {
+  @media screen and (max-width: 650px) {
     padding-right: 10%;
   }
 }
 
-@media screen and (max-width: $mobileWidth) {
+@media screen and (max-width: 650px) {
   :host(.shaped) {
     .side-menu-wrapper {
       clip-path: polygon(0 0, 30% 0, 100% 50%, 30% 100%, 0 100%);
@@ -51,6 +51,9 @@ header {
   text-align: center;
   font-family: 'Caveat', cursive;
   font-size: 2rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 

@@ -1,32 +1,14 @@
-declare module '*.scss' {}
-declare module '*.css' {}
-
-declare module '*.scss?link' {
+declare module '*?link' {
   const content: string
   export default content
 }
 
-declare module '*.css?link' {
+declare module '*?preload' {
   const content: string
   export default content
 }
 
-declare module '*.scss?url' {
-  const content: string
-  export default content
-}
-
-declare module '*.css?url' {
-  const content: string
-  export default content
-}
-
-declare module '*.scss?raw' {
-  const content: string
-  export default content
-}
-
-declare module '*.css?raw' {
+declare module '*?inline' {
   const content: string
   export default content
 }
@@ -62,7 +44,7 @@ interface Window {
   cancelIdleCallback?: (handle: RequestIdleCallbackHandle) => void
 }
 
-interface ImportMeta {}
+// declare interface ImportMeta {}
 
 declare namespace Reflect {
   function get<T extends object, P extends PropertyKey>(

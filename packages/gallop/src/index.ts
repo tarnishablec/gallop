@@ -1,14 +1,15 @@
 export { html, css } from './parse'
 export { render } from './render'
 export { HTMLClip } from './clip'
-export { Patcher, mergeSyntax, SyntaxMap } from './patcher'
+export { Patcher, mergeSyntax } from './patcher'
+
+export type { SyntaxMap } from './patcher'
+
 export { Looper } from './loop'
 
 export { createProxy } from './reactive'
 
 export {
-  ReactiveElement,
-  Component,
   component,
   mergeProp,
   mergeProps,
@@ -19,7 +20,11 @@ export {
   observeDisconnect
 } from './component'
 
-export { Context, createContext, ContextOptions } from './context'
+export type { ReactiveElement, Component } from './component'
+
+export { Context, createContext } from './context'
+
+export type { ContextOptions } from './context'
 
 export {
   useState,
@@ -34,16 +39,19 @@ export {
   useLastHookEl
 } from './hooks'
 
-export { NodePart, AttrPart, PropPart, EventPart, BoolPart, Part } from './part'
+export { NodePart, AttrPart, PropPart, EventPart, BoolPart } from './part'
+
+export type { Part } from './part'
 
 export {
   directive,
   directives,
-  DirectiveFn,
   resolveDirective,
   ensurePartType,
   checkDependsDirty
 } from './directive'
+
+export type { DirectiveFn } from './directive'
 
 export {
   repeat,

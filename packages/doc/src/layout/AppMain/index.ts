@@ -7,13 +7,13 @@ import {
   useEffect,
   ReactiveElement
 } from '@gallop/gallop'
-import raw from './index.scss?raw'
-import { CodeSandboxIcon } from '@doc/components/Icons/CodeSandboxIcon'
-import { LanguageIcon } from '@doc/components/Icons/LanguageIcon'
+import raw from './index.scss?inline'
+import { CodeSandboxIcon } from '../../components/Icons/CodeSandboxIcon'
+import { LanguageIcon } from '../../components/Icons/LanguageIcon'
 import './DocGuide'
 import './DocApi'
 import './LanguageSelector'
-import { loadPlayground } from '@doc/components/Playground'
+import { loadPlayground } from '../../components/Playground'
 
 component('app-main', function (this: ReactiveElement) {
   const [state] = useState({

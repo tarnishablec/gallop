@@ -5,7 +5,7 @@ import { Looper } from './loop'
 import { createProxy } from './reactive'
 import type { Context } from './context'
 
-export type Component = (...args: any[]) => HTMLClip
+export type Component = (this: ReactiveElement, ...args: any[]) => HTMLClip
 
 type RegisterOption = {
   extend?: keyof HTMLElementTagNameMap
@@ -43,7 +43,6 @@ export function component<F extends Component>(
 ) {
   const clazz = class extends Inherit implements ReactiveElement {
     $builder = builder
-    $root = shadow ? this.attachShadow({ mode: 'open' }) : this
     $patcher?: Patcher = undefined
     $props = createProxy(
       {},
@@ -55,6 +54,7 @@ export function component<F extends Component>(
     $contexts = new Set<Context>()
 
     $isReactive = true
+    $root = shadow ? this.attachShadow({ mode: 'open' }) : this
 
     requestUpdate() {
       Looper.enUpdateQueue(this)

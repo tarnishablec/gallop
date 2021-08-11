@@ -3,6 +3,14 @@
   "description": "gallop",
   "main": "src/index.ts",
   "module": "dist/index.esm.js",
+  "exports": {
+    "import": {
+      "default": [
+        "./src/index.ts",
+        "./dist/index.esm.js"
+      ]
+    }
+  },
   "files": [
     "dist",
     "src"

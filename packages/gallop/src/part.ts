@@ -126,7 +126,7 @@ export class AttrPart implements Part {
 }
 
 export class BoolPart implements Part<boolean> {
-  value: boolean = false
+  value = false
   constructor(public location: AttrPartLocation) {}
 
   setValue(val: unknown): unknown {
