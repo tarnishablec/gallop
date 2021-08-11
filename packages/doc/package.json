@@ -1,6 +1,6 @@
 {
   "name": "@gallop/doc",
-  "version": "0.0.67",
+  "version": "0.0.68",
   "description": "doc",
   "files": [
     "App.ts",
