@@ -20,4 +20,4 @@ export const externalDependencies = [
   'ahooks'
 ]
 
-export const packageBlackList = ['share', 'sandbox']
+export const packageBlackList = ['doc', 'sandbox']
