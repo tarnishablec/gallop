@@ -1,7 +1,6 @@
 import { HTMLClip } from './clip'
 import { NodePart } from './part'
 
-/** @returns Ununmout function */
 export function render(
   view: HTMLClip,
   {

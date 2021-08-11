@@ -15,6 +15,7 @@ import { handleCss } from './index.js'
 import rollupScss from 'rollup-plugin-scss'
 import rollupTs from '@wessberg/rollup-plugin-ts'
 import rollupJson from '@rollup/plugin-json'
+import { terser } from 'rollup-plugin-terser'
 
 /** @param {string} packageName */
 export const rollupBundle = async (
@@ -78,7 +79,8 @@ export const rollupBundle = async (
   await bundle.write({
     name: String(pkgObj.name),
     file: umdPath,
-    format: 'umd'
+    format: 'umd',
+    plugins: [terser()]
   })
 
   console.log(chalk.greenBright(`>>>>> bundle generated : ${umdPath} >>>>>`))
