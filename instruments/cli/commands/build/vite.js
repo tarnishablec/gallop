@@ -11,7 +11,7 @@ export const viteBuild = (packageName, root = 'src') => {
     build: {
       outDir: path.resolve(packageDir, 'dist'),
       rollupOptions: {
-        external: ['github.css', 'prism.css', 'prism.js']
+        // external: ['github.css', 'prism.css', 'prism.js']
       }
     },
     esbuild: {

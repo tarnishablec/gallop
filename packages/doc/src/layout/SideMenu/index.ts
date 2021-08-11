@@ -40,7 +40,7 @@ component('side-menu', function (this: ReactiveElement) {
             (m) => m.name,
             (m) => html`
               <li class="primary-menu">
-                <a .href="${`#${m.name}`}">${m.name}</a>
+                <a .href="${`#${m.name}`}">${localize(m.name, locale)}</a>
                 ${m.children
                   ? html`<ul>
                       ${repeat(

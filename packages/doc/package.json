@@ -27,5 +27,8 @@
   "dependencies": {
     "@gallop/gallop": "^0.12.0",
     "marked": "^2.1.3"
+  },
+  "buildOptions": {
+    "bundler": "vite"
   }
 }

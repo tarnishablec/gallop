@@ -2,7 +2,6 @@ import execa from 'execa'
 import path from 'path'
 import fs from 'fs-extra'
 import { createRequire } from 'module'
-// import chalk from "chalk"
 
 /**
  * @param {string} cmd
@@ -33,7 +32,9 @@ export const resolvePackageJsonPath = (packageName) => {
 
 /**
  * @param {string} packageName
- * @returns {import('package-json').FullVersion}
+ * @returns {import('package-json').FullVersion & {
+ *   buildOptions?: { bundler?: 'rollup' | 'vite' | 'esbuild' }
+ * }}
  */
 export const resolvePackageJsonObj = (packageName) => {
   return JSON.parse(

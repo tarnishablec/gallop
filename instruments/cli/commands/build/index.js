@@ -5,7 +5,6 @@ import fs from 'fs-extra'
 import { rollupBundle } from './rollup.js'
 import { esbuildbundle } from './esbuild.js'
 import { viteBuild } from './vite.js'
-import _ from 'lodash'
 
 /** @typedef {import('esbuild').BuildOptions} BuildOptions */
 
@@ -18,15 +17,11 @@ export const build = async (
    *   bundler?: 'rollup' | 'esbuild' | 'vite'
    *   page?: boolean
    * }}
-   */ { ignoreExternal = false, bundler = 'rollup', page = false, ...rest } = {}
+   */ { ignoreExternal = false, bundler = 'rollup', ...rest } = {}
 ) => {
   clean(packageName)
 
-  if (
-    page ||
-    _.get(resolvePackageJsonObj(packageName), 'keywords')?.includes('page')
-  )
-    return viteBuild(packageName)
+  bundler = resolvePackageJsonObj(packageName).buildOptions?.bundler ?? bundler
 
   switch (bundler) {
     case 'esbuild': {
