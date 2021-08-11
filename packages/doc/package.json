@@ -1,6 +1,6 @@
 {
   "name": "@gallop/doc",
-  "version": "0.0.66",
+  "version": "0.0.67",
   "description": "doc",
   "files": [
     "App.ts",
@@ -25,7 +25,7 @@
   },
   "gitHead": "2cd70b5cd29cec83256f2881d98666af4c73afdb",
   "dependencies": {
-    "@gallop/gallop": "^0.12.0",
+    "@gallop/gallop": "^0.12.1",
     "marked": "^2.1.3"
   },
   "buildOptions": {
