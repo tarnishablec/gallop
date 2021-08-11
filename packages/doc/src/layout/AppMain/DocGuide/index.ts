@@ -72,7 +72,7 @@ component('doc-guide', function (this: ReactiveElement) {
               (c) => c,
               (c) =>
                 html`<div class="markdown-wrapper">
-                  <h3 class="sub-title" .id="${c}">${c}</h3>
+                  <h3 class="sub-title" .id="${c}">${localize(c, locale)}</h3>
                   <mark-down :locale="${locale}" :filename="${c}"></mark-down>
                 </div> `
             )

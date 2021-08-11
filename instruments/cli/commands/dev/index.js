@@ -5,6 +5,7 @@ import path from 'path'
 import { clean } from '../clean/index.js'
 import { fixTslib } from '../build/rollup.js'
 import { VitePluginString } from '../../../plugins/vite-plugin-string/index.js'
+import { VitePluginPreloadCss } from '../../../plugins/vite-plugin-preload-css/index.js'
 
 /**
  * @param {string} packageName
@@ -44,7 +45,10 @@ export const viteDev = (
         scss: {}
       }
     },
-    plugins: [VitePluginString({ include: ['**/*.md'] })]
+    plugins: [
+      VitePluginString({ include: ['**/*.md'] }),
+      VitePluginPreloadCss()
+    ]
   }).then((server) => {
     server.listen()
   })

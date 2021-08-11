@@ -2,6 +2,7 @@ import path from 'path'
 import vite from 'vite'
 import { resolvePackageDir } from '../../../utils.js'
 import { VitePluginString } from '../../../plugins/vite-plugin-string/index.js'
+import { VitePluginPreloadCss } from '../../../plugins/vite-plugin-preload-css/index.js'
 
 /** @param {string} packageName */
 export const viteBuild = (packageName, root = 'src') => {
@@ -26,7 +27,8 @@ export const viteBuild = (packageName, root = 'src') => {
     plugins: [
       VitePluginString({
         include: ['**/*.md']
-      })
+      }),
+      VitePluginPreloadCss()
     ].filter(Boolean)
   })
 }

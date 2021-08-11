@@ -21,7 +21,10 @@ export const build = async (
 ) => {
   clean(packageName)
 
-  bundler = resolvePackageJsonObj(packageName).buildOptions?.bundler ?? bundler
+  bundler =
+    bundler ??
+    resolvePackageJsonObj(packageName).buildOptions?.bundler ??
+    'rollup'
 
   switch (bundler) {
     case 'esbuild': {
