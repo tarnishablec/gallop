@@ -1,13 +1,10 @@
-// @ts-check
-
 import { createServer } from 'vite'
 // import { startServer } from "snowpack"
 import { removeNodeModules, resolvePackageDir, run } from '../../../utils.js'
 import path from 'path'
 import { clean } from '../clean/index.js'
 import { fixTslib } from '../build/rollup.js'
-// import sass from 'sass'
-// import { VitePluginResourceQuery } from '../../../plugins/vite-plugin-resource-query/index.js'
+import { VitePluginString } from '../../../plugins/vite-plugin-string/index.js'
 
 /**
  * @param {string} packageName
@@ -40,15 +37,14 @@ export const viteDev = (
     esbuild: {
       format: 'esm',
       treeShaking: true,
-      target: 'es6'
+      target: 'esnext'
     },
     css: {
       preprocessorOptions: {
         scss: {}
       }
     },
-    // assetsInclude: ['md'],
-    plugins: []
+    plugins: [VitePluginString({ include: ['**/*.md'] })]
   }).then((server) => {
     server.listen()
   })

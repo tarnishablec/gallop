@@ -8,7 +8,7 @@ import {
   useStyle,
   queryPool
 } from '@gallop/gallop'
-import { lang } from '../../../language'
+import { localize } from '../../../language'
 import { menuData, localeContext, localeData } from '../../../contexts'
 import raw from './index.scss?inline'
 
@@ -62,7 +62,9 @@ component('doc-guide', function (this: ReactiveElement) {
       menu,
       (m) => m.name,
       (m) => html`
-        <h2 class="primary-title" .id="${m.name}">${m.name}</h2>
+        <h2 class="primary-title" .id="${m.name}">
+          ${localize(m.name, locale)}
+        </h2>
         <hr />
         ${m.children?.length
           ? repeat(

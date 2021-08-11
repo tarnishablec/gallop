@@ -1,30 +1,27 @@
-import { html, raw, component, suspense } from '@gallop/gallop'
+import { html, raw, component } from '@gallop/gallop'
 import marked from 'marked'
 import type { Name } from '../../contexts'
+
+const marks = import.meta.globEager('../../markdown/*/*.md')
 
 component(
   'mark-down',
   ({ filename, locale = 'zh' }: { filename: Name; locale?: string }) => html`
-    <link rel="stylesheet" href="assets/github.css" />
-    <link rel="stylesheet" href="assets/prism.css" />
+    <link rel="stylesheet" href="./github.css" />
+    <link rel="stylesheet" href="./prism.css" />
     <div class="markdown-body">
-      ${suspense(async () => {
-        try {
-          const res = (
-            await import(`../../markdown/${locale}/${filename}.md?raw`)
-          ).default
-          return raw(
-            marked(res, {
-              highlight: (code, lang) => {
-                const grammar = Prism.languages[lang]
-                return grammar ? Prism.highlight(code, grammar, lang) : code
-              }
-            })
-          )
-        } catch (error) {
-          return '** WIP **'
-        }
-      })}
+      ${raw(
+        marked(
+          marks[`../../markdown/${locale}/${filename}.md`]?.default ??
+            '**WIP**',
+          {
+            highlight: (code, lang) => {
+              const grammar = Prism.languages[lang]
+              return grammar ? Prism.highlight(code, grammar, lang) : code
+            }
+          }
+        )
+      )}
     </div>
     <style>
       a {

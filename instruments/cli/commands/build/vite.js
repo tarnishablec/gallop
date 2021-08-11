@@ -1,6 +1,7 @@
 import path from 'path'
 import vite from 'vite'
 import { resolvePackageDir } from '../../../utils.js'
+import { VitePluginString } from '../../../plugins/vite-plugin-string/index.js'
 
 /** @param {string} packageName */
 export const viteBuild = (packageName, root = 'src') => {
@@ -10,20 +11,22 @@ export const viteBuild = (packageName, root = 'src') => {
     build: {
       outDir: path.resolve(packageDir, 'dist'),
       rollupOptions: {
-        external: []
+        external: ['github.css', 'prism.css', 'prism.js']
       }
     },
-    base: './',
     esbuild: {
-      format: 'esm',
-      treeShaking: true,
-      target: 'es6'
+      target: 'es2021'
     },
+    base: './',
     css: {
       preprocessorOptions: {
         scss: {}
       }
     },
-    plugins: [].filter(Boolean)
+    plugins: [
+      VitePluginString({
+        include: ['**/*.md']
+      })
+    ].filter(Boolean)
   })
 }

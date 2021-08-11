@@ -1,1 +1,5 @@
-export const lang = (key: string) => {}
+const languages = import.meta.globEager(`./*.json`)
+
+export const localize = (key: string, locale = 'zh') => {
+  return Reflect.get(languages[`./${locale}.json`], key) ?? key
+}
