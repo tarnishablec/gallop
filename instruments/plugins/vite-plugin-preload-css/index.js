@@ -25,7 +25,7 @@ export const VitePluginPreloadCss = () => {
         // console.log(css.toString())
         const source = css.toString()
         const refId = this.emitFile({
-          source: css,
+          source,
           fileName: `injects/inject.${hashify(source)}.css`,
           type: 'asset'
         })
