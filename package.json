@@ -6,13 +6,16 @@
   ],
   "type": "module",
   "scripts": {
+    "release": "node ./instruments/cli/index.js --command release --emptyIsRoot -z1",
     "build": "node ./instruments/cli/index.js --command build -z1",
+    "clean": "node ./instruments/cli/index.js --command clean --ignoreBlackList -z1",
     "dev": "node ./instruments/cli/index.js --command dev -z1",
     "upgrade": "node ./instruments/cli/index.js --command upgrade --emptyIsRoot -z1",
-    "clean": "node ./instruments/cli/index.js --command clean -z1",
     "test": "jest",
+    "create": "node ./instruments/cli/index.js --command create",
+    "init": "node ./instruments/cli/index.js --command init",
     "coveralls": "jest --coverage && coveralls < coverage/lcov.info",
-    "build:doc": "yarn workspace @gallop/doc run build",
+    "build:doc": "yarn run build doc --bundler vite",
     "debug": "yarn run build doc --bundler vite",
     "debug:dev": "yarn dev doc"
   },
