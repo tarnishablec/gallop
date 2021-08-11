@@ -82,20 +82,6 @@ export const queryAllPackages = () => {
   return execa.commandSync('npx lerna list').stdout.split('\n')
 }
 
-export const queryAllOutPackages = ({ withScope = true } = {}) => {
-  const list = queryAllPackages()
-  return list
-    .filter((packageName) => {
-      const pkgObj = resolvePackageJsonObj(packageName.split('/').pop() ?? '')
-      /** @type {string[]} */
-      const keywords = Reflect.get(pkgObj, 'keywords')
-      return (
-        keywords.some((v) => v.startsWith('rex-')) || keywords.includes('rex')
-      )
-    })
-    .map((v) => (withScope ? v : String(v.split('/').pop())))
-}
-
 export const getGifInfo = () => {
   const temp = execa
     .commandSync('git config -l')
@@ -127,8 +113,7 @@ export const queryPackageExternal = (packageName) => {
     createRequire(import.meta.url)(path.resolve(packageDir, 'package.json'))
       .dependencies ?? {}
   const deps = Object.keys(dependencies)
-  const outPackages = queryAllOutPackages()
-  return [...new Set([...deps, ...outPackages])]
+  return [...new Set([...deps])]
 }
 
 /** @param {string} packageName */
