@@ -1,6 +1,6 @@
-import { Obj } from './utils'
+import type { Obj } from './utils'
 import { createProxy } from './reactive'
-import { ReactiveElement } from './component'
+import type { ReactiveElement } from './component'
 
 export type ContextOptions<T extends Obj = Obj> = Partial<{
   beforeCreate: (Context: Context<T>) => unknown

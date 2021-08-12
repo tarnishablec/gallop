@@ -13,7 +13,7 @@ import { LockedProxyError } from './error'
 import { Recycler } from './dirty'
 
 const rawProxyMap = new WeakMap()
-const collections = [Map, Set, WeakMap, WeakSet]
+const collections = [Map, Set, WeakMap, WeakSet] as const
 
 export const __raw__ = Symbol('__raw__')
 
