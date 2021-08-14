@@ -124,3 +124,12 @@ export const resolvePackageEntry = (packageName) => {
   }
   return path.resolve(packageDir, 'src/index.ts')
 }
+
+/** @param {Record<string, unknown>} target */
+export const cleanObjectFields = (target) => {
+  for (const key in target) {
+    if (Reflect.get(target, key) === undefined) {
+      delete target[key]
+    }
+  }
+}

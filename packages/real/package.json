@@ -42,5 +42,13 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "buildOptions": {
+    "bundler": "vite",
+    "rollupOptions": {
+      "input": {
+        "main": "./src/index.html"
+      }
+    }
   }
 }

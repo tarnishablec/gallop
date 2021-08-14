@@ -15,7 +15,8 @@
     "create": "node ./instruments/cli/index.js --command create",
     "init": "node ./instruments/cli/index.js --command init",
     "coveralls": "jest --coverage && coveralls < coverage/lcov.info",
-    "build:doc": "yarn run build doc --bundler vite",
+    "build:doc": "yarn run build doc",
+    "build:real": "yarn run build real",
     "debug": "yarn run build doc --bundler vite",
     "debug:dev": "yarn dev doc"
   },
