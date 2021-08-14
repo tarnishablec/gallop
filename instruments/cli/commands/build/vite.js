@@ -21,7 +21,7 @@ export const viteBuild = (
     root: path.resolve(packageDir, root),
     build: {
       outDir: path.resolve(packageDir, 'dist'),
-      rollupOptions
+      rollupOptions: { ...rollupOptions }
     },
     esbuild: {
       target: 'es2021'
