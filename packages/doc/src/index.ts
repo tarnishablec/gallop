@@ -3,7 +3,7 @@ import './layout/AppMain'
 import './layout/SideMenu'
 import './registry'
 import './styles/index.scss'
-import { GithubCorner } from './components/GithubCorner'
+import { GithubCorner } from '@doc/components/GithubCorner'
 import style from './index.scss?inline'
 
 component('app-root', function () {

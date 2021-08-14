@@ -6,9 +6,9 @@ import {
   ReactiveElement,
   useStyle
 } from '@gallop/gallop'
-import { localeContext, menuData, localeData } from '../../contexts'
+import { localeContext, menuData, localeData } from '@doc/contexts'
 import raw from './index.scss?inline'
-import { localize } from '../../language'
+import { localize } from '@doc/language'
 
 component('side-menu', function (this: ReactiveElement) {
   useContext([localeContext])

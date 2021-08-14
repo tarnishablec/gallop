@@ -8,8 +8,8 @@ import {
   useStyle,
   queryPool
 } from '@gallop/gallop'
-import { localize } from '../../../language'
-import { menuData, localeContext, localeData } from '../../../contexts'
+import { localize } from '@doc/language'
+import { menuData, localeContext, localeData } from '@doc/contexts'
 import raw from './index.scss?inline'
 
 component('doc-guide', function (this: ReactiveElement) {
@@ -72,7 +72,7 @@ component('doc-guide', function (this: ReactiveElement) {
               (c) => c,
               (c) =>
                 html`<div class="markdown-wrapper">
-                  <h3 class="sub-title" .id="${c}">${c}</h3>
+                  <h3 class="sub-title" .id="${c}">${localize(c, locale)}</h3>
                   <mark-down :locale="${locale}" :filename="${c}"></mark-down>
                 </div> `
             )

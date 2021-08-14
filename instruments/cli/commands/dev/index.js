@@ -1,10 +1,16 @@
 import { createServer } from 'vite'
 // import { startServer } from "snowpack"
-import { removeNodeModules, resolvePackageDir, run } from '../../../utils.js'
+import {
+  removeNodeModules,
+  resolvePackageDir,
+  resolveRepoRootDir,
+  run
+} from '../../../utils.js'
 import path from 'path'
 import { clean } from '../clean/index.js'
 import { fixTslib } from '../build/rollup.js'
 import { VitePluginString } from '../../../plugins/vite-plugin-string/index.js'
+import ViteTsConfigPaths from 'vite-tsconfig-paths'
 
 /**
  * @param {string} packageName
@@ -44,7 +50,12 @@ export const viteDev = (
         scss: {}
       }
     },
-    plugins: [VitePluginString({ include: ['**/*.md'] })]
+    plugins: [
+      ViteTsConfigPaths({
+        projects: [path.resolve(resolveRepoRootDir(), 'tsconfig.json')]
+      }),
+      VitePluginString({ include: ['**/*.md'] })
+    ]
   }).then((server) => {
     server.listen()
   })

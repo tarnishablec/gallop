@@ -1,7 +1,8 @@
 import path from 'path'
 import vite from 'vite'
-import { resolvePackageDir } from '../../../utils.js'
+import { resolvePackageDir, resolveRepoRootDir } from '../../../utils.js'
 import { VitePluginString } from '../../../plugins/vite-plugin-string/index.js'
+import ViteTsConfigPaths from 'vite-tsconfig-paths'
 
 /** @param {string} packageName */
 export const viteBuild = (packageName, root = 'src') => {
@@ -24,6 +25,9 @@ export const viteBuild = (packageName, root = 'src') => {
       }
     },
     plugins: [
+      ViteTsConfigPaths({
+        projects: [path.resolve(resolveRepoRootDir(), 'tsconfig.json')]
+      }),
       VitePluginString({
         include: ['**/*.md']
       })
