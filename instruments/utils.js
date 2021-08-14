@@ -61,16 +61,6 @@ export const log = (message) => {
 export const require = createRequire(import.meta.url)
 
 /** @param {string} packageName */
-export const isTsxPackage = (packageName) => {
-  const obj = resolvePackageJsonObj(packageName)
-  const keywords = Reflect.get(obj, 'keywords')
-  if (Array.isArray(keywords) && keywords.includes('tsx')) {
-    return true
-  }
-  return false
-}
-
-/** @param {string} packageName */
 export const resolvePeerDependencies = (packageName) => {
   const peerObj = Reflect.get(
     resolvePackageJsonObj(packageName),

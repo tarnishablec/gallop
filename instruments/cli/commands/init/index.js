@@ -22,28 +22,26 @@ export const init = (
   packageName,
   {
     reset = false,
-    tsx = false,
     email = EMAIL,
     author = AUTHOR,
-    page = false,
+    site = false,
     ...options
   } = {}
 ) => {
   if (reset) {
     initPackageJson(packageName, {
       reset,
-      tsx,
       email,
       author,
-      page,
+      site,
       ...options
     })
     initTest(packageName)
-    page &&
+    site &&
       fs.ensureFile(
         path.resolve(resolvePackageDir(packageName), `src/index.html`)
       )
-    initIndexTs(packageName, { reset, tsx })
+    initIndexTs(packageName, { reset })
   }
   boot()
 }
@@ -55,11 +53,10 @@ export const initPackageJson = (
    * @type {{
    *   email?: string
    *   reset?: boolean
-   *   tsx?: boolean
    *   author?: string
-   *   page?: boolean
+   *   site?: boolean
    * }}
-   */ { reset = false, tsx = false, page = false, ...options } = {}
+   */ { reset = false, site = false, ...options } = {}
 ) => {
   const packageJsonPath = resolvePackageJsonPath(packageName)
   const packageJsonObj = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
@@ -72,9 +69,7 @@ export const initPackageJson = (
   fs.writeFileSync(
     packageJsonPath,
     JSON.stringify(
-      createPackageJsonObj({ packageName, page, ...options }, cache, {
-        tsx
-      }),
+      createPackageJsonObj({ packageName, site, ...options }, cache),
       null,
       2
     )
@@ -82,12 +77,9 @@ export const initPackageJson = (
 }
 
 /** @param {string} packageName */
-export const initIndexTs = (
-  packageName,
-  { reset = false, tsx = false } = {}
-) => {
+export const initIndexTs = (packageName, { reset = false } = {}) => {
   const packageDir = resolvePackageDir(packageName)
-  const indexPath = path.resolve(packageDir, `src/index.ts${tsx ? 'x' : ''}`)
+  const indexPath = path.resolve(packageDir, `src/index.ts`)
   if (!fs.existsSync(indexPath) || reset) {
     fs.ensureFileSync(indexPath)
     fs.writeFileSync(indexPath, `export const hello = '${packageName}'`)
@@ -125,7 +117,7 @@ describe('test', () => {
  *   email?: string
  *   url?: string
  *   registry?: string
- *   page?: boolean
+ *   site?: boolean
  * }} option
  * @param {object} [pkgJsonCacheObj] Default is `{}`
  */
@@ -136,11 +128,10 @@ export const createPackageJsonObj = (
     author = AUTHOR,
     email = EMAIL,
     url = URL,
-    registry = REGISTRY,
-    page = false
+    site = false,
+    registry = REGISTRY
   },
-  pkgJsonCacheObj = {},
-  { tsx = false } = {}
+  pkgJsonCacheObj = {}
 ) =>
   Object.assign(
     {
@@ -157,18 +148,11 @@ export const createPackageJsonObj = (
       },
       exports: {
         default: {
-          import: ['./dist/index.esm.js', `./src/index.ts${tsx ? 'x' : ''}`],
+          import: ['./dist/index.esm.js', `./src/index.ts`],
           require: './dist/index.umd.js'
         }
       },
-      keywords: [
-        scope,
-        packageName,
-        'rex',
-        page && 'page',
-        tsx && 'tsx',
-        tsx ? 'rex-component' : 'rex-library'
-      ].filter(Boolean),
+      keywords: [scope, packageName, site && 'site'].filter(Boolean),
       author: {
         name: author,
         email

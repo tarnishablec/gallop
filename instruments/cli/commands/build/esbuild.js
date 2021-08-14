@@ -3,11 +3,11 @@ import chalk from 'chalk'
 import { externalDependencies } from '../../../const.js'
 import { scssPlugin } from '../../../plugins/esbuild-plugin-scss/index.js'
 import {
-  isTsxPackage,
   resolvePackageDir,
   resolvePeerDependencies,
   queryPackageExternal,
-  resolveRepoRootDir
+  resolveRepoRootDir,
+  resolvePackageEntry
 } from '../../../utils.js'
 import path from 'path'
 import ts from 'typescript'
@@ -20,7 +20,6 @@ export const esbuildbundle = async (
   packageName,
   { ignoreExternal = false } = {}
 ) => {
-  const isTsx = isTsxPackage(packageName)
   const packageDir = resolvePackageDir(packageName)
   const peerDependencies = resolvePeerDependencies(packageName)
 
@@ -38,7 +37,7 @@ export const esbuildbundle = async (
     // { format: "iife", minify: true, outfileName: "index.iife.js" }
   ]
 
-  const entry = `src/index.ts${isTsx ? 'x' : ''}`
+  const entry = resolvePackageEntry(packageName)
 
   for (const { format, outfileName, minify } of buildFormats) {
     const outfile = path.resolve(packageDir, `dist/${outfileName}`)
