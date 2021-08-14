@@ -16,22 +16,29 @@ export const build = async (
    *   ignoreExternal?: boolean
    *   bundler?: 'rollup' | 'esbuild' | 'vite'
    *   page?: boolean
+   *   [key: string]: unknown
    * }}
    */ { ignoreExternal = false, bundler = 'rollup', ...rest } = {}
 ) => {
   clean(packageName)
 
-  bundler = resolvePackageJsonObj(packageName).buildOptions?.bundler ?? bundler
+  const buildOptions = resolvePackageJsonObj(packageName).buildOptions
+  bundler = buildOptions?.bundler ?? bundler
+  const rollupOptions = buildOptions?.rollupOptions
 
   switch (bundler) {
     case 'esbuild': {
       return esbuildbundle(packageName, { ignoreExternal, ...rest })
     }
     case 'rollup': {
-      return rollupBundle(packageName, { ignoreExternal, ...rest })
+      return rollupBundle(packageName, {
+        ignoreExternal,
+        rollupOptions,
+        ...rest
+      })
     }
     case 'vite': {
-      return viteBuild(packageName)
+      return viteBuild(packageName, { ...rest })
     }
   }
 }

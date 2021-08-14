@@ -17,10 +17,16 @@ import rollupTs from '@wessberg/rollup-plugin-ts'
 import rollupJson from '@rollup/plugin-json'
 import { terser } from 'rollup-plugin-terser'
 
-/** @param {string} packageName */
+/**
+ * @param {string} packageName
+ * @param {Partial<{
+ *   ignoreExternal: boolean
+ *   rollupOptions: import('rollup').RollupOptions
+ * }>} options
+ */
 export const rollupBundle = async (
   packageName,
-  { ignoreExternal = false } = {}
+  { ignoreExternal = false, rollupOptions } = {}
 ) => {
   console.log(chalk.cyanBright(`start bundling ${packageName}`))
 
@@ -51,7 +57,8 @@ export const rollupBundle = async (
         tsconfig: path.resolve(resolveRepoRootDir(), 'tsconfig.json')
       })
     ],
-    external
+    external,
+    ...rollupOptions
   })
 
   const esmPath = path.resolve(packageDir, 'dist/index.esm.js')

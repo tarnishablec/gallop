@@ -120,6 +120,7 @@ describe('test', () => {
  *   site?: boolean
  * }} option
  * @param {object} [pkgJsonCacheObj] Default is `{}`
+ * @returns {import('type-fest').PackageJson & Record<string, unknown>}
  */
 export const createPackageJsonObj = (
   {
@@ -132,44 +133,42 @@ export const createPackageJsonObj = (
     registry = REGISTRY
   },
   pkgJsonCacheObj = {}
-) =>
-  Object.assign(
-    {
-      name: `@${scope}/${packageName}`,
-      version: '0.0.0',
-      description: `${scope} ${packageName}`,
-      main: `dist/index.umd.js`,
-      module: 'dist/index.esm.js',
-      types: 'dist/index.d.ts',
-      sideEffect: false,
-      repository: {
-        type: 'git',
-        url
-      },
-      exports: {
-        default: {
-          import: ['./dist/index.esm.js', `./src/index.ts`],
-          require: './dist/index.umd.js'
-        }
-      },
-      keywords: [scope, packageName, site && 'site'].filter(Boolean),
-      author: {
-        name: author,
-        email
-      },
-      homepage: '',
-      license: 'MIT',
-      directories: {
-        src: 'src',
-        test: '__tests__'
-      },
-      files: ['src', 'dist'],
-      publishConfig: {
-        access: 'public',
-        registry
-      }
-    },
-    pkgJsonCacheObj
-  )
+) => ({
+  name: `@${scope}/${packageName}`,
+  version: '0.0.0',
+  private: site ? true : undefined,
+  description: `${scope} ${packageName}`,
+  main: `dist/index.umd.js`,
+  module: 'dist/index.esm.js',
+  types: 'dist/index.d.ts',
+  sideEffect: false,
+  repository: {
+    type: 'git',
+    url
+  },
+  exports: {
+    default: {
+      import: ['./dist/index.esm.js', `./src/index.ts`],
+      require: './dist/index.umd.js'
+    }
+  },
+  keywords: [scope, packageName, site ? 'site' : ''].filter(Boolean),
+  author: {
+    name: author,
+    email
+  },
+  homepage: '',
+  license: 'MIT',
+  directories: {
+    src: 'src',
+    test: '__tests__'
+  },
+  files: ['src', 'dist'],
+  publishConfig: {
+    access: 'public',
+    registry
+  },
+  ...pkgJsonCacheObj
+})
 
 export default init

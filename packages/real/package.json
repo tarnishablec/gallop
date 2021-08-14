@@ -1,0 +1,46 @@
+{
+  "name": "@gallop/real",
+  "version": "0.0.0",
+  "description": "gallop real",
+  "private": true,
+  "main": "dist/index.umd.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "sideEffect": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarnishablec/gallop.git"
+  },
+  "exports": {
+    "default": {
+      "import": [
+        "./dist/index.esm.js",
+        "./src/index.ts"
+      ],
+      "require": "./dist/index.umd.js"
+    }
+  },
+  "keywords": [
+    "gallop",
+    "real",
+    "site"
+  ],
+  "author": {
+    "name": "tarnishablec",
+    "email": "tarnishablec@outlook.com"
+  },
+  "homepage": "",
+  "license": "MIT",
+  "directories": {
+    "src": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

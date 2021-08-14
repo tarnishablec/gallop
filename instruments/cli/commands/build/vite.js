@@ -4,16 +4,24 @@ import { resolvePackageDir, resolveRepoRootDir } from '../../../utils.js'
 import { VitePluginString } from '../../../plugins/vite-plugin-string/index.js'
 import ViteTsConfigPaths from 'vite-tsconfig-paths'
 
-/** @param {string} packageName */
-export const viteBuild = (packageName, root = 'src') => {
+/**
+ * @param {string} packageName
+ * @param {Partial<{
+ *   root: string
+ *   rollupOptions: import('vite').BuildOptions['rollupOptions']
+ *   [key: string]: unknown
+ * }>} options
+ */
+export const viteBuild = (
+  packageName,
+  { root = 'src', rollupOptions } = {}
+) => {
   const packageDir = resolvePackageDir(packageName)
   vite.build({
     root: path.resolve(packageDir, root),
     build: {
       outDir: path.resolve(packageDir, 'dist'),
-      rollupOptions: {
-        // external: ['github.css', 'prism.css', 'prism.js']
-      }
+      rollupOptions
     },
     esbuild: {
       target: 'es2021'

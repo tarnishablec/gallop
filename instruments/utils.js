@@ -32,8 +32,11 @@ export const resolvePackageJsonPath = (packageName) => {
 
 /**
  * @param {string} packageName
- * @returns {import('package-json').FullVersion & {
- *   buildOptions?: { bundler?: 'rollup' | 'vite' | 'esbuild' }
+ * @returns {import('type-fest').PackageJson & {
+ *   buildOptions?: Partial<{
+ *     bundler: 'rollup' | 'vite' | 'esbuild'
+ *     rollupOptions: import('vite').BuildOptions['rollupOptions']
+ *   }>
  * }}
  */
 export const resolvePackageJsonObj = (packageName) => {
