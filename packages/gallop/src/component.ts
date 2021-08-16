@@ -1,5 +1,5 @@
 import { HTMLClip, getVals } from './clip'
-import { Patcher } from './patcher'
+import type { Patcher } from './patcher'
 import { Obj, extractProps } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'

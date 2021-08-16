@@ -11,70 +11,73 @@ import { marker } from '../src/marker'
 
 describe('component', () => {
   test('register component', () => {
-    const [data, context] = createContext({ tik: 0 })
+    const context = createContext({ tik: 0 })
 
     let a = 1
     let b = 1
 
     const hobbies = ['sing', 'jump', 'rap', '🏀']
-    component('sandbox-a', function (
-      this: ReactiveElement,
-      {
-        name = 'yihan',
-        age,
-        hobbies,
-        status = { hungry: true }
-      }: {
-        name: string
-        age: number
-        hobbies: string[]
-        status: { hungry: boolean }
+    component(
+      'sandbox-a',
+      function (
+        this: ReactiveElement,
+        {
+          name = 'yihan',
+          age,
+          hobbies,
+          status = { hungry: true }
+        }: {
+          name: string
+          age: number
+          hobbies: string[]
+          status: { hungry: boolean }
+        }
+      ) {
+        const [state] = useState({ tok: 100 })
+
+        const [data] = useContext(context)
+
+        useEffect(() => {
+          a++
+          expect(this.localName).toBe('sandbox')
+          expect(this.$state).toEqual({ tok: 100 })
+        }, [])
+
+        const sha = html`
+          <div id="root" style="color:red" .class=${'sandbox'}>
+            <div>${name}</div>
+            <div>${age}</div>
+            <div>${hobbies}</div>
+            <div>${status.hungry}</div>
+            <div>${data.tik}</div>
+            <div>${state.tok}</div>
+            <button
+              @click="${() => {
+                data.tik += 1
+                state.tok += 1
+                b += 2
+              }}"
+            ></button>
+          </div>
+        `
+
+        expect(
+          sha
+            .createPatcher()
+            .dof.querySelector('#root')
+            ?.getAttribute('.class') === marker
+        ).toBe(true)
+
+        expect(
+          sha
+            .createPatcher()
+            .dof.querySelector('#root')
+            ?.getAttribute('style') == marker
+        ).toBe(false)
+
+        return sha
       }
-    ) {
-      const [state] = useState({ tok: 100 })
-
-      useContext([context])
-
-      useEffect(() => {
-        a++
-        expect(this.localName).toBe('sandbox')
-        expect(this.$state).toEqual({ tok: 100 })
-      }, [])
-
-      const sha = html`
-        <div id="root" style="color:red" .class=${'sandbox'}>
-          <div>${name}</div>
-          <div>${age}</div>
-          <div>${hobbies}</div>
-          <div>${status.hungry}</div>
-          <div>${data.tik}</div>
-          <div>${state.tok}</div>
-          <button
-            @click="${() => {
-              data.tik += 1
-              state.tok += 1
-              b += 2
-            }}"
-          ></button>
-        </div>
-      `
-
-      expect(
-        sha
-          .createPatcher()
-          .dof.querySelector('#root')
-          ?.getAttribute('.class') === marker
-      ).toBe(true)
-
-      expect(
-        sha
-          .createPatcher()
-          .dof.querySelector('#root')
-          ?.getAttribute('style') == marker
-      ).toBe(false)
-
-      return sha
-    })
+    )
 
     render(html` <sandbox-a :hobbies="${hobbies}" :age="24"></sandbox-a> `)
 
@@ -102,7 +105,7 @@ describe('component', () => {
       ).toBe(true)
       expect(a).toBe(2)
       expect(b).toBe(3)
-      expect(data.tik).toBe(101)
+      expect(context.data.tik).toBe(101)
       expect(
         (instance!.shadowRoot?.firstChild?.childNodes[6] as HTMLDivElement)
           .textContent

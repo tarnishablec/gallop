@@ -91,105 +91,82 @@ import {
   ReactiveElement
 } from '@gallop/gallop'
 
-export let [data, context] = createContext({ b: 2 }) //context can be exported to another component
+export const contenxt = createContext({ b: 2 }) //context can be exported to another component
 
 export const PureComponent = (prop: string) => html`<div>pure ${prop}</div>` //pure component with no any lifecycle
 
-component('test-name', function (
-  this: ReactiveElement, //this parameter: https://www.typescriptlang.org/docs/handbook/functions.html
-  { name, age = 1 }: { name: string; age?: number }
-) {
-  let [state] = useState({ a: 1, color: 'red' }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
-  console.dir(this) //access dom directly by this
+component(
+  'test-name',
+  function (
+    this: ReactiveElement, //this parameter: https://www.typescriptlang.org/docs/handbook/functions.html
+    { name, age = 1 }: { name: string; age?: number }
+  ) {
+    let [state] = useState({ a: 1, color: 'red' }) //dont need setX(), useState() return a proxy, and auto trigger rerender, ⚠ you can only use useState() once in a component declaration
+    console.dir(this) //access dom directly by this
 
-  const memo = useMemo(() => state.a * 2, [state.a]) //just like react useMemo()
+    const memo = useMemo(() => state.a * 2, [state.a]) //just like react useMemo()
 
-  useStyle(
-    () =>
-      css`
-        div {
-          background: ${state.color};
-        }
-      `,
-    [state.color]
-  )
+    useStyle(
+      () =>
+        css`
+          div {
+            background: ${state.color};
+          }
+        `,
+      [state.color]
+    )
 
-  useContext([context]) //you need to hook Context to this component by useContext()
+    const [{ b }] = useContext(context) //you need to hook Context to this component by useContext()
 
-  const [cache] = useCache({ val: 1 }) //will not trigger rerender, and only execute once, ⚠⚠you can not access dom in cache
+    const [cache] = useCache({ val: 1 }) //will not trigger rerender, and only execute once, ⚠⚠you can not access dom in cache
 
-  useEffect(() => {
-    console.dir(this) //this context can be pass by arrow function
-    console.log(cache.val) //return 1
+    useEffect(() => {
+      console.dir(this) //this context can be pass by arrow function
+      console.log(cache.val) //return 1
 
-    return () => {
-      console.log(`disconnected callback`)
-    }
-  }, [state.a]) //trigger effect when depends changed, completely same as react useEffect()
+      return () => {
+        console.log(`disconnected callback`)
+      }
+    }, [state.a]) //trigger effect when depends changed, completely same as react useEffect()
 
-  return html`
-    <div>${state.a}</div>
-    <div>${name}</div>
-    <div>${data.b}</div>
-    <div>${age}</div>
-    ${repeat(
-      [1, 2, 3], //list need to be rendered
-      (item) => item, //key diff callback to generate key
-      (
-        item //actually render
-      ) =>
-        html`
-          <button @click="${() => console.log(item)}">
-            ${item}
-          </button>
-        `
-    )}
-    <slot>
-      default slot context
-    </slot>
-    <div>${memo}</div>
-    <button
-      @click="${(e: Event) => {
-        state.a += 1
-        data.b += 2
-        console.log(
-          this
-        ) /*you can still access this by arrow function in event*/
-      }}"
-    >
-      click
-    </button>
-    <div>
-      ${suspense(
-        () =>
-          import('./components/MyCount').then(
-            () => html`<my-count></my-count>`
-          ),
-        { pending: html`<div>loading...</div>` }
+    return html`
+      <div>${state.a}</div>
+      <div>${name}</div>
+      <div>${data.b}</div>
+      <div>${age}</div>
+      ${repeat(
+        [1, 2, 3], //list need to be rendered
+        (item) => item, //key diff callback to generate key
+        (
+          item //actually render
+        ) =>
+          html` <button @click="${() => console.log(item)}">${item}</button> `
       )}
-    </div>
-  `
-})
+      <slot> default slot context </slot>
+      <div>${memo}</div>
+      <button
+        @click="${(e: Event) => {
+          state.a += 1
+          data.b += 2
+          console.log(
+            this
+          ) /*you can still access this by arrow function in event*/
+        }}"
+      >
+        click
+      </button>
+      <div>
+        ${suspense(
+          () =>
+            import('./components/MyCount').then(
+              () => html`<my-count></my-count>`
+            ),
+          { pending: html`<div>loading...</div>` }
+        )}
+      </div>
+    `
+  }
+)
 
-render(html`
-  <test-name :name="haha" :age="${2}">
-    slot content
-  </test-name>
-`)
+render(html` <test-name :name="haha" :age="${2}"> slot content </test-name> `)
 ```
-
-## TODO (⌛--- WIP)
-
-- router ⌛
-
-- doc ⌛
-
-- vscode syntax highlighting and intelliSense plugin  
-  ( for now, I recommend you to use <br>
-  `lit-html` & `vscode-styled-components`<br>
-  plugin in vscode extension market <br>
-  then configure file association for `.ts` to `typescript react` )
-
-- ui library ([zeit-design](https://zeit-style.now.sh/))
-
-- time travel

@@ -12,9 +12,9 @@ describe('context', () => {
   test('normal context', (done) => {
     let div: HTMLDivElement
 
-    const [data, context] = createContext({ a: 1 })
+    const context = createContext({ a: 1 })
     component('test-a', function (this: ReactiveElement) {
-      useContext([context])
+      const [data] = useContext(context)
 
       useEffect(() => {
         const button = this.$root.querySelector('button')!
@@ -36,7 +36,7 @@ describe('context', () => {
 
     setTimeout(() => {
       try {
-        expect(data.a).toBe(2)
+        expect(context.data.a).toBe(2)
         expect(div.childNodes[1].textContent).toBe('2')
         done()
       } catch (error) {
