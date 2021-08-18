@@ -1,7 +1,7 @@
 import { Obj, forceGet } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
-import { Context } from './context'
+import type { Context } from './context'
 import { ReactiveElement, observeDisconnect } from './component'
 import { Recycler } from './dirty'
 
