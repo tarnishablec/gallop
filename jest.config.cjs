@@ -8,10 +8,9 @@ module.exports = {
   testMatch: ['<rootDir>/packages/**/__tests__/**/*.+(test|spec).[jt]s?(x)'],
   collectCoverage: true,
   collectCoverageFrom: [
-    '<rootDir>/packages/**/*.{js,jsx,ts,tsx}',
+    '<rootDir>/packages/gallop/**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
     '!<rootDir>/packages/gallop/src/directives/**',
-    '<rootDir>/packages/gallop/src/directives/repeat.ts',
     '!<rootDir>/packages/{sandbox,doc,router}/**',
     '!<rootDir>/packages/*/dist/**',
     '!<rootDir>/packages/*/index.js',

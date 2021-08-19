@@ -1,18 +1,18 @@
 import { Obj, forceGet } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
-import { Context } from './context'
+import type { Context } from './context'
 import { ReactiveElement, observeDisconnect } from './component'
 import { Recycler } from './dirty'
 
-export function useState<T extends Obj>(raw: T): [T] {
+export function useState<T extends Obj>(raw: T) {
   const current = Looper.resolveCurrent<Obj, T>()
   return [
     current.$state ??
       (current.$state = createProxy(raw, {
         onMut: () => current.requestUpdate()
       }))
-  ]
+  ] as const
 }
 
 let lastHookEl: ReactiveElement | undefined
@@ -30,7 +30,7 @@ export function useHookCount() {
 }
 
 const extendStateMap = new Map<ReactiveElement, Map<number, Obj>>()
-export function useExtendState<T extends Obj>(raw: T): [T] {
+export function useExtendState<T extends Obj>(raw: T) {
   const current = Looper.resolveCurrent()
   const count = useHookCount()
   // const map = forceGet(extendStateMap, current, () => new Map<number, Obj>())
@@ -40,13 +40,13 @@ export function useExtendState<T extends Obj>(raw: T): [T] {
       count,
       () => createProxy(raw, { onMut: () => current.requestUpdate() })
     ) as T
-  ]
+  ] as const
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useContext(contexts: Context<any>[]) {
+export function useContext<T extends Obj>(context: Context<T>) {
   const current = Looper.resolveCurrent()
-  contexts.forEach((ctx) => ctx.watch(current))
+  context.watch(current)
+  return [context.data] as const
 }
 
 const depCountMap = new WeakMap<ReactiveElement, Map<number, unknown[]>>()

@@ -16,25 +16,36 @@ export const build = async (
    *   ignoreExternal?: boolean
    *   bundler?: 'rollup' | 'esbuild' | 'vite'
    *   page?: boolean
+   *   [key: string]: unknown
    * }}
    */ { ignoreExternal = false, bundler = 'rollup', ...rest } = {}
 ) => {
   clean(packageName)
 
-  bundler =
-    bundler ??
-    resolvePackageJsonObj(packageName).buildOptions?.bundler ??
-    'rollup'
+  const buildOptions = resolvePackageJsonObj(packageName).buildOptions
+  bundler = buildOptions?.bundler ?? bundler
+  const rollupOptions = buildOptions?.rollupOptions ?? {}
+
+  // rollup has a bug dealing with { input: undefined }
+  'input' in rollupOptions &&
+    (rollupOptions.input = transformRollupInputOptions(
+      rollupOptions.input,
+      packageName
+    ))
 
   switch (bundler) {
     case 'esbuild': {
       return esbuildbundle(packageName, { ignoreExternal, ...rest })
     }
     case 'rollup': {
-      return rollupBundle(packageName, { ignoreExternal, ...rest })
+      return rollupBundle(packageName, {
+        ignoreExternal,
+        rollupOptions,
+        ...rest
+      })
     }
     case 'vite': {
-      return viteBuild(packageName)
+      return viteBuild(packageName, { rollupOptions, ...rest })
     }
   }
 }
@@ -62,6 +73,28 @@ export const handleCss = (
       fs.appendFileSync(target, injectContent)
     }
   }
+}
+
+/**
+ * @param {import('rollup').RollupOptions['input']} input
+ * @param {string} packageName
+ * @returns {import('rollup').RollupOptions['input']}
+ */
+const transformRollupInputOptions = (input, packageName) => {
+  if (input === undefined) return
+  /** @param {string} relativePath */
+  const transformPath = (relativePath) =>
+    path.resolve(resolvePackageDir(packageName), relativePath)
+
+  if (Array.isArray(input)) return input.map(transformPath)
+  if (typeof input === 'string') return transformPath(input)
+  if (typeof input === 'object') {
+    for (const key in input) {
+      Reflect.set(input, key, transformPath(input[key]))
+    }
+    return input
+  }
+  return input
 }
 
 export default build

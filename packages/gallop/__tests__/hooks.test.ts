@@ -129,7 +129,7 @@ describe('hooks', () => {
       return html` <div>111</div> `
     })
 
-    const remove = render(html`<test-s></test-s>`)
+    const { destroy } = render(html`<test-s></test-s>`)
 
     const el = document.querySelector('test-s') as ReactiveElement
 
@@ -142,7 +142,7 @@ describe('hooks', () => {
     setTimeout(() => {
       try {
         expect(color).toBe('rgb(255, 0, 0)')
-        remove()
+        destroy()
         done()
       } catch (error) {
         done(error)
@@ -172,7 +172,7 @@ describe('hooks', () => {
         ></button>`
     })
 
-    const remove = render(html` <test-memo></test-memo> `)
+    const { destroy } = render(html` <test-memo></test-memo> `)
 
     setTimeout(() => {
       const el = document.querySelector('test-memo') as ReactiveElement
@@ -192,7 +192,7 @@ describe('hooks', () => {
         expect(
           el.$root.querySelector('div')?.childNodes[1].textContent === '5'
         ).toBe(true)
-        remove()
+        destroy()
         done()
       } catch (error) {
         done(error)

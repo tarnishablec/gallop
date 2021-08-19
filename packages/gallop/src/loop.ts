@@ -1,7 +1,7 @@
 import type { ReactiveElement } from './component'
 import { resolveEffects, resetLastHookEl } from './hooks'
 import { Recycler } from './dirty'
-import { Obj } from './utils'
+import type { Obj } from './utils'
 
 export type LoopCallbackBase = {
   name: string

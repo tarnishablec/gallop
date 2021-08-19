@@ -4,12 +4,12 @@ import { getVals } from '../src/clip'
 component('test-test', ({ name }: { name: string }) => html`<div>${name}</div>`)
 
 const a = 1
-const [data] = createContext({ a: 1 })
+const conext = createContext({ a: 1 })
 describe('clip', () => {
   const click = () => alert(1)
   const shaClip = html`
     <div>this is test shaClip ${a}</div>
-    <div>this si test tail ${data.a}</div>
+    <div>this si test tail ${conext.data.a}</div>
     <button @click="${click}"></button>
     <test-test :name="${a}"></test-test>
     <div .style="${`color:red`}">style</div>

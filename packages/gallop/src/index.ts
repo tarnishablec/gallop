@@ -1,7 +1,7 @@
 export { html, css } from './parse'
 export { render } from './render'
 export { HTMLClip } from './clip'
-export { Patcher, mergeSyntax } from './patcher'
+export { Patcher } from './patcher'
 
 export type { SyntaxMap } from './patcher'
 

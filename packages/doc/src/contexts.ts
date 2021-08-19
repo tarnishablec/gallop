@@ -8,22 +8,22 @@ export const syncLocalStorage: <T extends Record<string, unknown>>(
 ) => ContextOptions<T> = (name) => {
   const namespace = '$context$'
   return {
-    beforeCreate: (context) => {
+    beforeCreate() {
       if (window.localStorage.getItem(namespace) === null) {
         window.localStorage.setItem(namespace, '{}')
       }
       const temp = JSON.parse(window.localStorage.getItem(namespace)!)
       const t = Reflect.get(temp, name)
       if (t !== void 0) {
-        context.raw = t
+        this.raw = t
       } else {
-        Reflect.set(temp, name, context.raw)
+        Reflect.set(temp, name, this.raw)
         window.localStorage.setItem(namespace, JSON.stringify(temp))
       }
     },
-    onUpdate: (context) => {
+    onUpdate() {
       const temp = JSON.parse(window.localStorage.getItem(namespace)!)
-      Reflect.set(temp, name, context.proxy)
+      Reflect.set(temp, name, this.data)
       window.localStorage.setItem(namespace, JSON.stringify(temp))
     }
   }
@@ -63,7 +63,7 @@ export const menuData: { menu: { name: Name; children?: Name[] }[] } = {
   ]
 }
 
-export const [localeData, localeContext] = createContext(
+export const localeContext = createContext(
   {
     locale: 'zh',
     list: ['zh', 'en']

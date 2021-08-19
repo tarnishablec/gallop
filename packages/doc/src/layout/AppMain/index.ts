@@ -8,12 +8,12 @@ import {
   ReactiveElement
 } from '@gallop/gallop'
 import raw from './index.scss?inline'
-import { CodeSandboxIcon } from '../../components/Icons/CodeSandboxIcon'
-import { LanguageIcon } from '../../components/Icons/LanguageIcon'
+import { CodeSandboxIcon } from '@doc/components/Icons/CodeSandboxIcon'
+import { LanguageIcon } from '@doc/components/Icons/LanguageIcon'
 import './DocGuide'
 import './DocApi'
 import './LanguageSelector'
-import { loadPlayground } from '../../components/Playground'
+import { loadPlayground } from '@doc/components/Playground'
 
 component('app-main', function (this: ReactiveElement) {
   const [state] = useState({

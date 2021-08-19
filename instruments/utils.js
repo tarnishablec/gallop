@@ -32,8 +32,11 @@ export const resolvePackageJsonPath = (packageName) => {
 
 /**
  * @param {string} packageName
- * @returns {import('package-json').FullVersion & {
- *   buildOptions?: { bundler?: 'rollup' | 'vite' | 'esbuild' }
+ * @returns {import('type-fest').PackageJson & {
+ *   buildOptions?: Partial<{
+ *     bundler: 'rollup' | 'vite' | 'esbuild'
+ *     rollupOptions: import('vite').BuildOptions['rollupOptions']
+ *   }>
  * }}
  */
 export const resolvePackageJsonObj = (packageName) => {
@@ -59,16 +62,6 @@ export const log = (message) => {
 }
 
 export const require = createRequire(import.meta.url)
-
-/** @param {string} packageName */
-export const isTsxPackage = (packageName) => {
-  const obj = resolvePackageJsonObj(packageName)
-  const keywords = Reflect.get(obj, 'keywords')
-  if (Array.isArray(keywords) && keywords.includes('tsx')) {
-    return true
-  }
-  return false
-}
 
 /** @param {string} packageName */
 export const resolvePeerDependencies = (packageName) => {
@@ -130,4 +123,13 @@ export const resolvePackageEntry = (packageName) => {
     return path.resolve(packageDir, 'src/index.tsx')
   }
   return path.resolve(packageDir, 'src/index.ts')
+}
+
+/** @param {Record<string, unknown>} target */
+export const cleanObjectFields = (target) => {
+  for (const key in target) {
+    if (Reflect.get(target, key) === undefined) {
+      delete target[key]
+    }
+  }
 }

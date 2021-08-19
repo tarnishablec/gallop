@@ -8,12 +8,11 @@ import {
   useStyle,
   queryPool
 } from '@gallop/gallop'
-import { localize } from '../../../language'
-import { menuData, localeContext, localeData } from '../../../contexts'
+import { localize } from '@doc/language'
+import { menuData, localeContext } from '@doc/contexts'
 import raw from './index.scss?inline'
 
 component('doc-guide', function (this: ReactiveElement) {
-  const { locale } = localeData
   const { menu } = menuData
 
   useStyle(() => raw, [])
@@ -55,7 +54,7 @@ component('doc-guide', function (this: ReactiveElement) {
     }
   }, [])
 
-  useContext([localeContext])
+  const [{ locale }] = useContext(localeContext)
 
   return html`<article class="doc-guide-main">
     ${repeat(
