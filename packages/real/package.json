@@ -1,6 +1,6 @@
 {
   "name": "@gallop/real",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "gallop real",
   "private": true,
   "main": "dist/index.umd.js",
