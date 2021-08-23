@@ -36,8 +36,6 @@ export const createProxy = <T extends object>(
     deep?: boolean
   } = {}
 ): T => {
-  if (Reflect.get(raw, __raw__)) return raw
-
   const getter = (target: unknown) =>
     deep && isObject(target)
       ? forceGet(rawProxyMap, target, () =>

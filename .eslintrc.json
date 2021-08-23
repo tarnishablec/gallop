@@ -64,7 +64,13 @@
   },
   "overrides": [
     {
-      "files": ["**.js", "packages/sandbox/**", "scripts/**", "instruments/**"],
+      "files": [
+        "**.js",
+        "packages/sandbox/**",
+        "scripts/**",
+        "instruments/**",
+        "packages/real/**"
+      ],
       "rules": { "no-console": "off" }
     }
   ]
