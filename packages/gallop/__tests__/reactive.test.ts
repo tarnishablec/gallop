@@ -96,4 +96,11 @@ describe('reactive', () => {
     expect(a).toBe(2)
     expect(bb).toEqual({ b: 2 })
   })
+
+  test(`proxy as raw`, () => {
+    const aa = { a: 1 }
+    const p1 = createProxy(aa)
+    const p2 = createProxy(p1)
+    expect(p1).toBe(p2)
+  })
 })
