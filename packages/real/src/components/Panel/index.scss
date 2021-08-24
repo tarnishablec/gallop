@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  background: var(--panel-background-color);
+  overflow: hidden;
+
+  .panel {
+    height: 100%;
+    width: 100%;
+    overflow: inherit;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  .panel-head {
+    user-select: none;
+    height: 24px;
+    background: var(--panel-head-background-color);
+  }
+
+  .panel-body {
+    height: 100%;
+  }
+}
