@@ -3,15 +3,19 @@ import { Looper, useEffect, useHookCount } from '@gallop/gallop'
 let dragged: HTMLElement | undefined
 const keySet: Array<{ tagName: string; count: number }> = []
 
+type DragUnits = HTMLElement[] | NodeListOf<HTMLElement>
+
 export const useDragDrop = ({
-  dragZone,
+  excludeZone,
   dropZone,
-  ondrop
+  ondrop,
+  ondragStart
 }: {
-  dragZone: () => HTMLElement
-  dropZone: () => HTMLElement[] | NodeListOf<HTMLElement>
+  excludeZone?: () => DragUnits
   /** https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API#define_a_drop_zone */
-  ondrop: (dropped: HTMLElement) => void
+  dropZone: () => DragUnits
+  ondrop?: (dragged: HTMLElement, target: HTMLElement) => void
+  ondragStart?: (targets: DragUnits) => void
 }) => {
   const current = Looper.resolveCurrentElement()
   const { tagName } = current
@@ -19,28 +23,40 @@ export const useDragDrop = ({
   const key = { count, tagName }
 
   useEffect(() => {
-    const _trigger = dragZone()
-    _trigger.draggable = true
+    current.draggable = true
 
-    const _containers = Array.from(dropZone())
-
-    _trigger.addEventListener('dragstart', () => {
+    const targets = Array.from(dropZone()).filter(Boolean)
+    const _excludes = Array.from(excludeZone?.() ?? []).filter(Boolean)
+    current.addEventListener('dragstart', (e) => {
+      e.dataTransfer!.dropEffect = 'move'
       dragged = current
+      ondragStart?.(targets)
     })
 
-    _trigger.addEventListener('dragend', () => {
+    current.addEventListener('dragend', () => {
       dragged = undefined
     })
 
     if (!keySet.some((v) => v.count === count && v.tagName === tagName)) {
-      for (const container of _containers) {
-        container.addEventListener('drop', (e) => {
+      for (const exclude of _excludes) {
+        exclude.addEventListener('mouseenter', (e) => {
+          e.stopPropagation()
+          current.draggable = false
+        })
+        exclude.addEventListener('mouseleave', () => {
+          current.draggable = true
+        })
+      }
+
+      for (const target of targets) {
+        target.addEventListener('drop', (e) => {
           e.preventDefault()
-          console.log(e)
-          dragged && ondrop(dragged)
+          dragged &&
+            e.target instanceof HTMLElement &&
+            ondrop?.(dragged, e.target)
         })
 
-        container.addEventListener('dragover', (e) => {
+        target.addEventListener('dragover', (e) => {
           e.preventDefault()
         })
       }

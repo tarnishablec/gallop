@@ -11,6 +11,7 @@ type RegisterOption = {
   extend?: keyof HTMLElementTagNameMap
   Inherit?: new () => HTMLElement
   shadow?: boolean
+  meta?: Record<string, unknown>
 }
 
 export const componentPool = new Set<string>()
@@ -28,6 +29,8 @@ export interface ReactiveElement<
   $state: State
   $contexts: Set<Context>
 
+  $meta: Record<string, unknown>
+
   requestUpdate(): void
   dispatchUpdate(): void
 }
@@ -38,7 +41,8 @@ export function component<F extends Component>(
   {
     shadow = true,
     extend = undefined,
-    Inherit = HTMLElement
+    Inherit = HTMLElement,
+    meta = {}
   }: RegisterOption = {}
 ) {
   const clazz = class extends Inherit implements ReactiveElement {
@@ -55,6 +59,7 @@ export function component<F extends Component>(
 
     $isReactive = true
     $root = shadow ? this.attachShadow({ mode: 'open' }) : this
+    $meta = meta
 
     requestUpdate() {
       Looper.enUpdateQueue(this)

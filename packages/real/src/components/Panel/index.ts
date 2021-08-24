@@ -22,14 +22,7 @@ export const Panel = function (this: ReactiveElement, props: PanelPropType) {
     width = '300px'
   } = props
 
-  useDragDrop({
-    dragZone: () => this.$root.querySelector('.panel-head')!,
-    dropZone: () =>
-      queryPool({ name: 're-editor' })!.$root.querySelectorAll('.panel-pool')!,
-    ondrop: (el) => {
-      console.log(el)
-    }
-  })
+  // const [state] = useState({ activedDock: '' })
 
   useStyle(() => style, [])
   useStyle(
@@ -45,6 +38,18 @@ export const Panel = function (this: ReactiveElement, props: PanelPropType) {
     `,
     []
   )
+
+  useDragDrop({
+    excludeZone: () => this.$root.querySelectorAll('.panel-body'),
+    dropZone: () =>
+      queryPool({ name: 're-editor' })!.$root.querySelectorAll('.panel-pool')!,
+    ondrop: (dragged, target) => {
+      console.log(dragged, target)
+    }
+    // ondragStart: (targets) => {
+    //   targets.forEach((target) => {})
+    // }
+  })
 
   return html`
     <div class="panel">
