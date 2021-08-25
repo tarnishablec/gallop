@@ -1,7 +1,7 @@
 import { css, html, ReactiveElement, useStyle, queryPool } from '@gallop/gallop'
 import style from './index.scss?inline'
 
-import { useDragDrop } from '@real/hooks/useDrag'
+import { useDragDrop } from '@real/hooks/useDragDrop'
 
 export type PanelPropType = {
   minHeight: string
@@ -46,9 +46,6 @@ export const Panel = function (this: ReactiveElement, props: PanelPropType) {
     ondrop: (dragged, target) => {
       console.log(dragged, target)
     }
-    // ondragStart: (targets) => {
-    //   targets.forEach((target) => {})
-    // }
   })
 
   return html`
