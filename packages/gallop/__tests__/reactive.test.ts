@@ -96,4 +96,22 @@ describe('reactive', () => {
     expect(a).toBe(2)
     expect(bb).toEqual({ b: 2 })
   })
+
+  test(`proxy as raw`, () => {
+    let index = 0
+    const aa = { a: 1 }
+    const p1 = createProxy(aa, {
+      onMut: () => {
+        index++
+      }
+    })
+    const p2 = createProxy(p1, {
+      onMut: () => {
+        index++
+      }
+    })
+
+    p2.a = 2
+    expect(index).toBe(2)
+  })
 })

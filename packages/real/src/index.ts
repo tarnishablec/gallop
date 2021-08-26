@@ -1,8 +1,5 @@
-import { component, html, render } from '@gallop/gallop'
+import { html, render } from '@gallop/gallop'
 import './index.scss'
+import './registry'
 
-component('re-dropdown', function () {
-  return html` <div></div> `
-})
-
-render(html` <re-dropdown></re-dropdown> `)
+render(html` <re-editor></re-editor> `)

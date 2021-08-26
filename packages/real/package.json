@@ -1,6 +1,6 @@
 {
   "name": "@gallop/real",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "gallop real",
   "private": true,
   "main": "dist/index.umd.js",
@@ -50,5 +50,8 @@
         "main": "./src/index.html"
       }
     }
+  },
+  "dependencies": {
+    "rxjs": "^7.3.0"
   }
 }

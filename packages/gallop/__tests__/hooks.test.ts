@@ -17,7 +17,7 @@ describe('hooks', () => {
     let temp: { a: number }
     component('test-state', () => {
       const [state] = useState({ a: 1 })
-      expect(Looper.resolveCurrent().$state).toBe(state)
+      expect(Looper.resolveCurrentElement().$state).toBe(state)
       temp = state
       return html` <div>${state.a}</div>`
     })

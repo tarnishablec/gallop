@@ -1,0 +1,33 @@
+:host {
+  display: block;
+  background: var(--panel-background-color, #333333);
+  box-sizing: border-box;
+
+  border: var(--panel-border-width, 1px) var(--panel-border-color, grey) solid;
+
+  border-radius: 10px;
+  overflow: hidden;
+
+  .panel {
+    height: 100%;
+    width: 100%;
+    overflow: inherit;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  .panel-head {
+    user-select: none;
+    height: var(--panel-head-height, 24px);
+    background: var(--panel-head-background-color, #444444);
+  }
+
+  .panel-body {
+    height: 100%;
+  }
+}
+
+::slotted(*:nth-child(1)) {
+  height: 100%;
+  width: 100%;
+}

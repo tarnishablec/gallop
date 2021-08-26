@@ -3,7 +3,6 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background-color: var(--backgroud-color);
 }
 
 * {
@@ -13,5 +12,15 @@ body {
 // variables
 
 :root {
-  --backgroud-color: #222222;
+  // ediot
+  --editor-backgroud-color: #222222;
+
+  // panel
+  --panel-head-height: 24px;
+  --panel-background-color: #333333;
+  --panel-head-background-color: #444444;
+  --panel-border-width: 1px;
+  --panel-border-color: grey;
+
+  //dock
 }

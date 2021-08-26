@@ -7,17 +7,7 @@ export const URL = getInfoByNameFromGit('remote.origin.url')
 
 export const REGISTRY = 'https://registry.npmjs.org/'
 
-export const externalDependencies = [
-  'react',
-  'react-dom',
-  'dayjs',
-  'lodash',
-  'classnames',
-  'axios',
-  'styled-components',
-  'ali-oss',
-  'spark-md5',
-  'ahooks'
-]
+/** @type {string[]} */
+export const externalDependencies = []
 
-export const packageBlackList = ['doc', 'sandbox']
+export const packageBlackList = ['doc', 'real']

@@ -18,7 +18,7 @@ export class Looper {
   private constructor() {}
 
   protected static current?: ReactiveElement
-  static resolveCurrent = <
+  static resolveCurrentElement = <
     Props extends Obj = Obj,
     State extends Obj | undefined = undefined
   >() => Looper.current as ReactiveElement<Props, State>
