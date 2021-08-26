@@ -42,10 +42,7 @@ export const Panel = function (this: ReactiveElement, props: PanelPropType) {
   useDragDrop({
     excludeZone: () => this.$root.querySelectorAll('.panel-body'),
     dropZone: () =>
-      queryPool({ name: 're-editor' })!.$root.querySelectorAll('.panel-pool')!,
-    ondrop: (dragged, target) => {
-      console.log(dragged, target)
-    }
+      queryPool({ name: 're-editor' })!.$root.querySelectorAll('.panel-pool')!
   })
 
   return html`

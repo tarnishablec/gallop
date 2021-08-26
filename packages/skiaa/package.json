@@ -1,0 +1,47 @@
+{
+  "name": "@gallop/skiaa",
+  "version": "0.0.0",
+  "description": "gallop skiaa",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "sideEffect": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarnishablec/gallop.git"
+  },
+  "exports": {
+    "default": {
+      "import": [
+        "./dist/index.esm.js",
+        "./src/index.ts"
+      ],
+      "require": "./dist/index.umd.js"
+    }
+  },
+  "keywords": [
+    "gallop",
+    "skiaa"
+  ],
+  "author": {
+    "name": "tarnishablec",
+    "email": "tarnishablec@outlook.com"
+  },
+  "homepage": "",
+  "license": "MIT",
+  "directories": {
+    "src": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "canvaskit-wasm": "^0.29.0"
+  }
+}

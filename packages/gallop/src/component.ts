@@ -1,9 +1,9 @@
 import { HTMLClip, getVals } from './clip'
-import type { Patcher } from './patcher'
 import { Obj, extractProps } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
 import type { Context } from './context'
+import type { Patcher } from './patcher'
 
 export type Component = (this: ReactiveElement, ...args: any[]) => HTMLClip
 
@@ -133,10 +133,8 @@ export const queryPoolAll = ({
           v.classList.length)
   )
 
-export const queryPool = <
-  Props extends Obj = Obj,
-  State extends Obj | undefined = undefined
->(
+export function queryPool<T extends ReactiveElement>(
   ...selector: Parameters<typeof queryPoolAll>
-): ReactiveElement<Props, State> | undefined =>
-  queryPoolAll(...selector)[0] as ReactiveElement<Props, State> | undefined
+): T | undefined {
+  return queryPoolAll(...selector)[0] as T | undefined
+}

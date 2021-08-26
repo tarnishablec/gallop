@@ -1,6 +1,6 @@
 import { Looper, useEffect, useHookCount } from '@gallop/gallop'
 
-export const useOnceEffect = () => {
+export const useStaticEffect = () => {
   const { tagName } = Looper.resolveCurrentElement()
   const count = useHookCount()
   // TODO
