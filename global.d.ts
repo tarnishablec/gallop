@@ -46,7 +46,6 @@ interface Window {
     options?: RequestIdleCallbackOptions
   ) => RequestIdleCallbackHandle
   cancelIdleCallback?: (handle: RequestIdleCallbackHandle) => void
-  MonacoEnvironment: import('monaco-editor/esm/vs/editor/editor.api').Environment
 }
 
 // declare interface ImportMeta {}

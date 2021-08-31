@@ -1,18 +1,8 @@
 import { Looper, useEffect } from '@gallop/gallop'
-import { from, fromEvent, Subject, merge, zip, defer } from 'rxjs'
-import {
-  tap,
-  switchMap,
-  share,
-  map,
-  mergeMap,
-  mergeAll,
-  takeUntil,
-  throttleTime
-} from 'rxjs/operators'
+import { useStaticEffect } from './useStaticEffect'
 
 export type ZoneUnits = HTMLElement[] | NodeListOf<HTMLElement>
-
+// let dragged: ReactiveElement | undefined
 /** https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API#define_a_drop_zone */
 export const useDragDrop = ({
   excludeZone,
@@ -25,18 +15,30 @@ export const useDragDrop = ({
 
   useEffect(() => {
     current.draggable = true
-
-    const targets = Array.from(dropZone())
-
-    const dragstart$ = fromEvent(current, 'dragstart').pipe(
-      tap(() => {}),
-      share()
-    )
-
-    dragstart$.subscribe(console.log)
+    // current.addEventListener('dragstart', () => (dragged = current))
+    // current.addEventListener('dragend', () => (dragged = undefined))
   }, [])
+
+  useStaticEffect(() => {
+    const targets = Array.from(dropZone())
+    const excludes = Array.from(excludeZone?.() ?? [])
+    targets.forEach((target) => {
+      target.addEventListener('drop', (e) => {
+        e.preventDefault()
+        console.log(current)
+      })
+      target.addEventListener('dragover', (e) => {
+        e.preventDefault()
+      })
+    })
+
+    excludes.forEach((exclude) => {
+      exclude.addEventListener('mouseenter', () => (current.draggable = false))
+      exclude.addEventListener('mouseleave', () => (current.draggable = true))
+    })
+  })
 }
 
-const highlightDropTarget = (target: HTMLElement) => {
+export const makeDropZone = () => {
   // TODO
 }

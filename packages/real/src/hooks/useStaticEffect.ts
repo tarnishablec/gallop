@@ -1,7 +1,19 @@
-import { Looper, useEffect, useHookCount } from '@gallop/gallop'
+import { Looper, ReactiveElement, useHookCount } from '@gallop/gallop'
 
-export const useStaticEffect = () => {
-  const { tagName } = Looper.resolveCurrentElement()
+const raceMap = new Map<ReactiveElement['$builder'], number[]>()
+export const useStaticEffect = (effect: () => unknown) => {
+  const current = Looper.resolveCurrentElement()
   const count = useHookCount()
-  // TODO
+  const counts = raceMap.get(current.$builder)
+  let has: boolean
+  if (!counts) {
+    has = false
+    raceMap.set(current.$builder, [count])
+  } else if (!counts.includes(count)) {
+    has = false
+    counts.push(count)
+  } else {
+    has = true
+  }
+  !has && setTimeout(() => effect(), 0)
 }

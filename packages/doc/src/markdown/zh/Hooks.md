@@ -9,5 +9,5 @@
 - [useMemo](/#useMemo)
 - [useContext](/#useContext)
 - [useStyle](/#useStyle)
-- [useCache](/#useCache)
+- [useRef](/#useRef)
 - [useDepends](/#useDepends)

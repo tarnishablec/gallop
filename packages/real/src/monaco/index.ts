@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor'
+import cssFormatMonaco from 'css-format-monaco'
 
 export const dtsLibs: { url?: string; name: string; content?: string }[] = [
   {
@@ -8,11 +9,19 @@ export const dtsLibs: { url?: string; name: string; content?: string }[] = [
   {
     name: 'monaco-editor',
     url: `https://unpkg.com/monaco-editor@latest/esm/vs/editor/editor.api.d.ts`
+  },
+  {
+    name: 'css-format-monaco',
+    url: `https://raw.githubusercontent.com/troy351/css-format-monaco/master/index.d.ts`
   }
 ]
 
-let prepared = false
 export const prepareMonaco = async () => {
+  // enable css format
+  cssFormatMonaco(monaco, {
+    indent_size: 2
+  })
+
   monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
     target: monaco.languages.typescript.ScriptTarget.ESNext,
     allowNonTsExtensions: true,
@@ -27,21 +36,28 @@ export const prepareMonaco = async () => {
     }`
   )
 
+  await Promise.all(
+    dtsLibs.map((v) =>
+      v.url && !v.content
+        ? fetch(v.url).then(async (res) => {
+            v.content = await res.text()
+          })
+        : undefined
+    )
+  )
+
   for (const lib of dtsLibs) {
-    const code =
-      lib.content ?? (await fetch(lib.url!).then((res) => res.text()))
     monaco.languages.typescript.typescriptDefaults.addExtraLib(
-      `declare module '${lib.name}' { ${code} }`
+      `declare module '${lib.name}' { ${lib.content} }`
     )
   }
-
-  prepared = true
 }
+
+prepareMonaco()
 
 export const createMonaco = async (
   ...args: Parameters<typeof monaco.editor.create>
 ) => {
-  if (!prepared) await prepareMonaco()
   const [domElement, options] = args
   const editor = monaco.editor.create(domElement, {
     language: 'typescript',
@@ -55,11 +71,9 @@ export const createMonaco = async (
 
   domElement.style.overflow = 'hidden'
 
-  new ResizeObserver((cbs) =>
-    cbs.forEach(() => {
-      editor.layout()
-    })
-  ).observe(domElement)
+  new ResizeObserver((cbs) => cbs.forEach(() => editor.layout())).observe(
+    domElement
+  )
 
   return editor
 }

@@ -52,6 +52,7 @@
     }
   },
   "dependencies": {
+    "css-format-monaco": "^2.0.4",
     "monaco-editor": "^0.27.0",
     "rxjs": "^7.3.0"
   }

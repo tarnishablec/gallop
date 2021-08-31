@@ -13,7 +13,7 @@ import { ReactiveElement } from '../src/component'
 
 describe('hooks', () => {
   test('useState', (done: () => unknown) => {
-    expect(() => useState({ a: 1 })).toThrowError(/Cannot read property/)
+    expect(() => useState({ a: 1 })).toThrowError(/Cannot read propert/)
     let temp: { a: number }
     component('test-state', () => {
       const [state] = useState({ a: 1 })

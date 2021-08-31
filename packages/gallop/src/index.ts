@@ -32,7 +32,7 @@ export {
   useEffect,
   useMemo,
   useStyle,
-  useCache,
+  useRef,
   // advanced hooks
   useDepends,
   useHookCount,

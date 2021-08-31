@@ -31,7 +31,7 @@
   | useState()   | ✅  |
   | useContext() | ✅  |
   | useEffect()  | ✅  |
-  | useCache()   | ✅  |
+  | useRef()     | ✅  |
   | useMemo()    | ✅  |
   | useStyle()   | ✅  |
 
@@ -60,8 +60,6 @@
 
 - naturally support async component by `import()`
 
-- DONT need `useRef()` because you can directly access dom by `this`
-
 - support `HOC`
 
 - support `dynamic component` for complex component by built-in directive `dynamic()`
@@ -81,7 +79,6 @@ import {
   useEffect,
   useContext,
   useMemo,
-  useCache,
   useStyle,
   render,
   repeat,
@@ -117,8 +114,6 @@ component(
     )
 
     const [{ b }] = useContext(context) //you need to hook Context to this component by useContext()
-
-    const [cache] = useCache({ val: 1 }) //will not trigger rerender, and only execute once, ⚠⚠you can not access dom in cache
 
     useEffect(() => {
       console.dir(this) //this context can be pass by arrow function

@@ -135,7 +135,10 @@ export function useStyle(css: () => string, depends: unknown[]) {
   }
 }
 
-const cacheMap = new WeakMap<ReactiveElement, Obj>()
-export function useCache<T extends Obj>(raw: T): [T] {
-  return [forceGet(cacheMap, Looper.resolveCurrentElement(), () => raw) as T]
+const refMap = new Map<ReactiveElement, { current: unknown }[]>()
+export function useRef<T>(initalValue: T) {
+  const current = Looper.resolveCurrentElement()
+  const count = useHookCount()
+  const vals = forceGet(refMap, current, () => [])
+  return vals[count] ?? (vals[count] = { current: initalValue })
 }
