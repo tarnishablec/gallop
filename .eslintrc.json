@@ -28,17 +28,21 @@
   },
   "plugins": ["@typescript-eslint", "jsdoc", "import"],
   "rules": {
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      { "ts": "never", "tsx": "never" }
-    ],
     "no-unused-vars": "off",
     "no-debugger": "warn",
     "no-console": "warn",
     "no-empty": "warn",
     "prefer-const": "warn",
     "max-params": ["warn", { "max": 4 }],
+    ///
+    "import/default": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      { "ts": "never", "tsx": "never" }
+    ],
+    "import/no-unresolved": "off",
+    "import/no-duplicates": ["error", { "considerQueryString": true }],
     ///
     "@typescript-eslint/no-unused-vars": [
       "warn",

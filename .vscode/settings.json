@@ -1,5 +1,6 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "deno.enable": false,
-  "liveServer.settings.root": "/packages/doc/dist/"
+  "liveServer.settings.root": "/packages/doc/dist/",
+  "liveServer.settings.port": 5501
 }

@@ -1,14 +1,18 @@
+declare module 'https://unpkg.com/prettier@2.3.2/esm/standalone.mjs' {
+  export * from 'prettier'
+}
+
+declare module 'https://unpkg.com/prettier@2.3.2/esm/parser-*.mjs' {
+  const content: import('prettier').Plugin
+  export default content
+}
+
 declare module '*?link' {
   const content: string
   export default content
 }
 
 declare module '*?preload' {
-  const content: string
-  export default content
-}
-
-declare module '*?inline' {
   const content: string
   export default content
 }
@@ -42,6 +46,7 @@ interface Window {
     options?: RequestIdleCallbackOptions
   ) => RequestIdleCallbackHandle
   cancelIdleCallback?: (handle: RequestIdleCallbackHandle) => void
+  MonacoEnvironment: import('monaco-editor/esm/vs/editor/editor.api').Environment
 }
 
 // declare interface ImportMeta {}

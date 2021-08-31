@@ -4,13 +4,16 @@ import {
   removeNodeModules,
   resolvePackageDir,
   resolveRepoRootDir,
-  run
+  run,
+  require
 } from '../../../utils.js'
 import path from 'path'
 import { clean } from '../clean/index.js'
 import { fixTslib } from '../build/rollup.js'
 import { VitePluginString } from '../../../plugins/vite-plugin-string/index.js'
 import ViteTsConfigPaths from 'vite-tsconfig-paths'
+
+const monacoEditorPlugin = require('vite-plugin-monaco-editor')
 
 /**
  * @param {string} packageName
@@ -54,7 +57,8 @@ export const viteDev = (
       ViteTsConfigPaths({
         projects: [path.resolve(resolveRepoRootDir(), 'tsconfig.json')]
       }),
-      VitePluginString({ include: ['**/*.md'] })
+      VitePluginString({ include: ['**/*.md'] }),
+      monacoEditorPlugin.default()
     ]
   }).then((server) => {
     server.listen()

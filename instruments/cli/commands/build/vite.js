@@ -1,8 +1,13 @@
 import path from 'path'
 import vite from 'vite'
-import { resolvePackageDir, resolveRepoRootDir } from '../../../utils.js'
+import {
+  resolvePackageDir,
+  resolveRepoRootDir,
+  require
+} from '../../../utils.js'
 import { VitePluginString } from '../../../plugins/vite-plugin-string/index.js'
 import ViteTsConfigPaths from 'vite-tsconfig-paths'
+const monacoEditorPlugin = require('vite-plugin-monaco-editor')
 
 /**
  * @param {string} packageName
@@ -24,7 +29,7 @@ export const viteBuild = (
       rollupOptions: { ...rollupOptions }
     },
     esbuild: {
-      target: 'es2021'
+      target: 'esnext'
     },
     base: './',
     css: {
@@ -38,7 +43,8 @@ export const viteBuild = (
       }),
       VitePluginString({
         include: ['**/*.md']
-      })
+      }),
+      monacoEditorPlugin.default()
     ].filter(Boolean)
   })
 }
