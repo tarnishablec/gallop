@@ -7,6 +7,7 @@ export const useDragDrop = ({
   excludeZone,
   dropZone,
   ondrop,
+  dragZone,
   ondragstart,
   ondragend,
   ondragover,
@@ -16,6 +17,7 @@ export const useDragDrop = ({
 }: {
   excludeZone?: () => ZoneUnits
   dropZone: () => ZoneUnits
+  dragZone?: () => ZoneUnits[number]
   ondrop?: (e: DragEvent, target: HTMLElement) => unknown
   ondragstart?: (e: DragEvent) => unknown
   ondragend?: (e: DragEvent) => unknown
@@ -27,7 +29,8 @@ export const useDragDrop = ({
   const current = Looper.resolveCurrentElement()
 
   useEffect(() => {
-    current.draggable = true
+    const draggedItem = dragZone?.() ?? current
+    draggedItem.draggable = true
 
     const dropHandler = (e: DragEvent) => {
       e.preventDefault()
@@ -44,14 +47,14 @@ export const useDragDrop = ({
       callDragDropCb(e, dropZone(), ondragenter)
     }
 
-    current.addEventListener('dragstart', (e) => {
+    draggedItem.addEventListener('dragstart', (e) => {
       const delDom = delegateDom()
       ondragstart?.(e)
       delDom.addEventListener('drop', dropHandler)
       delDom.addEventListener('dragover', dragoverHandler)
       ondragenter && delDom.addEventListener('dragenter', dragenterHandler)
     })
-    current.addEventListener('dragend', (e) => {
+    draggedItem.addEventListener('dragend', (e) => {
       const delDom = delegateDom()
       ondragend?.(e)
       delDom.removeEventListener('drop', dropHandler)
@@ -59,12 +62,18 @@ export const useDragDrop = ({
       ondragenter && delDom.removeEventListener('dragenter', dragenterHandler)
     })
 
-    current.addEventListener('drag', (e) => ondrag?.(e))
+    draggedItem.addEventListener('drag', (e) => ondrag?.(e))
 
     const excludes = Array.from(excludeZone?.() ?? [])
     excludes.forEach((exclude) => {
-      exclude.addEventListener('mouseenter', () => (current.draggable = false))
-      exclude.addEventListener('mouseleave', () => (current.draggable = true))
+      exclude.addEventListener(
+        'mouseenter',
+        () => (draggedItem.draggable = false)
+      )
+      exclude.addEventListener(
+        'mouseleave',
+        () => (draggedItem.draggable = true)
+      )
     })
   }, [])
 }

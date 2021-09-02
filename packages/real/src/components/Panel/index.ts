@@ -13,6 +13,8 @@ import monacoStyle from 'monaco-editor/min/vs/editor/editor.main.css?inline'
 import { useDragDrop } from '@real/hooks/useDragDrop'
 import { createMonaco } from '@real/monaco'
 
+import code from '../../hooks/useDragDrop?raw'
+
 export type PanelPropType = {
   // minHeight: string
   // minWidth: string
@@ -49,6 +51,7 @@ export const Panel = function (this: ReactiveElement, props: PanelPropType) {
   })
 
   useDragDrop({
+    dragZone: () => this.$root.querySelector('.panel-head')!,
     ondragstart: (e) => {
       this.style.position = 'absolute'
       const rect = this.getBoundingClientRect()
@@ -57,7 +60,12 @@ export const Panel = function (this: ReactiveElement, props: PanelPropType) {
         y: e.y - rect.y
       }
     },
-    ondrop: (e) => {
+    // ondrop: (e) => {
+    //   const { mouseOffset } = dragRef.current.dragInfo
+    //   this.style.left = e.x - mouseOffset.x + 'px'
+    //   this.style.top = e.y - mouseOffset.y + 'px'
+    // },
+    ondrag: (e) => {
       const { mouseOffset } = dragRef.current.dragInfo
       this.style.left = e.x - mouseOffset.x + 'px'
       this.style.top = e.y - mouseOffset.y + 'px'
@@ -68,7 +76,7 @@ export const Panel = function (this: ReactiveElement, props: PanelPropType) {
   })
 
   useEffect(() => {
-    createMonaco(this.$root.querySelector('.panel-body')!)
+    createMonaco(this.$root.querySelector('.panel-body')!, { value: code })
   }, [])
 
   return html`
