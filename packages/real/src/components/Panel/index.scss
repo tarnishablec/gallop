@@ -1,7 +1,10 @@
 :host {
   display: block;
+  position: relative;
   background: var(--panel-background-color, #333333);
   box-sizing: border-box;
+
+  resize: both;
 
   border: var(--panel-border-width, 1px) var(--panel-border-color, grey) solid;
 
@@ -22,8 +25,13 @@
     background: var(--panel-head-background-color, #444444);
   }
 
-  .panel-body {
-    height: 100%;
+  .panel-body
+    > .monaco-editor
+    > .overflow-guard
+    > .monaco-scrollable-element
+    > .lines-content.monaco-editor-background {
+    width: 100% !important;
+    height: 100% !important;
   }
 }
 

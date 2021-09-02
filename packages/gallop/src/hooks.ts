@@ -136,9 +136,11 @@ export function useStyle(css: () => string, depends: unknown[]) {
 }
 
 const refMap = new Map<ReactiveElement, { current: unknown }[]>()
-export function useRef<T>(initalValue: T) {
+export function useRef<T>(initalValue: T): { current: T } {
   const current = Looper.resolveCurrentElement()
   const count = useHookCount()
   const vals = forceGet(refMap, current, () => [])
-  return vals[count] ?? (vals[count] = { current: initalValue })
+  return (vals[count] ?? (vals[count] = { current: initalValue })) as {
+    current: T
+  }
 }
