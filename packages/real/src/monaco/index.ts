@@ -29,12 +29,12 @@ export const prepareMonaco = async () => {
     module: monaco.languages.typescript.ModuleKind.ESNext
   })
 
-  monaco.languages.typescript.typescriptDefaults.addExtraLib(
-    `declare module '*?raw' {
-      const content: string
-      export default content
-    }`
-  )
+  // monaco.languages.typescript.typescriptDefaults.addExtraLib(
+  //   `declare module '*?raw' {
+  //     const content: string
+  //     export default content
+  //   }`
+  // )
 
   await Promise.all(
     dtsLibs.map((v) =>

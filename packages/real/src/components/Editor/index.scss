@@ -4,6 +4,7 @@
   background-color: var(--editor-backgroud-color, #222222);
   display: block;
   overflow: hidden;
+  box-sizing: border-box;
 
   * {
     box-sizing: border-box;

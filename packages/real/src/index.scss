@@ -1,13 +1,13 @@
 body {
   margin: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100h;
   overflow: hidden;
 
   #root {
     background: #333333;
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 1px);
     display: grid;
     grid-template-rows: 1fr;
     row-gap: 5px;
@@ -25,11 +25,12 @@ body {
   --editor-backgroud-color: #222222;
 
   // panel
-  --panel-head-height: 24px;
+  --panel-head-height: 20px;
   --panel-background-color: #333333;
   --panel-head-background-color: #444444;
   --panel-border-width: 1px;
   --panel-border-color: grey;
+  --panel-border-radius: 5px;
 
   //dock
 }

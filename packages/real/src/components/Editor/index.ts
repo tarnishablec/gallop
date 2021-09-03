@@ -25,7 +25,7 @@ export const Editor = function (this: ReactiveElement) {
 
   return html`
     <div class="panel-pool">
-      <re-panel :width="600px" :height="600px"></re-panel>
+      <re-panel :width="600px" :height="100%"></re-panel>
     </div>
   `
 }
