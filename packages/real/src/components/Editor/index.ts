@@ -1,31 +1,14 @@
-import {
-  html,
-  ReactiveElement,
-  useEffect,
-  useState,
-  useStyle
-} from '@gallop/gallop'
+import { html, ReactiveElement, useStyle } from '@gallop/gallop'
 import style from './index.scss?inline'
 
 export const Editor = function (this: ReactiveElement) {
   useStyle(() => style, [])
 
-  const [state] = useState({
-    mouse: {
-      x: 0,
-      y: 0
-    }
-  })
-
-  useEffect(() => {
-    window.addEventListener('mousemove', (e) => {
-      state.mouse = { x: e.x, y: e.y }
-    })
-  }, [])
-
   return html`
+    <re-menu></re-menu>
     <div class="panel-pool">
-      <re-panel :width="600px" :height="100%"></re-panel>
+      <re-panel :width="600px" :height="100%" class="$1"></re-panel>
+      <re-panel :width="600px" :height="100%" class="$2"></re-panel>
     </div>
   `
 }

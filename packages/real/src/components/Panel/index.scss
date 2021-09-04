@@ -25,15 +25,6 @@
     height: var(--panel-head-height, 20px);
     background: var(--panel-head-background-color, #444444);
   }
-
-  // .panel-body
-  //   > .monaco-editor
-  //   > .overflow-guard
-  //   > .monaco-scrollable-element
-  //   > .lines-content.monaco-editor-background {
-  //   width: 100% !important;
-  //   height: 100% !important;
-  // }
 }
 
 ::slotted(*:nth-child(1)) {

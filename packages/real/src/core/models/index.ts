@@ -6,3 +6,9 @@ export interface IWidget {
 export interface IEditor extends IWidget {}
 
 export interface IPanel extends IWidget {}
+
+export interface IMenu {}
+
+// layout dock
+
+export interface IDock {}

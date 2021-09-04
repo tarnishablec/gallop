@@ -13,17 +13,19 @@ export const useDragDrop = ({
   ondragover,
   ondrag,
   ondragenter,
+  ondragleave,
   delegateDom = () => document.body
 }: {
   excludeZone?: () => ZoneUnits
   dropZone: () => ZoneUnits
   dragZone?: () => ZoneUnits[number]
+  ondragstart?: (e: DragEvent, target: HTMLElement) => unknown
+  ondragend?: (e: DragEvent, target: HTMLElement) => unknown
+  ondrag?: (e: DragEvent, target: HTMLElement) => unknown
   ondrop?: (e: DragEvent, target: HTMLElement) => unknown
-  ondragstart?: (e: DragEvent) => unknown
-  ondragend?: (e: DragEvent) => unknown
-  ondrag?: (e: DragEvent) => unknown
-  ondragover?: (e: DragEvent, target: HTMLElement) => unknown
   ondragenter?: (e: DragEvent, target: HTMLElement) => unknown
+  ondragover?: (e: DragEvent, target: HTMLElement) => unknown
+  ondragleave?: (e: DragEvent, target: HTMLElement) => unknown
   delegateDom?: () => HTMLElement
 }) => {
   const current = Looper.resolveCurrentElement()
@@ -37,32 +39,35 @@ export const useDragDrop = ({
       callDragDropCb(e, dropZone(), ondrop)
     }
 
+    let _target: HTMLElement | undefined
     const dragoverHandler = (e: DragEvent) => {
       e.preventDefault()
-      callDragDropCb(e, dropZone(), ondragover)
-    }
-
-    const dragenterHandler = (e: DragEvent) => {
-      e.preventDefault()
-      callDragDropCb(e, dropZone(), ondragenter)
+      const target = callDragDropCb(e, dropZone(), ondragover)
+      if (_target !== target) {
+        if (_target) {
+          ondragleave?.(e, _target)
+        }
+        if (target) {
+          ondragenter?.(e, target)
+        }
+      }
+      _target = target
     }
 
     draggedItem.addEventListener('dragstart', (e) => {
       const delDom = delegateDom()
-      ondragstart?.(e)
+      ondragstart?.(e, draggedItem)
       delDom.addEventListener('drop', dropHandler)
       delDom.addEventListener('dragover', dragoverHandler)
-      ondragenter && delDom.addEventListener('dragenter', dragenterHandler)
     })
     draggedItem.addEventListener('dragend', (e) => {
       const delDom = delegateDom()
-      ondragend?.(e)
+      ondragend?.(e, draggedItem)
       delDom.removeEventListener('drop', dropHandler)
       delDom.removeEventListener('dragover', dragoverHandler)
-      ondragenter && delDom.removeEventListener('dragenter', dragenterHandler)
     })
 
-    draggedItem.addEventListener('drag', (e) => ondrag?.(e))
+    draggedItem.addEventListener('drag', (e) => ondrag?.(e, draggedItem))
 
     const excludes = Array.from(excludeZone?.() ?? [])
     excludes.forEach((exclude) => {
@@ -83,7 +88,10 @@ const callDragDropCb = (
   zone: ZoneUnits,
   cb?: (e: DragEvent, target: HTMLElement) => unknown
 ) => {
-  const [dropPoint] = e.composedPath()
-  if (dropPoint instanceof HTMLElement)
-    Array.from(zone).includes(dropPoint) && cb?.(e, dropPoint)
+  const path = e.composedPath()
+  const target = path.find(
+    (v) => v instanceof HTMLElement && Array.from(zone).includes(v)
+  )
+  target && cb?.(e, target as HTMLElement)
+  return target as HTMLElement | undefined
 }
