@@ -7,8 +7,7 @@ export const Editor = function (this: ReactiveElement) {
   return html`
     <re-menu></re-menu>
     <div class="panel-pool">
-      <re-panel :width="600px" :height="100%" class="$1"></re-panel>
-      <re-panel :width="600px" :height="100%" class="$2"></re-panel>
+      <re-panel class="$1"></re-panel>
     </div>
   `
 }

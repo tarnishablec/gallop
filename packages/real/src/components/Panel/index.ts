@@ -1,33 +1,15 @@
-import { css, html, ReactiveElement, useStyle } from '@gallop/gallop'
+import { html, ReactiveElement, useStyle } from '@gallop/gallop'
 
 import { useMonaco } from '@real/hooks/useMonaco'
-import { useCorner } from '@real/hooks/useCorner'
+import { useDragCorner } from '@real/hooks/useDragCorner'
 
 import code from '../../hooks/useDragDrop?raw'
 import style from './index.scss?inline'
 
-export type PanelPropType = {
-  // minHeight: string
-  // minWidth: string
-  // maxHeight: string
-  // maxWidth: string
-  height: string
-  width: string
-}
+export type PanelPropType = {}
 
-export const Panel = function (this: ReactiveElement, props: PanelPropType) {
-  const { height = '300px', width = '300px' } = props
-
+export const Panel = function (this: ReactiveElement) {
   useStyle(() => style, [])
-  useStyle(
-    () => css`
-      :host {
-        height: ${height};
-        width: ${width};
-      }
-    `,
-    []
-  )
 
   useMonaco({
     container: () => this.$root.querySelector('.panel-body')!,
@@ -36,7 +18,7 @@ export const Panel = function (this: ReactiveElement, props: PanelPropType) {
     }
   })
 
-  useCorner()
+  useDragCorner()
 
   return html`
     <div class="panel">

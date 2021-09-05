@@ -9,6 +9,4 @@ export interface IPanel extends IWidget {}
 
 export interface IMenu {}
 
-// layout dock
-
-export interface IDock {}
+export interface IBlock {}
