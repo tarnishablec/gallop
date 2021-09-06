@@ -1,6 +1,6 @@
 import { Looper, ReactiveElement, useHookCount } from '@gallop/gallop'
 
-const raceMap = new Map<ReactiveElement['$builder'], number[]>()
+const raceMap = new WeakMap<ReactiveElement['$builder'], number[]>()
 export const useStaticEffect = (effect: () => unknown) => {
   const current = Looper.resolveCurrentElement()
   const count = useHookCount()

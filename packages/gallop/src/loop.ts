@@ -1,6 +1,4 @@
 import type { ReactiveElement } from './component'
-import { resolveEffects, resetLastHookEl } from './hooks'
-import { Recycler } from './dirty'
 import type { Obj } from './utils'
 
 export type LoopCallbackBase = {
@@ -74,14 +72,3 @@ export class Looper {
     }
   }
 }
-
-// Loop end
-Looper.setLoopEndCallBack('resetLastHookEl', resetLastHookEl, 1)
-Looper.setLoopEndCallBack(
-  'resetDirtyCollectionSet',
-  Recycler.resetDirtyCollectionSet,
-  0
-)
-
-// Loop each
-Looper.setLoopEachCallBack('resolveEffects', resolveEffects)

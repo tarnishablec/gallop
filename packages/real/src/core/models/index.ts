@@ -1,8 +1,8 @@
 import type { Direction } from '@real/utils'
 
 export interface IWidget {
+  el: HTMLElement
   tagname: string
-  create(): void
   destroy(): void
 }
 

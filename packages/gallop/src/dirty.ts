@@ -1,4 +1,5 @@
 import { isObject } from './utils'
+import { Looper } from './loop'
 
 export class Recycler {
   protected static dirtyCollectionSet = new WeakSet()
@@ -31,3 +32,10 @@ export class Recycler {
     return dirty
   }
 }
+
+// Loop end
+Looper.setLoopEndCallBack(
+  'resetDirtyCollectionSet',
+  Recycler.resetDirtyCollectionSet,
+  0
+)

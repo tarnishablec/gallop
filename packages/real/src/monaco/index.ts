@@ -29,24 +29,15 @@ export const prepareMonaco = async () => {
     module: monaco.languages.typescript.ModuleKind.ESNext
   })
 
-  // monaco.languages.typescript.typescriptDefaults.addExtraLib(
-  //   `declare module '*?raw' {
-  //     const content: string
-  //     export default content
-  //   }`
-  // )
-
-  Promise.allSettled(
-    dtsLibs.map((v) =>
-      v.url && !v.content
-        ? fetch(v.url).then(async (res) => {
-            v.content = await res.text()
-            monaco.languages.typescript.typescriptDefaults.addExtraLib(
-              `declare module '${v.name}' { ${v.content} }`
-            )
-          })
-        : undefined
-    )
+  dtsLibs.forEach((v) =>
+    v.url && !v.content
+      ? fetch(v.url).then(async (res) => {
+          v.content = await res.text()
+          monaco.languages.typescript.typescriptDefaults.addExtraLib(
+            `declare module '${v.name}' { ${v.content} }`
+          )
+        })
+      : undefined
   )
 }
 

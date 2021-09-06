@@ -21,6 +21,8 @@ export function useLastHookEl(el = Looper.resolveCurrentElement()) {
   return (lastHookEl = el)
 }
 
+Looper.setLoopEndCallBack('resetLastHookEl', resetLastHookEl, 1)
+
 let hookCount: number
 export function useHookCount() {
   const current = Looper.resolveCurrentElement()
@@ -105,6 +107,8 @@ export function resolveEffects(el: ReactiveElement) {
   )
 }
 
+Looper.setLoopEachCallBack('resolveEffects', resolveEffects)
+
 const memoMap = new WeakMap<ReactiveElement, unknown[]>()
 export function useMemo<T>(func: () => T, depends?: unknown[]): T {
   const current = Looper.resolveCurrentElement()
@@ -143,7 +147,7 @@ type RefObject<T> = {
   readonly current: T
 }
 
-const refMap = new Map<ReactiveElement, { current: unknown }[]>()
+const refMap = new WeakMap<ReactiveElement, { current: unknown }[]>()
 export function useRef<T = undefined>(): MutableRefObject<T | undefined>
 export function useRef<T>(initalValue: T | null): RefObject<T>
 export function useRef<T>(initalValue: T): MutableRefObject<T>
@@ -155,3 +159,5 @@ export function useRef<T>(initalValue?: T): MutableRefObject<T> {
     current: T
   }
 }
+
+export function useDisconnect() {}

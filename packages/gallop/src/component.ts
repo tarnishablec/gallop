@@ -83,7 +83,7 @@ export function component<F extends Component>(
     }
     disconnectedCallback() {
       this.$contexts.forEach((ctx) => ctx.unwatch(this))
-      this.dispatchEvent(new CustomEvent('$disconnected$'))
+      this.dispatchEvent(new CustomEvent('$disconnect$'))
       elementPool.get(name)!.delete(this)
     }
 
@@ -101,7 +101,7 @@ export const observeDisconnect = (
   el: ReactiveElement,
   callback: EventListenerOrEventListenerObject
 ) => {
-  el.addEventListener('$disconnected$', callback)
+  el.addEventListener('$disconnect$', callback)
 }
 
 export const isReactive = (node: Node | null): node is ReactiveElement =>
