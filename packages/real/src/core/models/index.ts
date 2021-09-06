@@ -1,12 +1,22 @@
+import type { Direction } from '@real/utils'
+
 export interface IWidget {
+  tagname: string
   create(): void
   destroy(): void
 }
 
-export interface IEditor extends IWidget {}
+export interface IEditor extends IWidget {
+  layout: (IPanel | IBlock)[]
+}
 
-export interface IPanel extends IWidget {}
+export interface IMenu extends IWidget {}
 
-export interface IMenu {}
+export interface IBlock extends IWidget {
+  direction: Direction
+  children: (IBlock | IPanel)[]
+}
 
-export interface IBlock {}
+export interface IPanel extends IWidget {
+  seprate(): IBlock
+}

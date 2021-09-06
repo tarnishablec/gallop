@@ -1,6 +1,9 @@
 import { useEffect, Looper, queryPoolAll, useRef } from '@gallop/gallop'
 import { useDragDrop } from './useDragDrop'
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject, share, race, first, tap, map } from 'rxjs'
+import { Direction } from '@real/utils'
+
+export type CornerLocation = ['left' | 'right', 'top' | 'right']
 
 const positions = [
   { left: 0, top: 0 },
@@ -9,20 +12,22 @@ const positions = [
   { right: 0, bottom: 0 }
 ] as const
 
-export const useDragCorner = ({ size = 10 }: { size?: number } = {}) => {
+type DragInfo = { x: number; y: number; direction?: Direction }
+
+export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
   const current = Looper.resolveCurrentElement()
 
   useEffect(() => {
     const divs = positions.map((position) => {
-      const pos = resolvePosition(position)
+      const location = resolveLocation(position)
       const div = document.createElement('div')
       div.classList.add('drag-corner')
-      div.dataset.pos = String(pos)
+      div.dataset.location = String(location)
       div.style.width = `${size}px`
       div.style.height = `${size}px`
       div.style.position = 'absolute'
       div.style.background = 'transparent'
-      div.style.cursor = 'all-scroll'
+      div.style.cursor = 'crosshair'
       'left' in position && (div.style.left = String(position.left))
       'right' in position && (div.style.right = String(position.right))
       'top' in position && (div.style.top = String(position.top))
@@ -33,37 +38,43 @@ export const useDragCorner = ({ size = 10 }: { size?: number } = {}) => {
     divs.forEach((div) => current.$root.append(div))
   }, [])
 
-  const dragInfo = useRef<{
-    start?: [number, number]
-    direction?: 'horizontal' | 'vertical'
-    subject?: BehaviorSubject<{ x: number; y: number }>
-  }>({})
+  const dragSubject = useRef<BehaviorSubject<DragInfo>>()
 
   for (const position of positions) {
-    const pos = resolvePosition(position)
+    const location = resolveLocation(position)
     useDragDrop({
       dragZone: () =>
-        current.$root.querySelector(`div.drag-corner[data-pos='${pos}']`)!,
+        current.$root.querySelector(
+          `div.drag-corner[data-location='${location}']`
+        )!,
       dropZone: () => [...queryPoolAll({ name: 're-panel' })],
       ondragstart: (e) => {
         const rect = current.getBoundingClientRect()
-        const [hor, vet] = pos
-        dragInfo.current.start = [rect[hor], rect[vet]]
-        const subject = new BehaviorSubject({ x: e.x, y: e.y })
-        dragInfo.current.subject = subject
+        const [hori, vert] = location
+        const [cx, cy] = [rect[hori], rect[vert]]
+        const maxDistance = 30
+        const subject = new BehaviorSubject<DragInfo>({ x: e.x, y: e.y })
+        dragSubject.current = subject
+        const drag$ = subject.asObservable().pipe(share())
+        const catchHori$ = drag$.pipe(
+          first((v) => Math.abs(cx - v.x) > maxDistance),
+          map((v) => ({ ...v, direction: 'horizontal' } as DragInfo))
+        )
+        const catchVert$ = drag$.pipe(
+          first((v) => Math.abs(cy - v.y) > maxDistance),
+          map((v) => ({ ...v, direction: 'vertical' } as DragInfo))
+        )
+        const catchDirection$ = race(catchHori$, catchVert$).pipe(
+          tap((v) => console.log(v.direction))
+        )
+        catchDirection$.subscribe(console.log)
       },
       ondragover: (e) => {
-        const maxDis = 30
         const { x, y } = e
-        const [sx, sy] = dragInfo.current.start!
-        const direction = dragInfo.current.direction
-        if (!direction) {
-          if (Math.abs(x - sx) > maxDis) {
-            dragInfo.current.direction = 'horizontal'
-          } else if (Math.abs(y - sy) > maxDis) {
-            dragInfo.current.direction = 'vertical'
-          }
-        }
+        dragSubject.current?.next({ x, y })
+      },
+      ondragend: () => {
+        dragSubject.current = undefined
       },
       ondragleave: () => {},
       // ondrag: console.log,
@@ -72,6 +83,6 @@ export const useDragCorner = ({ size = 10 }: { size?: number } = {}) => {
   }
 }
 
-const resolvePosition = (position: typeof positions[number]) => {
-  return Object.keys(position) as ['left' | 'right', 'top' | 'bottom']
+const resolveLocation = (position: typeof positions[number]) => {
+  return Object.keys(position) as CornerLocation
 }

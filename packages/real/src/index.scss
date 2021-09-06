@@ -6,7 +6,7 @@ body {
 
   #root {
     width: 100vw;
-    height: calc(100vh - 1px);
+    height: 100vh;
     display: grid;
     grid-template-rows: 1fr;
     row-gap: 5px;

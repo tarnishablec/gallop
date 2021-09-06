@@ -1,7 +1,7 @@
-import { html, ReactiveElement, useStyle } from '@gallop/gallop'
+import { html, useStyle, Component } from '@gallop/gallop'
 import style from './index.scss?inline'
 
-export const Editor = function (this: ReactiveElement) {
+export const Editor: Component = function () {
   useStyle(() => style, [])
 
   return html`

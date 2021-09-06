@@ -36,21 +36,18 @@ export const prepareMonaco = async () => {
   //   }`
   // )
 
-  await Promise.all(
+  Promise.allSettled(
     dtsLibs.map((v) =>
       v.url && !v.content
         ? fetch(v.url).then(async (res) => {
             v.content = await res.text()
+            monaco.languages.typescript.typescriptDefaults.addExtraLib(
+              `declare module '${v.name}' { ${v.content} }`
+            )
           })
         : undefined
     )
   )
-
-  for (const lib of dtsLibs) {
-    monaco.languages.typescript.typescriptDefaults.addExtraLib(
-      `declare module '${lib.name}' { ${lib.content} }`
-    )
-  }
 }
 
 prepareMonaco()

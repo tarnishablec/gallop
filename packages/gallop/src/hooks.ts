@@ -135,8 +135,19 @@ export function useStyle(css: () => string, depends: unknown[]) {
   }
 }
 
+type MutableRefObject<T> = {
+  current: T
+}
+
+type RefObject<T> = {
+  readonly current: T
+}
+
 const refMap = new Map<ReactiveElement, { current: unknown }[]>()
-export function useRef<T>(initalValue: T): { current: T } {
+export function useRef<T = undefined>(): MutableRefObject<T | undefined>
+export function useRef<T>(initalValue: T | null): RefObject<T>
+export function useRef<T>(initalValue: T): MutableRefObject<T>
+export function useRef<T>(initalValue?: T): MutableRefObject<T> {
   const current = Looper.resolveCurrentElement()
   const count = useHookCount()
   const vals = forceGet(refMap, current, () => [])
