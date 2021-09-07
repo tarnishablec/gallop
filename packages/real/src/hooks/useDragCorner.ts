@@ -1,7 +1,15 @@
 import { useEffect, Looper, queryPoolAll, useRef } from '@gallop/gallop'
 import { useDragDrop } from './useDragDrop'
-import { BehaviorSubject, share, race, first, tap, map } from 'rxjs'
-import { Direction } from '@real/utils'
+import {
+  race,
+  scheduled,
+  animationFrameScheduler,
+  merge,
+  Subject,
+  Subscription,
+  partition
+} from 'rxjs'
+import { skipUntil, distinctUntilChanged, share, first } from 'rxjs/operators'
 
 export type CornerLocation = ['left' | 'right', 'top' | 'right']
 
@@ -11,8 +19,6 @@ const positions = [
   { left: 0, bottom: 0 },
   { right: 0, bottom: 0 }
 ] as const
-
-type DragInfo = { x: number; y: number; direction?: Direction }
 
 export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
   const current = Looper.resolveCurrentElement()
@@ -38,7 +44,9 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
     divs.forEach((div) => current.$root.append(div))
   }, [])
 
-  const dragSubject = useRef<BehaviorSubject<DragInfo>>()
+  const dragSubjectRef =
+    useRef<Subject<{ event: DragEvent; over: HTMLElement }>>()
+  const dragSubscriptionRef = useRef<Subscription>()
 
   for (const position of positions) {
     const location = resolveLocation(position)
@@ -48,36 +56,57 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
           `div.drag-corner[data-location='${location}']`
         )!,
       dropZone: () => [...queryPoolAll({ name: 're-panel' })],
-      ondragstart: (e) => {
+      ondragstart: () => {
         const rect = current.getBoundingClientRect()
         const [hori, vert] = location
         const [cx, cy] = [rect[hori], rect[vert]]
-        const maxDistance = 30
-        const subject = new BehaviorSubject<DragInfo>({ x: e.x, y: e.y })
-        dragSubject.current = subject
-        const drag$ = subject.asObservable().pipe(share())
-        const catchHori$ = drag$.pipe(
-          first((v) => Math.abs(cx - v.x) > maxDistance),
-          map((v) => ({ ...v, direction: 'horizontal' } as DragInfo))
+        const maxInsideDistance = 50
+        const subject = new Subject<{ event: DragEvent; over: HTMLElement }>()
+        dragSubjectRef.current = subject
+        const drag$ = scheduled(
+          subject.asObservable(),
+          animationFrameScheduler
+        ).pipe(
+          distinctUntilChanged(
+            (pre, cur) =>
+              pre.event.x === cur.event.x && pre.event.y === cur.event.y
+          ),
+          share()
         )
-        const catchVert$ = drag$.pipe(
-          first((v) => Math.abs(cy - v.y) > maxDistance),
-          map((v) => ({ ...v, direction: 'vertical' } as DragInfo))
+
+        const [dragInside$, dragOutSide$] = partition(
+          drag$,
+          ({ over }) => over === current
         )
-        const catchDirection$ = race(catchHori$, catchVert$).pipe(
-          tap((v) => console.log(v.direction))
+
+        // dargInside ==> dragToDivide
+
+        const catchHori$ = dragInside$.pipe(
+          first((v) => Math.abs(cx - v.event.x) > maxInsideDistance)
         )
-        catchDirection$.subscribe(console.log)
+        const catchVert$ = dragInside$.pipe(
+          first((v) => Math.abs(cy - v.event.y) > maxInsideDistance)
+        )
+        const catchDirection$ = race(catchHori$, catchVert$)
+
+        const dragToDivide$ = merge(
+          catchDirection$,
+          dragInside$.pipe(skipUntil(catchDirection$))
+        )
+
+        // TODO DragOutside ==> dragToCollapse
+
+        //
+
+        dragSubscriptionRef.current = dragToDivide$.subscribe(console.log)
       },
-      ondragover: (e) => {
-        const { x, y } = e
-        dragSubject.current?.next({ x, y })
-      },
-      ondragend: () => {
-        dragSubject.current = undefined
-      },
+      ondragover: (event, over) =>
+        dragSubjectRef.current?.next({ event, over }),
       ondragleave: () => {},
-      // ondrag: console.log,
+      ondragend: () => {
+        dragSubjectRef.current = undefined
+        dragSubscriptionRef.current?.unsubscribe()
+      },
       ondrop: (e) => console.log('drop', e)
     })
   }
