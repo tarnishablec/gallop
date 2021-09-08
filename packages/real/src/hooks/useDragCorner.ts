@@ -10,8 +10,7 @@ import {
   partition
 } from 'rxjs'
 import { skipUntil, distinctUntilChanged, share, first } from 'rxjs/operators'
-
-export type CornerLocation = ['left' | 'right', 'top' | 'right']
+import { CornerLocation } from '@real/utils'
 
 const positions = [
   { left: 0, top: 0 },

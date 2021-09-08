@@ -1,24 +1,19 @@
-import { Direction } from '@real/utils'
+import type { Direction, CornerLocation } from '@real/utils'
 
 export interface IEditor {}
 
-export interface ISerializable {
-  serialize(): void
-}
-
 export interface IWidget {
   el?: HTMLElement
-  index?: number
   parent?: IBlock
 }
 
-export interface IBlock extends ISerializable, IWidget {
+export interface IBlock extends IWidget {
   direction: Direction
   children: IWidget[]
   gridTemplate: string[]
-  collapse(): IPanel
 }
 
-export interface IPanel extends ISerializable, IWidget {
-  divide(direction: Direction): IBlock
+export interface IPanel extends IWidget {
+  divide(direction: Direction, location: CornerLocation): IBlock
+  merge(to: IPanel): void
 }

@@ -45,7 +45,7 @@ export const resolvePackageJsonObj = (packageName) => {
   )
 }
 
-export const boot = () => run('lerna bootstrap')
+export const boot = () => run('yarn')
 
 /** @param {number} timeout */
 export const sleep = async (timeout) => {

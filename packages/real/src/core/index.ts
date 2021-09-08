@@ -1,35 +1,55 @@
-import { IBlock, IPanel, IWidget } from '@real/interface'
-import { Direction } from '@real/utils'
+import { IBlock, IPanel } from '@real/interface'
+import type { Direction, CornerLocation } from '@real/utils'
 
 export class RePanel implements IPanel {
-  constructor(public el: HTMLElement) {}
+  constructor() {}
 
-  public parent?: ReBlock
-  public index?: number
+  el?: HTMLElement | undefined
 
-  divide(direction: Direction) {
-    if (this.parent && this.index !== undefined) {
+  public parent?: IBlock
+
+  divide(direction: Direction, location: CornerLocation) {
+    const newPanel = new RePanel()
+    const [hori, vert] = location
+    let offset: number
+
+    if (
+      (hori === 'left' && direction === 'column') ||
+      (vert === 'top' && direction === 'row')
+    ) {
+      offset = 0
+    } else {
+      offset = 1
     }
-    const block = new ReBlock(direction)
-    return block
+
+    if (!this.parent || direction !== this.parent?.direction) {
+      const block = new ReBlock(direction)
+      if (this.parent) {
+        const index = this.parent.children.indexOf(this)
+        this.parent.children.splice(index, 1, block)
+      }
+      this.parent = block
+      this.parent.children.push(this)
+      this.parent.children.splice(offset, 0, newPanel)
+    } else {
+      const index = this.parent.children.indexOf(this)
+      this.parent.children.splice(index + offset, 0, newPanel)
+    }
+
+    newPanel.parent = this.parent
+
+    return this.parent
   }
-  serialize(): void {
+
+  merge(to: IPanel): void {
     throw new Error('Method not implemented.')
   }
 }
 
 export class ReBlock implements IBlock {
-  children: IWidget[] = []
+  children: (IBlock | IPanel)[] = []
   gridTemplate: string[] = []
+  public parent?: ReBlock
 
   constructor(public direction: Direction) {}
-
-  collapse(): IPanel {
-    throw new Error('Method not implemented.')
-  }
-  serialize(): void {
-    throw new Error('Method not implemented.')
-  }
-  index?: number | undefined
-  parent?: IBlock | undefined
 }

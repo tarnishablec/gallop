@@ -29,7 +29,7 @@ export interface ReactiveElement<
   $state: State
   $contexts: Set<Context>
 
-  $meta: Record<string, unknown>
+  $meta?: Obj
 
   requestUpdate(): void
   dispatchUpdate(): void
@@ -42,7 +42,7 @@ export function component<F extends Component>(
     shadow = true,
     extend = undefined,
     Inherit = HTMLElement,
-    meta = {}
+    meta
   }: RegisterOption = {}
 ) {
   const clazz = class extends Inherit implements ReactiveElement {
