@@ -11,7 +11,7 @@ export const release = async () => {
   if (changed) {
     run(`git add .`)
     try {
-      run(`cz`)
+      run(`npx cz`)
     } catch (error) {
       console.log(error)
       return

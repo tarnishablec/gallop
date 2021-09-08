@@ -1,4 +1,10 @@
-import { useEffect, Looper, queryPoolAll, useRef } from '@gallop/gallop'
+import {
+  useEffect,
+  Looper,
+  queryPoolAll,
+  useRef,
+  useContext
+} from '@gallop/gallop'
 import { useDragDrop } from './useDragDrop'
 import {
   race,
@@ -11,6 +17,8 @@ import {
 } from 'rxjs'
 import { skipUntil, distinctUntilChanged, share, first } from 'rxjs/operators'
 import { CornerLocation } from '@real/utils'
+
+import { layoutContext } from '@real/contexts/layout'
 
 const positions = [
   { left: 0, top: 0 },
@@ -46,6 +54,10 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
   const dragSubjectRef =
     useRef<Subject<{ event: DragEvent; over: HTMLElement }>>()
   const dragSubscriptionRef = useRef<Subscription>()
+
+  const [layout] = useContext(layoutContext)
+
+  const layoutData = layout.layout
 
   for (const position of positions) {
     const location = resolveLocation(position)
@@ -93,7 +105,7 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
           dragInside$.pipe(skipUntil(catchDirection$))
         )
 
-        // TODO DragOutside ==> dragToCollapse
+        // TODO DragOutside ==> dragToMerge
 
         //
 
