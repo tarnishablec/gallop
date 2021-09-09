@@ -14,7 +14,7 @@ export const upgrade = (packageName) => {
       timeout: 600000,
       // jsonAll: true,
       registry: REGISTRY,
-      reject: ['husky', 'jest', 'ts-jest'],
+      reject: ['jest', 'ts-jest'],
       packageFile: packageName
         ? path.resolve(resolvePackageDir(packageName), 'package.json')
         : undefined

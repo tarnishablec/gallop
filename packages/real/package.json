@@ -55,6 +55,7 @@
     "css-format-monaco": "^2.0.4",
     "monaco-editor": "^0.27.0",
     "rxjs": "^7.3.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "vite-plugin-monaco-editor": "^1.0.4"
   }
 }
