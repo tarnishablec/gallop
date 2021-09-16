@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  position: relative;
+  background: var(--dock-background-color);
+  box-sizing: border-box;
+  user-select: none;
+  height: 100%;
+  width: 100%;
+
+  // resize: both;
+
+  // border: var(--dock-border-width) var(--dock-border-color) solid;
+
+  border-radius: var(--dock-border-radius);
+  overflow: hidden;
+
+  min-width: 30px;
+  min-height: 30px;
+
+  .dock-root {
+    height: 100%;
+    width: 100%;
+    overflow: inherit;
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    .dock-head {
+      user-select: none;
+      height: var(--dock-head-height);
+      background: var(--dock-head-background-color);
+      display: grid;
+      align-items: center;
+      padding: 0 10px;
+      grid-template-columns: auto 1fr;
+      column-gap: 10px;
+
+      .dock-switcher {
+        height: 18px;
+        width: 32px;
+        background: #312d2d;
+        border-radius: 5px;
+      }
+
+      .dock-content {
+        height: 100%;
+      }
+    }
+  }
+}
+
+::slotted(*:nth-child(1)) {
+  height: 100%;
+  width: 100%;
+  line-height: var(--dock-head-height);
+}

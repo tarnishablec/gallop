@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  Looper,
-  queryPoolAll,
-  useRef,
-  useContext
-} from '@gallop/gallop'
+import { useEffect, Looper, queryPoolAll, useRef } from '@gallop/gallop'
 import { useDragDrop } from './useDragDrop'
 import {
   race,
@@ -15,10 +9,15 @@ import {
   Subscription,
   partition
 } from 'rxjs'
-import { skipUntil, distinctUntilChanged, share, first } from 'rxjs/operators'
+import {
+  skipUntil,
+  distinctUntilChanged,
+  share,
+  first,
+  filter,
+  skip
+} from 'rxjs/operators'
 import { CornerLocation } from '@real/utils'
-
-import { layoutContext } from '@real/contexts/layout'
 
 const positions = [
   { left: 0, top: 0 },
@@ -55,10 +54,6 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
     useRef<Subject<{ event: DragEvent; over: HTMLElement }>>()
   const dragSubscriptionRef = useRef<Subscription>()
 
-  const [layout] = useContext(layoutContext)
-
-  const layoutData = layout.layout
-
   for (const position of positions) {
     const location = resolveLocation(position)
     useDragDrop({
@@ -66,7 +61,7 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
         current.$root.querySelector(
           `div.drag-corner[data-location='${location}']`
         )!,
-      dropZone: () => [...queryPoolAll({ name: 're-panel' })],
+      dropZone: () => [...queryPoolAll({ name: current.localName })],
       ondragstart: () => {
         const rect = current.getBoundingClientRect()
         const [hori, vert] = location
@@ -85,10 +80,7 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
           share()
         )
 
-        const [dragInside$, dragOutSide$] = partition(
-          drag$,
-          ({ over }) => over === current
-        )
+        const [dragInside$] = partition(drag$, ({ over }) => over === current)
 
         // dargInside ==> dragToDivide
 
@@ -105,11 +97,18 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
           dragInside$.pipe(skipUntil(catchDirection$))
         )
 
-        // TODO DragOutside ==> dragToMerge
+        // dragOutside ==> dragToMerge
 
+        const dragToMerge$ = drag$.pipe(
+          filter(() => true), // TODO
+          distinctUntilChanged((pre, cur) => pre.over === cur.over),
+          skip(1)
+        )
         //
 
-        dragSubscriptionRef.current = dragToDivide$.subscribe(console.log)
+        const dragCorner$ = race(dragToDivide$, dragToMerge$)
+
+        dragSubscriptionRef.current = dragCorner$.subscribe(console.log)
       },
       ondragover: (event, over) =>
         dragSubjectRef.current?.next({ event, over }),
@@ -118,7 +117,7 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
         dragSubjectRef.current = undefined
         dragSubscriptionRef.current?.unsubscribe()
       },
-      ondrop: (e) => console.log('drop', e)
+      ondrop: (e, target) => console.log('drop', e, target)
     })
   }
 }

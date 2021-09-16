@@ -20,16 +20,22 @@ body {
 // variables
 
 :root {
+  // menu
+  --menu-height: 26px;
+
   // ediot
   --editor-backgroud-color: #222222;
 
-  // panel
-  --panel-head-height: 20px;
-  --panel-background-color: #333333;
-  --panel-head-background-color: #444444;
-  --panel-border-width: 1px;
-  --panel-border-color: grey;
-  --panel-border-radius: 5px;
+  // dock
+  --dock-head-height: 24px;
+  --dock-background-color: #333333;
+  --dock-head-background-color: #444444;
+  --dock-border-width: 1px;
+  --dock-border-color: grey;
+  --dock-border-radius: 5px;
 
-  //dock
+  // panel
+
+  // footer
+  --footer-background-color: #464141;
 }

@@ -2,13 +2,12 @@
   width: 100%;
   height: 100%;
   background-color: var(--editor-backgroud-color, #222222);
-  padding-bottom: 1px;;
   display: grid;
 
   overflow: hidden;
   box-sizing: border-box;
 
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
 
   * {
     box-sizing: border-box;
@@ -24,6 +23,7 @@
     grid-template-rows: 1fr 1fr;
     column-gap: 2px;
     row-gap: 2px;
+    padding: 2px;
   }
 
   .monitor {
@@ -36,5 +36,11 @@
     border-radius: 5px;
     display: grid;
     place-items: center;
+  }
+
+  .mouse-track {
+    position: fixed;
+    right: 0;
+    background: white;
   }
 }
