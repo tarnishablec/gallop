@@ -1,6 +1,6 @@
 {
   "name": "@gallop/skiaa",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "gallop skiaa",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
