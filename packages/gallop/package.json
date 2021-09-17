@@ -32,8 +32,9 @@
   "license": "MIT",
   "homepage": "",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "directory": "dist"
   },
-  "gitHead": "2cd70b5cd29cec83256f2881d98666af4c73afdb",
+  "gitHead": "e3bc2f1b228735f4c939c3a160a40c39f560d8e5",
   "version": "1.0.7"
 }

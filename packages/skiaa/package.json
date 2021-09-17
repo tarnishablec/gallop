@@ -40,5 +40,6 @@
   },
   "dependencies": {
     "canvaskit-wasm": "^0.29.0"
-  }
+  },
+  "gitHead": "e3bc2f1b228735f4c939c3a160a40c39f560d8e5"
 }
