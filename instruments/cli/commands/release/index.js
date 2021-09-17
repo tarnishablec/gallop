@@ -18,7 +18,7 @@ export const release = async () => {
     }
   }
 
-  run(`npx lerna publish`)
+  run(`npx lerna publish --no-commit-hooks`)
   run('yarn run clean')
 }
 
