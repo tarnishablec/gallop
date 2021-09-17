@@ -147,10 +147,8 @@ export const createPackageJsonObj = (
     url
   },
   exports: {
-    default: {
-      import: ['./dist/index.esm.js', `./src/index.ts`],
-      require: './dist/index.umd.js'
-    }
+    import: [`./src/index.ts`, './dist/index.esm.js'],
+    require: './dist/index.umd.js'
   },
   keywords: [scope, packageName, site ? 'site' : ''].filter(Boolean),
   author: {
@@ -163,7 +161,7 @@ export const createPackageJsonObj = (
     src: 'src',
     test: '__tests__'
   },
-  files: ['src', 'dist'],
+  files: ['dist'],
   publishConfig: {
     access: 'public',
     registry

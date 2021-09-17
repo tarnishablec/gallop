@@ -4,16 +4,13 @@
   "main": "src/index.ts",
   "module": "dist/index.esm.js",
   "exports": {
-    "import": {
-      "default": [
-        "./src/index.ts",
-        "./dist/index.esm.js"
-      ]
-    }
+    "import": [
+      "./src/index.ts",
+      "./dist/index.esm.js"
+    ]
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "unpkg": "dist/index.umd.js",
   "jsdelivr": "dist/index.esm.js",

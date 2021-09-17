@@ -3,14 +3,6 @@
   "version": "1.0.3",
   "private": true,
   "description": "doc",
-  "files": [
-    "App.ts",
-    "src"
-  ],
-  "scripts": {
-    "start": "webpack serve --mode development --config webpack.config.js",
-    "build": "webpack --mode production --config webpack.config.js"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/tarnishablec/gallop.git"
