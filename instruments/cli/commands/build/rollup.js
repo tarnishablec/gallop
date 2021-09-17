@@ -13,7 +13,7 @@ import { externalDependencies } from '../../../const.js'
 import { rollup } from 'rollup'
 import { handleCss } from './index.js'
 import rollupScss from 'rollup-plugin-scss'
-import rollupTs from '@wessberg/rollup-plugin-ts'
+import rollupTs from 'rollup-plugin-ts'
 import rollupJson from '@rollup/plugin-json'
 import { terser } from 'rollup-plugin-terser'
 

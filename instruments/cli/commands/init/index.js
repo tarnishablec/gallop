@@ -147,7 +147,7 @@ export const createPackageJsonObj = (
     url
   },
   exports: {
-    import: [`./src/index.ts`, './dist/index.esm.js'],
+    import: ['./src/index.ts', './dist/index.esm.js'],
     require: './dist/index.umd.js'
   },
   keywords: [scope, packageName, site ? 'site' : ''].filter(Boolean),

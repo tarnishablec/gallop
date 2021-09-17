@@ -1,13 +1,14 @@
 {
   "name": "@gallop/gallop",
   "description": "gallop",
-  "main": "src/index.ts",
+  "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
   "exports": {
     "import": [
       "./src/index.ts",
       "./dist/index.esm.js"
-    ]
+    ],
+    "require": "./dist/index.umd.js"
   },
   "files": [
     "dist"
