@@ -157,10 +157,6 @@ export const createPackageJsonObj = (
   },
   homepage: '',
   license: 'MIT',
-  directories: {
-    src: 'src',
-    test: '__tests__'
-  },
   files: ['dist'],
   publishConfig: {
     access: 'public',
