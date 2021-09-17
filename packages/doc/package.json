@@ -1,16 +1,8 @@
 {
   "name": "@gallop/doc",
-  "version": "1.0.3",
+  "version": "1.0.9",
   "private": true,
   "description": "doc",
-  "files": [
-    "App.ts",
-    "src"
-  ],
-  "scripts": {
-    "start": "webpack serve --mode development --config webpack.config.js",
-    "build": "webpack --mode production --config webpack.config.js"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/tarnishablec/gallop.git"
@@ -26,7 +18,7 @@
   },
   "gitHead": "2cd70b5cd29cec83256f2881d98666af4c73afdb",
   "dependencies": {
-    "@gallop/gallop": "^1.0.3",
+    "@gallop/gallop": "^1.0.9",
     "marked": "^2.1.3"
   },
   "buildOptions": {

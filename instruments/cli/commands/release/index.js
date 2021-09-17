@@ -2,7 +2,7 @@ import { run } from '../../../utils.js'
 import simpleGit from 'simple-git'
 
 export const release = async () => {
-  run(`npx jest`)
+  // run(`npx jest`)
   run(`yarn run build`)
 
   const git = simpleGit()

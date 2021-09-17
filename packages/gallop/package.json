@@ -4,16 +4,13 @@
   "main": "src/index.ts",
   "module": "dist/index.esm.js",
   "exports": {
-    "import": {
-      "default": [
-        "./src/index.ts",
-        "./dist/index.esm.js"
-      ]
-    }
+    "import": [
+      "./src/index.ts",
+      "./dist/index.esm.js"
+    ]
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "unpkg": "dist/index.umd.js",
   "jsdelivr": "dist/index.esm.js",
@@ -35,8 +32,9 @@
   "license": "MIT",
   "homepage": "",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "directory": "dist"
   },
-  "gitHead": "2cd70b5cd29cec83256f2881d98666af4c73afdb",
-  "version": "1.0.3"
+  "gitHead": "92b40ae92f7e6e37f744c63928f670bf8272924a",
+  "version": "1.0.9"
 }

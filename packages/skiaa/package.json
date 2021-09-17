@@ -1,6 +1,6 @@
 {
   "name": "@gallop/skiaa",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "description": "gallop skiaa",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
@@ -11,13 +11,10 @@
     "url": "https://github.com/tarnishablec/gallop.git"
   },
   "exports": {
-    "default": {
-      "import": [
-        "./dist/index.esm.js",
-        "./src/index.ts"
-      ],
-      "require": "./dist/index.umd.js"
-    }
+    "import": [
+      "./src/index.ts",
+      "./dist/index.esm.js"
+    ]
   },
   "keywords": [
     "gallop",
@@ -43,5 +40,6 @@
   },
   "dependencies": {
     "canvaskit-wasm": "^0.29.0"
-  }
+  },
+  "gitHead": "92b40ae92f7e6e37f744c63928f670bf8272924a"
 }

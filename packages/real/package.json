@@ -1,6 +1,6 @@
 {
   "name": "@gallop/real",
-  "version": "0.0.4",
+  "version": "0.0.8",
   "description": "gallop real",
   "private": true,
   "main": "dist/index.umd.js",
@@ -12,13 +12,10 @@
     "url": "https://github.com/tarnishablec/gallop.git"
   },
   "exports": {
-    "default": {
-      "import": [
-        "./dist/index.esm.js",
-        "./src/index.ts"
-      ],
-      "require": "./dist/index.umd.js"
-    }
+    "import": [
+      "./src/index.ts",
+      "./dist/index.esm.js"
+    ]
   },
   "keywords": [
     "gallop",
@@ -36,7 +33,6 @@
     "test": "__tests__"
   },
   "files": [
-    "src",
     "dist"
   ],
   "publishConfig": {
