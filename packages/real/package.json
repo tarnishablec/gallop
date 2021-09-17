@@ -15,7 +15,8 @@
     "import": [
       "./src/index.ts",
       "./dist/index.esm.js"
-    ]
+    ],
+    "require": "./dist/index.umd.js"
   },
   "keywords": [
     "gallop",

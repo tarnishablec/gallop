@@ -14,7 +14,7 @@
 pre-commit:
   parallel: true
   commands:
-    eslint:
+    lint:
       run: npx lint-staged
   #   rubocop:
   #     tags: backend style
