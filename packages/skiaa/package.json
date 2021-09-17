@@ -11,13 +11,11 @@
     "url": "https://github.com/tarnishablec/gallop.git"
   },
   "exports": {
-    "default": {
-      "import": [
-        "./dist/index.esm.js",
-        "./src/index.ts"
-      ],
-      "require": "./dist/index.umd.js"
-    }
+    "import": [
+      "./src/index.ts",
+      "./dist/index.esm.js"
+    ],
+    "require": "./dist/index.umd.js"
   },
   "keywords": [
     "gallop",
@@ -34,7 +32,6 @@
     "test": "__tests__"
   },
   "files": [
-    "src",
     "dist"
   ],
   "publishConfig": {
