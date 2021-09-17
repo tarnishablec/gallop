@@ -9,7 +9,7 @@ export const create = (packageName, { site = false, ...options }) => {
   if (!packageName)
     throw new Error(`must provide a name before create package.`)
   run(`npx lerna create @${options.scope ?? SCOPE}/${packageName} --yes`, {})
-  createNpmIgnore(packageName)
+  // createNpmIgnore(packageName)
   init(packageName, { reset: true, site, ...options })
 }
 
