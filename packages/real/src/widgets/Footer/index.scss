@@ -1,5 +1,5 @@
 :host {
-  height: 22px;
+  height: var(--footer-height);
   display: grid;
 
   background-color: var(--footer-background-color);

@@ -1,7 +1,7 @@
 :host {
   display: block;
   position: relative;
-  background: var(--dock-background-color);
+  background: var(--area-background-color);
   box-sizing: border-box;
   user-select: none;
   height: 100%;
@@ -9,39 +9,39 @@
 
   // resize: both;
 
-  // border: var(--dock-border-width) var(--dock-border-color) solid;
+  // border: var(--area-border-width) var(--area-border-color) solid;
 
-  border-radius: var(--dock-border-radius);
+  border-radius: var(--area-border-radius);
   overflow: hidden;
 
   min-width: 30px;
   min-height: 30px;
 
-  .dock-root {
+  .area-root {
     height: 100%;
     width: 100%;
     overflow: inherit;
     display: grid;
     grid-template-rows: auto 1fr;
 
-    .dock-head {
+    .area-head {
       user-select: none;
-      height: var(--dock-head-height);
-      background: var(--dock-head-background-color);
+      height: var(--area-head-height);
+      background: var(--area-head-background-color);
       display: grid;
       align-items: center;
       padding: 0 10px;
       grid-template-columns: auto 1fr;
       column-gap: 10px;
 
-      .dock-switcher {
+      .area-switcher {
         height: 18px;
         width: 32px;
         background: #312d2d;
         border-radius: 5px;
       }
 
-      .dock-content {
+      .area-content {
         height: 100%;
       }
     }
@@ -51,5 +51,5 @@
 ::slotted(*:nth-child(1)) {
   height: 100%;
   width: 100%;
-  line-height: var(--dock-head-height);
+  line-height: var(--area-head-height);
 }

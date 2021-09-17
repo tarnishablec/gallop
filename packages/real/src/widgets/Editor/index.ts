@@ -16,12 +16,12 @@ export const Editor: Component = function () {
   return html`
     <re-menu></re-menu>
     <div class="panel-pool">
-      <re-dock class="$1">
+      <re-area class="$1">
         <div slot="head">111</div>
-      </re-dock>
-      <re-dock class="$2"></re-dock>
-      <re-dock class="$3"></re-dock>
-      <re-dock class="$4"></re-dock>
+      </re-area>
+      <re-area class="$2"></re-area>
+      <re-area class="$3"></re-area>
+      <re-area class="$4"></re-area>
     </div>
     <re-footer></re-footer>
     <div class="mouse-track">${JSON.stringify(state.mouse, undefined, 2)}</div>

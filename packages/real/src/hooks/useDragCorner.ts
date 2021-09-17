@@ -106,9 +106,11 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
         )
         //
 
-        const dragCorner$ = race(dragToDivide$, dragToMerge$)
+        const dragCorner$ = race(dragToDivide$, dragToMerge$).pipe()
 
-        dragSubscriptionRef.current = dragCorner$.subscribe(console.log)
+        dragSubscriptionRef.current = dragCorner$.subscribe({
+          next: console.log
+        })
       },
       ondragover: (event, over) =>
         dragSubjectRef.current?.next({ event, over }),

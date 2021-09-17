@@ -25,17 +25,19 @@ body {
 
   // ediot
   --editor-backgroud-color: #222222;
+  --area-gap: 3px;
 
-  // dock
-  --dock-head-height: 24px;
-  --dock-background-color: #333333;
-  --dock-head-background-color: #444444;
-  --dock-border-width: 1px;
-  --dock-border-color: grey;
-  --dock-border-radius: 5px;
+  // area
+  --area-head-height: 24px;
+  --area-background-color: #333333;
+  --area-head-background-color: #444444;
+  --area-border-width: 1px;
+  --area-border-color: grey;
+  --area-border-radius: 5px;
 
   // panel
 
   // footer
   --footer-background-color: #464141;
+  --footer-height: 22px;
 }
