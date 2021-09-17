@@ -160,7 +160,6 @@ export const createPackageJsonObj = (
   files: ['dist'],
   publishConfig: {
     access: 'public',
-    directory: 'dist',
     registry
   },
   ...pkgJsonCacheObj
