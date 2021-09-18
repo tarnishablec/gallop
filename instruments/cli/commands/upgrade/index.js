@@ -1,5 +1,5 @@
 import ncu from 'npm-check-updates'
-import { boot, resolvePackageDir } from '../../../utils.js'
+import { resolvePackageDir } from '../../../utils.js'
 import chalk from 'chalk'
 import path from 'path'
 import { REGISTRY } from '../../../const.js'
@@ -25,7 +25,7 @@ export const upgrade = (packageName) => {
           JSON.stringify(res, null, 2)
         )}`
       )
-      Object.keys(res).length && boot()
+      // Object.keys(res).length && boot()
     })
 }
 

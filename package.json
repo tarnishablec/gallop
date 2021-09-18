@@ -18,7 +18,8 @@
     "build:doc": "yarn run build doc",
     "build:real": "yarn run build real",
     "debug": "yarn run build doc --bundler vite",
-    "debug:dev": "yarn dev doc"
+    "debug:dev": "yarn dev doc",
+    "prepare": "husky install"
   },
   "license": "MIT",
   "lint-staged": {
@@ -35,7 +36,6 @@
   ],
   "devDependencies": {
     "2string-loader": "^1.0.0",
-    "@arkweid/lefthook": "^0.7.6",
     "@jest-runner/electron": "^3.0.1",
     "@microsoft/api-extractor": "^7.18.9",
     "@rollup/plugin-alias": "^3.1.5",
@@ -72,6 +72,7 @@
     "file-loader": "^6.2.0",
     "fs-extra": "^10.0.0",
     "html-webpack-plugin": "^5.3.2",
+    "husky": "^7.0.2",
     "jest": "26.x",
     "lerna": "^4.0.0",
     "link-file-plugin": "^0.0.19",
