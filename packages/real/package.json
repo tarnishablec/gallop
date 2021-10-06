@@ -11,13 +11,6 @@
     "type": "git",
     "url": "https://github.com/tarnishablec/gallop.git"
   },
-  "exports": {
-    "import": [
-      "./src/index.ts",
-      "./dist/index.esm.js"
-    ],
-    "require": "./dist/index.umd.js"
-  },
   "keywords": [
     "gallop",
     "real",

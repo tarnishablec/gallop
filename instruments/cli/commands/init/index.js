@@ -146,10 +146,6 @@ export const createPackageJsonObj = (
     type: 'git',
     url
   },
-  exports: {
-    import: ['./src/index.ts', './dist/index.esm.js'],
-    require: './dist/index.umd.js'
-  },
   keywords: [scope, packageName, site ? 'site' : ''].filter(Boolean),
   author: {
     name: author,
