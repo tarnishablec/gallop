@@ -19,7 +19,8 @@
     "build:real": "yarn run build real",
     "debug": "yarn run build doc --bundler vite",
     "debug:dev": "yarn dev doc",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "npm install -g commitizen"
   },
   "license": "MIT",
   "lint-staged": {
