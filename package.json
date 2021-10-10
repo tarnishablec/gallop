@@ -36,7 +36,6 @@
   ],
   "devDependencies": {
     "2string-loader": "^1.0.0",
-    "@jest-runner/electron": "^3.0.1",
     "@microsoft/api-extractor": "^7.18.9",
     "@rollup/plugin-alias": "^3.1.5",
     "@rollup/plugin-json": "^4.1.0",
@@ -62,7 +61,6 @@
     "coveralls": "^3.1.1",
     "css-loader": "^6.2.0",
     "cz-conventional-changelog": "3.3.0",
-    "electron": "^14.0.1",
     "eslint": "^7.32.0",
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.24.2",
