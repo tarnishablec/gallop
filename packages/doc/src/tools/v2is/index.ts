@@ -76,7 +76,7 @@ component('app-v2is', function () {
                 const zip = new JSZip()
                 while (cur < duration) {
                   const ss = await vs.takeSnapshot(cur)
-                  zip?.file(`${i}.png`, ss.split(',')[1], { base64: true })
+                  zip?.file(`ref ${i}.png`, ss.split(',')[1], { base64: true })
                   cur += step
                   console.log(i)
                   i++

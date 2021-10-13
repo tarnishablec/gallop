@@ -27,9 +27,11 @@
   },
   "buildOptions": {
     "bundler": "vite",
-    "input": {
-      "main": "./src/index.html",
-      "v2is": "./src/tools/v2is/index.html"
+    "rollupOptions": {
+      "input": {
+        "main": "./src/index.html",
+        "v2is": "./src/tools/v2is/index.html"
+      }
     }
   }
 }
