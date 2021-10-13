@@ -19,9 +19,17 @@
   "gitHead": "2cd70b5cd29cec83256f2881d98666af4c73afdb",
   "dependencies": {
     "@gallop/gallop": "^1.0.13",
-    "marked": "^2.1.3"
+    "jszip": "^3.7.1",
+    "lodash": "^4.17.21",
+    "marked": "^2.1.3",
+    "mediainfo.js": "^0.1.6",
+    "video-snapshot": "^1.0.11"
   },
   "buildOptions": {
-    "bundler": "vite"
+    "bundler": "vite",
+    "input": {
+      "main": "./src/index.html",
+      "v2is": "./src/tools/v2is/index.html"
+    }
   }
 }

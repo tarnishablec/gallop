@@ -55,3 +55,5 @@ declare namespace Reflect {
     ? T[P]
     : undefined
 }
+
+declare const MediaInfo: typeof import('mediainfo.js').default
