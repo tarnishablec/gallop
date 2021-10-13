@@ -31,7 +31,7 @@ export const viteBuild = (
     esbuild: {
       target: 'esnext'
     },
-    base: './',
+    base: '/',
     css: {
       preprocessorOptions: {
         scss: {}
