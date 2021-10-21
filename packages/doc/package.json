@@ -25,7 +25,7 @@
     "mediainfo.js": "^0.1.6",
     "video-snapshot": "^1.0.11"
   },
-  "buildOptions": {
+  "_buildOptions": {
     "bundler": "vite",
     "rollupOptions": {
       "input": {

@@ -35,6 +35,8 @@ export const viteDev = (
   const packageDir = resolvePackageDir(packageName)
   removeCache && removeNodeModules(packageName)
   createServer({
+    // logLevel: 'info',
+    // clearScreen: false,
     root: path.resolve(packageDir, root),
     define: { 'process.env': {}, global: 'window' },
     server: {
@@ -61,6 +63,7 @@ export const viteDev = (
       monacoEditorPlugin.default()
     ]
   }).then((server) => {
+    server.printUrls()
     server.listen()
   })
 }

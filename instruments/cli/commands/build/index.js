@@ -22,16 +22,18 @@ export const build = async (
 ) => {
   clean(packageName)
 
-  const buildOptions = resolvePackageJsonObj(packageName).buildOptions
-  bundler = buildOptions?.bundler ?? bundler
-  const rollupOptions = buildOptions?.rollupOptions ?? {}
+  const _buildOptions = resolvePackageJsonObj(packageName)._buildOptions
+  bundler = _buildOptions?.bundler ?? bundler
+  // const rollupOptions = buildOptions?.rollupOptions
 
   // rollup has a bug dealing with { input: undefined }
-  'input' in rollupOptions &&
-    (rollupOptions.input = transformRollupInputOptions(
-      rollupOptions.input,
-      packageName
-    ))
+  if (_buildOptions?.rollupOptions) {
+    'input' in _buildOptions.rollupOptions &&
+      (_buildOptions.rollupOptions.input = transformRollupInputOptions(
+        _buildOptions.rollupOptions.input,
+        packageName
+      ))
+  }
 
   switch (bundler) {
     case 'esbuild': {
@@ -40,12 +42,12 @@ export const build = async (
     case 'rollup': {
       return rollupBundle(packageName, {
         ignoreExternal,
-        rollupOptions,
+        _buildOptions,
         ...rest
       })
     }
     case 'vite': {
-      return viteBuild(packageName, { rollupOptions, ...rest })
+      return viteBuild(packageName, { _buildOptions, ...rest })
     }
   }
 }

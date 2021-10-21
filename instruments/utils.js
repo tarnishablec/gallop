@@ -32,12 +32,7 @@ export const resolvePackageJsonPath = (packageName) => {
 
 /**
  * @param {string} packageName
- * @returns {import('type-fest').PackageJson & {
- *   buildOptions?: Partial<{
- *     bundler: 'rollup' | 'vite' | 'esbuild'
- *     rollupOptions: import('vite').BuildOptions['rollupOptions']
- *   }>
- * }}
+ * @returns {import('type-fest').PackageJson}
  */
 export const resolvePackageJsonObj = (packageName) => {
   return JSON.parse(

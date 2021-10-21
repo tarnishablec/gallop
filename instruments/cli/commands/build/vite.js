@@ -13,20 +13,20 @@ const monacoEditorPlugin = require('vite-plugin-monaco-editor')
  * @param {string} packageName
  * @param {Partial<{
  *   root: string
- *   rollupOptions: import('vite').BuildOptions['rollupOptions']
+ *   _buildOptions: import('type-fest').PackageJson['_buildOptions']
  *   [key: string]: unknown
  * }>} options
  */
 export const viteBuild = (
   packageName,
-  { root = 'src', rollupOptions } = {}
+  { root = 'src', _buildOptions } = {}
 ) => {
   const packageDir = resolvePackageDir(packageName)
   vite.build({
     root: path.resolve(packageDir, root),
     build: {
       outDir: path.resolve(packageDir, 'dist'),
-      rollupOptions: { ...rollupOptions }
+      rollupOptions: { ..._buildOptions?.rollupOptions }
     },
     esbuild: {
       target: 'esnext'
@@ -44,7 +44,7 @@ export const viteBuild = (
       VitePluginString({
         include: ['**/*.md']
       }),
-      monacoEditorPlugin.default()
+      _buildOptions?.useMonaco ? monacoEditorPlugin.default() : undefined
     ].filter(Boolean)
   })
 }

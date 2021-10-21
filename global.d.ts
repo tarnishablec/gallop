@@ -31,29 +31,43 @@ declare module 'worker-loader!*' {
   export default WebpackWorker
 }
 
-type RequestIdleCallbackHandle = number
-type RequestIdleCallbackOptions = {
-  timeout: number
-}
-type RequestIdleCallbackDeadline = {
-  readonly didTimeout: boolean
-  timeRemaining: () => number
-}
-
-interface Window {}
-
 // declare interface ImportMeta {}
 
-declare namespace Reflect {
-  function get<T extends object, P extends PropertyKey>(
-    target: T,
-    propertyKey: P,
-    receiver?: T
-  ): P extends typeof import('@gallop/gallop/src/reactive').__raw__
-    ? T
-    : P extends keyof T
-    ? T[P]
-    : undefined
+declare global {
+  const CanvasKitInit: typeof import('canvaskit-wasm').CanvasKitInit
+  const MediaInfo: typeof import('mediainfo.js').default
+  namespace Reflect {
+    function get<T extends object, P extends PropertyKey>(
+      target: T,
+      propertyKey: P,
+      receiver?: T
+    ): P extends typeof import('@gallop/gallop/src/reactive').__raw__
+      ? T
+      : P extends keyof T
+      ? T[P]
+      : undefined
+  }
+}
+/** https://bugs.chromium.org/p/skia/issues/detail?id=12539&q=typescript&can=2 */
+declare module 'canvaskit-wasm' {
+  interface Surface {
+    drawOnce(fn: (canvas: Canvas) => unknown): void
+    requestAnimationFrame(fn: (canvas: Canvas) => unknown): void
+  }
+
+  interface CanvasKit {}
 }
 
-declare const MediaInfo: typeof import('mediainfo.js').default
+declare module 'type-fest' {
+  namespace PackageJson {
+    interface NonStandardEntryPoints {
+      _buildOptions?: Partial<{
+        bundler: 'rollup' | 'vite' | 'esbuild'
+        rollupOptions: import('vite').BuildOptions['rollupOptions']
+        useMonaco: boolean
+      }>
+    }
+  }
+}
+
+export {}

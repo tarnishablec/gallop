@@ -21,12 +21,12 @@ import { terser } from 'rollup-plugin-terser'
  * @param {string} packageName
  * @param {Partial<{
  *   ignoreExternal: boolean
- *   rollupOptions: import('rollup').RollupOptions
+ *   _buildOptions: import('type-fest').PackageJson['_buildOptions']
  * }>} options
  */
 export const rollupBundle = async (
   packageName,
-  { ignoreExternal = false, rollupOptions } = {}
+  { ignoreExternal = false, _buildOptions } = {}
 ) => {
   console.log(chalk.cyanBright(`start bundling ${packageName}`))
 
@@ -58,7 +58,7 @@ export const rollupBundle = async (
       })
     ],
     external,
-    ...rollupOptions
+    ..._buildOptions?.rollupOptions
   })
 
   const esmPath = path.resolve(packageDir, 'dist/index.esm.js')
