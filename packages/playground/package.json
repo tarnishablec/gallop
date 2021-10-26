@@ -25,6 +25,11 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "dependencies": {
+    "rxjs": "^7.4.0",
+    "stretch-layout": "^0.3.2",
+    "yoga-layout-wasm": "^1.9.3-alpha.7"
+  },
   "devDependencies": {
     "canvaskit-wasm": "^0.30.0"
   },

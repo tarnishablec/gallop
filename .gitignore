@@ -12,5 +12,6 @@ debug.log
 
 yarn.lock
 .yarnrc
+.yarn
 
 .DS_Store

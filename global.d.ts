@@ -1,3 +1,5 @@
+// https://github.com/yarnpkg/yarn/issues/8405
+
 declare module 'https://unpkg.com/prettier@2.3.2/esm/standalone.mjs' {
   export * from 'prettier'
 }

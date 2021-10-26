@@ -6,6 +6,7 @@
   "files": [
     "dist"
   ],
+  "type": "module",
   "unpkg": "dist/index.umd.js",
   "jsdelivr": "dist/index.esm.js",
   "types": "dist/index.d.ts",

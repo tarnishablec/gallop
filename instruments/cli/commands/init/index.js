@@ -17,27 +17,29 @@ const cachedPkgJsonFields = [
   'version'
 ]
 
-/** @param {string} packageName */
+/**
+ * @param {string} packageName
+ * @param {{
+ *   reset?: boolean
+ *   email?: string
+ *   author?: string
+ *   lib?: boolean
+ * }} options
+ */
 export const init = (
   packageName,
-  {
-    reset = false,
-    email = EMAIL,
-    author = AUTHOR,
-    site = false,
-    ...options
-  } = {}
+  { lib = true, reset = false, email = EMAIL, author = AUTHOR, ...options } = {}
 ) => {
   if (reset) {
     initPackageJson(packageName, {
       reset,
       email,
       author,
-      site,
+      lib,
       ...options
     })
     initTest(packageName)
-    site &&
+    !lib &&
       fs.ensureFile(
         path.resolve(resolvePackageDir(packageName), `src/index.html`)
       )
@@ -54,9 +56,9 @@ export const initPackageJson = (
    *   email?: string
    *   reset?: boolean
    *   author?: string
-   *   site?: boolean
+   *   lib?: boolean
    * }}
-   */ { reset = false, site = false, ...options } = {}
+   */ { reset = false, lib = true, ...options } = {}
 ) => {
   const packageJsonPath = resolvePackageJsonPath(packageName)
   const packageJsonObj = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
@@ -69,7 +71,7 @@ export const initPackageJson = (
   fs.writeFileSync(
     packageJsonPath,
     JSON.stringify(
-      createPackageJsonObj({ packageName, site, ...options }, cache),
+      createPackageJsonObj({ packageName, lib, ...options }, cache),
       null,
       2
     )
@@ -117,10 +119,10 @@ describe('test', () => {
  *   email?: string
  *   url?: string
  *   registry?: string
- *   site?: boolean
+ *   lib?: boolean
  * }} option
  * @param {object} [pkgJsonCacheObj] Default is `{}`
- * @returns {import('type-fest').PackageJson & Record<string, unknown>}
+ * @returns {import('type-fest').PackageJson}
  */
 export const createPackageJsonObj = (
   {
@@ -129,24 +131,25 @@ export const createPackageJsonObj = (
     author = AUTHOR,
     email = EMAIL,
     url = URL,
-    site = false,
+    lib = true,
     registry = REGISTRY
   },
   pkgJsonCacheObj = {}
 ) => ({
   name: `@${scope}/${packageName}`,
   version: '0.0.0',
-  private: site ? true : undefined,
+  type: 'module',
+  private: !lib ? true : undefined,
   description: `${scope} ${packageName}`,
   main: `dist/index.umd.js`,
   module: 'dist/index.esm.js',
   types: 'dist/index.d.ts',
-  sideEffect: false,
+  sideEffects: false,
   repository: {
     type: 'git',
     url
   },
-  keywords: [scope, packageName, site ? 'site' : ''].filter(Boolean),
+  keywords: [scope, packageName, lib ? 'lib' : 'site'].filter(Boolean),
   author: {
     name: author,
     email

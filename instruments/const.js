@@ -1,6 +1,9 @@
 import { getInfoByNameFromGit } from './utils.js'
+import { createRequire } from 'module'
 
-export const SCOPE = 'gallop'
+export const SCOPE = String(
+  createRequire(import.meta.url)('../package.json').name
+)
 export const AUTHOR = getInfoByNameFromGit('user.name')
 export const EMAIL = getInfoByNameFromGit('user.email')
 export const URL = getInfoByNameFromGit('remote.origin.url')
