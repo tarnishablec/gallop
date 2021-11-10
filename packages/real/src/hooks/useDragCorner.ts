@@ -15,9 +15,10 @@ import {
   share,
   first,
   filter,
-  skip
+  skip,
+  map
 } from 'rxjs/operators'
-import { CornerLocation } from '@real/utils'
+import { CornerLocation, Direction } from '@real/utils'
 
 const positions = [
   { left: 0, top: 0 },
@@ -77,6 +78,7 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
             (pre, cur) =>
               pre.event.x === cur.event.x && pre.event.y === cur.event.y
           ),
+          map((v) => ({ ...v, from: location })),
           share()
         )
 
@@ -85,10 +87,12 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
         // dargInside ==> dragToDivide
 
         const catchHori$ = dragInside$.pipe(
-          first((v) => Math.abs(cx - v.event.x) > maxInsideDistance)
+          first((v) => Math.abs(cx - v.event.x) > maxInsideDistance),
+          map((v) => ({ ...v, direction: 'horizontal' as Direction }))
         )
         const catchVert$ = dragInside$.pipe(
-          first((v) => Math.abs(cy - v.event.y) > maxInsideDistance)
+          first((v) => Math.abs(cy - v.event.y) > maxInsideDistance),
+          map((v) => ({ ...v, direction: 'vertical' as Direction }))
         )
         const catchDirection$ = race(catchHori$, catchVert$)
 

@@ -97,12 +97,13 @@ export function getInfoByNameFromGit(name) {
 /** @param {string} packageName */
 export const queryPackageExternal = (packageName) => {
   const packageDir = resolvePackageDir(packageName)
-  /** @type {Record<string, string>} */
-  const dependencies =
-    createRequire(import.meta.url)(path.resolve(packageDir, 'package.json'))
-      .dependencies ?? {}
-  const deps = Object.keys(dependencies)
-  return [...new Set([...deps])]
+  /** @type {import('type-fest').PackageJson} */
+  const pkgJson = createRequire(import.meta.url)(
+    path.resolve(packageDir, 'package.json')
+  )
+  const deps = Object.keys(pkgJson.dependencies ?? {})
+  const peerDeps = Object.keys(pkgJson.peerDependencies ?? {})
+  return [...new Set([...deps, ...peerDeps])]
 }
 
 /** @param {string} packageName */

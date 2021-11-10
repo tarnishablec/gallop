@@ -91,7 +91,7 @@ Yoga.init(yogaWasm).then((yoga) => {
   const node5Layout = node5.getComputedLayout()
   const node6Layout = node6.getComputedLayout()
 
-  console.log(node4.getComputedTop())
+  // console.log(node4.getComputedTop())
 
   surfYoga.requestAnimationFrame((canvas) => {
     const paint = new CK.Paint()

@@ -28,12 +28,21 @@ body {
   --area-gap: 3px;
 
   // area
+  --area-min-heigth: var(--area-head-height);
+  --area-min-width: calc(var(--area-switcher-width) + 20px);
   --area-head-height: 24px;
   --area-background-color: #333333;
   --area-head-background-color: #444444;
   --area-border-width: 1px;
   --area-border-color: grey;
   --area-border-radius: 5px;
+
+  --area-head-padding: 0 10px;
+
+  --area-switcher-height: 18px;
+  --area-switcher-width: 32px;
+  --area-switcher-border-radius: 5px;
+  --area-switcher-background: #312d2d;
 
   // panel
 

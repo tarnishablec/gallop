@@ -42,7 +42,7 @@ export const viteDev = (
     server: {
       hmr: { host: '127.0.0.1', protocol: 'ws', overlay: false },
       open: false,
-      port: 10086,
+      port: 10089,
       host: '127.0.0.1'
     },
     esbuild: {

@@ -14,8 +14,8 @@
   border-radius: var(--area-border-radius);
   overflow: hidden;
 
-  min-width: 30px;
-  min-height: 30px;
+  min-width: var(--area-min-width);
+  min-height: var(--area-min-heigth);
 
   .area-root {
     height: 100%;
@@ -30,15 +30,15 @@
       background: var(--area-head-background-color);
       display: grid;
       align-items: center;
-      padding: 0 10px;
+      padding: var(--area-head-padding);
       grid-template-columns: auto 1fr;
       column-gap: 10px;
 
       .area-switcher {
-        height: 18px;
-        width: 32px;
-        background: #312d2d;
-        border-radius: 5px;
+        height: var(--area-switcher-height);
+        width: var(--area-switcher-width);
+        background: var(--area-switcher-background);
+        border-radius: var(--area-switcher-border-radius);
       }
 
       .area-content {

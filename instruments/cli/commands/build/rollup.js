@@ -3,7 +3,6 @@ import {
   queryPackageExternal,
   resolvePackageDir,
   resolvePackageJsonObj,
-  resolvePeerDependencies,
   resolveRepoRootDir,
   resolvePackageEntry
 } from '../../../utils.js'
@@ -31,7 +30,6 @@ export const rollupBundle = async (
   console.log(chalk.cyanBright(`start bundling ${packageName}`))
 
   const packageDir = resolvePackageDir(packageName)
-  const peerDependencies = resolvePeerDependencies(packageName)
   const entry = resolvePackageEntry(packageName)
   const pkgObj = resolvePackageJsonObj(packageName)
 
@@ -39,7 +37,6 @@ export const rollupBundle = async (
 
   const external = [
     ...new Set([
-      ...peerDependencies,
       ...(ignoreExternal
         ? []
         : [...externalDependencies, ...queryPackageExternal(packageName)])

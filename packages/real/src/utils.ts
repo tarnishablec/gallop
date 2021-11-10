@@ -1,4 +1,4 @@
-export type Direction = 'row' | 'column'
+export type Direction = 'horizontal' | 'vertical'
 export type CornerLocation = ['left' | 'right', 'top' | 'bottom']
 
 export const dropdown = ({
@@ -19,7 +19,7 @@ export const dropdown = ({
   // const { width = 800, height = 300 } = overlay ?? {}
 
   const rect = trigger.getBoundingClientRect()
-  const { left, top, bottom, right } = rect
+  const { left, bottom } = rect
 
   const position = { x: left, y: bottom }
 
@@ -50,9 +50,6 @@ export const dropdown = ({
 
   overlayPool.append(wrapper)
 
-  const poolRect = overlayPool.getBoundingClientRect()
-  const wrapperRect = wrapper.getBoundingClientRect()
-
-
- 
+  // const poolRect = overlayPool.getBoundingClientRect()
+  // const wrapperRect = wrapper.getBoundingClientRect()
 }

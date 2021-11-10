@@ -19,8 +19,8 @@
     position: relative;
     overflow: auto;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    // grid-template-columns: 1fr 1fr;
+    // grid-template-rows: 1fr 1fr;
     column-gap: var(--area-gap);
     row-gap: var(--area-gap);
     padding: 2px;

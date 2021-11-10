@@ -4,7 +4,6 @@ import { externalDependencies } from '../../../const.js'
 import { scssPlugin } from '../../../plugins/esbuild-plugin-scss/index.js'
 import {
   resolvePackageDir,
-  resolvePeerDependencies,
   queryPackageExternal,
   resolveRepoRootDir,
   resolvePackageEntry
@@ -21,7 +20,6 @@ export const esbuildbundle = async (
   { ignoreExternal = false } = {}
 ) => {
   const packageDir = resolvePackageDir(packageName)
-  const peerDependencies = resolvePeerDependencies(packageName)
 
   /**
    * @type {{
@@ -57,7 +55,6 @@ export const esbuildbundle = async (
       platform: 'browser',
       external: [
         ...new Set([
-          ...peerDependencies,
           ...(ignoreExternal
             ? []
             : [...externalDependencies, ...queryPackageExternal(packageName)])
