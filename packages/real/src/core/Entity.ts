@@ -1,19 +1,20 @@
 import { v4 } from 'uuid'
+import { IEquatable } from './index'
 
-export abstract class Entity<T> {
+export abstract class Entity<T> implements IEquatable<Entity<T>> {
   protected readonly id = new UniqueEntityID()
   protected readonly props: T
-  public equals(entity: Entity<T>) {
-    return entity.id === this.id
+  public equalsTo(entity: Entity<T>) {
+    return this.id.equalsTo(entity.id)
   }
   constructor(props: T) {
     this.props = props
   }
 }
 
-export class UniqueEntityID {
+export class UniqueEntityID implements IEquatable<UniqueEntityID> {
   protected value: string = v4()
-  public equals(id: UniqueEntityID) {
+  public equalsTo(id: UniqueEntityID) {
     return id.value === this.value
   }
 }

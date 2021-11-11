@@ -17,3 +17,22 @@ import './registry'
 render(html`<re-editor></re-editor>`, {
   container: document.querySelector('#root')!
 })
+
+export enum BASE_TYPE {
+  BOOLEAN = 'BOOLEAN',
+  NUMBER = 'NUMBER',
+  UNDEFINED = 'UNDEFINED',
+  NULL = 'NULL',
+  STRING = 'STRING',
+  BIGINT = 'BIGINT'
+}
+
+export enum ADVANCE_TYPE {
+  IMAGE = 'IMAGE'
+}
+
+export const BUILTIN_TYPE = { ...BASE_TYPE, ...ADVANCE_TYPE } as const
+
+console.log(Object.values(BUILTIN_TYPE))
+console.log(BUILTIN_TYPE)
+// console.log(typeof BUILTIN_TYPE.IMAGE)
