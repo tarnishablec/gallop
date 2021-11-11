@@ -18,21 +18,19 @@ render(html`<re-editor></re-editor>`, {
   container: document.querySelector('#root')!
 })
 
-export enum BASE_TYPE {
-  BOOLEAN = 'BOOLEAN',
-  NUMBER = 'NUMBER',
-  UNDEFINED = 'UNDEFINED',
-  NULL = 'NULL',
-  STRING = 'STRING',
-  BIGINT = 'BIGINT'
+import { Component } from './core/Component'
+import { Property } from './core/Property'
+import { VECTOR2_TYPE } from './core/Datatype'
+import { UnitData } from './core/UnitData'
+import { Entity } from './core/Entity'
+
+class Transform extends Component {
+  protected properties = [
+    new Property('location', new UnitData(VECTOR2_TYPE))
+  ] as const
 }
 
-export enum ADVANCE_TYPE {
-  IMAGE = 'IMAGE'
-}
+const entity = new Entity()
+entity.components.push(new Transform())
 
-export const BUILTIN_TYPE = { ...BASE_TYPE, ...ADVANCE_TYPE } as const
-
-console.log(Object.values(BUILTIN_TYPE))
-console.log(BUILTIN_TYPE)
-// console.log(typeof BUILTIN_TYPE.IMAGE)
+console.log(entity)

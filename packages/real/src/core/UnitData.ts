@@ -1,31 +1,31 @@
 import { ICloneable, IEquatable } from '.'
 import { DataType } from './Datatype'
 
-export class UnitData<V>
-  implements IEquatable<UnitData<V>>, ICloneable<UnitData<V>>
+export class UnitData<T>
+  implements IEquatable<UnitData<T>>, ICloneable<UnitData<T>>
 {
-  protected _value: V
-  constructor(public dataType: DataType<V>) {
+  protected _value: T
+  constructor(public dataType: DataType<T>) {
     this._value = dataType.defaultValue
   }
 
-  get value(): V {
+  get value(): T {
     return this._value
   }
 
-  set value(val: V) {
+  set value(val: T) {
     this._value = val
   }
 
-  equalsTo(target: UnitData<V>): boolean {
+  equalsTo(target: UnitData<T>): boolean {
     return (
-      this.dataType.type === target.dataType.type &&
-      this._value === target._value
+      this.dataType.inputType === target.dataType.inputType &&
+      this.dataType.equalFn(this._value, target._value)
     )
   }
-  clone(): UnitData<V> {
+  clone(): UnitData<T> {
     const data = new UnitData(this.dataType)
-    data._value = this._value
+    data._value = this.dataType.cloneFn(this._value)
     return data
   }
 }

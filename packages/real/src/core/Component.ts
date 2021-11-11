@@ -1,29 +1,17 @@
-import type { ICloneable, IEquatable } from './index'
+import type { ICloneable } from './index'
+import { Property } from './Property'
 
-export class Component<
-  T extends Record<string, IEquatable<unknown> & ICloneable<unknown>>
-> implements IEquatable<Component<T>>, ICloneable<Component<T>>
-{
-  constructor(protected data: T) {}
+export abstract class Component implements ICloneable<Component> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected abstract properties: ReadonlyArray<Property<any>>
 
-  equalsTo(target: Component<T>): boolean {
-    if (Object.keys(this.data).length !== Object.keys(target.data).length) {
-      return false
-    }
-    for (const key in this.data) {
-      const entry = this.data[key]
-      if (!entry.equalsTo(target.data[key])) {
-        return false
-      }
-    }
-    return true
+  get name(): string {
+    return this.constructor.name
   }
 
-  clone(): Component<T> {
-    const data = Object.entries(this.data).reduce((acc, [key, val]) => {
-      Reflect.set(acc, key, val.clone())
-      return acc
-    }, {} as T)
-    return new Component(data)
+  clone(): Component {
+    const comp = Object.create(this) as Component
+    comp.properties = this.properties.map((v) => v.clone())
+    return comp
   }
 }
