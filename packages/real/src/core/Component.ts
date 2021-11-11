@@ -19,7 +19,7 @@ export class Component<
     return true
   }
 
-  clone(): ICloneable<Component<T>> {
+  clone(): Component<T> {
     const data = Object.entries(this.data).reduce((acc, [key, val]) => {
       Reflect.set(acc, key, val.clone())
       return acc

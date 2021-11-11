@@ -8,10 +8,10 @@ export class Property implements IEquatable<Property>, ICloneable<Property> {
     public unitData = new UnitData(NUMBER_TYPE)
   ) {}
 
-  equalsTo(target: IEquatable<Property>): boolean {
-    throw new Error('Method not implemented.')
+  equalsTo(target: Property): boolean {
+    return this.unitData.equalsTo(target.unitData)
   }
-  clone(): ICloneable<Property> {
-    throw new Error('Method not implemented.')
+  clone(): Property {
+    return new Property(this.name, this.unitData.clone())
   }
 }

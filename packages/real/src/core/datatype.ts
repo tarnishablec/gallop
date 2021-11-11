@@ -9,7 +9,7 @@ export enum PRIMITIVE_TYPE {
 }
 
 export enum ADVANCE_TYPE {
-  RECORD = 'RECORD',
+  REFRENCE = 'REFRENCE',
   IMAGE = 'IMAGE'
 }
 
@@ -21,20 +21,14 @@ export type COMPLEX_TYPE = INPUT_TYPE | Array<INPUT_TYPE>
 
 export class DataType<V> {
   constructor(
-    public name: string,
     public type: COMPLEX_TYPE,
-    public defaultValue: V
+    public defaultValue: V,
+    public name: string = type.toString()
   ) {}
 }
 
-export const BOOLEAN_TYPE = new DataType(
-  INPUT_TYPES.BOOLEAN.toString(),
-  INPUT_TYPES.BOOLEAN,
-  false
-)
+export const BOOLEAN_TYPE = new DataType(INPUT_TYPES.BOOLEAN, false)
 
-export const NUMBER_TYPE = new DataType(
-  INPUT_TYPES.NUMBER.toString(),
-  INPUT_TYPES.NUMBER,
-  0
-)
+export const NUMBER_TYPE = new DataType(INPUT_TYPES.NUMBER, 0)
+
+export const STRING_TYPE = new DataType(INPUT_TYPES.STRING, '')

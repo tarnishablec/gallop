@@ -1,9 +1,9 @@
 export interface IEquatable<T> {
-  equalsTo(target: IEquatable<T>): boolean
+  equalsTo(target: T): boolean
 }
 
 export interface ICloneable<T> {
-  clone(): ICloneable<T>
+  clone(): T
 }
 
 export type Primitive =
