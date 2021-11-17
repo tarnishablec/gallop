@@ -20,7 +20,7 @@ render(html`<re-editor></re-editor>`, {
 
 import { Component } from './core/Component'
 import { Property } from './core/Property'
-import { VECTOR2_TYPE, NUMBER_TYPE } from './core/Datatype'
+import { VECTOR2_TYPE, NUMBER_TYPE } from './core/DataType'
 import { UnitData } from './core/UnitData'
 import { Entity } from './core/Entity'
 import { AddOnManager } from './addon'

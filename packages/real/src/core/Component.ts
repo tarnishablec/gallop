@@ -1,5 +1,5 @@
 import type { ICloneable } from '@real/utils/able'
-import { Property } from './Property'
+import type { Property } from './Property'
 
 export abstract class Component implements ICloneable<Component> {
   /** https://stackoverflow.com/questions/65129070/defining-an-array-of-differing-generic-types-in-typescript */
@@ -15,4 +15,8 @@ export abstract class Component implements ICloneable<Component> {
     comp.properties = this.properties.map((v) => v.clone())
     return comp
   }
+}
+
+export abstract class ShareComponent {
+  // TODO
 }

@@ -1,5 +1,5 @@
 import { ICloneable } from '@real/utils/able'
-import { UnitData } from './UnitData'
+import type { UnitData } from './UnitData'
 
 export class Property<T, M = void> implements ICloneable<Property<T, M>> {
   constructor(

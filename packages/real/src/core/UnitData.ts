@@ -1,5 +1,5 @@
 import { ICloneable, IEquatable } from '@real/utils/able'
-import { DataType } from './Datatype'
+import { DataType } from './DataType'
 
 export class UnitData<T>
   implements IEquatable<UnitData<T>>, ICloneable<UnitData<T>>

@@ -9,7 +9,7 @@ export class AddOnManager {
     )
   }
 
-  public addonList: AddOn[] = []
+  public addOnList: AddOn[] = []
 }
 
 export class AddOn {}
