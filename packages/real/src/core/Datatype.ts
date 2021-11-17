@@ -23,11 +23,12 @@ export type COMPLEX_TYPE = INPUT_TYPE | Array<INPUT_TYPE>
 
 export class DataType<V> {
   name: string
+
   constructor(
-    public inputType: COMPLEX_TYPE,
-    public defaultValue: V,
-    public equalFn: (a: V, b: V) => boolean = (a, b) => a === b,
-    public cloneFn: (val: V) => V = (val) => val
+    public readonly inputType: COMPLEX_TYPE,
+    public readonly defaultValue: Readonly<V>,
+    public readonly equalFn: (a: V, b: V) => boolean = (a, b) => a === b,
+    public readonly cloneFn: (val: V) => V = (val) => val
   ) {
     this.name = inputType.toString()
   }

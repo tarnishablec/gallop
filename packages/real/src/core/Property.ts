@@ -1,15 +1,14 @@
-import { ICloneable, IEquatable } from './index'
+import { ICloneable } from '@real/utils/able'
 import { UnitData } from './UnitData'
 
-export class Property<T>
-  implements IEquatable<Property<T>>, ICloneable<Property<T>>
-{
-  constructor(public name: string, public unitData: UnitData<T>) {}
+export class Property<T, M = void> implements ICloneable<Property<T, M>> {
+  constructor(
+    public name: string,
+    protected data: UnitData<T>,
+    public readonly meta: M = void 0 as unknown as M
+  ) {}
 
-  equalsTo(target: Property<T>): boolean {
-    return this.unitData.equalsTo(target.unitData)
-  }
-  clone(): Property<T> {
-    return new Property(this.name, this.unitData.clone())
+  clone(): Property<T, M> {
+    return new Property(this.name, this.data.clone(), this.meta)
   }
 }

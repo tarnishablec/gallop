@@ -1,5 +1,5 @@
 import { html, useStyle, css } from '@gallop/gallop'
-import { Direction } from '@real/utils'
+import { Direction } from '@real/utils/type'
 
 export function AreaTrack({
   direction,

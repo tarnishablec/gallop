@@ -33,7 +33,7 @@
     "no-console": "warn",
     "no-empty": "warn",
     "prefer-const": "warn",
-    "max-params": ["warn", { "max": 4 }],
+    "max-params": ["warn", { "max": 5 }],
     ///
     "import/default": "off",
     "import/extensions": [

@@ -10,7 +10,7 @@ const imgBytes = await fetch(cdn + 'test.png').then((response) =>
 )
 
 const CK = await CanvasKitInit({
-  locateFile: (file) => 'https://unpkg.com/canvaskit-wasm@0.30.0/bin/' + file
+  locateFile: (file) => 'https://unpkg.com/canvaskit-wasm@latest/bin/' + file
 })
 
 const image = CK.MakeImageFromEncoded(imgBytes)!

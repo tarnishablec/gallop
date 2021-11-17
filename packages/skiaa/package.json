@@ -33,7 +33,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "canvaskit-wasm": "^0.30.0"
+    "canvaskit-wasm": "^0.31.0"
   },
   "gitHead": "7f5ffabd79e1f403d3f17f0ef604a5f6dc2bf6ad"
 }

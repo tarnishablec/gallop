@@ -50,15 +50,6 @@ declare global {
       : undefined
   }
 }
-/** https://bugs.chromium.org/p/skia/issues/detail?id=12539&q=typescript&can=2 */
-declare module 'canvaskit-wasm' {
-  interface Surface {
-    drawOnce(fn: (canvas: Canvas) => unknown): void
-    requestAnimationFrame(fn: (canvas: Canvas) => unknown): void
-  }
-
-  interface CanvasKit {}
-}
 
 declare module 'type-fest' {
   namespace PackageJson {

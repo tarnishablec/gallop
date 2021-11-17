@@ -1,21 +1,24 @@
-import { ICloneable, IEquatable } from '.'
+import { ICloneable, IEquatable } from '@real/utils/able'
 import { DataType } from './Datatype'
 
 export class UnitData<T>
   implements IEquatable<UnitData<T>>, ICloneable<UnitData<T>>
 {
   protected _value: T
-  constructor(public dataType: DataType<T>) {
-    this._value = dataType.defaultValue
+  constructor(
+    public dataType: DataType<T>,
+    protected val?: typeof dataType['defaultValue']
+  ) {
+    this._value = val ?? dataType.defaultValue
   }
 
   get value(): T {
     return this._value
   }
 
-  set value(val: T) {
-    this._value = val
-  }
+  // set value(val: T) {
+  //   this._value = val
+  // }
 
   equalsTo(target: UnitData<T>): boolean {
     return (

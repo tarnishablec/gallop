@@ -18,7 +18,7 @@ import {
   skip,
   map
 } from 'rxjs/operators'
-import { CornerLocation, Direction } from '@real/utils'
+import { CornerLocation, Direction } from '@real/utils/type'
 
 const positions = [
   { left: 0, top: 0 },
