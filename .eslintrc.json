@@ -57,7 +57,7 @@
     "@typescript-eslint/ban-types": [
       "warn",
       {
-        "types": { "object": false, "{}": false }
+        "types": { "object": false, "{}": false, "Object": false }
       }
     ],
     "@typescript-eslint/no-empty-function": "off",

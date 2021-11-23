@@ -2,7 +2,6 @@ import type { Entity } from './Entity'
 
 export enum PRIMITIVE_TYPE {
   BOOLEAN = 'BOOLEAN',
-  NUMBER = 'NUMBER',
   UNDEFINED = 'UNDEFINED',
   NULL = 'NULL',
   STRING = 'STRING',
@@ -12,6 +11,7 @@ export enum PRIMITIVE_TYPE {
 
 export enum ADVANCE_TYPE {
   REFRENCE = 'REFRENCE',
+  VECTOR1 = 'VECTOR1',
   VECTOR2 = 'VECTOR2'
 }
 
@@ -36,7 +36,7 @@ export class DataType<V> {
 
 export const BOOLEAN_TYPE = new DataType(INPUT_TYPES.BOOLEAN, false)
 
-export const NUMBER_TYPE = new DataType(INPUT_TYPES.NUMBER, 0)
+export const NUMBER_TYPE = new DataType(INPUT_TYPES.VECTOR1, 0)
 
 export const STRING_TYPE = new DataType(INPUT_TYPES.STRING, '')
 

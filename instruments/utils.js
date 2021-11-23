@@ -1,4 +1,4 @@
-import execa from 'execa'
+import { execaCommandSync } from 'execa'
 import path from 'path'
 import fs from 'fs-extra'
 import { createRequire } from 'module'
@@ -8,7 +8,7 @@ import { createRequire } from 'module'
  * @param {import('execa').SyncOptions} [options]
  */
 export const run = (cmd, options = {}) =>
-  execa.commandSync(cmd, { stdio: 'inherit', ...options })
+  execaCommandSync(cmd, { stdio: 'inherit', ...options })
 
 export const resolveRepoRootDir = () => process.cwd()
 
@@ -68,12 +68,11 @@ export const resolvePeerDependencies = (packageName) => {
 }
 
 export const queryAllPackages = () => {
-  return execa.commandSync('npx lerna list').stdout.split('\n')
+  return execaCommandSync('npx lerna list').stdout.split('\n')
 }
 
 export const getGifInfo = () => {
-  const temp = execa
-    .commandSync('git config -l')
+  const temp = execaCommandSync('git config -l')
     .stdout.split('\n')
     .map((v) => v.split('='))
 

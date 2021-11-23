@@ -4,7 +4,7 @@ import { Property } from '@real/core/Property'
 import { UnitData } from '@real/core/UnitData'
 
 export class NameComponent extends Component {
-  protected properties = [
+  override properties = [
     new Property('name', new UnitData(STRING_TYPE))
   ] as const
 }

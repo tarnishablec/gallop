@@ -1,9 +1,10 @@
 import { v4 } from 'uuid'
-import type { Component } from './Component'
+import type { Component } from '../Component'
 import type { Class } from '@real/utils/type'
 import { classOf } from '@real/utils/helper'
+import { DoAble } from '@real/utils/mixin'
 
-export class Entity {
+export class Entity extends DoAble() {
   public readonly id = v4()
   protected readonly components = new Map<Class<Component>, Component>()
 

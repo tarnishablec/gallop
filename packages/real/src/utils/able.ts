@@ -9,3 +9,10 @@ export interface ICloneable<T> {
 export interface ISerializable {
   serialize(): string
 }
+
+export interface IDoAble {
+  do<F extends (this: this, ...args: any[]) => ReturnType<F>>(
+    func: F,
+    ...args: any[]
+  ): ReturnType<F>
+}

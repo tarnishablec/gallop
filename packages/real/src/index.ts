@@ -24,22 +24,40 @@ import { VECTOR2_TYPE, NUMBER_TYPE } from './core/DataType'
 import { UnitData } from './core/UnitData'
 import { Entity } from './core/Entity'
 import { AddOnManager } from './addon'
-
+import { EntityManager } from './core/Entity/EntityManager'
+import type { ComponentKey } from '@real/utils/type'
 class Transform2D extends Component {
-  protected properties = [
+  override properties = [
     new Property('location', new UnitData(VECTOR2_TYPE, [4, 4])),
     new Property('rotation', new UnitData(NUMBER_TYPE), { unit: 'deg' })
   ] as const
-
-  constructor() {
-    super()
-    console.log(this.properties[1].meta.unit)
-  }
 }
 
 const entity = new Entity()
-entity.attachComponent(new Transform2D())
+entity.do(function () {})
+const transform2D = new Transform2D()
+transform2D.do(function (this) {
+  this.properties[0].data
+})
+entity.attachComponent(transform2D)
 
 console.log(entity)
 
 console.log(AddOnManager.instance)
+
+class Rotation2D extends Component {
+  override properties = [
+    // new Property('')
+  ] as const
+  constructor() {
+    super()
+  }
+}
+
+EntityManager.instance.getEntities(<const>[Transform2D, Rotation2D])
+
+type A = ComponentKey<Transform2D>
+
+{
+  /* type B = ComponentsDraft<Transform2D> */
+}
