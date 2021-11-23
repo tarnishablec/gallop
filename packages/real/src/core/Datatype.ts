@@ -26,7 +26,7 @@ export class DataType<V> {
 
   constructor(
     public readonly inputType: COMPLEX_TYPE,
-    public readonly defaultValue: Readonly<V>,
+    public readonly defaultValue: V,
     public readonly equalFn: (a: V, b: V) => boolean = (a, b) => a === b,
     public readonly cloneFn: (val: V) => V = (val) => val
   ) {

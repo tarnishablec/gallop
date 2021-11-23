@@ -7,7 +7,7 @@ export class UnitData<T>
   protected _value: T
   constructor(
     public dataType: DataType<T>,
-    protected val?: typeof dataType['defaultValue']
+    protected val?: Readonly<typeof dataType['defaultValue']>
   ) {
     this._value = val ?? dataType.defaultValue
   }

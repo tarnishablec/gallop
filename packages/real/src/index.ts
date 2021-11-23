@@ -25,7 +25,11 @@ import { UnitData } from './core/UnitData'
 import { Entity } from './core/Entity'
 import { AddOnManager } from './addon'
 import { EntityManager } from './core/Entity/EntityManager'
-import type { ComponentKey } from '@real/utils/type'
+import type {
+  PropertyToRecord,
+  PropertiesToRecord,
+  ComponentDraft
+} from '@real/utils/type'
 class Transform2D extends Component {
   override properties = [
     new Property('location', new UnitData(VECTOR2_TYPE, [4, 4])),
@@ -37,7 +41,7 @@ const entity = new Entity()
 entity.do(function () {})
 const transform2D = new Transform2D()
 transform2D.do(function (this) {
-  this.properties[0].data
+  this.properties[1].meta.unit
 })
 entity.attachComponent(transform2D)
 
@@ -47,17 +51,24 @@ console.log(AddOnManager.instance)
 
 class Rotation2D extends Component {
   override properties = [
-    // new Property('')
+    new Property('location', new UnitData(VECTOR2_TYPE, [4, 4]))
   ] as const
   constructor() {
     super()
   }
 }
 
-EntityManager.instance.getEntities(<const>[Transform2D, Rotation2D])
+EntityManager.instance.getEntities([Transform2D, Rotation2D] as const)
 
-type A = ComponentKey<Transform2D>
+type A = PropertiesToRecord<Transform2D['properties']>
 
-{
-  /* type B = ComponentsDraft<Transform2D> */
-}
+type P = Transform2D['properties']
+
+type R<T> = T extends readonly [infer I, ...infer R] ? R : never
+type I<T> = T extends readonly [infer I, ...infer R] ? I : never
+
+type RR = R<P>
+
+type RRR = PropertyToRecord<I<RR>>
+
+type B = ComponentDraft<Transform2D>
