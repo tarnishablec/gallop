@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Component } from '@real/core/Component'
 import type { Property } from '@real/core/Property'
 
@@ -25,8 +24,13 @@ export type Merge<F extends object, S extends object> = {
 
 export type Class<T> = new (...args: any[]) => T
 
-export type PropertyToRecord<T> = T extends Property<infer N, infer V, any>
-  ? { readonly [k in N extends string ? N : never]: V }
+export type PropertyToRecord<T> = T extends Property<infer N, infer V, infer M>
+  ? {
+      readonly [k in N extends string ? N : never]: {
+        value: V
+        readonly meta: M
+      }
+    }
   : never
 
 export type PropertiesToRecord<T> = T extends readonly [infer I, ...infer R]

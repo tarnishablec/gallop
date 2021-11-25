@@ -7,21 +7,33 @@ import { DoAble } from '@real/utils/mixin'
 export class Entity extends DoAble() {
   public readonly id = v4()
   protected readonly components = new Map<Class<Component>, Component>()
+}
 
-  attachComponent<T extends Component>(component: T) {
-    this.components.set(classOf(component), component)
-  }
+export function attachComponent<T extends Component>(
+  this: Entity,
+  component: T
+) {
+  this.components.set(classOf(component), component)
+}
 
-  removeComponent<T extends Component>(component: T): void
-  removeComponent<T extends Component>(clazz: Class<T>): void
-  removeComponent<T extends Component>(componentOrClass: T | Class<T>): void {
-    let key: Class<T>
-    if (typeof componentOrClass === 'function') {
-      key = componentOrClass
-    } else {
-      key = classOf(componentOrClass)
-      if (this.components.get(key) !== componentOrClass) return
-    }
-    this.components.delete(key)
+export function removeComponent<T extends Component>(
+  this: Entity,
+  component: T
+): void
+export function removeComponent<T extends Component>(
+  this: Entity,
+  clazz: Class<T>
+): void
+export function removeComponent<T extends Component>(
+  this: Entity,
+  componentOrClass: T | Class<T>
+): void {
+  let key: Class<T>
+  if (typeof componentOrClass === 'function') {
+    key = componentOrClass
+  } else {
+    key = classOf(componentOrClass)
+    if (this.components.get(key) !== componentOrClass) return
   }
+  this.components.delete(key)
 }

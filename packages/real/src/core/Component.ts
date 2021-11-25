@@ -8,7 +8,7 @@ export abstract class Component
 {
   /** https://stackoverflow.com/questions/65129070/defining-an-array-of-differing-generic-types-in-typescript */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public properties: readonly Property<string, any, any>[] = []
+  public abstract properties: readonly Property<string, any, any>[]
 
   get name(): string {
     return this.constructor.name
@@ -20,3 +20,8 @@ export abstract class Component
     return comp
   }
 }
+
+// export function draftlize(this: Component): ComponentDraft<T> {
+//   const result = {} as ComponentDraft<T>
+//   return result
+// }

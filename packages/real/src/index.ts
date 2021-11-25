@@ -20,16 +20,14 @@ render(html`<re-editor></re-editor>`, {
 
 import { Component } from './core/Component'
 import { Property } from './core/Property'
+import { System } from './core/System'
 import { VECTOR2_TYPE, NUMBER_TYPE } from './core/DataType'
 import { UnitData } from './core/UnitData'
-import { Entity } from './core/Entity'
+import { attachComponent, Entity } from './core/Entity'
 import { AddOnManager } from './addon'
 import { EntityManager } from './core/Entity/EntityManager'
-import type {
-  PropertyToRecord,
-  PropertiesToRecord,
-  ComponentDraft
-} from '@real/utils/type'
+import { Class, ComponentDraft } from '@real/utils/type'
+
 class Transform2D extends Component {
   override properties = [
     new Property('location', new UnitData(VECTOR2_TYPE, [4, 4])),
@@ -43,14 +41,14 @@ const transform2D = new Transform2D()
 transform2D.do(function (this) {
   this.properties[1].meta.unit
 })
-entity.attachComponent(transform2D)
+entity.do(attachComponent, transform2D)
 
 console.log(entity)
 
 console.log(AddOnManager.instance)
 
 class Rotation2D extends Component {
-  override properties = [
+  properties = [
     new Property('location', new UnitData(VECTOR2_TYPE, [4, 4]))
   ] as const
   constructor() {
@@ -60,15 +58,23 @@ class Rotation2D extends Component {
 
 EntityManager.instance.getEntities([Transform2D, Rotation2D] as const)
 
-type A = PropertiesToRecord<Transform2D['properties']>
+// type A = ComponentDraft<Transform2D>
 
-type P = Transform2D['properties']
+class RenderSystem extends System {
+  selector = [Transform2D] as const
+}
 
-type R<T> = T extends readonly [infer I, ...infer R] ? R : never
-type I<T> = T extends readonly [infer I, ...infer R] ? I : never
+// console.log(transform2D.do(draftlize))
 
-type RR = R<P>
+// type A = PropertiesToRecord<Transform2D['properties']>
 
-type RRR = PropertyToRecord<I<RR>>
+// type P = Transform2D['properties']
 
-type B = ComponentDraft<Transform2D>
+// type R<T> = T extends readonly [infer I, ...infer R] ? R : never
+// type I<T> = T extends readonly [infer I, ...infer R] ? I : never
+
+// type RR = R<P>
+
+// type RRR = PropertyToRecord<I<RR>>
+
+// type B = ComponentDraft<Transform2D>

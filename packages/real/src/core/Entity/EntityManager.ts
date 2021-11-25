@@ -1,4 +1,4 @@
-import { Class, ComponentKey } from '@real/utils/type'
+import { Class } from '@real/utils/type'
 import { Entity } from '.'
 import { Component } from '../Component'
 
