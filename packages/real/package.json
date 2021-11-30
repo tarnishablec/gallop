@@ -47,5 +47,8 @@
     "monaco-editor": "^0.30.1",
     "rxjs": "^7.4.0",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "utility-types": "^3.10.0"
   }
 }

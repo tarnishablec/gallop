@@ -1,5 +1,6 @@
 import type { Component } from '@real/core/Component'
 import type { Property } from '@real/core/Property'
+import type { DeepReadonly } from 'utility-types'
 
 export type Direction = 'horizontal' | 'vertical'
 
@@ -24,11 +25,13 @@ export type Merge<F extends object, S extends object> = {
 
 export type Class<T> = new (...args: any[]) => T
 
+export type Instance<T> = T extends Class<infer I> ? I : never
+
 export type PropertyToRecord<T> = T extends Property<infer N, infer V, infer M>
   ? {
       readonly [k in N extends string ? N : never]: {
         value: V
-        readonly meta: M
+        readonly meta: DeepReadonly<M>
       }
     }
   : never

@@ -60,8 +60,12 @@ EntityManager.instance.getEntities([Transform2D, Rotation2D] as const)
 
 // type A = ComponentDraft<Transform2D>
 
-class RenderSystem extends System {
-  selector = [Transform2D] as const
+class RenderSystem extends System<[Transform2D]> {
+  collector = [Transform2D] as const
+  process: System<[Transform2D]>['process'] = function (drafts) {
+    const [transform] = drafts
+    transform.rotation.meta.unit
+  }
 }
 
 // console.log(transform2D.do(draftlize))
@@ -77,4 +81,4 @@ class RenderSystem extends System {
 
 // type RRR = PropertyToRecord<I<RR>>
 
-// type B = ComponentDraft<Transform2D>
+type B = ComponentDraft<Transform2D>
