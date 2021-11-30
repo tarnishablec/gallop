@@ -2,5 +2,6 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "deno.enable": false,
   "liveServer.settings.root": "/packages/playground/dist/",
-  "liveServer.settings.port": 5501
+  "liveServer.settings.port": 5501,
+  "typescript.suggest.includeCompletionsWithClassMemberSnippets": true
 }

@@ -1,6 +1,6 @@
 import type { Component } from '@real/core/Component'
 import type { Property } from '@real/core/Property'
-import type { DeepReadonly } from 'utility-types'
+// import type { DeepReadonly } from 'utility-types'
 
 export type Direction = 'horizontal' | 'vertical'
 
@@ -31,7 +31,7 @@ export type PropertyToRecord<T> = T extends Property<infer N, infer V, infer M>
   ? {
       readonly [k in N extends string ? N : never]: {
         value: V
-        readonly meta: DeepReadonly<M>
+        readonly meta: M
       }
     }
   : never
@@ -43,3 +43,6 @@ export type PropertiesToRecord<T> = T extends readonly [infer I, ...infer R]
 export type ComponentDraft<T extends Component> = PropertiesToRecord<
   T['properties']
 >
+
+export type SelectorToDraft<T extends readonly Class<Component>[]> =
+  readonly ComponentDraft<Instance<T[number]>>[]

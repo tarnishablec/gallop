@@ -1,13 +1,10 @@
 import type { Component } from '@real/core/Component'
-import type { Class, ComponentDraft } from '@real/utils/type'
-import type { Entity } from '@real/core/Entity'
+import type { Class, SelectorToDraft } from '@real/utils/type'
 
-export abstract class System<T extends readonly Component[]> {
-  public abstract readonly collector: readonly Class<T[number]>[]
+export abstract class System {
+  abstract readonly selector: readonly Class<Component>[]
 
-  protected entityList: Entity['id'][] = []
+  awake?(): void
 
-  awake(): void {}
-
-  abstract process(drafts: readonly ComponentDraft<T[number]>[]): void
+  abstract process(drafts: SelectorToDraft<this['selector']>): void
 }

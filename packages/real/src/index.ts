@@ -20,13 +20,13 @@ render(html`<re-editor></re-editor>`, {
 
 import { Component } from './core/Component'
 import { Property } from './core/Property'
-import { System } from './core/System'
 import { VECTOR2_TYPE, NUMBER_TYPE } from './core/DataType'
 import { UnitData } from './core/UnitData'
 import { attachComponent, Entity } from './core/Entity'
 import { AddOnManager } from './addon'
 import { EntityManager } from './core/Entity/EntityManager'
-import { Class, ComponentDraft } from '@real/utils/type'
+import { SelectorToDraft } from '@real/utils/type'
+import { ReactiveSystem } from '@real/core/System/ReactiveSystem'
 
 class Transform2D extends Component {
   override properties = [
@@ -48,9 +48,9 @@ console.log(entity)
 console.log(AddOnManager.instance)
 
 class Rotation2D extends Component {
-  properties = [
+  properties = <const>[
     new Property('location', new UnitData(VECTOR2_TYPE, [4, 4]))
-  ] as const
+  ]
   constructor() {
     super()
   }
@@ -60,9 +60,9 @@ EntityManager.instance.getEntities([Transform2D, Rotation2D] as const)
 
 // type A = ComponentDraft<Transform2D>
 
-class RenderSystem extends System<[Transform2D]> {
-  collector = [Transform2D] as const
-  process: System<[Transform2D]>['process'] = function (drafts) {
+class RenderSystem extends ReactiveSystem {
+  public selector = <const>[Transform2D]
+  public process(drafts: SelectorToDraft<this['selector']>): void {
     const [transform] = drafts
     transform.rotation.meta.unit
   }
@@ -81,4 +81,6 @@ class RenderSystem extends System<[Transform2D]> {
 
 // type RRR = PropertyToRecord<I<RR>>
 
-type B = ComponentDraft<Transform2D>
+// type B = ComponentDraft<Transform2D>
+
+console.log(new RenderSystem() instanceof ReactiveSystem)
