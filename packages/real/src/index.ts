@@ -25,8 +25,8 @@ import { UnitData } from './core/UnitData'
 import { attachComponent, Entity } from './core/Entity'
 import { AddOnManager } from './addon'
 import { EntityManager } from './core/Entity/EntityManager'
-import { SelectorToDraft } from '@real/utils/type'
-import { ReactiveSystem } from '@real/core/System/ReactiveSystem'
+import { SelectorToDrafts } from '@real/utils/type'
+import { System } from '@real/core/System'
 
 class Transform2D extends Component {
   override properties = [
@@ -48,9 +48,9 @@ console.log(entity)
 console.log(AddOnManager.instance)
 
 class Rotation2D extends Component {
-  properties = <const>[
+  properties = [
     new Property('location', new UnitData(VECTOR2_TYPE, [4, 4]))
-  ]
+  ] as const
   constructor() {
     super()
   }
@@ -60,9 +60,10 @@ EntityManager.instance.getEntities([Transform2D, Rotation2D] as const)
 
 // type A = ComponentDraft<Transform2D>
 
-class RenderSystem extends ReactiveSystem {
-  public selector = <const>[Transform2D]
-  public process(drafts: SelectorToDraft<this['selector']>): void {
+class RenderSystem extends System {
+  public deferred = true
+  public selector = [Transform2D] as const
+  public process(drafts: SelectorToDrafts<this['selector']>): void {
     const [transform] = drafts
     transform.rotation.meta.unit
   }
@@ -83,4 +84,4 @@ class RenderSystem extends ReactiveSystem {
 
 // type B = ComponentDraft<Transform2D>
 
-console.log(new RenderSystem() instanceof ReactiveSystem)
+console.log(new RenderSystem() instanceof System)

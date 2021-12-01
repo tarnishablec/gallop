@@ -1,10 +1,14 @@
 import type { Component } from '@real/core/Component'
-import type { Class, SelectorToDraft } from '@real/utils/type'
+import type { Class, SelectorToDrafts } from '@real/utils/type'
 
 export abstract class System {
   abstract readonly selector: readonly Class<Component>[]
 
+  public abstract deferred: boolean
+
   awake?(): void
 
-  abstract process(drafts: SelectorToDraft<this['selector']>): void
+  abstract process(
+    drafts: SelectorToDrafts<this['selector']>
+  ): void | Promise<void>
 }

@@ -1,3 +1,5 @@
+import { System } from '.'
+
 export class SystemManager {
   protected static _instance: SystemManager
   protected constructor() {}
@@ -7,6 +9,8 @@ export class SystemManager {
       SystemManager._instance ?? (SystemManager._instance = new SystemManager())
     )
   }
+
+  protected systemPool: System[] = []
 
   register() {}
 }

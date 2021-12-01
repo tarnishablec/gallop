@@ -44,5 +44,5 @@ export type ComponentDraft<T extends Component> = PropertiesToRecord<
   T['properties']
 >
 
-export type SelectorToDraft<T extends readonly Class<Component>[]> =
+export type SelectorToDrafts<T extends readonly Class<Component>[]> =
   readonly ComponentDraft<Instance<T[number]>>[]

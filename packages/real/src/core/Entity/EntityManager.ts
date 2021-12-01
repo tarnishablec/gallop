@@ -20,7 +20,7 @@ export class EntityManager {
     return []
   }
 
-  createEntity(amount: number = 1): Entity['id'][] {
+  createEntity(): Entity['id'][] {
     const entity = new Entity()
     return [entity.id]
   }
