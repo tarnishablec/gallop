@@ -4,8 +4,8 @@ export function html(strs: TemplateStringsArray, ...vals: unknown[]) {
   return new HTMLClip(strs, vals)
 }
 
-export function css(strs: TemplateStringsArray, ...vals: string[]) {
+export function css(strs: TemplateStringsArray, ...vals: unknown[]) {
   return strs
-    .reduce((acc, cur, index) => `${acc}${cur}${vals[index] ?? ''}`, '')
+    .reduce((acc, cur, index) => `${acc}${cur}${String(vals[index]) ?? ''}`, '')
     .trim()
 }

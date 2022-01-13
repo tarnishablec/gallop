@@ -51,7 +51,8 @@ export function component<F extends Component>(
     $props = createProxy(
       {},
       {
-        onMut: () => this.requestUpdate()
+        onMut: () => this.requestUpdate(),
+        deep: false
       }
     )
     $state = undefined

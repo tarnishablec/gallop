@@ -30,7 +30,7 @@
   "rules": {
     "no-unused-vars": "off",
     "no-debugger": "warn",
-    "no-console": "warn",
+    // "no-console": "warn",
     "no-empty": "warn",
     "prefer-const": "warn",
     "max-params": ["warn", { "max": 5 }],

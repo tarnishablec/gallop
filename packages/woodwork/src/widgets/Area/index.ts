@@ -1,22 +1,58 @@
-import { html, Component, useStyle } from '@gallop/gallop'
+import {
+  html,
+  Component,
+  useStyle,
+  css,
+  useEffect,
+  useState
+} from '@gallop/gallop'
+import { WW } from '../../core'
+import { Area } from '../../core/Area'
+import { random } from 'lodash'
 
-// import { useMonaco } from '@real/hooks/useMonaco'
-import { useDragCorner } from '@real/hooks/useDragCorner'
+import { useDragCorner } from '../../hooks/useDragCorner'
 
-// import code from '../../hooks/useDragDrop?raw'
 import style from './index.scss?inline'
 
-export const Area: Component = function () {
-  useStyle(() => style, [])
+export const AreaComp: Component = function ({
+  area,
+  ww
+}: {
+  area: Area
+  ww: WW
+}) {
+  useStyle(
+    () => css`
+      ${style}
 
-  // useMonaco({
-  //   container: () => this.$root.querySelector('.area-body')!,
-  //   options: {
-  //     value: code
-  //   }
-  // })
+      :host {
+        background: rgb(
+          ${random(0, 255)},
+          ${random(0, 255)},
+          ${random(0, 255)}
+        );
+      }
+    `,
+    []
+  )
 
   useDragCorner()
+
+  const { renderKey } = area
+
+  const [state] = useState<{ view: unknown }>({
+    view: undefined
+  })
+
+  useEffect(() => {
+    const container = this.$root.querySelector('.area-body')! as HTMLDivElement
+    if (renderKey) {
+      const view = ww.viewRegistry.get(renderKey)?.(container)
+      if (view) {
+        state.view = view
+      }
+    }
+  }, [renderKey])
 
   return html`
     <div class="area-root">
@@ -29,7 +65,7 @@ export const Area: Component = function () {
         ></div>
         <slot name="head"> </slot>
       </div>
-      <div class="area-body"></div>
+      <div class="area-body">${state.view}</div>
     </div>
   `
 }

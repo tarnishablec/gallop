@@ -6,7 +6,11 @@ export abstract class System {
 
   public abstract deferred: boolean
 
-  awake?(): void
+  onRegister?(): void
+
+  onActive?(): void
+
+  onDeActive?(): void
 
   abstract process(
     drafts: SelectorToDrafts<this['selector']>

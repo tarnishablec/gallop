@@ -14,9 +14,33 @@ import './registry'
 //   language: 'scss'
 // })
 
-render(html`<re-editor></re-editor>`, {
-  container: document.querySelector('#root')!
-})
+import '@spectrum-web-components/button/sp-button'
+import '@spectrum-web-components/theme/sp-theme'
+
+// const frag = new Range().createContextualFragment(`
+// <sp-theme>
+//     <sp-button onclick="alert('I was clicked');">Click me!</sp-button>
+//   </sp-theme>
+// `)
+
+// document.body.querySelector('#root')?.append(frag)
+
+const a = Math.random()
+console.log(a)
+
+render(
+  html`<sp-theme>
+    <sp-button
+      @click="${() => {
+        alert('I was clicked')
+      }}"
+      >Click me!</sp-button
+    >
+  </sp-theme>`,
+  {
+    container: document.querySelector('#root')!
+  }
+)
 
 import { Component } from './core/Component'
 import { Property } from './core/Property'
@@ -25,8 +49,10 @@ import { UnitData } from './core/UnitData'
 import { attachComponent, Entity } from './core/Entity'
 import { AddOnManager } from './addon'
 import { EntityManager } from './core/Entity/EntityManager'
-import { SelectorToDrafts } from '@real/utils/type'
+import { Class, SelectorToDrafts } from '@real/utils/type'
 import { System } from '@real/core/System'
+
+import {} from 'utility-types'
 
 class Transform2D extends Component {
   override properties = [
@@ -84,4 +110,44 @@ class RenderSystem extends System {
 
 // type B = ComponentDraft<Transform2D>
 
-console.log(new RenderSystem() instanceof System)
+// console.log(new RenderSystem() instanceof System)
+
+export interface IComponent {}
+
+@test(111)
+export class Transform implements IComponent {
+  @format('b')
+  @format('a')
+  public name: string = '999'
+
+  @format('ss')
+  public age: number = 1
+
+  @enumerable(false)
+  load() {}
+}
+
+function format(...args: any[]): PropertyDecorator {
+  console.log(args[0])
+  return function (clazz, name) {
+    console.log([clazz, name])
+  }
+}
+
+function test(...args: any[]): ClassDecorator {
+  console.log(args)
+  return (target) => {
+    console.log(target)
+  }
+}
+
+function enumerable(value: boolean) {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    console.log(target, '=====')
+    descriptor.enumerable = value
+  }
+}
