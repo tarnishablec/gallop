@@ -1,6 +1,7 @@
 import { v4 } from 'uuid'
 import type { Direction } from '../types'
 import { Area, SerializedArea } from './Area'
+import { AreaDragger } from './AreaDragger'
 
 export type AreaTrackProps = {
   parent?: AreaTrack
@@ -17,9 +18,11 @@ export class AreaTrack {
   public grids: number[] = []
   public direction: Direction
   public parent?: AreaTrack
-  public children: (AreaTrack | Area)[] = []
+  public children: (AreaTrack | Area | AreaDragger)[] = []
 
-  constructor(public props: AreaTrackProps) {
+  public _dom?: HTMLElement
+
+  constructor(props: AreaTrackProps) {
     this.parent = props.parent
     this.direction = props.direction
   }

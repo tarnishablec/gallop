@@ -18,7 +18,7 @@ import {
   skip,
   map
 } from 'rxjs/operators'
-import { CornerLocation, Direction } from '@real/utils/type'
+import { CornerLocation, Direction } from '../types/index'
 
 const positions = [
   { left: 0, top: 0 },
@@ -88,11 +88,11 @@ export const useDragCorner = ({ size = 15 }: { size?: number } = {}) => {
 
         const catchHori$ = dragInside$.pipe(
           first((v) => Math.abs(cx - v.event.x) > maxInsideDistance),
-          map((v) => ({ ...v, direction: 'horizontal' as Direction }))
+          map((v) => ({ ...v, direction: 'horizontal' }))
         )
         const catchVert$ = dragInside$.pipe(
           first((v) => Math.abs(cy - v.event.y) > maxInsideDistance),
-          map((v) => ({ ...v, direction: 'vertical' as Direction }))
+          map((v) => ({ ...v, direction: 'vertical' }))
         )
         const catchDirection$ = race(catchHori$, catchVert$)
 

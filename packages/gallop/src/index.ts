@@ -17,7 +17,8 @@ export {
   queryPool,
   elementPool,
   componentPool,
-  observeDisconnect
+  observeDisconnect,
+  isReactive
 } from './component'
 
 export type { ReactiveElement, Component } from './component'

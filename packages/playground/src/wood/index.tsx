@@ -36,7 +36,7 @@ const layout = ww.generateLayout({
   name: 'test',
   serializedAreaTrack: {
     type: 'AreaTrack',
-    direction: 'column',
+    direction: 'horizontal',
     children: [
       {
         type: 'Area',
@@ -48,7 +48,7 @@ const layout = ww.generateLayout({
       },
       {
         type: 'AreaTrack',
-        direction: 'row',
+        direction: 'vertical',
         children: [
           {
             type: 'Area'

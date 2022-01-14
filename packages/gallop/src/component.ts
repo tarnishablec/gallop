@@ -105,8 +105,8 @@ export const observeDisconnect = (
   el.addEventListener('$disconnect$', callback)
 }
 
-export const isReactive = (node: Node | null): node is ReactiveElement =>
-  !!(node && Reflect.get(node, '$isReactive'))
+export const isReactive = (node: unknown): node is ReactiveElement =>
+  !!(node instanceof HTMLElement && Reflect.get(node, '$isReactive'))
 
 export const mergeProp = (
   node: ReactiveElement,

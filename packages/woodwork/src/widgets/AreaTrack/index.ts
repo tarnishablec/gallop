@@ -1,19 +1,29 @@
-import { html, repeat, useStyle, css } from '@gallop/gallop'
+import {
+  html,
+  repeat,
+  useStyle,
+  css,
+  useEffect,
+  Component
+} from '@gallop/gallop'
 import { WW } from '../../core'
+import { AreaDragger } from '../../core/AreaDragger'
 import { AreaTrack } from '../../core/AreaTrack'
 
-export const AreaTrackComp = ({
+export const AreaTrackComp: Component = function ({
   areaTrack,
   ww
 }: {
   areaTrack: AreaTrack
   ww: WW
-}) => {
+}) {
+  const dir = areaTrack.direction === 'horizontal' ? 'column' : 'row'
+
   const generateTemplate = () => {
-    return `grid-template-${areaTrack.direction}s : ${areaTrack.grids
+    return `grid-template-${dir}s : ${areaTrack.grids
       .map((grid) => `${grid}fr`)
-      .join(' ')};
-      ${areaTrack.direction}-gap : 5px;`
+      .join(' 5px ')};
+     `
   }
 
   useStyle(
@@ -34,6 +44,10 @@ export const AreaTrackComp = ({
     [areaTrack.direction, areaTrack.grids]
   )
 
+  useEffect(() => {
+    areaTrack._dom = this
+  }, [])
+
   return html` <div class="area-track-root">
     ${repeat(
       areaTrack.children,
@@ -41,6 +55,8 @@ export const AreaTrackComp = ({
       (v) =>
         v instanceof AreaTrack
           ? ww.renderer.renderAreaTrack(v)
+          : v instanceof AreaDragger
+          ? ww.renderer.renderAreaDragger(v)
           : ww.renderer.renderArea(v)
     )}
   </div>`

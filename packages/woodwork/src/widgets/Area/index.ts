@@ -54,6 +54,10 @@ export const AreaComp: Component = function ({
     }
   }, [renderKey])
 
+  useEffect(() => {
+    area._dom = this
+  }, [])
+
   return html`
     <div class="area-root">
       <div class="area-head">

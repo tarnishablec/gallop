@@ -1,5 +1,6 @@
 import { SerializedArea, Area } from './Area'
 import { SerializedAreaTrack, AreaTrack } from './AreaTrack'
+import { AreaDragger } from './AreaDragger'
 
 export interface IWWSerder {
   serializeArea(area: Area): SerializedArea
@@ -35,12 +36,16 @@ export class WWSerder implements IWWSerder {
     })
 
     track.grids = [...serializedAreaTrack.grids]
-    track.children = serializedAreaTrack.children.map((v) => {
-      if (v.type === 'AreaTrack') {
-        return this.deserializeAreaTrack(v)
-      }
-      return this.deserializeArea(v)
-    })
+    track.children = serializedAreaTrack.children
+      .map((v) => {
+        if (v.type === 'AreaTrack') {
+          return this.deserializeAreaTrack(v)
+        }
+        return this.deserializeArea(v)
+      })
+      .flatMap((v) => [v, new AreaDragger({ parent: track })])
+
+    track.children.pop()
 
     track.children.forEach((child) => {
       child.parent = track
