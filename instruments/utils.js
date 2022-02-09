@@ -100,9 +100,10 @@ export const queryPackageExternal = (packageName) => {
   const pkgJson = createRequire(import.meta.url)(
     path.resolve(packageDir, 'package.json')
   )
+  const { name = '' } = pkgJson
   const deps = Object.keys(pkgJson.dependencies ?? {})
   const peerDeps = Object.keys(pkgJson.peerDependencies ?? {})
-  return [...new Set([...deps, ...peerDeps])]
+  return [...new Set([...deps, ...peerDeps, name])]
 }
 
 /** @param {string} packageName */
@@ -112,12 +113,13 @@ export const removeNodeModules = (packageName) => {
 }
 
 /** @param {string} packageName */
-export const resolvePackageEntry = (packageName) => {
+export const resolvePackageEntry = (packageName, baseDir = 'src') => {
   const packageDir = resolvePackageDir(packageName)
-  if (fs.existsSync(path.resolve(packageDir, 'src/index.tsx'))) {
-    return path.resolve(packageDir, 'src/index.tsx')
+  const dir = path.resolve(packageDir, baseDir)
+  if (fs.existsSync(path.resolve(dir, 'index.tsx'))) {
+    return path.resolve(dir, 'index.tsx')
   }
-  return path.resolve(packageDir, 'src/index.ts')
+  return path.resolve(dir, 'index.ts')
 }
 
 /** @param {Record<string, unknown>} target */
@@ -127,4 +129,20 @@ export const cleanObjectFields = (target) => {
       delete target[key]
     }
   }
+}
+
+/** @param {string} packageName */
+export const resolveExportsPaths = (packageName) => {
+  const { exports = {} } = resolvePackageJsonObj(packageName)
+  let entry = resolvePackageEntry(packageName)
+  const relativePaths = Object.keys(exports)
+  const absPaths = relativePaths.map((p) => {
+    if (fs.statSync(entry).isFile()) {
+      entry = path.resolve(entry, '..')
+    }
+    /** @type [string,string] */
+    const res = [p, resolvePackageEntry(packageName, path.resolve(entry, p))]
+    return res
+  })
+  return new Map(absPaths)
 }

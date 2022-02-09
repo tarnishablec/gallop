@@ -11,6 +11,7 @@ import { AreaDragger } from '../../core/AreaDragger'
 import { useDragDrop } from '../../hooks/useDragDrop'
 import { Subject, Subscription, scheduled, asapScheduler } from 'rxjs'
 import { distinctUntilChanged, share, map, filter } from 'rxjs/operators'
+import { FR_UNIT } from '../../utils/const'
 
 export const AreaDraggerComp: Component = function ({
   areaDragger,
@@ -40,18 +41,14 @@ export const AreaDraggerComp: Component = function ({
       dragSubjectRef.current?.next({ event, over })
     },
     ondragstart: (e) => {
-      const startPos = { x: e.clientX, y: e.clientY }
-      const { children: _children } = areaDragger.parent
-      const children = _children.filter((v) => !(v instanceof AreaDragger))
+      const { children, draggers } = areaDragger.parent
       const field = direction === 'horizontal' ? 'clientWidth' : 'clientHeight'
-      const initLenMap = areaDragger.parent.children
-        .filter((_, index) => !(index % 2))
-        .map((v) => v._dom![field])
+      const initLenMap = areaDragger.parent.children.map((v) => v._dom![field])
 
-      const index = _children.indexOf(areaDragger)
+      const index = draggers.indexOf(areaDragger)
 
-      const frontIndex = (index - 1) / 2
-      const afterIndex = (index + 1) / 2
+      const frontIndex = index
+      const afterIndex = index + 1
 
       const subject = new Subject<{ event: DragEvent; over: HTMLElement }>()
       dragSubjectRef.current = subject
@@ -66,8 +63,8 @@ export const AreaDraggerComp: Component = function ({
             direction,
             offset:
               direction === 'horizontal'
-                ? cur.event.clientX - startPos.x
-                : cur.event.clientY - startPos.y
+                ? cur.event.clientX - e.clientX
+                : cur.event.clientY - e.clientY
           }
         }),
         filter((v) => {
@@ -85,10 +82,11 @@ export const AreaDraggerComp: Component = function ({
           lenMap[frontIndex] = initLenMap[frontIndex]! + offset
           lenMap[afterIndex] = initLenMap[afterIndex]! - offset
           // console.log(initLenMap)
-          const unit = 5
-          const frMap = lenMap.map((v) => v! / unit)
-          areaDragger.parent.grids = frMap
-          ww.renderer.reflowAreaTrack(areaDragger.parent)
+          const frMap = lenMap.map((v) => v! / FR_UNIT)
+          ww.renderer.reflowAreaTrack({
+            areaTrack: areaDragger.parent,
+            grids: frMap
+          })
         }
       })
     }

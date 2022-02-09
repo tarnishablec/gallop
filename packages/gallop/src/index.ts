@@ -1,6 +1,6 @@
 export { html, css } from './parse'
 export { render } from './render'
-export { HTMLClip } from './clip'
+export { HTMLClip, getVals } from './clip'
 export { Patcher } from './patcher'
 
 export type { SyntaxMap } from './patcher'
@@ -54,6 +54,7 @@ export {
 
 export type { DirectiveFn } from './directive'
 
+/** @deprecated */
 export {
   repeat,
   dynamic,
@@ -64,5 +65,9 @@ export {
   alive,
   setAlive
 } from './directives'
+
+export * from './error'
+
+export { forceGet, Obj, Key } from './utils'
 
 export { createFragment, insertAfter, cleanDomStr, removeNodes } from './dom'

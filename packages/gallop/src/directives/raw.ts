@@ -1,6 +1,9 @@
-import { directive, ensurePartType } from '../directive'
-import { createFragment } from '../dom'
-import { NodePart } from '../part'
+import {
+  directive,
+  ensurePartType,
+  createFragment,
+  NodePart
+} from '@gallop/gallop'
 
 export const raw = directive((htmlStr: string) => (part) => {
   if (!ensurePartType(part, NodePart)) return

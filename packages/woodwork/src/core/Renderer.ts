@@ -2,12 +2,12 @@ import { WW } from '.'
 import { registerGallopElement } from '../gallop'
 import { AreaComp } from '../widgets/Area'
 import { AreaTrackComp } from '../widgets/AreaTrack'
-import { HTMLClip, dynamic, html, render, isReactive } from '@gallop/gallop'
+import { dynamic } from '@gallop/gallop/directives'
+import { HTMLClip, html, render, isReactive } from '@gallop/gallop'
 import { AreaTrack } from './AreaTrack'
 import { Area } from './Area'
 import { AreaDragger } from './AreaDragger'
 import { AreaDraggerComp } from '../widgets/AreaDragger'
-
 export interface IWWRenderer {
   ww: WW
   renderAreaDragger(areaDragger: AreaDragger): unknown
@@ -21,7 +21,13 @@ export interface IWWRenderer {
     unmount: () => unknown
   }
 
-  reflowAreaTrack(areaTrack: AreaTrack): unknown
+  reflowAreaTrack({
+    areaTrack,
+    grids
+  }: {
+    areaTrack: AreaTrack
+    grids?: number[]
+  }): unknown
 }
 
 @registerGallopElement(WWRenderer.areaTag, AreaComp)
@@ -79,8 +85,18 @@ export class WWRenderer implements IWWRenderer {
     })}`
   }
 
-  reflowAreaTrack(areaTrack: AreaTrack) {
+  reflowAreaTrack({
+    areaTrack,
+    grids
+  }: {
+    areaTrack: AreaTrack
+    grids?: number[]
+  }): void {
     const { _dom } = areaTrack
+
+    if (grids) {
+      areaTrack.grids = [...grids]
+    }
     if (isReactive(_dom)) {
       _dom.requestUpdate()
     }

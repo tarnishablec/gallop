@@ -1,5 +1,9 @@
-import { NodePart } from '../part'
-import { directive, ensurePartType, checkDependsDirty } from '../directive'
+import {
+  directive,
+  ensurePartType,
+  checkDependsDirty,
+  NodePart
+} from '@gallop/gallop'
 
 export type SuspenseOption = {
   pending?: () => unknown

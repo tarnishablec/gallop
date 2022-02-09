@@ -36,11 +36,10 @@
     "bundler": "vite",
     "rollupOptions": {
       "input": {
-        "main": "./src/index.html"
+        "main": "./src/index.html",
+        "wood": "./src/wood/index.html"
       }
     }
   },
-  "devDependencies": {
-   
-  }
+  "devDependencies": {}
 }

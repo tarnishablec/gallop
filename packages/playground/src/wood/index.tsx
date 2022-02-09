@@ -40,11 +40,11 @@ const layout = ww.generateLayout({
     children: [
       {
         type: 'Area',
-        renderKey: 'artboard'
+        key: 'artboard'
       },
       {
         type: 'Area',
-        renderKey: 'setting'
+        key: 'setting'
       },
       {
         type: 'AreaTrack',
@@ -55,7 +55,7 @@ const layout = ww.generateLayout({
           },
           {
             type: 'Area',
-            renderKey: 'other'
+            key: 'other'
           }
         ],
         grids: [1, 2]

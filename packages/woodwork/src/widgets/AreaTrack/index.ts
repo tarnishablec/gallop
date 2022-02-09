@@ -1,14 +1,10 @@
-import {
-  html,
-  repeat,
-  useStyle,
-  css,
-  useEffect,
-  Component
-} from '@gallop/gallop'
+import { html, useStyle, css, useEffect, Component } from '@gallop/gallop'
+import { repeat } from '@gallop/gallop/directives'
 import { WW } from '../../core'
 import { AreaDragger } from '../../core/AreaDragger'
 import { AreaTrack } from '../../core/AreaTrack'
+import { sharedRepeat } from '../../gallop/sharedRepeat'
+import { FR_UNIT } from '../../utils/const'
 
 export const AreaTrackComp: Component = function ({
   areaTrack,
@@ -22,7 +18,7 @@ export const AreaTrackComp: Component = function ({
   const generateTemplate = () => {
     return `grid-template-${dir}s : ${areaTrack.grids
       .map((grid) => `${grid}fr`)
-      .join(' 5px ')};
+      .join(` ${FR_UNIT}px `)};
      `
   }
 
@@ -32,6 +28,7 @@ export const AreaTrackComp: Component = function ({
         width: 100%;
         height: 100%;
         display: block;
+        overflow: hidden;
       }
 
       .area-track-root {
@@ -46,11 +43,22 @@ export const AreaTrackComp: Component = function ({
 
   useEffect(() => {
     areaTrack._dom = this
+    const { parent } = areaTrack
+
+    if (parent) {
+      const index = parent.children.indexOf(areaTrack)
+      parent.grids[index] =
+        (parent.direction === 'horizontal'
+          ? this.clientWidth
+          : this.clientHeight) / FR_UNIT
+    }
   }, [])
 
   return html` <div class="area-track-root">
-    ${repeat(
-      areaTrack.children,
+    ${sharedRepeat(
+      areaTrack.children
+        .flatMap((v, index) => [v, areaTrack.draggers[index]])
+        .filter(Boolean),
       (v) => v.id,
       (v) =>
         v instanceof AreaTrack

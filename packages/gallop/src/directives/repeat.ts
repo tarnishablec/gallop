@@ -1,7 +1,11 @@
-import { Key, forceGet } from '../utils'
-import { directive, ensurePartType } from '../directive'
-import { NodePart } from '../part'
-import { DuplicatedKeyError } from '../error'
+import {
+  directive,
+  ensurePartType,
+  NodePart,
+  DuplicatedKeyError,
+  forceGet,
+  Key
+} from '@gallop/gallop'
 
 export type DiffKey = Key | null
 export type Change =
@@ -83,7 +87,7 @@ export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]): Change[] {
       }
       lastHead = newList[newHead]
     }
-  } 
+  }
   if (oldHead <= oldTail) {
     for (; oldHead <= oldTail; oldHead++) {
       if (oldList[oldHead] !== nul) {
@@ -96,7 +100,7 @@ export function listKeyDiff(oldList: DiffKey[], newList: DiffKey[]): Change[] {
   return res
 }
 
-class ArrayPart extends NodePart {
+export class ArrayPart extends NodePart {
   keyPartMap = new Map<DiffKey, NodePart>()
   keys: DiffKey[] = []
 

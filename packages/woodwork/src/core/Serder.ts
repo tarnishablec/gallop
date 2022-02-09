@@ -12,40 +12,49 @@ export interface IWWSerder {
 
 export class WWSerder implements IWWSerder {
   serializeArea(area: Area): SerializedArea {
-    return { type: 'Area', renderKey: area.renderKey }
+    return { type: 'Area', key: area.key }
   }
   serializeAreaTrack(area: AreaTrack): SerializedAreaTrack {
     return {
       grids: area.grids,
       direction: area.direction,
-      children: area.children.map((v) =>
-        v instanceof AreaTrack
-          ? this.serializeAreaTrack(v)
-          : this.serializeArea(v)
-      ),
+      children: area.children
+        .map((v) =>
+          v instanceof AreaTrack
+            ? this.serializeAreaTrack(v)
+            : v instanceof Area
+            ? this.serializeArea(v)
+            : undefined
+        )
+        .filter(
+          (v): v is SerializedArea | SerializedAreaTrack => v !== undefined
+        ),
       type: 'AreaTrack'
     }
   }
   deserializeArea(serializedArea: SerializedArea): Area {
-    const area = new Area({ renderKey: serializedArea.renderKey })
+    const area = new Area({
+      key: serializedArea.key,
+      parent: new AreaTrack({ direction: 'horizontal' })
+    })
     return area
   }
   deserializeAreaTrack(serializedAreaTrack: SerializedAreaTrack): AreaTrack {
     const track = new AreaTrack({
-      direction: serializedAreaTrack.direction
+      direction: serializedAreaTrack.direction,
+      grids: [...serializedAreaTrack.grids]
     })
 
-    track.grids = [...serializedAreaTrack.grids]
-    track.children = serializedAreaTrack.children
-      .map((v) => {
-        if (v.type === 'AreaTrack') {
-          return this.deserializeAreaTrack(v)
-        }
-        return this.deserializeArea(v)
-      })
-      .flatMap((v) => [v, new AreaDragger({ parent: track })])
+    track.children = serializedAreaTrack.children.map((v) => {
+      if (v.type === 'AreaTrack') {
+        return this.deserializeAreaTrack(v)
+      }
+      return this.deserializeArea(v)
+    })
 
-    track.children.pop()
+    for (let index = 0; index < track.children.length - 1; index++) {
+      track.draggers.push(new AreaDragger({ parent: track }))
+    }
 
     track.children.forEach((child) => {
       child.parent = track

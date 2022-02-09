@@ -1,9 +1,14 @@
-import { directive, ensurePartType } from '../directive'
-import { Key, forceGet } from '../utils'
-import { html } from '../parse'
-import { HTMLClip, getVals } from '../clip'
-import { NodePart } from '../part'
-import { Patcher } from '../patcher'
+import {
+  directive,
+  ensurePartType,
+  html,
+  HTMLClip,
+  Patcher,
+  NodePart,
+  getVals,
+  Key,
+  forceGet
+} from '@gallop/gallop'
 
 const __key__ = Symbol('alive')
 
@@ -54,14 +59,13 @@ export const keep = directive((view: unknown) => (part) => {
   }
 })
 
-export const alive = (key: Key) => (
-  strs: TemplateStringsArray,
-  ...vals: unknown[]
-) => {
-  const clip = html(strs, ...vals)
-  Reflect.set(clip, __key__, key)
-  return clip
-}
+export const alive =
+  (key: Key) =>
+  (strs: TemplateStringsArray, ...vals: unknown[]) => {
+    const clip = html(strs, ...vals)
+    Reflect.set(clip, __key__, key)
+    return clip
+  }
 
 export function setAlive(this: HTMLClip, key: Key) {
   Reflect.set(this, __key__, key)

@@ -4,7 +4,7 @@ import { Patcher } from './patcher'
 import { marker } from './marker'
 import { hashify } from './utils'
 
-export class HTMLClip extends DoAble(Object) {
+export class HTMLClip extends DoAble() {
   constructor(
     protected strs: TemplateStringsArray,
     protected vals: ReadonlyArray<unknown>

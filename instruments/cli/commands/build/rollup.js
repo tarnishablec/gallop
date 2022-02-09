@@ -4,7 +4,8 @@ import {
   resolvePackageDir,
   resolvePackageJsonObj,
   resolveRepoRootDir,
-  resolvePackageEntry
+  resolvePackageEntry,
+  resolveExportsPaths
 } from '../../../utils.js'
 import path from 'path'
 import fs from 'fs-extra'
@@ -33,6 +34,10 @@ export const rollupBundle = async (
   const entry = resolvePackageEntry(packageName)
   const pkgObj = resolvePackageJsonObj(packageName)
 
+  const exportsPaths = resolveExportsPaths(packageName)
+
+  const entriesMap = exportsPaths.size ? exportsPaths : new Map([['.', entry]])
+
   fixTslib({ isDev: false })
 
   const external = [
@@ -45,60 +50,64 @@ export const rollupBundle = async (
 
   // console.log(chalk.bgRedBright(external.join("\n")))
 
-  const bundle = await rollup({
-    input: entry,
-    plugins: [
-      rollupJson(),
-      rollupScss({ output: path.resolve(packageDir, 'dist/index.css') }),
-      rollupTs({
-        tsconfig: path.resolve(resolveRepoRootDir(), 'tsconfig.json')
+  for (const [key, entry] of entriesMap) {
+    const bundle = await rollup({
+      input: entry,
+      plugins: [
+        rollupJson(),
+        rollupScss({
+          output: path.resolve(packageDir, 'dist', key, 'index.css')
+        }),
+        rollupTs({
+          tsconfig: path.resolve(resolveRepoRootDir(), 'tsconfig.json')
+        })
+      ],
+      external,
+      ..._buildOptions?.rollupOptions
+    })
+
+    const esmPath = path.resolve(packageDir, 'dist', key, 'index.esm.js')
+    const umdPath = path.resolve(packageDir, 'dist', key, 'index.umd.js')
+
+    try {
+      await bundle.write({
+        name: String(pkgObj.name),
+        file: esmPath,
+        format: 'esm'
       })
-    ],
-    external,
-    ..._buildOptions?.rollupOptions
-  })
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
 
-  const esmPath = path.resolve(packageDir, 'dist/index.esm.js')
-  const umdPath = path.resolve(packageDir, 'dist/index.umd.js')
+    // await bundle.write({
+    //   name: String(pkgObj.name),
+    //   file: esmPath,
+    //   format: "esm"
+    // })
 
-  try {
+    console.log(chalk.greenBright(`>>>>> bundle generated : ${esmPath} >>>>>`))
+
     await bundle.write({
       name: String(pkgObj.name),
-      file: esmPath,
-      format: 'esm'
+      file: umdPath,
+      format: 'umd',
+      plugins: [terser()]
     })
-  } catch (error) {
-    console.log(error)
-    throw error
+
+    console.log(chalk.greenBright(`>>>>> bundle generated : ${umdPath} >>>>>`))
+
+    await bundle.close()
+
+    fs.renameSync(
+      path.resolve(packageDir, 'dist', key, 'index.esm.d.ts'),
+      path.resolve(packageDir, 'dist', key, 'index.d.ts')
+    )
+
+    fs.removeSync(path.resolve(packageDir, 'dist', key, 'index.umd.d.ts'))
+
+    handleCss(packageName)
   }
-
-  // await bundle.write({
-  //   name: String(pkgObj.name),
-  //   file: esmPath,
-  //   format: "esm"
-  // })
-
-  console.log(chalk.greenBright(`>>>>> bundle generated : ${esmPath} >>>>>`))
-
-  await bundle.write({
-    name: String(pkgObj.name),
-    file: umdPath,
-    format: 'umd',
-    plugins: [terser()]
-  })
-
-  console.log(chalk.greenBright(`>>>>> bundle generated : ${umdPath} >>>>>`))
-
-  await bundle.close()
-
-  fs.renameSync(
-    path.resolve(packageDir, 'dist/index.esm.d.ts'),
-    path.resolve(packageDir, 'dist/index.d.ts')
-  )
-
-  fs.removeSync(path.resolve(packageDir, 'dist/index.umd.d.ts'))
-
-  handleCss(packageName)
 
   fixTslib({ isDev: true })
 }

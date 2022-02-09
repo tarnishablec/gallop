@@ -123,7 +123,7 @@ export function useMemo<T>(func: () => T, depends?: unknown[]): T {
   }
 }
 
-export function useStyle(css: () => string, depends: unknown[]) {
+export function useStyle(css: () => string, depends?: unknown[]) {
   const current = Looper.resolveCurrentElement()
   const [dirty, count] = useDepends(depends)
   if (dirty) {
