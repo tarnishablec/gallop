@@ -68,6 +68,7 @@ export {
 
 export * from './error'
 
-export { forceGet, Obj, Key } from './utils'
+export { forceGet } from './utils'
+export type { Key, Obj } from './utils'
 
 export { createFragment, insertAfter, cleanDomStr, removeNodes } from './dom'

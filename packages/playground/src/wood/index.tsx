@@ -41,27 +41,28 @@ const layout = ww.generateLayout({
       {
         type: 'Area',
         key: 'artboard'
-      },
-      {
-        type: 'Area',
-        key: 'setting'
-      },
-      {
-        type: 'AreaTrack',
-        direction: 'vertical',
-        children: [
-          {
-            type: 'Area'
-          },
-          {
-            type: 'Area',
-            key: 'other'
-          }
-        ],
-        grids: [1, 2]
       }
+      // {
+      //   type: 'Area',
+      //   key: 'setting'
+      // },
+      // {
+      //   type: 'AreaTrack',
+      //   direction: 'vertical',
+      //   children: [
+      //     {
+      //       type: 'Area'
+      //     },
+      //     {
+      //       type: 'Area',
+      //       key: 'other'
+      //     }
+      //   ],
+      //   grids: [1, 2]
+      // }
     ],
-    grids: [1, 1, 2]
+    // grids: [1, 1, 2]
+    grids: [1]
   }
 })
 
