@@ -299,28 +299,34 @@ export const AreaComp: Component = function ({
 
           // dragOutside ==> dragToMerge
 
-          const dragToMerge$ = drag$.pipe(
-            filter(() => true), // TODO
-            distinctUntilChanged((pre, cur) => pre.over === cur.over),
-            skip(1)
-          )
+          const dragToMerge$ = drag$
+            .pipe(
+              distinctUntilChanged((pre, cur) => pre.over === cur.over),
+              skip(1)
+            )
+            .pipe(
+              tap(({ over }) => {
+                const inSameTrack = !!~area.parent.children
+                  .map((v) => v._dom)
+                  .indexOf(over)
+                if (inSameTrack) {
+                  // TODO
+                }
+              })
+            )
           //
 
           const dragCorner$ = race(dragToDivide$, dragToMerge$).pipe()
 
-          dragSubscriptionRef.current = dragCorner$.subscribe({
-            // next: console.log
-          })
+          dragSubscriptionRef.current = dragCorner$.subscribe()
         },
         ondragover: (event, over) => {
           dragSubjectRef.current?.next({ event, over })
         },
-        ondragleave: () => {},
         ondragend: () => {
           dragSubjectRef.current = undefined
           dragSubscriptionRef.current?.unsubscribe()
-        },
-        ondrop: (e, target) => console.log('drop', e, target)
+        }
       })
     }
   }

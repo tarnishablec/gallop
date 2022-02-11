@@ -66,7 +66,6 @@ export const sharedRepeat = directive(
       }
 
       const diffRes = listKeyDiff(oldKeys, newKeys)
-      console.log(diffRes)
 
       diffRes.forEach((change) => {
         const { key } = change

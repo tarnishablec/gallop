@@ -46,8 +46,8 @@ export class WWRenderer implements IWWRenderer {
     before?: Node | null
   }): { unmount: () => unknown } {
     const clip = this.renderAreaTrack(rootTrack)
-    const { destroy } = render(clip, { container, before })
-    return { unmount: destroy }
+    const { destroy: unmount } = render(clip, { container, before })
+    return { unmount }
   }
 
   static areaTag = 'ww-area'
