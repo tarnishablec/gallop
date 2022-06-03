@@ -1,5 +1,5 @@
 import {
-  Component,
+  type Component,
   css,
   html,
   useStyle,

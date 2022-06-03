@@ -1,5 +1,5 @@
-import { html, useStyle, css, useEffect, Component } from '@gallop/gallop'
-import { repeat } from '@gallop/gallop/directives'
+import { html, useStyle, css, useEffect, type Component } from '@gallop/gallop'
+// import { repeat } from '@gallop/gallop/directives'
 import { WW } from '../../core'
 import { AreaDragger } from '../../core/AreaDragger'
 import { AreaTrack } from '../../core/AreaTrack'

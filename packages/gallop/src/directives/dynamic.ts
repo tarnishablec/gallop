@@ -2,11 +2,11 @@ import {
   directive,
   ensurePartType,
   NodePart,
-  ReactiveElement,
+  type ReactiveElement,
   mergeProps,
   componentPool,
   HTMLClip,
-  Obj
+  type Obj
 } from '@gallop/gallop'
 
 const partElCache = new WeakMap<NodePart, ReactiveElement>()

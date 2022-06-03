@@ -1,4 +1,11 @@
-import { Part, AttrPart, PropPart, EventPart, NodePart, BoolPart } from './part'
+import {
+  type Part,
+  AttrPart,
+  PropPart,
+  EventPart,
+  NodePart,
+  BoolPart
+} from './part'
 import { StyleInTemplateError } from './error'
 import { marker, markerIndex, isMarker } from './marker'
 import { insertAfter } from './dom'

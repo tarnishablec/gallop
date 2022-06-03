@@ -1,14 +1,12 @@
-// @ts-nocheck
-
 import {
   shallowEqual,
   isObject,
-  MapTypes,
-  MapKey,
-  SetTypes,
-  DeleteItem,
-  StrongTypes,
-  SetItem,
+  type MapTypes,
+  type MapKey,
+  type SetTypes,
+  type DeleteItem,
+  type StrongTypes,
+  type SetItem,
   forceGet
 } from './utils'
 import { LockedProxyError } from './error'

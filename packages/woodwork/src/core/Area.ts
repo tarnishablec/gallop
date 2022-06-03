@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { CornerLocation } from '../types'
+import type { CornerLocation } from '../types'
 import { FR_UNIT } from '../utils/const'
 import { AreaDragger } from './AreaDragger'
 import { AreaTrack } from './AreaTrack'

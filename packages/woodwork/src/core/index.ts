@@ -1,7 +1,7 @@
-import { SerializedAreaTrack } from './AreaTrack'
+import { type SerializedAreaTrack } from './AreaTrack'
 import { Layout } from './Layout'
-import { IWWRenderer, WWRenderer } from './Renderer'
-import { IWWSerder, WWSerder } from './Serder'
+import { type IWWRenderer, WWRenderer } from './Renderer'
+import { type IWWSerder, WWSerder } from './Serder'
 
 export class WW {
   public serder: IWWSerder

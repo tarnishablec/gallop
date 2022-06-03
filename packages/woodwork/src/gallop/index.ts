@@ -1,4 +1,4 @@
-import { Component, component } from '@gallop/gallop'
+import { type Component, component } from '@gallop/gallop'
 
 export const registerGallopElement = (
   name: string,

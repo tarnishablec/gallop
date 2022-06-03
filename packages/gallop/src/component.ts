@@ -1,5 +1,5 @@
 import { HTMLClip, getVals } from './clip'
-import { Obj, extractProps } from './utils'
+import { type Obj, extractProps } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
 import type { Context } from './context'

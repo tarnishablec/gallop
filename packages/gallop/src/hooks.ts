@@ -1,8 +1,8 @@
-import { Obj, forceGet } from './utils'
+import { type Obj, forceGet } from './utils'
 import { Looper } from './loop'
 import { createProxy } from './reactive'
 import type { Context } from './context'
-import { ReactiveElement, observeDisconnect } from './component'
+import { type ReactiveElement, observeDisconnect } from './component'
 import { Recycler } from './dirty'
 
 export function useState<T extends Obj>(raw: T) {
