@@ -1,4 +1,4 @@
-import { DataType } from '.'
+import { DataType } from './index'
 
 export class DataTypeManager {
   protected static _instance: DataTypeManager
