@@ -18,7 +18,7 @@ export const AreaTrackComp: Component = function ({
   const generateTemplate = () => {
     return `grid-template-${dir}s : ${areaTrack.grids
       .map((grid) => `${grid}fr`)
-      .join(` ${FR_UNIT}px `)};
+      .join(` ${FR_UNIT}px `)}
      `
   }
 
@@ -35,7 +35,7 @@ export const AreaTrackComp: Component = function ({
         width: 100%;
         height: 100%;
         display: grid;
-        ${generateTemplate()}
+        ${generateTemplate()};
       }
     `,
     [areaTrack.direction, areaTrack.grids]
