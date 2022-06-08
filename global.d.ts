@@ -56,7 +56,7 @@ declare module 'type-fest' {
     interface NonStandardEntryPoints {
       _buildOptions?: Partial<{
         bundler: 'rollup' | 'vite' | 'esbuild'
-        rollupOptions: import('vite').BuildOptions['rollupOptions']
+        rollupOptions: import('rollup').RollupOptions
         useMonaco: boolean
       }>
     }

@@ -25,6 +25,8 @@ export class Area {
     this.parent = props.parent
   }
 
+  merge() {}
+
   divide({
     direction,
     from
