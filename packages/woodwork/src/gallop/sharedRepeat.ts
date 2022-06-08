@@ -1,4 +1,4 @@
-import { ArrayPart, DiffKey, listKeyDiff } from '@gallop/gallop/directives'
+import { ArrayPart, type DiffKey, listKeyDiff } from '@gallop/gallop/directives'
 import {
   directive,
   DuplicatedKeyError,

@@ -20,9 +20,7 @@ const countPlusOne = directive((count: number) => (part) => {
   if (!ensurePartType(part, NodePart)) return
 
   console.log(part) // get current Part information
-  /**
-   * do something to part or view
-   */
+  /** Do something to part or view */
   part.setValue(count + 1) // use `setValue` api to call next execution
 })
 

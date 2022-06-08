@@ -9,14 +9,13 @@
 ```ts
 const __key__ = Symbol('alive')
 
-export const alive = (key: Key) => (
-  strs: TemplateStringsArray,
-  ...vals: unknown[]
-) => {
-  const clip = html(strs, ...vals) // html标签也可以像函数一样直接调用
-  Reflect.set(clip, __key__, key)
-  return clip
-}
+export const alive =
+  (key: Key) =>
+  (strs: TemplateStringsArray, ...vals: unknown[]) => {
+    const clip = html(strs, ...vals) // html标签也可以像函数一样直接调用
+    Reflect.set(clip, __key__, key)
+    return clip
+  }
 ```
 
 在上面的 🍉 代码中，我们定义了一个`alive`模板字符串标签工厂，这个工厂函数传入一个参数可以返回一个模板字符串的标签函数，这个返回的函数我们暂且叫他**标签函数**，实际上**标签函数**就和我们的[html](/#html)标签差不多了，但是这里，在这个**标签函数**中，我们为将要返回的`clip`，也就是`HTMLClip`的实例，添加一个`__key__`的字段，这就为我们的函数指令打开了一个**“后门”**，所以在我们的函数指令中，只要鉴别出当前传入的模板中是否带有这个`__key__`，如果是，那么我们的函数指令就可以对其进行特殊处理。

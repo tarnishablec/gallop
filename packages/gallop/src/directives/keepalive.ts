@@ -6,7 +6,7 @@ import {
   Patcher,
   NodePart,
   getVals,
-  Key,
+  type Key,
   forceGet
 } from '@gallop/gallop'
 

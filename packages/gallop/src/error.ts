@@ -1,4 +1,4 @@
-import { Primitive } from './utils'
+import type { Primitive } from './utils'
 
 export const LockedProxyError = (target: unknown, prop: unknown) =>
   new Error(

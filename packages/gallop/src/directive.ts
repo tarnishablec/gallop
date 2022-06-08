@@ -1,4 +1,4 @@
-import { Part } from './part'
+import type { Part } from './part'
 import { DirectivePartTypeError } from './error'
 import { Recycler } from './dirty'
 

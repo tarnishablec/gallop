@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import type { Direction } from '../types'
-import { Area, SerializedArea } from './Area'
+import { Area, type SerializedArea } from './Area'
 import { AreaDragger } from './AreaDragger'
 
 export type AreaTrackProps = {

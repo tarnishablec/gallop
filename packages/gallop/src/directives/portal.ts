@@ -1,11 +1,11 @@
 import {
   directive,
   ensurePartType,
-  Part,
+  type Part,
   NodePart,
   removeNodes,
   insertAfter,
-  ReactiveElement,
+  type ReactiveElement,
   observeDisconnect
 } from '@gallop/gallop'
 

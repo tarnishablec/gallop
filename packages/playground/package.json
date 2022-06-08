@@ -26,10 +26,11 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
+    "@gallop/gallop": "^1.0.13",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "stretch-layout": "^0.3.2",
     "rxjs": "^7.5.2",
+    "stretch-layout": "^0.3.2",
     "yoga-layout-wasm": "^1.9.3-alpha.7"
   },
   "_buildOptions": {

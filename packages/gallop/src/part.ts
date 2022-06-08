@@ -1,6 +1,6 @@
 import { isReactive, mergeProps, mergeProp } from './component'
 import { NotReactiveElementError } from './error'
-import { tryParseToString, hashify, isObject, Obj } from './utils'
+import { tryParseToString, hashify, isObject, type Obj } from './utils'
 import { resolveDirective } from './directive'
 import { generateEventOptions, removeNodes } from './dom'
 import { Patcher } from './patcher'

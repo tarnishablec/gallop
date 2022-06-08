@@ -1,6 +1,6 @@
 import {
   html,
-  Component,
+  type Component,
   useStyle,
   css,
   useEffect,
@@ -32,7 +32,7 @@ import {
   scan
 } from 'rxjs/operators'
 import { random } from 'lodash'
-import { Direction, CornerLocation } from '../../types'
+import type { Direction, CornerLocation } from '../../types'
 import { useDragDrop } from '../../hooks/useDragDrop'
 import { FR_UNIT } from '../../utils/const'
 

@@ -4,7 +4,7 @@ import {
   NodePart,
   DuplicatedKeyError,
   forceGet,
-  Key
+  type Key
 } from '@gallop/gallop'
 
 export type DiffKey = Key | null

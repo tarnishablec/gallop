@@ -1,5 +1,6 @@
 /** @type {import('prettier').Options} */
 module.exports = {
+  plugins: ['./node_modules/prettier-plugin-jsdoc'],
   semi: false,
   trailingComma: 'none',
   singleQuote: true,

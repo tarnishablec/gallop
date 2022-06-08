@@ -1,5 +1,5 @@
-import { SerializedArea, Area } from './Area'
-import { SerializedAreaTrack, AreaTrack } from './AreaTrack'
+import { type SerializedArea, Area } from './Area'
+import { type SerializedAreaTrack, AreaTrack } from './AreaTrack'
 import { AreaDragger } from './AreaDragger'
 
 export interface IWWSerder {

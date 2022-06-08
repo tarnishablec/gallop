@@ -8,9 +8,7 @@ describe('directive', () => {
     })
 
     expect(() => {
-      const template = html`<div>
-        ${testd(111)}
-      </div>`
+      const template = html`<div>${testd(111)}</div>`
       render(template)
     }).toThrowError()
   })

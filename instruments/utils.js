@@ -135,7 +135,8 @@ export const cleanObjectFields = (target) => {
 export const resolveExportsPaths = (packageName) => {
   const { exports = {} } = resolvePackageJsonObj(packageName)
   let entry = resolvePackageEntry(packageName)
-  const relativePaths = Object.keys(exports)
+  // TODO not good
+  const relativePaths = Object.keys(Object(exports))
   const absPaths = relativePaths.map((p) => {
     if (fs.statSync(entry).isFile()) {
       entry = path.resolve(entry, '..')

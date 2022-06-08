@@ -43,7 +43,7 @@ declare global {
       target: T,
       propertyKey: P,
       receiver?: T
-    ): P extends typeof import('@gallop/gallop/src/reactive')['__raw__']
+    ): P extends typeof import('./packages/gallop/src/reactive')['__raw__']
       ? T
       : P extends keyof T
       ? T[P]
