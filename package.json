@@ -50,6 +50,7 @@
     "@types/react": "^18.0.10",
     "@types/react-dom": "^18.0.5",
     "@types/sass": "^1.43.1",
+    "@types/styled-components": "^5.1.25",
     "@types/uuid": "^8.3.4",
     "@types/webpack": "^5.28.0",
     "@types/webpack-env": "^1.17.0",
