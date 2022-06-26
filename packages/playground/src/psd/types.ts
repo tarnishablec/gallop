@@ -1,1 +1,1 @@
-export type ElementType = 'Image' | 'Text' | 'View'
+export type ElementType = 'Image' | 'Text' | 'Group'

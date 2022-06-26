@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.quilljs.com/1.0.0/quill.snow.css"
+      rel="stylesheet"
+    />
+    <title>Quill</title>
+  </head>
+  <body>
+    <div id="root">
+      <div id="toolbar">
+        <button class="ql-bold">Bold</button>
+        <button class="ql-italic">Italic</button>
+      </div>
+      <div id="editor">
+        <span style="color: red;">Hello World!</span>
+      </div>
+      <button id="export">export</button>
+    </div>
+    <script type="module" src="./index.tsx" defer></script>
+  </body>
+</html>

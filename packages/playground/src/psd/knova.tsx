@@ -95,7 +95,7 @@ export const getLayerSize = (layer: PsdLayer) => {
 }
 
 export const resolveLayerType = (layer: PsdLayer): ElementType => {
-  if (layer.children) return 'View'
+  // if (layer.children) return 'Group'
   if (layer.text) return 'Text'
   return 'Image'
 }
@@ -103,11 +103,12 @@ export const resolveLayerType = (layer: PsdLayer): ElementType => {
 export const TypeComponentMap = {
   Image,
   Text,
-  View: Group
+  Group
 } as const
 
-export const resolveComponentByType = (type: ElementType) =>
-  TypeComponentMap[type]
+export const resolveComponentByType = (type: ElementType) => {
+  return TypeComponentMap[type]
+}
 
 export const createImageElement = (src?: string) => {
   const image = document.createElement('img')
