@@ -18,12 +18,12 @@ export const build = async (
    *   page?: boolean
    *   [key: string]: unknown
    * }}
-   */ { ignoreExternal = false, bundler = 'rollup', ...rest } = {}
+   */ { ignoreExternal = false, bundler, ...rest } = {}
 ) => {
   clean(packageName)
 
   const _buildOptions = resolvePackageJsonObj(packageName)._buildOptions
-  bundler = _buildOptions?.bundler ?? bundler
+  bundler = bundler ?? _buildOptions?.bundler ?? 'rollup'
   // const rollupOptions = buildOptions?.rollupOptions
 
   // rollup has a bug dealing with { input: undefined }

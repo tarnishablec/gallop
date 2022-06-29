@@ -25,6 +25,9 @@
   "files": [
     "dist"
   ],
+  "_buildOptions": {
+    "bundler": "esbuild"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
