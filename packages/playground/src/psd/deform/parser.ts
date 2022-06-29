@@ -4,6 +4,7 @@ import {
   PsdLayerDefiner,
   BasePsdLayerDefiner
 } from '@gallop/psd-deformer'
+
 export class RichTextLayerDefiner extends PsdLayerDefiner<
   readonly ['RichText']
 > {
@@ -22,15 +23,29 @@ export class RichTextLayerDefiner extends PsdLayerDefiner<
 }
 
 const deformer = new PsdDeformer()
-if (deformer.useDefiner(new BasePsdLayerDefiner())) {
-  const a = deformer.getSupportedLayerTypes()
-  console.log(a)
+const deformer2 = new PsdDeformer()
 
-  if (deformer.useDefiner(new RichTextLayerDefiner())) {
-    const b = deformer.getSupportedLayerTypes()
-    console.log(b)
-  }
-}
+const def = deformer.useDefiner(new BasePsdLayerDefiner())
+
+const a = def.supportedLayerTypes
+console.log(a)
+
+const def2 = def.useDefiner(new RichTextLayerDefiner())
+console.log(Object.is(def2, deformer))
+console.log(def2.definersMap)
+
+const b = def.supportedLayerTypes
+console.log(b)
+
+const c = deformer2.supportedLayerTypes
+console.log(c)
+
+const def3 = def2.useDefiner(new BasePsdLayerDefiner())
+const d = def3.supportedLayerTypes
+console.log(def3.supportedLayerTypes)
+console.log(d)
+
+type A = typeof d[number]
 
 export abstract class PsdLayerTransformer {
   static readonly transformMapping: Readonly<

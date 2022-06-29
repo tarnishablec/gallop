@@ -1,42 +1,44 @@
 import { type Psd } from 'ag-psd'
-import { RichTextLayerDefiner } from 'packages/playground/src/psd/parser'
-import { BasePsdLayerDefiner } from '../base/baseDefiner'
+import { type UnionToTuple, type Flatten } from '../utils'
 import { PsdLayerDefiner, type DefinerCheckeFn } from './definer'
+
+function assertType<T>(a: any): asserts a is T {}
 
 export class PsdDeformer {
   constructor(public psd?: Psd) {}
 
   protected definers: PsdLayerDefiner<any>[] = []
 
-  protected definersMap: Record<string, DefinerCheckeFn> = {}
+  public definersMap: Record<string, DefinerCheckeFn> = {}
 
-  getSupportedLayerTypes: unknown = () => Object.keys(this.definersMap)
+  supportedLayerTypes: unknown = []
 
   public useDefiner<T extends readonly PsdLayerDefiner<any>[]>(
     ...definers: T
-  ): this is {
-    getSupportedLayerTypes: () => [
-      ...Flatten<{
-        [K in keyof T]: T[K] extends PsdLayerDefiner<infer U> ? U : never
-      }>
-    ]
-  } & this {
+  ): DefinedPsdDeformer<ConcatSupported<this, T>> {
     this.definers.push(...definers)
     for (const definer of definers) {
       Object.assign(this.definersMap, definer.defineMapping)
     }
-
-    return true
+    this.supportedLayerTypes = Object.keys(this.definersMap)
+    assertType<DefinedPsdDeformer<ConcatSupported<this, T>>>(this)
+    return this
   }
 }
 
-export type Class<T> = new (...args: any[]) => T
+export abstract class DefinedPsdDeformer<
+  T extends unknown[]
+> extends PsdDeformer {
+  abstract override supportedLayerTypes: T
+}
 
-type Flatten<T, R extends unknown[] = []> = T extends [
-  infer FIRST,
-  ...infer REST
-]
-  ? FIRST extends readonly unknown[]
-    ? Flatten<[...FIRST, ...REST], R>
-    : Flatten<REST, [...R, FIRST]>
-  : R
+type ConcatSupported<P extends PsdDeformer, T> = UnionToTuple<
+  [
+    ...(P['supportedLayerTypes'] extends readonly string[]
+      ? [...P['supportedLayerTypes']]
+      : []),
+    ...Flatten<{
+      [K in keyof T]: T[K] extends PsdLayerDefiner<infer U> ? U : never
+    }>
+  ][number]
+>
