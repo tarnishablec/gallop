@@ -1,0 +1,35 @@
+{
+  "name": "@gallop/psd-deformer",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "gallop psd-deformer",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarnishablec/gallop.git"
+  },
+  "keywords": [
+    "gallop",
+    "psd-deformer",
+    "lib"
+  ],
+  "author": {
+    "name": "tarnishablec",
+    "email": "tarnishablec@outlook.com"
+  },
+  "homepage": "",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "ag-psd": "^14.5.2"
+  }
+}

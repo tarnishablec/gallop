@@ -1,58 +1,39 @@
-import { type Psd, type Layer as PsdLayer } from 'ag-psd'
-
-export { PsdLayer }
-
-export class PsdParser {
-  constructor(public psd?: Psd) {}
-
-  useDefiner(definer: typeof PsdLayerDefiner) {}
+import {
+  type PsdLayer,
+  PsdDeformer,
+  PsdLayerDefiner,
+  BasePsdLayerDefiner
+} from '@gallop/psd-deformer'
+export class RichTextLayerDefiner extends PsdLayerDefiner<
+  readonly ['RichText']
+> {
+  defineMapping = {
+    RichText: (layer: PsdLayer) => {
+      return !!(
+        layer.text &&
+        layer.text.styleRuns &&
+        (layer.text.styleRuns.length > 2 ||
+          layer.text.styleRuns.some((run) =>
+            Object.keys(run).some((key) => key !== 'autoKerning')
+          ))
+      )
+    }
+  } as const
 }
 
-const parser = new PsdParser()
+const deformer = new PsdDeformer()
+if (deformer.useDefiner(new BasePsdLayerDefiner())) {
+  const a = deformer.getSupportedLayerTypes()
+  console.log(a)
 
-export abstract class PsdLayerDefiner {
-  static readonly defineMapping: Readonly<
-    Record<string, (layer: PsdLayer) => boolean | void>
+  if (deformer.useDefiner(new RichTextLayerDefiner())) {
+    const b = deformer.getSupportedLayerTypes()
+    console.log(b)
+  }
+}
+
+export abstract class PsdLayerTransformer {
+  static readonly transformMapping: Readonly<
+    Record<string, (layer: PsdLayer) => unknown>
   >
-
-  static readonly fallbackType = 'Image'
 }
-
-export class BasePsdLayerDefiner extends PsdLayerDefiner {
-  static override defineMapping = {
-    Image: (layer: PsdLayer) => !!layer.canvas,
-    Text: (layer: PsdLayer) => !!layer.text,
-    Shape: () => true,
-    Group: (layer: PsdLayer) => !!layer.children
-  } as const
-}
-
-export class RichTextLayerDefiner extends PsdLayerDefiner {
-  static override defineMapping = {
-    RichText: (layer: PsdLayer) => {}
-  } as const
-}
-
-parser.useDefiner(BasePsdLayerDefiner)
-
-// export class PsdLayerTransformer {}
-
-// type UnionToIntersectionFn<U> = (
-//   U extends unknown ? (k: () => U) => void : never
-// ) extends (k: infer I) => void
-//   ? I
-//   : never
-
-// type GetUnionLast<U> = UnionToIntersectionFn<U> extends () => infer I
-//   ? I
-//   : never
-
-// type Prepend<Tuple extends unknown[], First> = [First, ...Tuple]
-
-// type UnionToTuple<
-//   Union,
-//   T extends unknown[] = [],
-//   Last = GetUnionLast<Union>
-// > = [Union] extends [never]
-//   ? T
-//   : UnionToTuple<Exclude<Union, Last>, Prepend<T, Last>>
