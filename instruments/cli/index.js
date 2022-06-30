@@ -28,7 +28,7 @@ export const runCommand = async (cmd) => {
           await fn(target, args)
         } catch (error) {
           console.log(error)
-          return
+          process.exit(1)
         }
       }
     }

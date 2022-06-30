@@ -1,11 +1,36 @@
-import {
-  type PsdLayer,
-  PsdDeformer,
-  PsdLayerDefiner,
-  BasePsdLayerDefiner
-} from '@gallop/psd-deformer'
+import { Parser, LayerDefiner } from '@gallop/parsever'
 
-export class RichTextLayerDefiner extends PsdLayerDefiner<
+import { type Layer as PsdLayer } from 'ag-psd'
+
+export class BasePsdLayerDefiner extends LayerDefiner<
+  PsdLayer,
+  readonly ['Image', 'Text', 'Shape', 'Group']
+> {
+  defineMapping = {
+    Image: (layer: PsdLayer) => !!layer.canvas,
+    Text: (layer: PsdLayer) => {
+      if (layer.text) {
+        const { styleRuns } = layer.text
+        if (styleRuns) {
+          if (
+            styleRuns.length > 2 ||
+            styleRuns.some((run) =>
+              Object.keys(run).some((key) => key !== 'autoKerning')
+            )
+          ) {
+            return 'Image'
+          }
+        }
+        return true
+      }
+    },
+    Shape: () => 'Image',
+    Group: (layer: PsdLayer) => !!layer.children
+  } as const
+}
+
+export class RichTextLayerDefiner extends LayerDefiner<
+  PsdLayer,
   readonly ['RichText']
 > {
   defineMapping = {
@@ -22,8 +47,8 @@ export class RichTextLayerDefiner extends PsdLayerDefiner<
   } as const
 }
 
-const deformer = new PsdDeformer()
-const deformer2 = new PsdDeformer()
+const deformer = new Parser<PsdLayer>()
+const deformer2 = new Parser()
 
 const def = deformer.useDefiner(new BasePsdLayerDefiner())
 
@@ -45,7 +70,7 @@ const d = def3.supportedLayerTypes
 console.log(def3.supportedLayerTypes)
 console.log(d)
 
-type A = typeof d[number]
+// type A = typeof d[number]
 
 export abstract class PsdLayerTransformer {
   static readonly transformMapping: Readonly<

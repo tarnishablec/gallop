@@ -1,4 +1,5 @@
 import { Extractor, ExtractorConfig } from '@microsoft/api-extractor'
+import { EnumMemberOrder } from '@microsoft/api-extractor-model'
 import chalk from 'chalk'
 import { externalDependencies } from '../../../const.js'
 import { scssPlugin } from '../../../plugins/esbuild-plugin-scss/index.js'
@@ -50,7 +51,7 @@ export const esbuildbundle = async (
       outfile,
       loader: { '.ts': 'ts', '.tsx': 'tsx' },
       format,
-      target: 'es6',
+      target: 'esnext',
       minify,
       platform: 'browser',
       external: [
@@ -99,6 +100,7 @@ export function generateDts(packageName, { entry = `src/index.ts` } = {}) {
     Extractor.invoke(
       ExtractorConfig.prepare({
         configObject: {
+          enumMemberOrder: EnumMemberOrder.Preserve,
           mainEntryPointFilePath: path.resolve(tempDir, 'index.d.ts'),
           dtsRollup: {
             enabled: true,

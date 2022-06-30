@@ -28,3 +28,5 @@ export type UnionToTuple<
 > = [Union] extends [never]
   ? T
   : UnionToTuple<Exclude<Union, Last>, Prepend<T, Last>>
+
+export function assertType<T>(a: any): asserts a is T {}

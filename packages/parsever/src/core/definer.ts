@@ -1,12 +1,11 @@
-import { type PsdLayer } from '../types'
+export type DefinerCheckeFn<Layer> = (layer: Layer) => boolean | string | void
 
-export type DefinerCheckeFn = (layer: PsdLayer) => boolean | string | void
-
-export abstract class PsdLayerDefiner<
+export abstract class LayerDefiner<
+  Layer,
   SupportedLayerTypes extends readonly string[]
 > {
   abstract readonly defineMapping: Readonly<
-    Record<SupportedLayerTypes[number], DefinerCheckeFn>
+    Record<SupportedLayerTypes[number], DefinerCheckeFn<Layer>>
   >
 
   getSupportedLayerTypes() {
