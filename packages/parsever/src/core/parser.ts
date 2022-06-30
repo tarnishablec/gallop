@@ -6,13 +6,13 @@ export class Parser<Layer> {
 
   public definersMap: Record<string, DefinerCheckeFn<Layer>> = {}
 
-  supportedLayerTypes: unknown = []
+  supportedLayerTypes: unknown
 
   public useDefiner<T extends readonly LayerDefiner<Layer, any>[]>(
     ...definers: T
   ): DefinedParser<Layer, ConcatSupported<Layer, this, T>> {
     for (const definer of definers) {
-      Object.assign(this.definersMap, definer.defineMapping)
+      Object.assign(this.definersMap, definer.defines)
     }
     this.supportedLayerTypes = Object.keys(this.definersMap)
     assertType<DefinedParser<Layer, ConcatSupported<Layer, this, T>>>(this)
@@ -30,7 +30,9 @@ export abstract class DefinedParser<
 export abstract class PreparedParser<
   Layer,
   T extends unknown[]
-> extends DefinedParser<Layer, T> {}
+> extends DefinedParser<Layer, T> {
+  useTransformer() {}
+}
 
 type ConcatSupported<Layer, P extends Parser<Layer>, T> = UnionToTuple<
   [

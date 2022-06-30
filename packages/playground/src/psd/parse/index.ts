@@ -6,7 +6,7 @@ export class BasePsdLayerDefiner extends LayerDefiner<
   PsdLayer,
   readonly ['Image', 'Text', 'Shape', 'Group']
 > {
-  defineMapping = {
+  defines = {
     Image: (layer: PsdLayer) => !!layer.canvas,
     Text: (layer: PsdLayer) => {
       if (layer.text) {
@@ -33,7 +33,7 @@ export class RichTextLayerDefiner extends LayerDefiner<
   PsdLayer,
   readonly ['RichText']
 > {
-  defineMapping = {
+  defines = {
     RichText: (layer: PsdLayer) => {
       return !!(
         layer.text &&

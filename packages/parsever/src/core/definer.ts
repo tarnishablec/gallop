@@ -4,11 +4,11 @@ export abstract class LayerDefiner<
   Layer,
   SupportedLayerTypes extends readonly string[]
 > {
-  abstract readonly defineMapping: Readonly<
+  abstract readonly defines: Readonly<
     Record<SupportedLayerTypes[number], DefinerCheckeFn<Layer>>
   >
 
   getSupportedLayerTypes() {
-    return Object.keys(this.defineMapping) as unknown as SupportedLayerTypes
+    return Object.keys(this.defines) as unknown as SupportedLayerTypes
   }
 }
