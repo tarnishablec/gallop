@@ -1,11 +1,12 @@
 export type DefinerCheckeFn<Layer> = (layer: Layer) => boolean | string | void
 
-export abstract class LayerDefiner<
+export abstract class Definer<
   Layer,
   SupportedLayerTypes extends readonly string[]
 > {
-  abstract readonly defines: Readonly<
-    Record<SupportedLayerTypes[number], DefinerCheckeFn<Layer>>
+  abstract readonly defines: Record<
+    SupportedLayerTypes[number],
+    DefinerCheckeFn<Layer>
   >
 
   getSupportedLayerTypes() {

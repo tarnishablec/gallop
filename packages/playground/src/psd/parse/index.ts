@@ -1,8 +1,8 @@
-import { Parser, LayerDefiner } from '@gallop/parsever'
+import { Parser, Definer, Transformer, PreparedParser } from '@gallop/parsever'
 
 import { type Layer as PsdLayer } from 'ag-psd'
 
-export class BasePsdLayerDefiner extends LayerDefiner<
+export class BasePsdLayerDefiner extends Definer<
   PsdLayer,
   readonly ['Image', 'Text', 'Shape', 'Group']
 > {
@@ -29,7 +29,7 @@ export class BasePsdLayerDefiner extends LayerDefiner<
   } as const
 }
 
-export class RichTextLayerDefiner extends LayerDefiner<
+export class RichTextLayerDefiner extends Definer<
   PsdLayer,
   readonly ['RichText']
 > {
@@ -47,28 +47,45 @@ export class RichTextLayerDefiner extends LayerDefiner<
   } as const
 }
 
+class RexTransformer extends Transformer<
+  PsdLayer,
+  ['Image', 'Text', 'Shape', 'Group']
+> {
+  transforms = {
+    Image: () => {
+      return { type: 'Image' } as const
+    },
+    Text: () => {
+      return { type: 'Text' } as const
+    },
+    Shape: () => {
+      return { type: 'Shape' } as const
+    },
+    Group: (
+      layer: PsdLayer,
+      parser?: PreparedParser<PsdLayer, ['Image', 'Text', 'Shape', 'Group']>
+    ) => {
+      return {
+        type: 'Group',
+        children: layer.children?.map((child) => {})
+      } as const
+    }
+  }
+}
+
 const deformer = new Parser<PsdLayer>()
-const deformer2 = new Parser()
 
-const def = deformer.useDefiner(new BasePsdLayerDefiner())
+const defined = deformer.useDefiner(new BasePsdLayerDefiner())
 
-const a = def.supportedLayerTypes
-console.log(a)
+const prepared = defined.useTransformer(new RexTransformer())
 
-const def2 = def.useDefiner(new RichTextLayerDefiner())
-console.log(Object.is(def2, deformer))
-console.log(def2.definersMap)
+const defined2 = defined.useDefiner(new RichTextLayerDefiner())
 
-const b = def.supportedLayerTypes
-console.log(b)
+// const prepared2 = defined2.useTransformer(new RexTransformer())
 
-const c = deformer2.supportedLayerTypes
-console.log(c)
-
-const def3 = def2.useDefiner(new BasePsdLayerDefiner())
-const d = def3.supportedLayerTypes
-console.log(def3.supportedLayerTypes)
-console.log(d)
+console.log(Object.is(defined2, deformer))
+// console.log(def2 === deformer)
+console.log(defined2.defines)
 
 // type A = typeof d[number]
 
