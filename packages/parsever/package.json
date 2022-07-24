@@ -1,6 +1,6 @@
 {
   "name": "@gallop/parsever",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "gallop parsever",
   "main": "dist/index.umd.js",
@@ -28,6 +28,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "dependencies": {}
+  }
 }
