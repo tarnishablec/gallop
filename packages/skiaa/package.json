@@ -1,18 +1,20 @@
 {
   "name": "@gallop/skiaa",
-  "version": "0.0.11",
+  "version": "0.1.0",
+  "type": "module",
   "description": "gallop skiaa",
   "main": "dist/index.umd.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "sideEffect": false,
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/tarnishablec/gallop.git"
   },
   "keywords": [
     "gallop",
-    "skiaa"
+    "skiaa",
+    "lib"
   ],
   "author": {
     "name": "tarnishablec",
@@ -20,12 +22,7 @@
   },
   "homepage": "",
   "license": "MIT",
-  "directories": {
-    "src": "src",
-    "test": "__tests__"
-  },
   "files": [
-    "src",
     "dist"
   ],
   "publishConfig": {

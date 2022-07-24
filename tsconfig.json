@@ -52,7 +52,8 @@
       "@gallop/*": ["packages/*/src"],
       "@doc/*": ["packages/doc/src/*"],
       "@real/*": ["packages/real/src/*"],
-      "@gallop/gallop/directives": ["packages/gallop/src/directives"]
+      "@gallop/gallop/directives": ["packages/gallop/src/directives"],
+      "@gallop/real/decorators": ["packages/real/src/decorators"]
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     // "typeRoots": [],                       /* List of folders to include type definitions from. */
@@ -93,12 +94,14 @@
     ]
   },
   "include": [
+    "packages/**/*.ts",
+    "global.d.ts",
     "packages/*/src",
+    "packages/*/dist/index.d.ts",
     "packages/*/index.ts",
     "packages/*/index.d.ts",
     "packages/*/public",
     "packages/*/__tests__",
-    "global.d.ts",
     "packages/doc/src/worker",
     "instruments"
   ],

@@ -1,8 +1,8 @@
 {
-  "name": "@gallop/woodwork",
+  "name": "@gallop/addon-test",
   "version": "0.1.0",
   "type": "module",
-  "description": "gallop woodwork",
+  "description": "gallop addon-test",
   "main": "dist/index.umd.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
   },
   "keywords": [
     "gallop",
-    "woodwork",
+    "addon-test",
     "lib"
   ],
   "author": {
@@ -30,8 +30,6 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@gallop/gallop": "^1.0.13",
-    "lodash": "^4.17.21",
-    "rxjs": "^7.5.2"
+    "@gallop/real": "^0.0.1"
   }
 }

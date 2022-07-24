@@ -1,38 +1,33 @@
 {
   "name": "@gallop/gallop",
-  "description": "gallop",
-  "main": "dist/index.umd.js",
-  "module": "dist/index.esm.js",
-  "files": [
-    "dist"
-  ],
+  "version": "0.1.0",
   "type": "module",
-  "unpkg": "dist/index.umd.js",
-  "jsdelivr": "dist/index.esm.js",
+  "description": "gallop gallop",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "exports": {
-    ".": "./dist/index.esm.js",
-    "./directives": "./dist/directives/index.esm.js"
-  },
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/tarnishablec/gallop.git"
   },
   "keywords": [
     "gallop",
-    "webcomponents"
+    "gallop",
+    "lib"
   ],
-  "directories": {
-    "src": "src",
-    "test": "__tests__"
+  "author": {
+    "name": "tarnishablec",
+    "email": "tarnishablec@outlook.com"
   },
-  "sideEffects": false,
-  "author": "tarnishablec <tarnishablec@outlook.com>",
-  "license": "MIT",
   "homepage": "",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
-  "gitHead": "7f5ffabd79e1f403d3f17f0ef604a5f6dc2bf6ad",
-  "version": "1.0.13"
+  "gitHead": "7f5ffabd79e1f403d3f17f0ef604a5f6dc2bf6ad"
 }

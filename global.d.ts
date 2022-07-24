@@ -36,7 +36,7 @@ declare module 'worker-loader!*' {
 // declare interface ImportMeta {}
 
 declare global {
-  const CanvasKitInit: typeof import('canvaskit-wasm').CanvasKitInit
+  const CanvasKitInit: typeof import('canvaskit-wasm').default
   const MediaInfo: typeof import('mediainfo.js').default
   namespace Reflect {
     function get<T extends object, P extends PropertyKey>(
@@ -56,6 +56,7 @@ declare module 'type-fest' {
     interface NonStandardEntryPoints {
       _buildOptions?: Partial<{
         bundler: 'rollup' | 'vite' | 'esbuild'
+        mode: 'lib' | 'site'
         rollupOptions: import('rollup').RollupOptions
         useMonaco: boolean
       }>

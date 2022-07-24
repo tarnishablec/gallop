@@ -1,6 +1,8 @@
-import type { Component } from '@real/core/Component'
 import type { Property } from '@real/core/Property'
 // import type { DeepReadonly } from 'utility-types'
+import { type PackageJson } from 'type-fest'
+
+export type Version = 'latest' | `${number}.${number}.${number}${string}`
 
 export type Direction = 'horizontal' | 'vertical'
 
@@ -27,11 +29,10 @@ export type Class<T> = new (...args: any[]) => T
 
 export type Instance<T> = T extends Class<infer I> ? I : never
 
-export type PropertyToRecord<T> = T extends Property<infer N, infer V, infer M>
+export type PropertyToRecord<T> = T extends Property<infer N, infer V>
   ? {
       readonly [k in N extends string ? N : never]: {
         value: V
-        readonly meta: M
       }
     }
   : never
@@ -40,9 +41,9 @@ export type PropertiesToRecord<T> = T extends readonly [infer I, ...infer R]
   ? Merge<PropertyToRecord<I>, R extends [] ? {} : PropertiesToRecord<R>>
   : never
 
-export type ComponentDraft<T extends Component> = PropertiesToRecord<
-  T['properties']
->
+// export type ComponentDraft<T extends Component> = PropertiesToRecord<
+//   T['properties']
+// >
 
-export type SelectorToDrafts<T extends readonly Class<Component>[]> =
-  readonly ComponentDraft<Instance<T[number]>>[]
+// export type SelectorToDrafts<T extends readonly Class<Component>[]> =
+//   readonly ComponentDraft<Instance<T[number]>>[]

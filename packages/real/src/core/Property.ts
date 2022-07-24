@@ -1,16 +1,12 @@
 import type { ICloneable } from '@real/utils/able'
 import type { UnitData } from './UnitData'
 
-export class Property<N extends string, T, M = void>
-  implements ICloneable<Property<N, T, M>>
+export class Property<N extends string, T>
+  implements ICloneable<Property<N, T>>
 {
-  constructor(
-    public name: N,
-    public data: UnitData<T>,
-    public readonly meta: M = void 0 as unknown as M
-  ) {}
+  constructor(public readonly name: N, public data: UnitData<T>) {}
 
-  clone(): Property<N, T, M> {
-    return new Property(this.name, this.data.clone(), this.meta)
+  clone(): Property<N, T> {
+    return new Property(this.name, this.data.clone())
   }
 }

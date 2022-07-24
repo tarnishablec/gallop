@@ -1,16 +1,21 @@
 {
   "name": "@gallop/playground",
-  "version": "0.0.0",
-  "description": "gallop playground",
+  "version": "0.1.0",
+  "type": "module",
   "private": true,
-  "sideEffect": false,
+  "description": "gallop playground",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/tarnishablec/gallop.git"
   },
   "keywords": [
     "gallop",
-    "playground"
+    "playground",
+    "lib"
   ],
   "author": {
     "name": "tarnishablec",
@@ -48,15 +53,5 @@
     "stretch-layout": "^0.3.2",
     "styled-components": "^5.3.5",
     "yoga-layout-wasm": "^1.9.3-alpha.7"
-  },
-  "_buildOptions": {
-    "bundler": "vite",
-    "rollupOptions": {
-      "input": {
-        "main": "./src/index.html",
-        "wood": "./src/wood/index.html",
-        "psd": "./src/psd/index.html"
-      }
-    }
   }
 }

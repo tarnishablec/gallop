@@ -1,10 +1,10 @@
 {
   "name": "@gallop/parsever",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "description": "gallop parsever",
   "main": "dist/index.umd.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "repository": {
@@ -25,9 +25,6 @@
   "files": [
     "dist"
   ],
-  "_buildOptions": {
-    "bundler": "esbuild"
-  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

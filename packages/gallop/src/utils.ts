@@ -31,7 +31,7 @@ export function tryParseToString(val: unknown): string {
   return JSON.stringify(val)
 }
 
-export function keysOf<T>(val: T) {
+export function keysOf<T extends Object>(val: T) {
   return Object.keys(val) as Array<keyof T>
 }
 

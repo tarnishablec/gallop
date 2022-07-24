@@ -6,7 +6,7 @@ import { rollupBundle } from './rollup.js'
 import { esbuildbundle } from './esbuild.js'
 import { viteBuild } from './vite.js'
 
-/** @typedef {import('esbuild').BuildOptions} BuildOptions */
+/** @typedef {import('type-fest').PackageJson['_buildOptions']} BuildOptions */
 
 /** @param {string} packageName */
 export const build = async (
@@ -14,10 +14,8 @@ export const build = async (
   /**
    * @type {{
    *   ignoreExternal?: boolean
-   *   bundler?: 'rollup' | 'esbuild' | 'vite'
-   *   page?: boolean
    *   [key: string]: unknown
-   * }}
+   * } & BuildOptions}
    */ { ignoreExternal = false, bundler, ...rest } = {}
 ) => {
   clean(packageName)
@@ -42,12 +40,12 @@ export const build = async (
     case 'rollup': {
       return rollupBundle(packageName, {
         ignoreExternal,
-        _buildOptions,
+        ..._buildOptions,
         ...rest
       })
     }
     case 'vite': {
-      return viteBuild(packageName, { _buildOptions, ...rest })
+      return viteBuild(packageName, { ..._buildOptions, ...rest })
     }
   }
 }

@@ -60,11 +60,11 @@ export const viteDev = (
         projects: [path.resolve(resolveRepoRootDir(), 'tsconfig.json')]
       }),
       VitePluginString({ include: ['**/*.md'] }),
-      monacoEditorPlugin.default()
+      monacoEditorPlugin.default({})
     ]
-  }).then((server) => {
+  }).then(async (server) => {
+    await server.listen()
     server.printUrls()
-    server.listen()
   })
 }
 

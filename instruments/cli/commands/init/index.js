@@ -38,14 +38,14 @@ export const init = (
       lib,
       ...options
     })
-    initTest(packageName)
+    // initTest(packageName)
     !lib &&
       fs.ensureFile(
         path.resolve(resolvePackageDir(packageName), `src/index.html`)
       )
-    initIndexTs(packageName, { reset })
+    // initIndexTs(packageName, { reset })
   }
-  boot()
+  // boot()
 }
 
 /** @param {string} packageName */
@@ -78,16 +78,16 @@ export const initPackageJson = (
   )
 }
 
-/** @param {string} packageName */
-export const initIndexTs = (packageName, { reset = false } = {}) => {
-  const packageDir = resolvePackageDir(packageName)
-  const indexPath = path.resolve(packageDir, `src/index.ts`)
-  if (!fs.existsSync(indexPath) || reset) {
-    fs.ensureFileSync(indexPath)
-    fs.writeFileSync(indexPath, `export const hello = '${packageName}'`)
-    fs.removeSync(path.resolve(packageDir, 'lib'))
-  }
-}
+// /** @param {string} packageName */
+// export const initIndexTs = (packageName, { reset = false } = {}) => {
+//   const packageDir = resolvePackageDir(packageName)
+//   const indexPath = path.resolve(packageDir, `src/index.ts`)
+//   if (!fs.existsSync(indexPath) || reset) {
+//     fs.ensureFileSync(indexPath)
+//     fs.writeFileSync(indexPath, `export const hello = '${packageName}'`)
+//     fs.removeSync(path.resolve(packageDir, 'lib'))
+//   }
+// }
 
 /** @param {string} packageName */
 export const initTest = (packageName) => {
@@ -137,12 +137,12 @@ export const createPackageJsonObj = (
   pkgJsonCacheObj = {}
 ) => ({
   name: `@${scope}/${packageName}`,
-  version: '0.0.0',
+  version: '0.1.0',
   type: 'module',
   private: !lib ? true : undefined,
   description: `${scope} ${packageName}`,
   main: `dist/index.umd.js`,
-  module: 'dist/index.esm.js',
+  module: 'dist/index.mjs',
   types: 'dist/index.d.ts',
   sideEffects: false,
   repository: {

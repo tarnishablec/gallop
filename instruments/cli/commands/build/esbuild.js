@@ -31,7 +31,7 @@ export const esbuildbundle = async (
    */
   const buildFormats = [
     // { format: "esm", minify: true, outfileName: "index.esm.min.js" },
-    { format: 'esm', outfileName: 'index.esm.js' }
+    { format: 'esm', outfileName: 'index.mjs' }
     // { format: "cjs", minify: true, outfileName: "index.cjs.js" },
     // { format: "iife", minify: true, outfileName: "index.iife.js" }
   ]

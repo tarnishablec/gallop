@@ -1,7 +1,21 @@
 import { run } from '../../../utils.js'
 import simpleGit from 'simple-git'
+import { build } from '../build/index.js'
+import { SCOPE } from '../../../const.js'
 
-export const release = async () => {
+/**
+ * @param {string} [packageName]
+ * @param {{ version: string }} [options]
+ */
+export const release = async (packageName, { version = 'patch' }) => {
+  if (packageName) {
+    await build(packageName)
+    run(
+      `lerna exec --scope @${SCOPE}/${packageName} -- npm version ${version} && npm publish @${SCOPE}/${packageName}`
+    )
+    return
+  }
+
   // run(`npx jest`)
   run(`yarn run build`)
 

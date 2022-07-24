@@ -19,14 +19,15 @@ import { terser } from 'rollup-plugin-terser'
 
 /**
  * @param {string} packageName
- * @param {Partial<{
- *   ignoreExternal: boolean
- *   _buildOptions: import('type-fest').PackageJson['_buildOptions']
- * }>} options
+ * @param {Partial<
+ *   {
+ *     ignoreExternal: boolean
+ *   } & import('type-fest').PackageJson['_buildOptions']
+ * >} options
  */
 export const rollupBundle = async (
   packageName,
-  { ignoreExternal = false, _buildOptions } = {}
+  { ignoreExternal = false, ..._buildOptions } = {}
 ) => {
   console.log(chalk.cyanBright(`start bundling ${packageName}`))
 
@@ -66,8 +67,7 @@ export const rollupBundle = async (
       ..._buildOptions?.rollupOptions
     })
 
-    const esmPath = path.resolve(packageDir, 'dist', key, 'index.esm.js')
-    const umdPath = path.resolve(packageDir, 'dist', key, 'index.umd.js')
+    const esmPath = path.resolve(packageDir, 'dist', key, 'index.mjs')
 
     try {
       await bundle.write({
@@ -88,23 +88,23 @@ export const rollupBundle = async (
 
     console.log(chalk.greenBright(`>>>>> bundle generated : ${esmPath} >>>>>`))
 
-    await bundle.write({
-      name: String(pkgObj.name),
-      file: umdPath,
-      format: 'umd',
-      plugins: [terser()]
-    })
+    // await bundle.write({
+    //   name: String(pkgObj.name),
+    //   file: umdPath,
+    //   format: 'umd',
+    //   plugins: [terser()]
+    // })
 
-    console.log(chalk.greenBright(`>>>>> bundle generated : ${umdPath} >>>>>`))
+    // console.log(chalk.greenBright(`>>>>> bundle generated : ${umdPath} >>>>>`))
 
     await bundle.close()
 
     fs.renameSync(
-      path.resolve(packageDir, 'dist', key, 'index.esm.d.ts'),
+      path.resolve(packageDir, 'dist', key, 'index.d.mts'),
       path.resolve(packageDir, 'dist', key, 'index.d.ts')
     )
 
-    fs.removeSync(path.resolve(packageDir, 'dist', key, 'index.umd.d.ts'))
+    // fs.removeSync(path.resolve(packageDir, 'dist', key, 'index.umd.d.ts'))
 
     handleCss(packageName)
   }

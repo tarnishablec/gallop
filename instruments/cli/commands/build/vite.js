@@ -1,33 +1,44 @@
 import path from 'path'
-import vite from 'vite'
+import { build } from 'vite'
 import {
   resolvePackageDir,
   resolveRepoRootDir,
-  require
+  resolvePackageEntry
 } from '../../../utils.js'
 import { VitePluginString } from '../../../plugins/vite-plugin-string/index.js'
 import ViteTsConfigPaths from 'vite-tsconfig-paths'
-const monacoEditorPlugin = require('vite-plugin-monaco-editor')
+// const monacoEditorPlugin = require('vite-plugin-monaco-editor')
 
 /**
  * @param {string} packageName
- * @param {Partial<{
- *   root: string
- *   _buildOptions: import('type-fest').PackageJson['_buildOptions']
- *   [key: string]: unknown
- * }>} options
+ * @param {Partial<
+ *   {
+ *     root: string
+ *     [key: string]: unknown
+ *   } & import('type-fest').PackageJson['_buildOptions']
+ * >} options
  */
 export const viteBuild = (
   packageName,
-  { root = 'src', _buildOptions } = {}
+  { root = 'src', ..._buildOptions } = {}
 ) => {
+  const { mode = 'site' } = _buildOptions
+
   const packageDir = resolvePackageDir(packageName)
-  vite.build({
+  build({
     root: path.resolve(packageDir, root),
     build: {
       outDir: path.resolve(packageDir, 'dist'),
       rollupOptions: { ..._buildOptions?.rollupOptions },
-      target: 'esnext'
+      target: 'esnext',
+      ...(mode === 'lib'
+        ? {
+            lib: {
+              entry: resolvePackageEntry(packageName),
+              formats: ['es']
+            }
+          }
+        : undefined)
     },
     esbuild: {
       target: 'esnext'
@@ -44,8 +55,8 @@ export const viteBuild = (
       }),
       VitePluginString({
         include: ['**/*.md']
-      }),
-      _buildOptions?.useMonaco ? monacoEditorPlugin.default() : undefined
+      })
+      // _buildOptions?.useMonaco ? monacoEditorPlugin.default({}) : undefined
     ].filter(Boolean)
   })
 }

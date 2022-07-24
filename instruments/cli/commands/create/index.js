@@ -5,12 +5,12 @@ import fs from 'fs-extra'
 import path from 'path'
 
 /** @param {string} packageName */
-export const create = (packageName, { site = false, ...options }) => {
+export const create = (packageName, { lib = true, ...options }) => {
   if (!packageName)
     throw new Error(`must provide a name before create package.`)
   run(`npx lerna create @${options.scope ?? SCOPE}/${packageName} --yes`, {})
   // createNpmIgnore(packageName)
-  init(packageName, { reset: true, site, ...options })
+  init(packageName, { reset: true, lib, ...options })
 }
 
 /** @param {string} packageName */
