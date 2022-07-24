@@ -30,6 +30,6 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@gallop/real": "^0.0.1"
+    "@gallop/real": "^0.1.0"
   }
 }

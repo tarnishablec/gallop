@@ -1,6 +1,6 @@
 {
   "name": "@gallop/real",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "gallop real",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
