@@ -1,9 +1,13 @@
 import { type PackageJson } from 'type-fest'
 import { intersection } from 'lodash-es'
-import path from 'path-browserify'
+import urlcat from 'urlcat'
+// import path from 'path-browserify'
+
+console.log(import.meta)
 
 export abstract class Addon {
   static assertAddon(target: unknown): asserts target is new () => Addon {
+    console.log(target)
     if (!(typeof target === 'function' && target.prototype instanceof this))
       throw new Error('')
   }
@@ -22,9 +26,7 @@ type AddonDesc = PackageJson & { name: Addon['name'] }
 
 export class AddonMananger {
   cdns = {
-    esmsh: '//esm.sh',
-    jsdelivr: '//cdn.jsdelivr.net/npm',
-    unpkg: '//unpkg.com'
+    esmsh: '//esm.sh'
   } as const
 
   resolveRemoteSrc?: (
@@ -43,6 +45,7 @@ export class AddonMananger {
   > = new Map()
 
   loadAddonModule = async (addonDesc: AddonDesc) => {
+    const { DEV } = import.meta.env
     const srcPrefix =
       this.resolveRemoteSrc?.(addonDesc.name, addonDesc.version) ??
       `${this.cdns[this.cdn]}/${addonDesc.name}@${
@@ -55,9 +58,16 @@ export class AddonMananger {
         ).text()
       )
     }
-    const { main, module } = addonDesc
-    const moduleUrl = '/' + path.resolve(srcPrefix, module ?? main!)
-    const addonModule = await import(/* @vite-ignore */ moduleUrl)
+    // let remoteUrl = `${srcPrefix}?alias=@gallop/real:${
+    //   import.meta.url
+    // }/../../`
+    let remoteUrl = srcPrefix
+    if (DEV) {
+      remoteUrl = urlcat(remoteUrl, {
+        alias: `@gallop/real:${import.meta.url}/../../`
+      })
+    }
+    const addonModule = await import(remoteUrl)
     // const addonModule = await import(/* @vite-ignore */ `@gallop/addon-test`)
     if (addonModule) {
       const clazz = addonModule.default

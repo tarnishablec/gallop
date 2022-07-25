@@ -7,8 +7,8 @@
   "types": "dist/index.d.ts",
   "sideEffect": false,
   "exports": {
-    ".": "./dist/index.esm.js",
-    "./decorators": "./dist/decorators/index.esm.js"
+    ".": "./dist/index.mjs",
+    "./decorators": "./dist/decorators/index.mjs"
   },
   "repository": {
     "type": "git",
@@ -43,6 +43,7 @@
     "lodash-es": "^4.17.21",
     "path-browserify": "^1.0.1",
     "rxjs": "^7.4.0",
+    "urlcat": "^2.0.4",
     "uuid": "^8.3.2"
   }
 }
