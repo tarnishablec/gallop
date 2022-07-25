@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import { REGISTRY, URL, SCOPE, AUTHOR, EMAIL } from '../../../const.js'
 import path from 'path'
 import {
-  boot,
+  // boot,
   resolvePackageDir,
   resolvePackageJsonPath
 } from '../../../utils.js'
