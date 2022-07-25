@@ -1,9 +1,11 @@
 import { type PackageJson } from 'type-fest'
+import { intersection } from 'lodash-es'
 import path from 'path-browserify'
 
 export abstract class Addon {
-  static checkisAddon(target: unknown): target is new () => Addon {
-    return typeof target === 'function' && target.prototype instanceof this
+  static assertAddon(target: unknown): asserts target is new () => Addon {
+    if (!(typeof target === 'function' && target.prototype instanceof this))
+      throw new Error('')
   }
 
   abstract name: string
@@ -20,6 +22,7 @@ type AddonDesc = PackageJson & { name: Addon['name'] }
 
 export class AddonMananger {
   cdns = {
+    esmsh: '//esm.sh',
     jsdelivr: '//cdn.jsdelivr.net/npm',
     unpkg: '//unpkg.com'
   } as const
@@ -29,7 +32,7 @@ export class AddonMananger {
     version: AddonDesc['version']
   ) => string
 
-  cdn: keyof AddonMananger['cdns'] = 'unpkg'
+  cdn: keyof AddonMananger['cdns'] = 'esmsh'
 
   addonList: Addon[] = []
 
@@ -45,9 +48,11 @@ export class AddonMananger {
       `${this.cdns[this.cdn]}/${addonDesc.name}@${
         addonDesc.version ?? 'latest'
       }`
-    if (Object.keys(addonDesc).length < 4) {
+    if (!intersection(Object.keys(addonDesc), ['module', 'main']).length) {
       addonDesc = JSON.parse(
-        await (await fetch(`${srcPrefix}/package.json`)).text()
+        await (
+          await fetch(`${srcPrefix}/package.json`, { mode: 'cors' })
+        ).text()
       )
     }
     const { main, module } = addonDesc
@@ -56,11 +61,10 @@ export class AddonMananger {
     // const addonModule = await import(/* @vite-ignore */ `@gallop/addon-test`)
     if (addonModule) {
       const clazz = addonModule.default
-      if (Addon.checkisAddon(clazz)) {
-        const instance = new clazz()
-        await instance.onLoaded?.()
-        return { instance, addonDesc }
-      }
+      Addon.assertAddon(clazz)
+      const instance = new clazz()
+      await instance.onLoaded?.()
+      return { instance, addonDesc }
     }
     return { addonDesc }
   }
