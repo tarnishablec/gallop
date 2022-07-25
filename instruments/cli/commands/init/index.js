@@ -12,7 +12,7 @@ const cachedPkgJsonFields = [
   'peerDependencies',
   'dependencies',
   'private',
-  'buildOptions',
+  '_buildOptions',
   'gitHead',
   'version'
 ]

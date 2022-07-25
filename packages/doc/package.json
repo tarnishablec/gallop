@@ -27,6 +27,7 @@
   },
   "_buildOptions": {
     "bundler": "vite",
+    "mode": "site",
     "rollupOptions": {
       "input": {
         "main": "./src/index.html",

@@ -30,6 +30,10 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "_buildOptions": {
+    "bundler": "vite",
+    "mode": "site"
+  },
   "dependencies": {
     "@chakra-ui/react": "^2.2.1",
     "@emotion/react": "^11.9.3",
