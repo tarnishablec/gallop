@@ -58,17 +58,13 @@ export class AddonMananger {
         ).text()
       )
     }
-    // let remoteUrl = `${srcPrefix}?alias=@gallop/real:${
-    //   import.meta.url
-    // }/../../`
     let remoteUrl = srcPrefix
     if (DEV) {
       remoteUrl = urlcat(remoteUrl, {
         alias: `@gallop/real:${import.meta.url}/../../`
       })
     }
-    const addonModule = await import(remoteUrl)
-    // const addonModule = await import(/* @vite-ignore */ `@gallop/addon-test`)
+    const addonModule = await import(/* @vite-ignore */ remoteUrl)
     if (addonModule) {
       const clazz = addonModule.default
       Addon.assertAddon(clazz)
