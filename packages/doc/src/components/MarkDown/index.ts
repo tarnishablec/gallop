@@ -1,8 +1,10 @@
 import { html, raw, component } from '@gallop/gallop'
-import marked from 'marked'
+import { marked } from 'marked'
 import type { Name } from '../../contexts'
 
-const marks = import.meta.globEager('../../markdown/*/*.md')
+const marks = import.meta.glob<true, string, any>('../../markdown/*/*.md', {
+  eager: true
+})
 
 component(
   'mark-down',

@@ -3,7 +3,7 @@ import {
   html,
   repeat,
   useContext,
-  ReactiveElement,
+  type ReactiveElement,
   useStyle
 } from '@gallop/gallop'
 import { localeContext, menuData } from '@doc/contexts'

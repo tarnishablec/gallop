@@ -1,4 +1,4 @@
-import { createContext, ContextOptions } from '@gallop/gallop'
+import { createContext, type ContextOptions } from '@gallop/gallop'
 import type json from './language/zh.json'
 
 export type Name = keyof typeof json

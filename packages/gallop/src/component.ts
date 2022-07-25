@@ -21,7 +21,7 @@ export interface ReactiveElement<
   State extends Obj | undefined = undefined
 > extends HTMLElement {
   $builder: Component
-  $root: ReactiveElement<Props, State> | ShadowRoot
+  $root: this | ShadowRoot
   $patcher?: Patcher
   $isReactive: boolean
 
@@ -134,7 +134,7 @@ export const queryPoolAll = ({
           v.classList.length)
   )
 
-export function queryPool<T extends ReactiveElement>(
+export function queryPool<T extends ReactiveElement<any, any>>(
   ...selector: Parameters<typeof queryPoolAll>
 ): T | undefined {
   return queryPoolAll(...selector)[0] as T | undefined

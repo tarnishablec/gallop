@@ -23,9 +23,7 @@ export {
 
 export type { ReactiveElement, Component } from './component'
 
-export { Context, createContext } from './context'
-
-export type { ContextOptions } from './context'
+export { Context, createContext, type ContextOptions } from './context'
 
 export {
   useState,

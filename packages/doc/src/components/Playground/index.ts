@@ -1,4 +1,4 @@
-import { component, html, ReactiveElement, useState } from '@gallop/gallop'
+import { component, html, type ReactiveElement, useState } from '@gallop/gallop'
 
 export function loadPlayground(this: ReactiveElement<{}, { active: boolean }>) {
   this.$state.active = true

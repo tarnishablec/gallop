@@ -5,7 +5,7 @@ import {
   useState,
   css,
   useEffect,
-  ReactiveElement
+  type ReactiveElement
 } from '@gallop/gallop'
 import raw from './index.scss?inline'
 import { CodeSandboxIcon } from '@doc/components/Icons/CodeSandboxIcon'

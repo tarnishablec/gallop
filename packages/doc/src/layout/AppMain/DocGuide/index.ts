@@ -4,7 +4,7 @@ import {
   repeat,
   useContext,
   useEffect,
-  ReactiveElement,
+  type ReactiveElement,
   useStyle,
   queryPool
 } from '@gallop/gallop'
@@ -31,7 +31,9 @@ component('doc-guide', function (this: ReactiveElement) {
       clearTimeout(timeout)
       const el = this.$root.querySelector(newHash)
 
-      const appMainState = queryPool<{}, { languageSelectVisible: boolean }>({
+      const appMainState = queryPool<
+        ReactiveElement<{}, { languageSelectVisible: boolean }>
+      >({
         name: 'app-main'
       })?.$state
 
