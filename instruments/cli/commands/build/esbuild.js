@@ -7,7 +7,8 @@ import {
   resolvePackageDir,
   queryPackageExternal,
   resolveRepoRootDir,
-  resolvePackageEntry
+  resolvePackageEntry,
+  resolveEsmTargetPath
 } from '../../../utils.js'
 import path from 'path'
 import ts from 'typescript'
@@ -20,26 +21,26 @@ export const esbuildbundle = async (
   packageName,
   { ignoreExternal = false } = {}
 ) => {
-  const packageDir = resolvePackageDir(packageName)
+  // const packageDir = resolvePackageDir(packageName)
 
   /**
    * @type {{
    *   format: import('esbuild').BuildOptions['format']
    *   minify?: boolean
-   *   outfileName: string
+   *   target: string
    * }[]}
    */
   const buildFormats = [
     // { format: "esm", minify: true, outfileName: "index.esm.min.js" },
-    { format: 'esm', outfileName: 'index.mjs' }
+    { format: 'esm', target: resolveEsmTargetPath(packageName) }
     // { format: "cjs", minify: true, outfileName: "index.cjs.js" },
     // { format: "iife", minify: true, outfileName: "index.iife.js" }
   ]
 
   const entry = resolvePackageEntry(packageName)
 
-  for (const { format, outfileName, minify } of buildFormats) {
-    const outfile = path.resolve(packageDir, `dist/${outfileName}`)
+  for (const { format, minify, target } of buildFormats) {
+    const outfile = target
 
     console.log(
       chalk.cyan(
@@ -47,7 +48,7 @@ export const esbuildbundle = async (
       )
     )
     await esbuild.build({
-      entryPoints: [path.resolve(packageDir, entry)],
+      entryPoints: [resolvePackageEntry(packageName)],
       outfile,
       loader: { '.ts': 'ts', '.tsx': 'tsx' },
       format,

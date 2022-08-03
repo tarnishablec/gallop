@@ -147,3 +147,15 @@ export const resolveExportsPaths = (packageName) => {
   })
   return new Map(absPaths)
 }
+
+/** @param {string} packageName */
+export const resolveEsmTargetPath = (packageName) => {
+  const { module = '' } = resolvePackageJsonObj(packageName)
+  return path.resolve(resolvePackageDir(packageName), module)
+}
+
+/** @param {string} packageName */
+export const resolveUmdTargetPath = (packageName) => {
+  const { main = '' } = resolvePackageJsonObj(packageName)
+  return path.resolve(resolvePackageDir(packageName), main)
+}

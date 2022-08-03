@@ -60,6 +60,9 @@ declare module 'type-fest' {
         rollupOptions: import('rollup').RollupOptions
         useMonaco: boolean
       }>
+      meta: {
+        noScope?: boolean
+      }
     }
   }
 }

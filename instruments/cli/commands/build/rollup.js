@@ -5,7 +5,9 @@ import {
   resolvePackageJsonObj,
   resolveRepoRootDir,
   resolvePackageEntry,
-  resolveExportsPaths
+  resolveExportsPaths,
+  resolveEsmTargetPath,
+  resolveUmdTargetPath
 } from '../../../utils.js'
 import path from 'path'
 import fs from 'fs-extra'
@@ -15,7 +17,6 @@ import { handleCss } from './index.js'
 import rollupScss from 'rollup-plugin-scss'
 import rollupTs from 'rollup-plugin-ts'
 import rollupJson from '@rollup/plugin-json'
-import { terser } from 'rollup-plugin-terser'
 
 /**
  * @param {string} packageName
@@ -67,7 +68,8 @@ export const rollupBundle = async (
       ..._buildOptions?.rollupOptions
     })
 
-    const esmPath = path.resolve(packageDir, 'dist', key, 'index.mjs')
+    const esmPath = resolveEsmTargetPath(packageName)
+    const umdPath = resolveUmdTargetPath(packageName)
 
     try {
       await bundle.write({
@@ -88,12 +90,11 @@ export const rollupBundle = async (
 
     console.log(chalk.greenBright(`>>>>> bundle generated : ${esmPath} >>>>>`))
 
-    // await bundle.write({
-    //   name: String(pkgObj.name),
-    //   file: umdPath,
-    //   format: 'umd',
-    //   plugins: [terser()]
-    // })
+    await bundle.write({
+      name: String(pkgObj.name),
+      file: umdPath,
+      format: 'umd'
+    })
 
     // console.log(chalk.greenBright(`>>>>> bundle generated : ${umdPath} >>>>>`))
 
@@ -104,7 +105,7 @@ export const rollupBundle = async (
       path.resolve(packageDir, 'dist', key, 'index.d.ts')
     )
 
-    // fs.removeSync(path.resolve(packageDir, 'dist', key, 'index.umd.d.ts'))
+    fs.removeSync(path.resolve(packageDir, 'dist', key, 'index.umd.d.ts'))
 
     handleCss(packageName)
   }
