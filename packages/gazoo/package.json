@@ -1,6 +1,6 @@
 {
   "name": "gazoo",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "type": "module",
   "description": "gallop gazoo",
   "main": "dist/index.umd.js",
