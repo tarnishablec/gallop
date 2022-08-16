@@ -14,8 +14,6 @@ export abstract class Addon {
 
   abstract name: string
 
-  prepare?: () => unknown
-
   onLoaded?: () => unknown
   onUnLoaded?: () => unknown
   onActivated?: () => unknown
@@ -26,7 +24,7 @@ type AddonDesc = PackageJson & { name: Addon['name'] }
 
 export class AddonMananger {
   cdns = {
-    esmsh: '//esm.sh'
+    esmsh: 'https://esm.sh'
   } as const
 
   resolveRemoteSrc?: (

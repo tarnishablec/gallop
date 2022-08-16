@@ -1,6 +1,5 @@
 import type { Property } from '@real/core/Property'
 // import type { DeepReadonly } from 'utility-types'
-import { type PackageJson } from 'type-fest'
 
 export type Version = 'latest' | `${number}.${number}.${number}${string}`
 

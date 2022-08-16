@@ -15,7 +15,6 @@ import { handleCss } from './index.js'
 import rollupScss from 'rollup-plugin-scss'
 import rollupTs from 'rollup-plugin-ts'
 import rollupJson from '@rollup/plugin-json'
-import { terser } from 'rollup-plugin-terser'
 
 /**
  * @param {string} packageName
