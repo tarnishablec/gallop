@@ -8,7 +8,14 @@ import path from 'path'
 export const create = (packageName, { lib = true, ...options }) => {
   if (!packageName)
     throw new Error(`must provide a name before create package.`)
-  run(`npx lerna create @${options.scope ?? SCOPE}/${packageName} --yes`, {})
+  run(
+    `npx lerna create ${
+      options.noscope
+        ? packageName
+        : `@${options.scope ?? SCOPE}/${packageName}`
+    } --yes`,
+    {}
+  )
   // createNpmIgnore(packageName)
   init(packageName, { reset: true, lib, ...options })
 }

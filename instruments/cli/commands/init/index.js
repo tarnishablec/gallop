@@ -6,6 +6,7 @@ import {
   resolvePackageDir,
   resolvePackageJsonPath
 } from '../../../utils.js'
+import { omitBy, isNil } from 'lodash-es'
 
 const cachedPkgJsonFields = [
   'devDependencies',
@@ -14,7 +15,8 @@ const cachedPkgJsonFields = [
   'private',
   '_buildOptions',
   'gitHead',
-  'version'
+  'version',
+  'meta'
 ]
 
 /**
@@ -43,7 +45,8 @@ export const init = (
       fs.ensureFile(
         path.resolve(resolvePackageDir(packageName), `src/index.html`)
       )
-    // initIndexTs(packageName, { reset })
+    initIndexTs(packageName)
+    initTest(packageName)
   }
   // boot()
 }
@@ -78,23 +81,23 @@ export const initPackageJson = (
   )
 }
 
-// /** @param {string} packageName */
-// export const initIndexTs = (packageName, { reset = false } = {}) => {
-//   const packageDir = resolvePackageDir(packageName)
-//   const indexPath = path.resolve(packageDir, `src/index.ts`)
-//   if (!fs.existsSync(indexPath) || reset) {
-//     fs.ensureFileSync(indexPath)
-//     fs.writeFileSync(indexPath, `export const hello = '${packageName}'`)
-//     fs.removeSync(path.resolve(packageDir, 'lib'))
-//   }
-// }
+/** @param {string} packageName */
+export const initIndexTs = (packageName) => {
+  const packageDir = resolvePackageDir(packageName)
+  const indexPath = path.resolve(packageDir, `src/index.ts`)
+  if (!fs.existsSync(indexPath)) {
+    fs.ensureFileSync(indexPath)
+    fs.writeFileSync(indexPath, `export const hello = '${packageName}'`)
+    fs.removeSync(path.resolve(packageDir, 'lib'))
+  }
+}
 
 /** @param {string} packageName */
 export const initTest = (packageName) => {
   const packageDir = resolvePackageDir(packageName)
   const testMainPath = path.resolve(packageDir, `__tests__/index.test.ts`)
-  fs.removeSync(path.resolve(packageDir, `__tests__/${packageName}.test.js`))
   if (!fs.existsSync(testMainPath)) {
+    fs.removeSync(path.resolve(packageDir, `__tests__/${packageName}.test.js`))
     fs.ensureFileSync(testMainPath)
     fs.writeFileSync(
       testMainPath,
@@ -120,6 +123,7 @@ describe('test', () => {
  *   url?: string
  *   registry?: string
  *   lib?: boolean
+ *   noscope?: boolean
  * }} option
  * @param {object} [pkgJsonCacheObj] Default is `{}`
  * @returns {import('type-fest').PackageJson}
@@ -132,36 +136,46 @@ export const createPackageJsonObj = (
     email = EMAIL,
     url = URL,
     lib = true,
-    registry = REGISTRY
+    registry = REGISTRY,
+    noscope
   },
   pkgJsonCacheObj = {}
-) => ({
-  name: `@${scope}/${packageName}`,
-  version: '0.1.0',
-  type: 'module',
-  private: !lib ? true : undefined,
-  description: `${scope} ${packageName}`,
-  main: `dist/index.umd.js`,
-  module: 'dist/index.mjs',
-  types: 'dist/index.d.ts',
-  sideEffects: false,
-  repository: {
-    type: 'git',
-    url
-  },
-  keywords: [scope, packageName, lib ? 'lib' : 'site'].filter(Boolean),
-  author: {
-    name: author,
-    email
-  },
-  homepage: '',
-  license: 'MIT',
-  files: ['dist'],
-  publishConfig: {
-    access: 'public',
-    registry
-  },
-  ...pkgJsonCacheObj
-})
+) => {
+  const meta = omitBy(
+    {
+      noscope
+    },
+    isNil
+  )
+  return {
+    name: noscope ? packageName : `@${scope}/${packageName}`,
+    version: '0.1.0',
+    type: 'module',
+    private: !lib ? true : undefined,
+    description: `${scope} ${packageName}`,
+    main: `dist/index.umd.js`,
+    module: 'dist/index.mjs',
+    types: 'dist/index.d.ts',
+    sideEffects: false,
+    repository: {
+      type: 'git',
+      url
+    },
+    keywords: [scope, packageName, lib ? 'lib' : 'site'].filter(Boolean),
+    author: {
+      name: author,
+      email
+    },
+    homepage: '',
+    license: 'MIT',
+    files: ['dist'],
+    publishConfig: {
+      access: 'public',
+      registry
+    },
+    meta,
+    ...pkgJsonCacheObj
+  }
+}
 
 export default init

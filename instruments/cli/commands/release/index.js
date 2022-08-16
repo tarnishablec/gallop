@@ -1,7 +1,6 @@
-import { run } from '../../../utils.js'
+import { run, resolvePackageJsonObj } from '../../../utils.js'
 import simpleGit from 'simple-git'
 import { build } from '../build/index.js'
-import { SCOPE } from '../../../const.js'
 
 /**
  * @param {string} [packageName]
@@ -9,9 +8,10 @@ import { SCOPE } from '../../../const.js'
  */
 export const release = async (packageName, { version = 'patch' }) => {
   if (packageName) {
+    const { name } = resolvePackageJsonObj(packageName)
     await build(packageName)
     run(
-      `lerna exec --scope @${SCOPE}/${packageName} -- npm version ${version} && npm publish @${SCOPE}/${packageName}`
+      `lerna exec --scope ${name} -- npm version ${version} && npm publish ${name}`
     )
     return
   }

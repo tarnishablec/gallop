@@ -55,7 +55,7 @@ export const handleCss = (
   packageName,
   {
     inject = true,
-    target = path.resolve(resolvePackageDir(packageName), 'dist/index.esm.js'),
+    target = path.resolve(resolvePackageDir(packageName), 'dist/index.mjs'),
     injectContent = `import "./index.css"`
   } = {}
 ) => {

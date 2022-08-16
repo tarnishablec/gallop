@@ -1,0 +1,32 @@
+{
+  "name": "gazoo",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "gallop gazoo",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarnishablec/gallop.git"
+  },
+  "keywords": [
+    "gallop",
+    "gazoo",
+    "lib"
+  ],
+  "author": {
+    "name": "tarnishablec",
+    "email": "tarnishablec@outlook.com"
+  },
+  "homepage": "",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
